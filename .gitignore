@@ -1,11 +1,11 @@
 # -=- MacOS Specific Ignores -=-
-.DS_Store
+**/.DS_Store
 
 # -=- Eroxl's Device Specific Ignores -=-
-Icon?
+**/Icon?
 
 # -=- Node Modules -=-
-node_modules/**
+**/node_modules/**
 
 # -=- VS Code -=-
-.vscode
+**/.vscode
