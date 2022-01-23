@@ -1,3 +1,4 @@
+![](images/Desktop_Example.png)
 <h1 align="center">
   Note Rack
 </h1>
