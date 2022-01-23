@@ -1,0 +1,8 @@
+# -=- MacOS Specific Ignores -=-
+.DS_Store
+
+# -=- Eroxl's Device Specific Ignores -=-
+Icon?
+
+# -=- Node Modules -=-
+node_modules/**
