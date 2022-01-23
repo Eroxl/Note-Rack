@@ -6,6 +6,9 @@
   The markdown editor specifically designed for students
 </h6>
 
+## Note
+Please note this is still a WIP and probably wont be usable for a while. Especially some of the more advanced features.
+
 ## Goal
 The goal of this project is to create a simple but robust markdown editor that is able to be used by students to simplify school work.
 
