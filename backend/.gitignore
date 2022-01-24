@@ -1,0 +1,5 @@
+# -=- Enviornment Variables -=-
+**/.env
+
+# -=- TypeScript Output -=-
+dist/**
