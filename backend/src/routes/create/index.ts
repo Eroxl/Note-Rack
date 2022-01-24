@@ -5,8 +5,8 @@ import createPage from './createPage';
 const router = express.Router();
 
 // -=- Create Page API -=-
-router.post(
-  '/create-page',
+router.use(
+  '/',
   createPage,
 );
 
