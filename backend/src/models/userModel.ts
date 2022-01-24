@@ -1,4 +1,4 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Schema, ErrorHandlingMiddlewareFunction } from 'mongoose';
 
 const UserScheme = new Schema({
   _id: Schema.Types.ObjectId,
