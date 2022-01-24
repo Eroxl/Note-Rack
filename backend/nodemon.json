@@ -1,6 +1,6 @@
 {
   "ignore": [ "node_modules"],
   "watch": ["src"],
-  "exec": "npm start",
+  "exec": "yarn build",
   "ext": "ts"
 }
