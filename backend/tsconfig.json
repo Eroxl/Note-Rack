@@ -6,14 +6,13 @@
     "skipLibCheck": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "incremental": true,
     "outDir": "dist",
-    "baseUrl": "."
+    "baseUrl": "./"
   },
   "include": ["**/*.ts"],
   "exclude": ["node_modules"]
