@@ -8,7 +8,7 @@ const router = express.Router();
 router.post(
   '/register',
   async (req: Request, res: Response) => {
-    const { username, email, password } = req.query;
+    const { username, email, password } = req.body;
 
     // -=- Check that all parameters are supplied -=-
     if (!(password && username && email)) {
