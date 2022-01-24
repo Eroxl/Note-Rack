@@ -1,7 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 
 const PageSchema = new Schema({
-  _id: Schema.Types.ObjectId,
   user: Schema.Types.String,
   data: [
     {
