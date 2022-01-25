@@ -30,21 +30,21 @@ router.post(
     const isPasswordValid = await bcrypt.compare(password as string, user.password);
 
     if (isPasswordValid) {
-      // -=- Setup session ID -=-
+      // -=- Setup session ID & refresh tokens -=-
       const sessionID = crypto.randomBytes(20).toString('hex');
       const refreshToken = crypto.randomBytes(20).toString('hex');
+
+      // -=- Expire in 1 day -=-
       await redisClient.set(sessionID, email);
+      await redisClient.expire(sessionID, 86400);
+      res.setHeader('Set-Cookie', `ssn-cookie=${sessionID}; Max-Age=86400; Secure; HttpOnly`);
+
+      // -=- Expire in 7 days -=-
       await redisClient.set(refreshToken, email);
-
-      // -=- Setup session timeout time -=-
-      const expirationDate = new Date();
-      expirationDate.setDate(expirationDate.getDate() + 3);
-
-      await redisClient.expireAt(sessionID, Math.round(+expirationDate / 1000));
+      await redisClient.expire(refreshToken, 604800);
+      res.setHeader('Set-Cookie', `rfrsh-cookie=${sessionID}; Max-Age=$604800; Secure; HttpOnly`);
 
       // -=- Return data -=-
-      res.setHeader('Set-Cookie', `ssn-cookie=${sessionID}; Expires=${expirationDate.toUTCString()}; Secure; HttpOnly`);
-      res.setHeader('Set-Cookie', `rfrsh-cookie=${sessionID}; Expires=${expirationDate.toUTCString()}; Secure; HttpOnly`);
       res.status(200);
       res.jsonp({
         status: 'success',
