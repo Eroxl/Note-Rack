@@ -32,7 +32,9 @@ router.post(
     if (isPasswordValid) {
       // -=- Setup session ID -=-
       const sessionID = crypto.randomBytes(20).toString('hex');
+      const refreshToken = crypto.randomBytes(20).toString('hex');
       await redisClient.set(sessionID, email);
+      await redisClient.set(refreshToken, email);
 
       // -=- Setup session timeout time -=-
       const expirationDate = new Date();
@@ -42,6 +44,7 @@ router.post(
 
       // -=- Return data -=-
       res.setHeader('Set-Cookie', `ssn-cookie=${sessionID}; Expires=${expirationDate.toUTCString()}; Secure; HttpOnly`);
+      res.setHeader('Set-Cookie', `rfrsh-cookie=${sessionID}; Expires=${expirationDate.toUTCString()}; Secure; HttpOnly`);
       res.status(200);
       res.jsonp({
         status: 'success',
