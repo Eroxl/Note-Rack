@@ -1,4 +1,5 @@
 import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
 import mongoose from 'mongoose';
 import express from 'express';
 import dotenv from 'dotenv';
@@ -14,8 +15,9 @@ mongoose.connect(process.env.MONGO_URL ?? '');
 const app = express();
 const port = 8000;
 
-// -=- Setup body parser -=-
+// -=- Setup body & cookie parser parser -=-
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 // -=- Add CORS headers -=-
 app.use(cors());
