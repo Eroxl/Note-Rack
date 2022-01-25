@@ -1,7 +1,6 @@
-import redis from 'redis';
+import { createClient } from 'redis';
 
-const client = redis.createClient();
-
-console.log('test');
+const client = createClient();
+client.connect();
 
 export default client;
