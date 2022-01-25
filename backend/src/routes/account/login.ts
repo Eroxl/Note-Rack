@@ -26,44 +26,44 @@ router.post(
     const user = await UserModel.findOne({ email }).lean();
 
     // -=- Compare passwords -=-
-    // try {
-    const isPasswordValid = await bcrypt.compare(password as string, user.password);
+    try {
+      const isPasswordValid = await bcrypt.compare(password as string, user.password);
 
-    if (isPasswordValid) {
-      // -=- Setup session ID & refresh tokens -=-
-      const sessionID = crypto.randomBytes(20).toString('hex');
-      const refreshToken = crypto.randomBytes(20).toString('hex');
+      if (isPasswordValid) {
+        // -=- Setup session ID & refresh tokens -=-
+        const sessionID = crypto.randomBytes(20).toString('hex');
+        const refreshToken = crypto.randomBytes(20).toString('hex');
 
-      // -=- Expire in 1 day -=-
-      await redisClient.set(sessionID, email);
-      await redisClient.expire(sessionID, 86400);
-      res.setHeader('Set-Cookie', `ssn-cookie=${sessionID}; Max-Age=86400; Secure; HttpOnly`);
+        // -=- Expire in 1 day -=-
+        await redisClient.set(sessionID, email);
+        await redisClient.expire(sessionID, 86400);
+        res.setHeader('Set-Cookie', `ssn-cookie=${sessionID}; Max-Age=86400; Secure; HttpOnly`);
 
-      // -=- Expire in 7 days -=-
-      await redisClient.set(refreshToken, email);
-      await redisClient.expire(refreshToken, 604800);
-      res.setHeader('Set-Cookie', `rfrsh-cookie=${sessionID}; Max-Age=$604800; Secure; HttpOnly`);
+        // -=- Expire in 7 days -=-
+        await redisClient.set(`rfrsh-${refreshToken}`, email);
+        await redisClient.expire(`rfrsh-${refreshToken}`, 604800);
+        res.setHeader('Set-Cookie', `rfrsh-cookie=${refreshToken}; Max-Age=604800; Secure; HttpOnly`);
 
-      // -=- Return data -=-
-      res.status(200);
-      res.jsonp({
-        status: 'success',
-        message: 'Succesfully logged into account!',
-      });
-    } else {
+        // -=- Return data -=-
+        res.status(200);
+        res.jsonp({
+          status: 'success',
+          message: 'Succesfully logged into account!',
+        });
+      } else {
+        res.status(403);
+        res.jsonp({
+          status: 'error',
+          message: 'Invalid email or password',
+        });
+      }
+    } catch (error: any) {
       res.status(403);
       res.jsonp({
         status: 'error',
         message: 'Invalid email or password',
       });
     }
-    // } catch (error: any) {
-    //   res.status(403);
-    //   res.jsonp({
-    //     status: 'error',
-    //     message: 'Invalid email or password',
-    //   });
-    // }
   },
 );
 
