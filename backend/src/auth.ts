@@ -19,14 +19,12 @@ const verifyValidityOfToken: RequestHandler = async (req, res, next) => {
 
   // -=- Check main token -=-
   await jwt.verify(sessionToken, process.env.JWT_SECRET as string, (err: unknown, decoded: any) => {
-    res.locals.authenticated = !err;
     res.locals.username = decoded ? decoded.user : undefined;
   });
 
   // -=- If main tokens invalid verify refresh token -=-
-  if (!res.locals.authenticated) {
+  if (!res.locals.username) {
     jwt.verify(refreshToken, process.env.JWT_SECRET as string, (err: unknown, decoded: any) => {
-      res.locals.authenticated = !err;
       res.locals.username = decoded ? decoded.user : undefined;
 
       if (!err) {
