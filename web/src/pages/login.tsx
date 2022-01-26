@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Formik, Form, Field } from 'formik';
+import { Formik, Form } from 'formik';
 
 import LoginInputField from '../components/login/LoginInputField';
 
@@ -12,6 +12,9 @@ const LoginPage = () => {
 
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/account/login`, {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify({
         email,
         password,
@@ -87,7 +90,7 @@ const LoginPage = () => {
             <LoginInputField type="email" label="Email" />
             <LoginInputField type="password" label="Password" />
             {error !== '' && (
-              <LoginInputField type="email" label="Email" />
+              <h1 className="text-red-400">{`* ${error}`}</h1>
             )}
             <button type="submit" className="w-32 bg-red-400 text-amber-50 font-semibold rounded-sm text-xl px-5 py-2 mt-5 border-zinc-700 border-2 shadow">{isOnLoginPage ? 'Log in' : 'Sign up'}</button>
           </Form>
