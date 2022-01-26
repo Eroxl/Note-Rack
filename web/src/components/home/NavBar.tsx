@@ -9,7 +9,7 @@ const NavBar = () => (
       </a>
     </div>
     <div className="flex flex-row-reverse">
-      <a href="/login#" className="text-amber-50 my-auto font-semibold text-xl bg-blue-400 px-5 py-2 rounded">Login</a>
+      <a href="/login#" className="text-amber-50 my-auto font-semibold text-xl bg-red-400 px-5 py-2 rounded">Login</a>
     </div>
   </div>
 );
