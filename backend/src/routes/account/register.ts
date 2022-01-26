@@ -28,6 +28,14 @@ router.post(
       });
     }
 
+    if (!(username as string).match('^[a-zA-Z0-9_]*$')) {
+      res.status(400);
+      res.jsonp({
+        status: 'error',
+        message: 'Invalid username supplied to register an account! Only alphanumeric characters allowed and underscores...',
+      });
+    }
+
     // -=- Hash and salt password -=-
     const passwordHash = await bcrypt.hash(
       password as string,
