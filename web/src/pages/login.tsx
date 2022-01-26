@@ -65,7 +65,7 @@ const LoginPage = () => {
             )}
             <LoginInputField type="email" label="Email" />
             <LoginInputField type="password" label="Password" />
-            <button type="submit" className="w-32 bg-red-400 text-amber-50 font-semibold rounded-sm text-xl px-5 py-2 border-zinc-700 border-2 shadow">{isOnLoginPage ? 'Log in' : 'Sign up'}</button>
+            <button type="submit" className="w-32 bg-red-400 text-amber-50 font-semibold rounded-sm text-xl px-5 py-2 mt-5 border-zinc-700 border-2 shadow">{isOnLoginPage ? 'Log in' : 'Sign up'}</button>
           </Form>
         </Formik>
       </div>
