@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Formik, Form } from 'formik';
+import Router from 'next/router';
 
 import LoginInputField from '../components/login/LoginInputField';
 
@@ -25,6 +26,8 @@ const LoginPage = () => {
 
     if (responseJSON.status === 'error') {
       setError(responseJSON.message);
+    } else {
+      Router.push('/note-rack/');
     }
   };
 
@@ -47,6 +50,8 @@ const LoginPage = () => {
 
     if (responseJSON.status === 'error') {
       setError(responseJSON.message);
+    } else {
+      Router.push('/note-rack/');
     }
   };
 
