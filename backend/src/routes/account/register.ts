@@ -28,7 +28,7 @@ router.post(
       });
     }
 
-    if (!(username as string).match('^[a-zA-Z0-9_]*$')) {
+    if (!(username as string).match(/^[a-zA-Z0-9_]*$/)) {
       res.status(400);
       res.jsonp({
         status: 'error',
