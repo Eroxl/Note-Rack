@@ -24,16 +24,20 @@ const verifyValidityOfToken: RequestHandler = async (req, res, next) => {
 
   // -=- If main tokens invalid verify refresh token -=-
   if (!res.locals.username) {
-    jwt.verify(refreshToken, process.env.JWT_SECRET as string, (err: unknown, decoded: any) => {
-      res.locals.username = decoded ? decoded.user : undefined;
+    await jwt.verify(
+      refreshToken,
+      process.env.JWT_SECRET as string,
+      (err: unknown, decoded: any) => {
+        res.locals.username = decoded ? decoded.user : undefined;
 
-      if (!err) {
-        const { newSessionToken, newRefreshToken } = genNewJWT(res.locals.username);
+        if (!err) {
+          const { newSessionToken, newRefreshToken } = genNewJWT(res.locals.username);
 
-        res.setHeader('Set-Cookie', `ssn-token=${newSessionToken}; Secure; HttpOnly`);
-        res.setHeader('Set-Cookie', `rfrsh-token=${newRefreshToken}; Secure; HttpOnly`);
-      }
-    });
+          res.setHeader('Set-Cookie', `ssn-token=${newSessionToken}; Secure; HttpOnly`);
+          res.setHeader('Set-Cookie', `rfrsh-token=${newRefreshToken}; Secure; HttpOnly`);
+        }
+      },
+    );
   }
 
   next();
