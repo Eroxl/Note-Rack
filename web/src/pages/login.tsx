@@ -1,10 +1,23 @@
 import React, { useState } from 'react';
-import { Formik, Field, Form } from 'formik';
+import { Formik, Form, Field } from 'formik';
+
+import LoginInputField from '../components/login/LoginInputField';
 
 const LoginPage = () => {
   const [isOnLoginPage, setIsOnLoginPage] = useState(true);
 
   const Login = async (accountDetails: any) => {
+    const { email, password } = accountDetails;
+
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
+      method: 'POST',
+      body: JSON.stringify({
+        email,
+        password,
+      }),
+    });
+
+    const responseJSON = await response.json();
   };
 
   const Signup = async (accountDetails: any) => {
@@ -46,20 +59,12 @@ const LoginPage = () => {
                 <div className={`${!isOnLoginPage && 'bg-red-400'} h-2 w-full rounded-full transition-opacity`} />
               </button>
             </div>
+
             {!isOnLoginPage && (
-              <div className="flex flex-col justify-center mb-1 md:w-4/5 w-full">
-                <h1 className="text-zinc-700 opacity-70">Username</h1>
-                <Field name="username" type="text" className="w-full bg-amber-50 text-zinc-700 rounded-sm text-xl px-2 py-2 border-zinc-700 border-2 shadow focus:outline-green-400 focus:outline-2 focus:outline" />
-              </div>
+              <LoginInputField type="text" label="Username" />
             )}
-            <div className="flex flex-col justify-center mb-1 md:w-4/5 w-full">
-              <h1 className="text-zinc-700 opacity-70">Email</h1>
-              <Field name="email" type="email" className="w-full bg-amber-50 text-zinc-700 rounded-sm text-xl px-2 py-2 border-zinc-700 border-2 shadow focus:outline-green-400 focus:outline-2 focus:outline" />
-            </div>
-            <div className="flex flex-col justify-center mb-8 md:w-4/5 w-full">
-              <h1 className="text-zinc-700 opacity-70">Password</h1>
-              <Field name="password" type="password" className="w-full bg-amber-50 text-zinc-700 rounded-sm text-xl px-2 py-2 border-zinc-700 border-2 shadow focus:outline-green-400 focus:outline-2 focus:outline" />
-            </div>
+            <LoginInputField type="email" label="Email" />
+            <LoginInputField type="password" label="Password" />
             <button type="submit" className="w-32 bg-red-400 text-amber-50 font-semibold rounded-sm text-xl px-5 py-2 border-zinc-700 border-2 shadow">{isOnLoginPage ? 'Log in' : 'Sign up'}</button>
           </Form>
         </Formik>
