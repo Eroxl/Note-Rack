@@ -1,8 +1,7 @@
 import express, { Request, Response } from 'express';
+import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-import crypto from 'crypto';
 
-import redisClient from '../../databases/redis';
 import UserModel from '../../models/userModel';
 
 const router = express.Router();
@@ -31,18 +30,11 @@ router.post(
 
       if (isPasswordValid) {
         // -=- Setup session ID & refresh tokens -=-
-        const sessionID = crypto.randomBytes(20).toString('hex');
-        const refreshToken = crypto.randomBytes(20).toString('hex');
+        const jwtToken = jwt.sign({ user: user.username }, process.env.JWT_SECRET as string, { expiresIn: '1h' });
+        const jwtRefreshToken = jwt.sign({ user: user.username }, process.env.JWT_SECRET as string, { expiresIn: '30d' });
 
-        // -=- Expire in 1 day -=-
-        await redisClient.set(sessionID, email);
-        await redisClient.expire(sessionID, 86400);
-        res.setHeader('Set-Cookie', `ssn-cookie=${sessionID}; Max-Age=86400; Secure; HttpOnly`);
-
-        // -=- Expire in 7 days -=-
-        await redisClient.set(`rfrsh-${refreshToken}`, email);
-        await redisClient.expire(`rfrsh-${refreshToken}`, 604800);
-        res.setHeader('Set-Cookie', `rfrsh-cookie=${refreshToken}; Max-Age=604800; Secure; HttpOnly`);
+        res.setHeader('Set-Cookie', `ssn-token=${jwtToken}; Secure; HttpOnly`);
+        res.setHeader('Set-Cookie', `rfrsh-token=${jwtRefreshToken}; Secure; HttpOnly`);
 
         // -=- Return data -=-
         res.status(200);
