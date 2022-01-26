@@ -16,15 +16,15 @@ mongoose.connect(process.env.MONGO_URL ?? '');
 const app = express();
 const port = 8000;
 
-// -=- Setup body & cookie parser parser -=-
+// -=- Add CORS headers -=-
+app.use(cors({ origin: 'http://127.0.0.1:3000', credentials: true }));
+
+// -=- Setup body & cookie parser & cors -=-
 app.use(bodyParser.json());
 app.use(cookieParser());
 
 // -=- Setup jwt token authentication middleware -=-
 app.use(verifyValidityOfToken);
-
-// -=- Add CORS headers -=-
-app.use(cors());
 
 // -=- Add API Routes -=-
 app.use('/', routes);

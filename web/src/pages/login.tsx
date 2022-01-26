@@ -20,6 +20,7 @@ const LoginPage = () => {
         email,
         password,
       }),
+      credentials: 'include',
     });
 
     const responseJSON = await response.json();
@@ -44,6 +45,7 @@ const LoginPage = () => {
         email,
         password,
       }),
+      credentials: 'include',
     });
 
     const responseJSON = await response.json();
