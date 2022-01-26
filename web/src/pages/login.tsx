@@ -93,7 +93,7 @@ const LoginPage = () => {
             <LoginInputField type="email" label="Email" />
             <LoginInputField type="password" label="Password" />
             {error !== '' && (
-              <h1 className="text-red-400 text-center">{error}</h1>
+              <h1 className="text-red-400 w-4/5">{`* ${error}`}</h1>
             )}
             <button type="submit" className="w-32 bg-red-400 text-amber-50 font-semibold rounded-sm text-xl px-5 py-2 mt-5 border-zinc-700 border-2 shadow">{isOnLoginPage ? 'Log in' : 'Sign up'}</button>
           </Form>
