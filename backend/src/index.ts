@@ -5,6 +5,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 
+import verifyValidityOfToken from './auth';
 import routes from './routes/index';
 
 // -=- Connect to MongoDB with dotenv file -=-
@@ -18,6 +19,9 @@ const port = 8000;
 // -=- Setup body & cookie parser parser -=-
 app.use(bodyParser.json());
 app.use(cookieParser());
+
+// -=- Setup jwt token authentication middleware -=-
+app.use(verifyValidityOfToken);
 
 // -=- Add CORS headers -=-
 app.use(cors());
