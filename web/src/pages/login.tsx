@@ -5,11 +5,12 @@ import LoginInputField from '../components/login/LoginInputField';
 
 const LoginPage = () => {
   const [isOnLoginPage, setIsOnLoginPage] = useState(true);
+  const [error, setError] = useState('');
 
   const Login = async (accountDetails: any) => {
     const { email, password } = accountDetails;
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/account/login`, {
       method: 'POST',
       body: JSON.stringify({
         email,
@@ -18,9 +19,29 @@ const LoginPage = () => {
     });
 
     const responseJSON = await response.json();
+
+    if (responseJSON.status === 'error') {
+      setError(responseJSON.message);
+    }
   };
 
   const Signup = async (accountDetails: any) => {
+    const { username, email, password } = accountDetails;
+
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/account/register`, {
+      method: 'POST',
+      body: JSON.stringify({
+        username,
+        email,
+        password,
+      }),
+    });
+
+    const responseJSON = await response.json();
+
+    if (responseJSON.status === 'error') {
+      setError(responseJSON.message);
+    }
   };
 
   return (
@@ -50,11 +71,11 @@ const LoginPage = () => {
         >
           <Form className="flex flex-col justify-center items-center">
             <div className="w-full h-max flex md:flex-row flex-col justify-around items-center md:gap-10 gap-4 text-zinc-700 mb-8">
-              <button className={`text-5xl font-semibold ${isOnLoginPage && 'cursor-default'}`} type="button" onClick={() => { setIsOnLoginPage(true); }}>
+              <button className={`text-5xl font-semibold ${isOnLoginPage && 'cursor-default'}`} type="button" onClick={() => { setIsOnLoginPage(true); setError(''); }}>
                 Login
                 <div className={`${isOnLoginPage && 'bg-red-400'} h-2 w-full rounded-full transition-opacity`} />
               </button>
-              <button className={`text-5xl font-semibold ${!isOnLoginPage && 'cursor-default'}`} type="button" onClick={() => { setIsOnLoginPage(false); }}>
+              <button className={`text-5xl font-semibold ${!isOnLoginPage && 'cursor-default'}`} type="button" onClick={() => { setIsOnLoginPage(false); setError(''); }}>
                 Sign Up
                 <div className={`${!isOnLoginPage && 'bg-red-400'} h-2 w-full rounded-full transition-opacity`} />
               </button>
@@ -65,6 +86,9 @@ const LoginPage = () => {
             )}
             <LoginInputField type="email" label="Email" />
             <LoginInputField type="password" label="Password" />
+            {error !== '' && (
+              <LoginInputField type="email" label="Email" />
+            )}
             <button type="submit" className="w-32 bg-red-400 text-amber-50 font-semibold rounded-sm text-xl px-5 py-2 mt-5 border-zinc-700 border-2 shadow">{isOnLoginPage ? 'Log in' : 'Sign up'}</button>
           </Form>
         </Formik>
