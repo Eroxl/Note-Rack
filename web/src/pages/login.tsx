@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Formik, Form } from 'formik';
 import Router from 'next/router';
+import Link from 'next/link';
 
 import LoginInputField from '../components/login/LoginInputField';
 
@@ -62,10 +63,12 @@ const LoginPage = () => {
       <div className="max-w-7xl h-full mx-auto">
         {/* Top Bar */}
         <div className="w-full h-20 border-b-2 border-zinc-700 grid grid-flow-col px-4 pt-2 text-zinc-700">
-          <a href="/#" className="my-auto font-semibold text-3xl flex flex-row align-center">
-            <i className="emoji text-5xl bg-[url('https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji@13.1.0/color/svg/1F4DD.svg')]" />
-            <h1 className="my-auto">Note Rack</h1>
-          </a>
+          <Link href="/#">
+            <a href="/#" className="my-auto font-semibold text-3xl flex flex-row align-center">
+              <i className="emoji text-5xl bg-[url('https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji@13.1.0/color/svg/1F4DD.svg')]" />
+              <h1 className="my-auto">Note Rack</h1>
+            </a>
+          </Link>
         </div>
       </div>
       {/* Login / Signup Page */}
