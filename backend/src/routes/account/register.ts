@@ -19,6 +19,15 @@ router.post(
       });
     }
 
+    // -=- Validate email -=-
+    if (!(email as string).toLowerCase().match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)) {
+      res.status(400);
+      res.jsonp({
+        status: 'error',
+        message: 'Invalid email supplied to register an account!',
+      });
+    }
+
     // -=- Hash and salt password -=-
     const passwordHash = await bcrypt.hash(
       password as string,
