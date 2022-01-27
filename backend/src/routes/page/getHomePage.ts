@@ -7,7 +7,9 @@ const router = express.Router();
 router.post(
   '/get-home-page',
   async (req: Request, res: Response) => {
-    if (!res.locals.username) {
+    const { username } = res.locals;
+
+    if (!username) {
       res.statusCode = 401;
       res.json({
         status: 'error',
@@ -15,8 +17,6 @@ router.post(
       });
       return;
     }
-
-    const { username } = res.locals;
 
     const user = await UserModel.findOne({ username }).lean();
 

@@ -17,6 +17,8 @@ const verifyValidityOfToken: RequestHandler = async (req, res, next) => {
     'ssn-token': sessionToken,
   } = req.cookies;
 
+  console.log(req.cookies);
+
   // -=- Check main token -=-
   await jwt.verify(sessionToken, process.env.JWT_SECRET as string, (err: unknown, decoded: any) => {
     res.locals.username = decoded ? decoded.user : undefined;
@@ -33,7 +35,7 @@ const verifyValidityOfToken: RequestHandler = async (req, res, next) => {
         if (!err) {
           const { newSessionToken, newRefreshToken } = genNewJWT(res.locals.username);
 
-          res.setHeader('Set-Cookie', [`ssn-token=${newSessionToken}; Secure; HttpOnly`, `rfrsh-token=${newRefreshToken}; Secure; HttpOnly`]);
+          res.setHeader('Set-Cookie', [`ssn-token=${newSessionToken}; Path=/; Secure; HttpOnly`, `rfrsh-token=${newRefreshToken}; Path=/; Secure; HttpOnly`]);
         }
       },
     );
