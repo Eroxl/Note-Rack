@@ -1,5 +1,6 @@
 import express from 'express';
 
+import pageRouter from './page/index';
 import accountRouter from './account/index';
 
 const router = express.Router();
@@ -8,6 +9,12 @@ const router = express.Router();
 router.use(
   '/account/',
   accountRouter,
+);
+
+// -=- Pages API -=-
+router.use(
+  '/page/',
+  pageRouter,
 );
 
 export default router;
