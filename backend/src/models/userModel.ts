@@ -13,6 +13,7 @@ const UserScheme = new Schema({
   },
   password: Schema.Types.String,
   verified: Schema.Types.Boolean,
+  homePage: Schema.Types.String,
 });
 
 const UserModel = mongoose.models.user || mongoose.model('user', UserScheme, 'User');
