@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 
 import UserModel from '../../models/userModel';
+import PageModel from '../../models/pageModel';
 
 const router = express.Router();
 
@@ -43,11 +44,35 @@ router.post(
     );
 
     try {
+      // EROXL: This is only temporary
+      // TODO: When we verify the email create this page there
+      const homePage = await PageModel.create(
+        {
+          user: username,
+          data: {
+            type: 'info',
+            properties: [
+              {
+                type: 'icon',
+                value: '📝',
+              },
+            ],
+            style: [
+              {
+                colour: 'FFFBEB',
+              },
+            ],
+          },
+        },
+      );
+
       await UserModel.create({
         username,
         email,
         password: passwordHash,
         verified: false,
+        // eslint-disable-next-line no-underscore-dangle
+        homePage: homePage._id,
       });
 
       // -=- Succesfuly created account -=-
