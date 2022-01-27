@@ -40,7 +40,6 @@ const verifyValidityOfToken: RequestHandler = async (req, res, next) => {
     );
   }
 
-  console.log(res.locals.username);
   next();
 };
 
