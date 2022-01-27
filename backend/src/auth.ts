@@ -33,8 +33,7 @@ const verifyValidityOfToken: RequestHandler = async (req, res, next) => {
         if (!err) {
           const { newSessionToken, newRefreshToken } = genNewJWT(res.locals.username);
 
-          res.setHeader('Set-Cookie', `ssn-token=${newSessionToken}; Secure; HttpOnly`);
-          res.setHeader('Set-Cookie', `rfrsh-token=${newRefreshToken}; Secure; HttpOnly`);
+          res.setHeader('Set-Cookie', [`ssn-token=${newSessionToken}; Secure; HttpOnly`, `rfrsh-token=${newRefreshToken}; Secure; HttpOnly`]);
         }
       },
     );

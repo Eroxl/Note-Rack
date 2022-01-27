@@ -33,8 +33,7 @@ router.post(
         const jwtToken = jwt.sign({ user: user.username }, process.env.JWT_SECRET as string, { expiresIn: '1h' });
         const jwtRefreshToken = jwt.sign({ user: user.username }, process.env.JWT_SECRET as string, { expiresIn: '30d' });
 
-        res.setHeader('Set-Cookie', `ssn-token=${jwtToken}; Secure; HttpOnly`);
-        res.setHeader('Set-Cookie', `rfrsh-token=${jwtRefreshToken}; Secure; HttpOnly`);
+        res.header('Set-Cookie', [`ssn-token=${jwtToken}; Secure; HttpOnly`, `rfrsh-token=${jwtRefreshToken}; Secure; HttpOnly`]);
 
         // -=- Return data -=-
         res.status(200);
