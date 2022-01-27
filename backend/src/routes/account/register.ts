@@ -50,7 +50,7 @@ router.post(
         {
           user: username,
           data: {
-            type: 'info',
+            blockType: 'info',
             properties: [
               {
                 type: 'icon',
