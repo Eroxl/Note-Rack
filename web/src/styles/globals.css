@@ -6,6 +6,15 @@ body {
     @apply w-screen h-screen overflow-x-hidden
 }
 
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.no-scrollbar {
+-ms-overflow-style: none;
+scrollbar-width: none;
+}
+
 .emoji {
     display: inline-block;
     height: 1em;
