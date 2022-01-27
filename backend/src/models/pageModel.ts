@@ -1,10 +1,10 @@
 import mongoose, { Schema } from 'mongoose';
 
 const PageSchema = new Schema({
-  user: Schema.Types.String,
+  user: String,
   data: [
     {
-      type: String,
+      blockType: String,
       properties: [
         Schema.Types.Mixed,
       ],
