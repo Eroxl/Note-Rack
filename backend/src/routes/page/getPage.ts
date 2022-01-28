@@ -9,6 +9,7 @@ router.get(
   async (req: Request, res: Response) => {
     const { page } = req.query;
     const { username } = res.locals;
+    console.log(username);
 
     if (!username) {
       res.statusCode = 401;
