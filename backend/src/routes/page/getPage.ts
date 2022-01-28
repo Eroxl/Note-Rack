@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 
-import PageModel from '../../models/userModel';
+import PageModel from '../../models/pageModel';
 
 const router = express.Router();
 
@@ -42,7 +42,7 @@ router.get(
     res.statusCode = 200;
     res.json({
       status: 'success',
-      message: pageData,
+      message: pageData.data,
     });
   },
 );

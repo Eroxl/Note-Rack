@@ -7,11 +7,11 @@ import Title from './Title';
 import TitleBreaker from './TitleBreaker';
 
 export default {
-  breaker: Breaker,
-  callout: Callout,
-  icon: Icon,
-  page: Page,
-  quote: Quote,
-  title: Title,
-  titleBreaker: TitleBreaker,
+  Breaker,
+  Callout,
+  Icon,
+  Page,
+  Quote,
+  Title,
+  TitleBreaker,
 };
