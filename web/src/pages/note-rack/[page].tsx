@@ -2,16 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { GetServerSidePropsContext } from 'next';
 
 import Spinner from '../../components/Spinner';
+import Items from '../../components/page/Items';
 
 const NoteRackPage = (props: {pageData: Promise<{}>}) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const { pageData: pageDataPromise } = props;
-  let pageData;
 
+  // TODO: Add error handling here...
   useEffect(() => {
     (async () => {
       setIsLoaded(false);
-      pageData = await pageDataPromise;
+      await pageDataPromise;
       setIsLoaded(true);
     })();
   }, []);

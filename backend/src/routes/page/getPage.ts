@@ -7,9 +7,8 @@ const router = express.Router();
 router.get(
   '/get-page/:page',
   async (req: Request, res: Response) => {
-    const { page } = req.query;
+    const { page } = req.params;
     const { username } = res.locals;
-    console.log(username);
 
     if (!username) {
       res.statusCode = 401;
