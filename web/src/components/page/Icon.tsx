@@ -29,7 +29,7 @@ const Icon = (props: { icon: string }) => {
 
   return (
     <div className="relative w-min h-min" ref={emojiPickerMenuRef}>
-      <span className="select-none w-20 h-20 hover:bg-slate-600 hover:bg-opacity-5 flex justify-center items-center">
+      <span className="select-none w-20 h-20 hover:bg-slate-600 hover:bg-opacity-5 flex justify-center items-center rounded">
         <button className="text-7xl select-none w-min h-min" type="button" onClick={() => { setIsEmojiSelectorActive(!isEmojiSelectorActive); }}>
           {currentIcon}
         </button>
