@@ -49,20 +49,20 @@ router.post(
       const homePage = await PageModel.create(
         {
           user: username,
-          data: {
-            blockType: 'info',
-            properties: [
-              {
-                type: 'icon',
+          data: [
+            {
+              blockType: 'page-icon',
+              properties: {
                 value: '📝',
               },
-            ],
-            style: [
-              {
-                colour: 'FFFBEB',
+            },
+            {
+              blockType: 'page-title',
+              properties: {
+                value: 'New Notebook',
               },
-            ],
-          },
+            },
+          ],
         },
       );
 

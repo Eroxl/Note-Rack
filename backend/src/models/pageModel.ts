@@ -5,12 +5,8 @@ const PageSchema = new Schema({
   data: [
     {
       blockType: String,
-      properties: [
-        Schema.Types.Mixed,
-      ],
-      style: [
-        Schema.Types.Mixed,
-      ],
+      properties: {},
+      style: {},
     },
   ],
 });
