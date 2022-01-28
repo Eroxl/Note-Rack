@@ -45,3 +45,7 @@ scrollbar-width: none;
     background-position: center center;
     background-size: 1em 1em;
 }
+
+.emoji-mart-preview {
+    display: none;
+}
