@@ -17,8 +17,6 @@ const verifyValidityOfToken: RequestHandler = async (req, res, next) => {
     'ssn-token': sessionToken,
   } = req.cookies;
 
-  console.log(req.cookies);
-
   // -=- Check main token -=-
   await jwt.verify(sessionToken, process.env.JWT_SECRET as string, (err: unknown, decoded: any) => {
     res.locals.username = decoded ? decoded.user : undefined;
