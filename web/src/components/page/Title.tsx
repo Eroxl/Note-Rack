@@ -8,7 +8,7 @@ const Title = (props: { titleString: string, page: string, blockID: string }) =>
   const { titleString, page, blockID } = props;
 
   const onTitleChanged = (text: string) => {
-    updateServer(blockID, undefined, { value: text }, undefined, page);
+    updateServer(blockID, undefined, { value: text !== '' ? text : 'Untitled' }, undefined, page);
   };
 
   return (
@@ -17,9 +17,23 @@ const Title = (props: { titleString: string, page: string, blockID: string }) =>
         className="text-5xl font-bold outline-none"
         contentEditable
         role="textbox"
-        onBlur={(e) => onTitleChanged(e.currentTarget.innerText)}
+        onBlur={
+          (e) => {
+            onTitleChanged(e.currentTarget.innerText);
+            if (e.currentTarget.textContent === '') {
+              e.currentTarget.innerHTML = 'Untitled';
+            }
+          }
+        }
         suppressContentEditableWarning
-        onKeyDown={(e) => { if (e.code === 'Enter') { e.preventDefault(); } }}
+        onKeyDown={
+          (e) => {
+            if (e.code === 'Enter') {
+              e.preventDefault();
+              e.currentTarget.blur();
+            }
+          }
+      }
       >
         {titleString}
       </h1>
