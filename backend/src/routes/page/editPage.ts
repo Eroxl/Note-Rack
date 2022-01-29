@@ -48,7 +48,7 @@ router.patch(
       return;
     }
 
-    const pageData = await PageModel.findById(page, 'user');
+    const pageData = await PageModel.findById(page, 'user').lean();
 
     if (!pageData) {
       res.statusCode = 404;
