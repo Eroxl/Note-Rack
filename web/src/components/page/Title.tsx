@@ -33,7 +33,7 @@ const Title = (props: { titleString: string, page: string, blockID: string }) =>
               e.currentTarget.blur();
             }
           }
-      }
+        }
       >
         {titleString}
       </h1>
