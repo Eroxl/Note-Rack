@@ -116,9 +116,9 @@ router.patch(
           },
           {
             $set: {
-              ...(typedActionData.data.blockType || { 'data.$.style': typedActionData.data.blockType }),
-              ...(typedActionData.data.properties || { 'data.$.style': typedActionData.data.properties }),
-              ...(typedActionData.data.style || { 'data.$.style': typedActionData.data.style }),
+              ...(typedActionData.data.blockType && { 'data.$.style': typedActionData.data.blockType }),
+              ...(typedActionData.data.properties && { 'data.$.style': typedActionData.data.properties }),
+              ...(typedActionData.data.style && { 'data.$.style': typedActionData.data.style }),
             },
           },
         );
