@@ -28,7 +28,7 @@ router.patch(
   async (req: Request, res: Response) => {
     const { page } = req.params;
     const { username } = res.locals;
-    const { action, actionData } = req.body as { action: 'delete' | 'add' | 'edit', actionData: deleteActionData | addActionData | editActionData };
+    const { action, actionData } = req.body;
 
     if (!(action && actionData)) {
       res.statusCode = 400;
@@ -82,6 +82,12 @@ router.patch(
             },
           },
         );
+
+        res.statusCode = 200;
+        res.json({
+          status: 'success',
+          message: 'Succesfully deleted element',
+        });
         break;
       }
 
@@ -105,23 +111,42 @@ router.patch(
             },
           },
         );
+
+        res.statusCode = 200;
+        res.json({
+          status: 'success',
+          message: 'Succesfully added element',
+        });
         break;
       }
 
       case 'edit': {
         const typedActionData = actionData as editActionData;
-        PageModel.findOneAndUpdate(
+        await PageModel.updateOne(
           {
             _id: page,
           },
           {
             $set: {
-              ...(typedActionData.data.blockType && { 'data.$.style': typedActionData.data.blockType }),
-              ...(typedActionData.data.properties && { 'data.$.style': typedActionData.data.properties }),
-              ...(typedActionData.data.style && { 'data.$.style': typedActionData.data.style }),
+              ...(typedActionData.data.blockType !== undefined && { 'data.$[block].blockType': typedActionData.data.blockType }),
+              ...(typedActionData.data.properties !== undefined && { 'data.$[block].properties': typedActionData.data.properties }),
+              ...(typedActionData.data.style !== undefined && { 'data.$[block].style': typedActionData.data.style }),
             },
           },
+          {
+            arrayFilters: [
+              {
+                'block.blockID': typedActionData.blockID,
+              },
+            ],
+          },
         );
+
+        res.statusCode = 200;
+        res.json({
+          status: 'success',
+          message: 'Succesfully edited element',
+        });
         break;
       }
 

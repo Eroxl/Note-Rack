@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { GetServerSidePropsContext } from 'next';
+import { useRouter } from 'next/router';
 
 import Spinner from '../../components/Spinner';
 import RenderPage from '../../lib/renderPage';
@@ -10,6 +11,7 @@ const NoteRackPage = (
       {
         status: string,
         message: {
+          blockID: string,
           blockType: string,
           properties: any,
           style: any,
@@ -20,6 +22,8 @@ const NoteRackPage = (
 ) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const { pageData } = props;
+  const router = useRouter();
+  const { page } = router.query;
 
   // TODO: Add error handling here...
   useEffect(() => {
@@ -42,7 +46,7 @@ const NoteRackPage = (
             <div className="h-max w-full bg-amber-50 flex flex-col items-center">
               <div className="bg-blue-300 h-72 w-full -mb-10" />
               <div className="max-w-4xl w-full text-zinc-700 break-words h-max px-20 flex flex-col gap-3 pb-24 editor">
-                { RenderPage((pageData as unknown as any).message)}
+                { RenderPage((pageData as unknown as any).message, page as string)}
               </div>
             </div>
           </div>

@@ -2,16 +2,24 @@ import React, { useState, useEffect, useRef } from 'react';
 import 'emoji-mart/css/emoji-mart.css';
 import { Picker } from 'emoji-mart';
 
-const Icon = (props: { icon: string }) => {
-  const { icon } = props;
+import updateServer from '../../lib/updateServer';
+
+const Icon = (props: { icon: string, page: string, blockID: string }) => {
+  const { icon, page, blockID } = props;
   const [isEmojiSelectorActive, setIsEmojiSelectorActive] = useState(false);
   const [currentIcon, setCurrentIcon] = useState(icon);
 
   const emojiPickerMenuRef = useRef<HTMLDivElement>(null);
 
+  const updateData = (updatedIcon: string) => {
+    updateServer(blockID, undefined, { value: updatedIcon }, undefined, page);
+  };
+
   const onEmojiChange = (emoji: any) => {
     setCurrentIcon(emoji.native);
     setIsEmojiSelectorActive(false);
+
+    updateData(emoji.native);
   };
 
   useEffect(() => {
