@@ -18,7 +18,7 @@ const RenderItem = (itemData: {
     case 'page-icon':
       return <Items.Icon icon={properties.value} page={page} blockID={blockID} />;
     case 'page-title':
-      return <Items.Title titleString={properties.value} />;
+      return <Items.Title titleString={properties.value} page={page} blockID={blockID} />;
     default:
       return <p className="">{properties.value}</p>;
   }
