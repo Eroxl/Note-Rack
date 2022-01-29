@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/no-noninteractive-element-to-interactive-role */
 import React from 'react';
 
 import TitleBreaker from './TitleBreaker';
@@ -12,7 +13,16 @@ const Title = (props: { titleString: string, page: string, blockID: string }) =>
 
   return (
     <>
-      <h1 className="text-5xl font-bold outline-none" contentEditable onBlur={(e) => onTitleChanged(e.currentTarget.innerText)} suppressContentEditableWarning>{titleString}</h1>
+      <h1
+        className="text-5xl font-bold outline-none"
+        contentEditable
+        role="textbox"
+        onBlur={(e) => onTitleChanged(e.currentTarget.innerText)}
+        suppressContentEditableWarning
+        onKeyDown={(e) => { if (e.code === 'Enter') { e.preventDefault(); } }}
+      >
+        {titleString}
+      </h1>
       <TitleBreaker />
     </>
   );
