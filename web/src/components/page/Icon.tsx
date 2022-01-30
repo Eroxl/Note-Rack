@@ -42,7 +42,7 @@ const Icon = (props: { icon: string, page: string, blockID: string }) => {
           {currentIcon}
         </button>
       </span>
-      <div className={`absolute sm:right-[-133px] right-[0%] top-[110%] ${isEmojiSelectorActive || 'hidden'}`}>
+      <div className={`absolute sm:right-[-133px] right-[0%] top-[110%] z-10 ${isEmojiSelectorActive || 'hidden'}`}>
         <Picker onSelect={onEmojiChange} />
       </div>
     </div>
