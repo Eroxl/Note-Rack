@@ -8,21 +8,19 @@ const Title = (props: { titleString: string, page: string, blockID: string }) =>
   const { titleString, page, blockID } = props;
 
   const onTitleChanged = (text: string) => {
-    updateServer(blockID, undefined, { value: text !== '' ? text : 'Untitled' }, undefined, page);
+    updateServer(blockID, undefined, { value: text }, undefined, page);
   };
 
   return (
     <>
-      <h1
-        className="text-5xl font-bold outline-none"
+      <span
+        className="text-5xl font-bold outline-none empty:before:content-['Untitled']"
         contentEditable
         role="textbox"
+        tabIndex={0}
         onBlur={
           (e) => {
             onTitleChanged(e.currentTarget.innerText);
-            if (e.currentTarget.textContent === '') {
-              e.currentTarget.innerHTML = 'Untitled';
-            }
           }
         }
         suppressContentEditableWarning
@@ -36,7 +34,7 @@ const Title = (props: { titleString: string, page: string, blockID: string }) =>
         }
       >
         {titleString}
-      </h1>
+      </span>
       <TitleBreaker />
     </>
   );

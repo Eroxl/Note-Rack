@@ -49,3 +49,7 @@ scrollbar-width: none;
 .emoji-mart-preview {
     display: none;
 }
+
+[placeholder]:empty:focus:before {
+    content: attr(placeholder);
+}

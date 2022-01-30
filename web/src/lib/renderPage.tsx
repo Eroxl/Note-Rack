@@ -22,7 +22,7 @@ const RenderItem = (itemData: {
       return <Items.Title titleString={properties.value} page={page} blockID={blockID} />;
     default:
       return (
-        <p
+        <span
           className="min-h-[1.2em] outline-none"
           contentEditable
           suppressContentEditableWarning
@@ -39,7 +39,7 @@ const RenderItem = (itemData: {
           }
         >
           {properties.value}
-        </p>
+        </span>
       );
   }
 };
