@@ -93,6 +93,7 @@ router.patch(
 
       case 'add': {
         const typedActionData = actionData as addActionData;
+        const newBlockID = crypto.randomBytes(20).toString('hex');
         PageModel.findOneAndUpdate(
           {
             _id: page,
@@ -102,7 +103,7 @@ router.patch(
               data: {
                 $each: [{
                   blockType: typedActionData.blockType,
-                  blockID: crypto.randomBytes(20).toString('hex'),
+                  blockID: newBlockID,
                   properties: {},
                   style: {},
                 }],
@@ -115,7 +116,10 @@ router.patch(
         res.statusCode = 200;
         res.json({
           status: 'success',
-          message: 'Succesfully added element',
+          message: {
+            statusMessage: 'Succesfully added element',
+            blockID: newBlockID,
+          },
         });
         break;
       }
