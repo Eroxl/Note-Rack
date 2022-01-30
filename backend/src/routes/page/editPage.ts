@@ -72,7 +72,7 @@ router.patch(
       case 'delete': {
         const typedActionData = actionData as deleteActionData;
 
-        PageModel.findOneAndUpdate(
+        await PageModel.updateOne(
           {
             _id: page,
           },
@@ -94,7 +94,7 @@ router.patch(
       case 'add': {
         const typedActionData = actionData as addActionData;
         const newBlockID = crypto.randomBytes(20).toString('hex');
-        PageModel.findOneAndUpdate(
+        await PageModel.updateOne(
           {
             _id: page,
           },

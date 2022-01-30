@@ -44,7 +44,7 @@ const NoteRackPage = (props: {pageDataReq: Promise<pageDataInterface>}) => {
 
     const tempPageData = (pageData as pageDataInterface).message;
     tempPageData.splice(index, 0, {
-      blockID: createNewBlockResult.message,
+      blockID: createNewBlockResult.message.blockID,
       blockType: 'text',
       properties: {},
       style: {},
