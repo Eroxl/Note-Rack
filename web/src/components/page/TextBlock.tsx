@@ -31,6 +31,8 @@ const TextBlock = (props: { blockID: string, page: string, value: string, typeOf
   return (
     <span
       className={`min-h-[1.2em] outline-none ${stylingLookupTable[currentType]}`}
+      role="textbox"
+      tabIndex={0}
       contentEditable
       suppressContentEditableWarning
       onInput={(e) => {
@@ -45,6 +47,17 @@ const TextBlock = (props: { blockID: string, page: string, value: string, typeOf
             undefined,
             page,
           );
+        }
+      }
+      onKeyDown={
+        (e) => {
+          if (e.code === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            e.currentTarget.blur();
+          } else if (e.code === 'Backspace' && !e.currentTarget.innerHTML && currentType !== 'text') {
+            setCurrentType('text');
+            updateServer(blockID, 'text', undefined, undefined, page);
+          }
         }
       }
     >
