@@ -27,6 +27,7 @@ module.exports = {
     ],
     'import/extensions': 0,
     'react/function-component-definition': 'off',
+    'no-param-reassign': 0,
   },
   settings: {
     'import/resolver': {

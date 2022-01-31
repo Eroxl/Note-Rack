@@ -6,26 +6,6 @@ editor.body {
     @apply w-screen h-screen overflow-x-hidden
 }
 
-editor.h1 {
-    @apply text-4xl font-bold
-}
-
-editor.h2 {
-    @apply text-3xl font-bold
-}
-
-editor.h3 {
-    @apply text-2xl font-bold
-}
-
-editor.h4 {
-    @apply text-xl font-bold
-}
-
-editor.h5 {
-    @apply text-lg font-bold
-}
-
 .no-scrollbar::-webkit-scrollbar {
     display: none;
 }
