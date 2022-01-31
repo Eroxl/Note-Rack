@@ -25,7 +25,7 @@ const RenderItem = (itemData: {
         <TextBlock
           blockID={blockID}
           page={page}
-          value={properties.value}
+          value={properties?.value ?? ''}
           typeOfText={blockType}
           index={index}
         />
