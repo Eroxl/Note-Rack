@@ -55,6 +55,13 @@ const NoteRackPage = (props: {pageDataReq: Promise<pageDataInterface>}) => {
     });
   };
 
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.code === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      (e.currentTarget as HTMLTextAreaElement)?.blur();
+    }
+  };
+
   // TODO: Add error handling here...
   useEffect(() => {
     (async () => {
@@ -62,6 +69,11 @@ const NoteRackPage = (props: {pageDataReq: Promise<pageDataInterface>}) => {
       setPageData(await pageDataReq);
       setIsLoading(false);
     })();
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
   }, []);
 
   return (

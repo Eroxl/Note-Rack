@@ -3,12 +3,15 @@ import React, { useState } from 'react';
 import updateServer from '../../lib/updateServer';
 import { stylingLookupTable, textKeybinds } from '../../constants/textTypes';
 
-const TextBlock = (props: { blockID: string, page: string, value: string, typeOfText: string }) => {
+const TextBlock = (
+  props: { blockID: string, page: string, value: string, typeOfText: string, index: number },
+) => {
   const {
     blockID,
     page,
     value,
     typeOfText,
+    index,
   } = props;
   const [currentType, setCurrentType] = useState(typeOfText);
 
@@ -35,6 +38,8 @@ const TextBlock = (props: { blockID: string, page: string, value: string, typeOf
       tabIndex={0}
       contentEditable
       suppressContentEditableWarning
+      id={blockID}
+      data-index={index}
       onInput={(e) => {
         handlePotentialTypeChange(e.currentTarget.innerHTML, e.currentTarget);
       }}
@@ -51,10 +56,7 @@ const TextBlock = (props: { blockID: string, page: string, value: string, typeOf
       }
       onKeyDown={
         (e) => {
-          if (e.code === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            e.currentTarget.blur();
-          } else if (e.code === 'Backspace' && !e.currentTarget.innerHTML && currentType !== 'text') {
+          if (e.code === 'Backspace' && !e.currentTarget.innerHTML && currentType !== 'text') {
             setCurrentType('text');
             updateServer(blockID, 'text', undefined, undefined, page);
           }

@@ -8,7 +8,7 @@ const RenderItem = (itemData: {
     properties: any,
     style: any,
     blockID: string,
-  }, page: string) => {
+  }, page: string, index: number) => {
   const {
     blockType,
     properties,
@@ -27,6 +27,7 @@ const RenderItem = (itemData: {
           page={page}
           value={properties.value}
           typeOfText={blockType}
+          index={index}
         />
       );
   }
@@ -35,6 +36,6 @@ const RenderItem = (itemData: {
 const RenderPage = (
   pageData: { blockType: string, properties: any, style: any, blockID: string }[],
   page: string,
-) => pageData.map((item) => RenderItem(item, page));
+) => pageData.map((item, index) => RenderItem(item, page, index));
 
 export default RenderPage;
