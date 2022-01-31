@@ -48,7 +48,7 @@ const TextBlock = (
           updateServer(
             blockID,
             undefined,
-            { value: e.currentTarget.innerHTML },
+            { value: e.currentTarget.innerText },
             undefined,
             page,
           );
