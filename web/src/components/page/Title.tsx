@@ -14,7 +14,7 @@ const Title = (props: { titleString: string, page: string, blockID: string }) =>
   return (
     <>
       <span
-        className="text-5xl font-bold outline-none empty:before:content-['Untitled']"
+        className="text-5xl font-bold outline-none empty:before:content-['Untitled'] empty:before:opacity-30"
         contentEditable
         role="textbox"
         tabIndex={0}
