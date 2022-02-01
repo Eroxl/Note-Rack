@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { GetServerSidePropsContext } from 'next';
 import { useRouter } from 'next/router';
 
@@ -16,17 +16,11 @@ interface pageDataInterface {
 }
 
 const NoteRackPage = (props: {pageDataReq: Promise<pageDataInterface>}) => {
+  const [pageData, setPageData] = useState<pageDataInterface | {}>({});
   const [isLoading, setIsLoading] = useState(true);
   const { pageDataReq } = props;
   const router = useRouter();
   const { page } = router.query;
-
-  const [pageData, _setPageData] = useState<pageDataInterface | {}>({});
-  const pageDataRef = React.useRef(pageData);
-  const setPageData = (data: pageDataInterface) => {
-    pageDataRef.current = data;
-    _setPageData(data);
-  };
 
   const createNewBlock = async (index: number) => {
     const createNewBlockRequest = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/page/update-page/${page}`, {
@@ -48,7 +42,7 @@ const NoteRackPage = (props: {pageDataReq: Promise<pageDataInterface>}) => {
     }
     const createNewBlockResult = await createNewBlockRequest.json();
 
-    const tempPageData = (pageDataRef.current as pageDataInterface).message;
+    const tempPageData = (pageData as pageDataInterface).message;
     tempPageData.splice(index, 0, {
       blockID: createNewBlockResult.message.blockID,
       blockType: 'text',
@@ -61,24 +55,12 @@ const NoteRackPage = (props: {pageDataReq: Promise<pageDataInterface>}) => {
     });
   };
 
-  const handleKeyDown = async (e: KeyboardEvent) => {
-    if (e.code === 'Enter' && !e.shiftKey && (e.target as HTMLElement).hasAttribute('data-index')) {
-      e.preventDefault();
-      (e.target as HTMLTextAreaElement).blur();
-      const index = (e.target as HTMLElement).getAttribute('data-index');
-
-      await createNewBlock(+(index ?? 2));
-    }
-  };
-
   // TODO: Add error handling here...
   useEffect(() => {
     (async () => {
       setIsLoading(true);
       setPageData(await pageDataReq);
       setIsLoading(false);
-
-      document.addEventListener('keydown', handleKeyDown);
     })();
   }, []);
 
