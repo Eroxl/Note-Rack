@@ -3,7 +3,6 @@ import { GetServerSidePropsContext } from 'next';
 import { useRouter } from 'next/router';
 
 import Spinner from '../../components/Spinner';
-import RenderPage from '../../lib/renderPage';
 
 interface pageDataInterface {
   status: string,
@@ -21,39 +20,6 @@ const NoteRackPage = (props: {pageDataReq: Promise<pageDataInterface>}) => {
   const { pageDataReq } = props;
   const router = useRouter();
   const { page } = router.query;
-
-  const createNewBlock = async (index: number) => {
-    const createNewBlockRequest = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/page/update-page/${page}`, {
-      method: 'PATCH',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        action: 'add',
-        actionData: {
-          blockType: 'text',
-          index,
-        },
-      }),
-    });
-    if (createNewBlockRequest.status !== 200) {
-      return;
-    }
-    const createNewBlockResult = await createNewBlockRequest.json();
-
-    const tempPageData = (pageData as pageDataInterface).message;
-    tempPageData.splice(index, 0, {
-      blockID: createNewBlockResult.message.blockID,
-      blockType: 'text',
-      properties: {},
-      style: {},
-    });
-    setPageData({
-      status: '',
-      message: tempPageData,
-    });
-  };
 
   // TODO:EROXL: Add error handling here...
   useEffect(() => {
@@ -75,17 +41,7 @@ const NoteRackPage = (props: {pageDataReq: Promise<pageDataInterface>}) => {
           <div className="pl-52 h-full w-full overflow-scroll mt-10 no-scrollbar">
             <div className="h-max w-full bg-amber-50 flex flex-col items-center">
               <div className="bg-blue-300 h-72 w-full -mb-10" />
-              <div className="max-w-4xl w-full text-zinc-700 break-words h-max px-20 flex flex-col gap-3 pb-24 editor">
-                { RenderPage((pageData as unknown as any).message, page as string)}
-                <div
-                  className="w-full h-48"
-                  onDoubleClick={
-                    () => {
-                      createNewBlock((pageData as unknown as any).message.length);
-                    }
-                  }
-                />
-              </div>
+              <div className="max-w-4xl w-full text-zinc-700 break-words h-max px-20 flex flex-col gap-3 pb-24 editor" />
             </div>
           </div>
         )
