@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import 'emoji-mart/css/emoji-mart.css';
 import { Picker } from 'emoji-mart';
 
-import updateServer from '../../lib/updateServer';
+import { updateServer } from '../../lib/pageController';
 
 const Icon = (props: { icon: string, page: string, blockID: string }) => {
   const { icon, page, blockID } = props;

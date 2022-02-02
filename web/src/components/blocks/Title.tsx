@@ -2,7 +2,7 @@
 import React from 'react';
 
 import TitleBreaker from './TitleBreaker';
-import updateServer from '../../lib/updateServer';
+import { updateServer } from '../../lib/pageController';
 
 const Title = (props: { titleString: string, page: string, blockID: string }) => {
   const { titleString, page, blockID } = props;
