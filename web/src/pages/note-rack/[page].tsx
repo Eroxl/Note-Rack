@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { GetServerSidePropsContext } from 'next';
 import { useRouter } from 'next/router';
 
+import BaseBlock from '../../components/blocks/BaseBlock';
 import Spinner from '../../components/Spinner';
 
 interface pageDataInterface {
@@ -41,7 +42,17 @@ const NoteRackPage = (props: {pageDataReq: Promise<pageDataInterface>}) => {
           <div className="pl-52 h-full w-full overflow-scroll mt-10 no-scrollbar">
             <div className="h-max w-full bg-amber-50 flex flex-col items-center">
               <div className="bg-blue-300 h-72 w-full -mb-10" />
-              <div className="max-w-4xl w-full text-zinc-700 break-words h-max px-20 flex flex-col gap-3 pb-24 editor" />
+              <div className="max-w-4xl w-full text-zinc-700 break-words h-max px-20 flex flex-col gap-3 pb-24 editor">
+                {(pageData as pageDataInterface).message.map((block) => (
+                  <BaseBlock
+                    blockType={block.blockType}
+                    page={page as string}
+                    blockID={block.blockID}
+                    properties={block.properties}
+                    style={block.style}
+                  />
+                ))}
+              </div>
             </div>
           </div>
         )

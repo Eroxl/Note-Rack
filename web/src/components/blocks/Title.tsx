@@ -4,8 +4,15 @@ import React from 'react';
 import TitleBreaker from './TitleBreaker';
 import { updateServer } from '../../lib/pageController';
 
-const Title = (props: { titleString: string, page: string, blockID: string }) => {
-  const { titleString, page, blockID } = props;
+const Title = (
+  props: {
+    properties: { value: string },
+    blockID: string,
+    page: string,
+  },
+) => {
+  const { page, blockID, properties } = props;
+  const { value: titleString } = properties;
 
   const onTitleChanged = (text: string) => {
     updateServer(blockID, undefined, { value: text }, undefined, page);

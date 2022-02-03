@@ -4,8 +4,15 @@ import { Picker } from 'emoji-mart';
 
 import { updateServer } from '../../lib/pageController';
 
-const Icon = (props: { icon: string, page: string, blockID: string }) => {
-  const { icon, page, blockID } = props;
+const Icon = (
+  props: {
+    properties: { value: string },
+    blockID: string,
+    page: string,
+  },
+) => {
+  const { properties, page, blockID } = props;
+  const { value: icon } = properties;
   const [isEmojiSelectorActive, setIsEmojiSelectorActive] = useState(false);
   const [currentIcon, setCurrentIcon] = useState(icon);
 
