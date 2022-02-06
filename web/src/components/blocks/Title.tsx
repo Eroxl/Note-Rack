@@ -9,9 +9,17 @@ const Title = (
     properties: { value: string },
     blockID: string,
     page: string,
+    index: number,
+    addBlockAtIndex: (index: number) => null,
   },
 ) => {
-  const { page, blockID, properties } = props;
+  const {
+    page,
+    blockID,
+    properties,
+    index,
+    addBlockAtIndex,
+  } = props;
   const { value: titleString } = properties;
 
   const onTitleChanged = (text: string) => {
@@ -36,6 +44,7 @@ const Title = (
             if (e.code === 'Enter') {
               e.preventDefault();
               e.currentTarget.blur();
+              addBlockAtIndex(index + 1);
             }
           }
         }
