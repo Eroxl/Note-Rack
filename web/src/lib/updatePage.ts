@@ -1,4 +1,4 @@
-interface pageDataInterface {
+interface PageDataInterface {
   status: string,
   message: {
     blockID: string,
@@ -11,7 +11,7 @@ interface pageDataInterface {
 const addBlockAtIndex = async (
   index: number,
   page: string,
-  pageData: pageDataInterface,
+  pageData: PageDataInterface,
   setPageData: (value: Record<string, unknown>) => void,
 ) => {
   const generatedBlockResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/page/update-page/${page}`, {
@@ -32,7 +32,7 @@ const addBlockAtIndex = async (
     message: { blockID: string }
   } = await generatedBlockResponse.json();
 
-  const tempPageData = pageData as pageDataInterface;
+  const tempPageData = pageData as PageDataInterface;
   tempPageData.message.splice(index, 0, {
     blockID: generatedBlockObject.message.blockID as string,
     blockType: 'text',
@@ -52,7 +52,7 @@ const removeBlock = async (
   index: number,
   blockID: string,
   page: string,
-  pageData: pageDataInterface,
+  pageData: PageDataInterface,
   setPageData: (value: Record<string, unknown>) => void,
 ) => {
   await fetch(`${process.env.NEXT_PUBLIC_API_URL}/page/update-page/${page}`, {
@@ -69,7 +69,7 @@ const removeBlock = async (
     credentials: 'include',
   });
 
-  const tempPageData = pageData as pageDataInterface;
+  const tempPageData = pageData as PageDataInterface;
   tempPageData.message.splice(index, 1);
 
   setPageData({

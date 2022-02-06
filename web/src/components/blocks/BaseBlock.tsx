@@ -3,16 +3,7 @@ import React from 'react';
 import Icon from './Icon';
 import Title from './Title';
 import Text from './Text';
-
-interface BaseBlockProps {
-  blockType: string,
-  blockID: string,
-  properties: Record<string, unknown>,
-  style: Record<string, unknown>,
-  page: string,
-  addBlockAtIndex: (index: number) => void,
-  removeBlock: (blockID: string, index: number) => void,
-}
+import type { BaseBlockProps } from '../../lib/types/blockTypes';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const blockTypes: {[key: string]: any} = {

@@ -2,22 +2,13 @@ import React, { Dispatch, SetStateAction } from 'react';
 import { useRouter } from 'next/router';
 
 import { addBlockAtIndex, removeBlock } from '../lib/updatePage';
+import PageDataInterface from '../lib/types/pageTypes';
 import BaseBlock from './blocks/BaseBlock';
-
-interface pageDataInterface {
-  status: string,
-  message: {
-    blockID: string,
-    blockType: string,
-    properties: Record<string, unknown>,
-    style: Record<string, unknown>,
-  }[],
-}
 
 const Editor = (
   props: {
-    pageData: pageDataInterface,
-    setPageData: Dispatch<SetStateAction<pageDataInterface | Record<string, unknown>>>
+    pageData: PageDataInterface,
+    setPageData: Dispatch<SetStateAction<PageDataInterface | Record<string, unknown>>>
   },
 ) => {
   const { pageData, setPageData } = props;
@@ -30,7 +21,7 @@ const Editor = (
       <div className="h-max w-full bg-amber-50 flex flex-col items-center">
         <div className="bg-blue-300 h-72 w-full -mb-10" />
         <div className="max-w-4xl w-full text-zinc-700 break-words h-max px-20 flex flex-col gap-3 pb-24 editor">
-          {(pageData as pageDataInterface).message.map((block, index) => (
+          {(pageData as PageDataInterface).message.map((block, index) => (
             <BaseBlock
               blockType={block.blockType}
               blockID={block.blockID}
@@ -42,7 +33,7 @@ const Editor = (
                 addBlockAtIndex(
                   index + 1,
                   page as string,
-                  pageData as pageDataInterface,
+                  pageData as PageDataInterface,
                   setPageData,
                 );
               }}
@@ -51,7 +42,7 @@ const Editor = (
                   index,
                   block.blockID,
                   page as string,
-                  pageData as pageDataInterface,
+                  pageData as PageDataInterface,
                   setPageData,
                 );
               }}

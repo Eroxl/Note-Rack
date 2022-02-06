@@ -3,19 +3,10 @@ import { GetServerSidePropsContext } from 'next';
 
 import Editor from '../../components/Editor';
 import LoadingPage from '../../components/LoadingPage';
+import PageDataInterface from '../../lib/types/pageTypes';
 
-interface pageDataInterface {
-  status: string,
-  message: {
-    blockID: string,
-    blockType: string,
-    properties: Record<string, unknown>,
-    style: Record<string, unknown>,
-  }[],
-}
-
-const NoteRackPage = (props: {pageDataReq: Promise<pageDataInterface>}) => {
-  const [pageData, setPageData] = useState<pageDataInterface | Record<string, unknown>>({});
+const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {
+  const [pageData, setPageData] = useState<PageDataInterface | Record<string, unknown>>({});
   const { pageDataReq } = props;
 
   // TODO:EROXL: Add error handling here...
@@ -32,7 +23,7 @@ const NoteRackPage = (props: {pageDataReq: Promise<pageDataInterface>}) => {
       {
         !pageData.message
           ? <LoadingPage />
-          : <Editor pageData={pageData as pageDataInterface} setPageData={setPageData} />
+          : <Editor pageData={pageData as PageDataInterface} setPageData={setPageData} />
       }
     </div>
   );

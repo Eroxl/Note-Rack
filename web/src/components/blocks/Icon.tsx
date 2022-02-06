@@ -3,13 +3,10 @@ import 'emoji-mart/css/emoji-mart.css';
 import { Picker, BaseEmoji } from 'emoji-mart';
 
 import { updateServer } from '../../lib/pageController';
+import type { PermanentBlock } from '../../lib/types/blockTypes';
 
 const Icon = (
-  props: {
-    properties: { value: string },
-    blockID: string,
-    page: string,
-  },
+  props: PermanentBlock,
 ) => {
   const { properties, page, blockID } = props;
   const { value: icon } = properties;

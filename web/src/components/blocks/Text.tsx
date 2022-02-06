@@ -2,19 +2,9 @@ import React, { useState, useEffect } from 'react';
 
 import { updateServer } from '../../lib/pageController';
 import { textKeybinds, stylingLookupTable } from '../../constants/textTypes';
+import { EditableText } from '../../lib/types/blockTypes';
 
-const Text = (
-  props: {
-    properties: {
-      value: string
-    },
-    page: string,
-    blockID: string,
-    type: string,
-    addBlockAtIndex: () => void,
-    removeBlock: () => void,
-  },
-) => {
+const Text = (props: EditableText) => {
   const {
     properties,
     page,

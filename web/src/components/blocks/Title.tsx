@@ -3,15 +3,9 @@ import React from 'react';
 
 import TitleBreaker from './TitleBreaker';
 import { updateServer } from '../../lib/pageController';
+import { PermanentEditableText } from '../../lib/types/blockTypes';
 
-const Title = (
-  props: {
-    properties: { value: string },
-    blockID: string,
-    page: string,
-    addBlockAtIndex: () => null,
-  },
-) => {
+const Title = (props: PermanentEditableText) => {
   const {
     page,
     blockID,
