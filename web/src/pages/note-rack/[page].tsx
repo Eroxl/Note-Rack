@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { GetServerSidePropsContext } from 'next';
 
-import LoadingPage from '../../components/LoadingPage';
 import Editor from '../../components/Editor';
+import LoadingPage from '../../components/LoadingPage';
 
 interface pageDataInterface {
   status: string,
