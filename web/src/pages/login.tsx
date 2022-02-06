@@ -9,7 +9,9 @@ const LoginPage = () => {
   const [isOnLoginPage, setIsOnLoginPage] = useState(true);
   const [error, setError] = useState('');
 
-  const Login = async (accountDetails: any) => {
+  const Login = async (
+    accountDetails: {username: string | undefined, email: string, password: string},
+  ) => {
     const { email, password } = accountDetails;
 
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/account/login`, {
@@ -33,7 +35,9 @@ const LoginPage = () => {
     }
   };
 
-  const Signup = async (accountDetails: any) => {
+  const Signup = async (
+    accountDetails: {username: string | undefined, email: string, password: string},
+  ) => {
     const { username, email, password } = accountDetails;
 
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/account/register`, {
@@ -81,7 +85,7 @@ const LoginPage = () => {
         </svg>
 
         <Formik
-          initialValues={isOnLoginPage ? { email: '', password: '' } : { username: '', email: '', password: '' }}
+          initialValues={isOnLoginPage ? { username: undefined, email: '', password: '' } : { username: '', email: '', password: '' }}
           onSubmit={isOnLoginPage ? Login : Signup}
           enableReinitialize
         >
