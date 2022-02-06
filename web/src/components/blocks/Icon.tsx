@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import 'emoji-mart/css/emoji-mart.css';
-import { Picker } from 'emoji-mart';
+import { Picker, BaseEmoji } from 'emoji-mart';
 
 import { updateServer } from '../../lib/pageController';
 
@@ -22,7 +22,7 @@ const Icon = (
     updateServer(blockID, undefined, { value: updatedIcon }, undefined, page);
   };
 
-  const onEmojiChange = (emoji: any) => {
+  const onEmojiChange = (emoji: BaseEmoji) => {
     setCurrentIcon(emoji.native);
     setIsEmojiSelectorActive(false);
 
@@ -30,6 +30,7 @@ const Icon = (
   };
 
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     function handleClickOutside(event: any) {
       if (emojiPickerMenuRef.current && !emojiPickerMenuRef.current.contains(event.target)) {
         setIsEmojiSelectorActive(false);
