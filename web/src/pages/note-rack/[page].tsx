@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { GetServerSidePropsContext } from 'next';
-import { useRouter } from 'next/router';
 
+import LoadingPage from '../../components/LoadingPage';
 import Editor from '../../components/Editor';
-import Spinner from '../../components/Spinner';
 
 interface pageDataInterface {
   status: string,
@@ -19,7 +18,6 @@ const NoteRackPage = (props: {pageDataReq: Promise<pageDataInterface>}) => {
   const [pageData, setPageData] = useState<pageDataInterface | Record<string, unknown>>({});
   const [isLoading, setIsLoading] = useState(true);
   const { pageDataReq } = props;
-  const router = useRouter();
 
   // TODO:EROXL: Add error handling here...
   useEffect(() => {
@@ -35,23 +33,12 @@ const NoteRackPage = (props: {pageDataReq: Promise<pageDataInterface>}) => {
       <div className="absolute w-screen h-10 bg-amber-50 z-10" />
       <div className="absolute h-screen w-52 bg-amber-400 opacity-10" />
 
-      {/* Editor Screen */}
       {
         isLoading || <Editor pageData={pageData as pageDataInterface} setPageData={setPageData} />
       }
 
-      {/* Loading Screen */}
       {
-        !isLoading || (
-          <div className="pl-52 h-full w-full overflow-hidden mt-10">
-            <div className="h-screen w-full bg-amber-50 flex flex-col items-center">
-              <div className="bg-blue-300 h-72 w-full -mb-10" />
-              <div className="max-w-4xl w-full pb-36 text-zinc-700 break-words h-full px-20 flex flex-col justify-center items-center">
-                <Spinner />
-              </div>
-            </div>
-          </div>
-        )
+        !isLoading || <LoadingPage />
       }
     </div>
   );
