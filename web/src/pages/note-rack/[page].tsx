@@ -16,15 +16,12 @@ interface pageDataInterface {
 
 const NoteRackPage = (props: {pageDataReq: Promise<pageDataInterface>}) => {
   const [pageData, setPageData] = useState<pageDataInterface | Record<string, unknown>>({});
-  const [isLoading, setIsLoading] = useState(true);
   const { pageDataReq } = props;
 
   // TODO:EROXL: Add error handling here...
   useEffect(() => {
     (async () => {
-      setIsLoading(true);
       setPageData(await pageDataReq);
-      setIsLoading(false);
     })();
   }, []);
 
@@ -32,13 +29,10 @@ const NoteRackPage = (props: {pageDataReq: Promise<pageDataInterface>}) => {
     <div className="h-screen w-screen overflow-hidden bg-amber-50">
       <div className="absolute w-screen h-10 bg-amber-50 z-10" />
       <div className="absolute h-screen w-52 bg-amber-400 opacity-10" />
-
       {
-        isLoading || <Editor pageData={pageData as pageDataInterface} setPageData={setPageData} />
-      }
-
-      {
-        !isLoading || <LoadingPage />
+        !pageData.message
+          ? <LoadingPage />
+          : <Editor pageData={pageData as pageDataInterface} setPageData={setPageData} />
       }
     </div>
   );
