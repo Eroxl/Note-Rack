@@ -13,6 +13,7 @@ const Icon = (
 ) => {
   const { properties, page, blockID } = props;
   const { value: icon } = properties;
+
   const [isEmojiSelectorActive, setIsEmojiSelectorActive] = useState(false);
   const [currentIcon, setCurrentIcon] = useState(icon);
 

@@ -10,17 +10,15 @@ const Text = (
     },
     page: string,
     blockID: string,
-    index: number,
     type: string,
-    addBlockAtIndex: (index: number) => void,
-    removeBlock: (blockID: string, index: number) => void,
+    addBlockAtIndex: () => void,
+    removeBlock: () => void,
   },
 ) => {
   const {
     properties,
     page,
     blockID,
-    index,
     type,
     addBlockAtIndex,
     removeBlock,
@@ -75,12 +73,12 @@ const Text = (
           if (e.code === 'Enter') {
             e.preventDefault();
             e.currentTarget.blur();
-            addBlockAtIndex(index + 1);
+            addBlockAtIndex();
           } else if (e.code === 'Backspace' && currentBlockType !== 'text' && window.getSelection()?.anchorOffset === 0) {
             setCurrentBlockType('text');
             updateServer(blockID, 'text', undefined, undefined, page);
           } else if (e.code === 'Backspace' && currentBlockType === 'text' && e.currentTarget.innerText === '') {
-            removeBlock(blockID, index);
+            removeBlock();
           }
         }
       }

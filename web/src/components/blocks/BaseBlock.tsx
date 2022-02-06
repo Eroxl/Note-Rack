@@ -10,7 +10,6 @@ interface BaseBlockProps {
   properties: Record<string, unknown>,
   style: Record<string, unknown>,
   page: string,
-  index: number,
   addBlockAtIndex: (index: number) => void,
   removeBlock: (blockID: string, index: number) => void,
 }
@@ -37,7 +36,6 @@ const BaseBlock = (props: BaseBlockProps) => {
     properties,
     style,
     page,
-    index,
     addBlockAtIndex,
     removeBlock,
   } = props;
@@ -50,7 +48,6 @@ const BaseBlock = (props: BaseBlockProps) => {
       type: blockType,
       blockID,
       page,
-      index,
       addBlockAtIndex,
       removeBlock,
     },
