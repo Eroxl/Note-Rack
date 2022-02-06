@@ -66,6 +66,30 @@ const NoteRackPage = (props: {pageDataReq: Promise<pageDataInterface>}) => {
     });
   };
 
+  const removeBlock = async (blockID: string, index: number) => {
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/page/update-page/${page}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        action: 'delete',
+        actionData: {
+          blockID,
+        },
+      }),
+      credentials: 'include',
+    });
+
+    const tempPageData = pageData as pageDataInterface;
+    tempPageData.message.splice(index, 1);
+
+    setPageData({
+      status: 'Success',
+      message: [...tempPageData.message],
+    });
+  };
+
   return (
     <div className="h-screen w-screen overflow-hidden bg-amber-50">
       <div className="absolute w-screen h-10 bg-amber-50 z-10" />
@@ -87,6 +111,7 @@ const NoteRackPage = (props: {pageDataReq: Promise<pageDataInterface>}) => {
                     style={block.style}
                     index={index}
                     addBlockAtIndex={addBlockAtIndex}
+                    removeBlock={removeBlock}
                   />
                 ))}
               </div>

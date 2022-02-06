@@ -78,7 +78,9 @@ router.patch(
           },
           {
             $pull: {
-              'data.$.blockID': typedActionData.blockID,
+              data: {
+                blockID: typedActionData.blockID,
+              },
             },
           },
         );

@@ -13,6 +13,7 @@ const Text = (
     index: number,
     type: string,
     addBlockAtIndex: (index: number) => void,
+    removeBlock: (blockID: string, index: number) => void,
   },
 ) => {
   const {
@@ -22,6 +23,7 @@ const Text = (
     index,
     type,
     addBlockAtIndex,
+    removeBlock,
   } = props;
   const { value } = properties;
   const [currentBlockType, setCurrentBlockType] = useState('');
@@ -77,6 +79,8 @@ const Text = (
           } else if (e.code === 'Backspace' && currentBlockType !== 'text' && window.getSelection()?.anchorOffset === 0) {
             setCurrentBlockType('text');
             updateServer(blockID, 'text', undefined, undefined, page);
+          } else if (e.code === 'Backspace' && currentBlockType === 'text' && e.currentTarget.innerText === '') {
+            removeBlock(blockID, index);
           }
         }
       }

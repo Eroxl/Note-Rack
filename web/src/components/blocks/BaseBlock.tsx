@@ -12,6 +12,7 @@ interface BaseBlockProps {
   page: string,
   index: number,
   addBlockAtIndex: (index: number) => void,
+  removeBlock: (blockID: string, index: number) => void,
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -38,6 +39,7 @@ const BaseBlock = (props: BaseBlockProps) => {
     page,
     index,
     addBlockAtIndex,
+    removeBlock,
   } = props;
 
   return React.createElement(
@@ -50,6 +52,7 @@ const BaseBlock = (props: BaseBlockProps) => {
       page,
       index,
       addBlockAtIndex,
+      removeBlock,
     },
   );
 };
