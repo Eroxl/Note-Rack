@@ -1,11 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
 import 'emoji-mart/css/emoji-mart.css';
-import { Picker } from 'emoji-mart';
+import { Picker, BaseEmoji } from 'emoji-mart';
 
-import updateServer from '../../lib/updateServer';
+import { updateServer } from '../../lib/pageController';
 
-const Icon = (props: { icon: string, page: string, blockID: string }) => {
-  const { icon, page, blockID } = props;
+const Icon = (
+  props: {
+    properties: { value: string },
+    blockID: string,
+    page: string,
+  },
+) => {
+  const { properties, page, blockID } = props;
+  const { value: icon } = properties;
   const [isEmojiSelectorActive, setIsEmojiSelectorActive] = useState(false);
   const [currentIcon, setCurrentIcon] = useState(icon);
 
@@ -15,7 +22,7 @@ const Icon = (props: { icon: string, page: string, blockID: string }) => {
     updateServer(blockID, undefined, { value: updatedIcon }, undefined, page);
   };
 
-  const onEmojiChange = (emoji: any) => {
+  const onEmojiChange = (emoji: BaseEmoji) => {
     setCurrentIcon(emoji.native);
     setIsEmojiSelectorActive(false);
 
@@ -23,6 +30,7 @@ const Icon = (props: { icon: string, page: string, blockID: string }) => {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     function handleClickOutside(event: any) {
       if (emojiPickerMenuRef.current && !emojiPickerMenuRef.current.contains(event.target)) {
         setIsEmojiSelectorActive(false);

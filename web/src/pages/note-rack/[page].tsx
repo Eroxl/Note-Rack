@@ -2,30 +2,38 @@ import React, { useState, useEffect } from 'react';
 import { GetServerSidePropsContext } from 'next';
 import { useRouter } from 'next/router';
 
+import BaseBlock from '../../components/blocks/BaseBlock';
 import Spinner from '../../components/Spinner';
-import RenderPage from '../../lib/renderPage';
 
 interface pageDataInterface {
   status: string,
   message: {
     blockID: string,
     blockType: string,
-    properties: any,
-    style: any,
+    properties: Record<string, unknown>,
+    style: Record<string, unknown>,
   }[],
 }
 
 const NoteRackPage = (props: {pageDataReq: Promise<pageDataInterface>}) => {
-  const [pageData, setPageData] = useState<pageDataInterface | {}>({});
+  const [pageData, setPageData] = useState<pageDataInterface | Record<string, unknown>>({});
   const [isLoading, setIsLoading] = useState(true);
   const { pageDataReq } = props;
   const router = useRouter();
   const { page } = router.query;
 
-  const createNewBlock = async (index: number) => {
-    const createNewBlockRequest = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/page/update-page/${page}`, {
+  // TODO:EROXL: Add error handling here...
+  useEffect(() => {
+    (async () => {
+      setIsLoading(true);
+      setPageData(await pageDataReq);
+      setIsLoading(false);
+    })();
+  }, []);
+
+  const addBlockAtIndex = async (index: number) => {
+    const generatedBlockResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/page/update-page/${page}`, {
       method: 'PATCH',
-      credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
       },
@@ -36,33 +44,51 @@ const NoteRackPage = (props: {pageDataReq: Promise<pageDataInterface>}) => {
           index,
         },
       }),
+      credentials: 'include',
     });
-    if (createNewBlockRequest.status !== 200) {
-      return;
-    }
-    const createNewBlockResult = await createNewBlockRequest.json();
+    const generatedBlockObject: {
+      message: { blockID: string }
+    } = await generatedBlockResponse.json();
 
-    const tempPageData = (pageData as pageDataInterface).message;
-    tempPageData.splice(index, 0, {
-      blockID: createNewBlockResult.message.blockID,
+    const tempPageData = pageData as pageDataInterface;
+    tempPageData.message.splice(index, 0, {
+      blockID: generatedBlockObject.message.blockID as string,
       blockType: 'text',
-      properties: {},
+      properties: {
+        value: '',
+      },
       style: {},
     });
+
     setPageData({
-      status: '',
-      message: tempPageData,
+      status: 'Success',
+      message: [...tempPageData.message],
     });
   };
 
-  // TODO:EROXL: Add error handling here...
-  useEffect(() => {
-    (async () => {
-      setIsLoading(true);
-      setPageData(await pageDataReq);
-      setIsLoading(false);
-    })();
-  }, []);
+  const removeBlock = async (blockID: string, index: number) => {
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/page/update-page/${page}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        action: 'delete',
+        actionData: {
+          blockID,
+        },
+      }),
+      credentials: 'include',
+    });
+
+    const tempPageData = pageData as pageDataInterface;
+    tempPageData.message.splice(index, 1);
+
+    setPageData({
+      status: 'Success',
+      message: [...tempPageData.message],
+    });
+  };
 
   return (
     <div className="h-screen w-screen overflow-hidden bg-amber-50">
@@ -76,15 +102,18 @@ const NoteRackPage = (props: {pageDataReq: Promise<pageDataInterface>}) => {
             <div className="h-max w-full bg-amber-50 flex flex-col items-center">
               <div className="bg-blue-300 h-72 w-full -mb-10" />
               <div className="max-w-4xl w-full text-zinc-700 break-words h-max px-20 flex flex-col gap-3 pb-24 editor">
-                { RenderPage((pageData as unknown as any).message, page as string)}
-                <div
-                  className="w-full h-48"
-                  onDoubleClick={
-                    () => {
-                      createNewBlock((pageData as unknown as any).message.length);
-                    }
-                  }
-                />
+                {(pageData as pageDataInterface).message.map((block, index) => (
+                  <BaseBlock
+                    blockType={block.blockType}
+                    page={page as string}
+                    blockID={block.blockID}
+                    properties={block.properties}
+                    style={block.style}
+                    index={index}
+                    addBlockAtIndex={addBlockAtIndex}
+                    removeBlock={removeBlock}
+                  />
+                ))}
               </div>
             </div>
           </div>

@@ -2,10 +2,25 @@
 import React from 'react';
 
 import TitleBreaker from './TitleBreaker';
-import updateServer from '../../lib/updateServer';
+import { updateServer } from '../../lib/pageController';
 
-const Title = (props: { titleString: string, page: string, blockID: string }) => {
-  const { titleString, page, blockID } = props;
+const Title = (
+  props: {
+    properties: { value: string },
+    blockID: string,
+    page: string,
+    index: number,
+    addBlockAtIndex: (index: number) => null,
+  },
+) => {
+  const {
+    page,
+    blockID,
+    properties,
+    index,
+    addBlockAtIndex,
+  } = props;
+  const { value: titleString } = properties;
 
   const onTitleChanged = (text: string) => {
     updateServer(blockID, undefined, { value: text }, undefined, page);
@@ -29,6 +44,7 @@ const Title = (props: { titleString: string, page: string, blockID: string }) =>
             if (e.code === 'Enter') {
               e.preventDefault();
               e.currentTarget.blur();
+              addBlockAtIndex(index + 1);
             }
           }
         }
