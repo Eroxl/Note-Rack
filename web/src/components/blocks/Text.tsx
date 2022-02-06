@@ -74,6 +74,9 @@ const Text = (
             e.preventDefault();
             e.currentTarget.blur();
             addBlockAtIndex(index + 1);
+          } else if (e.code === 'Backspace' && currentBlockType !== 'text' && window.getSelection()?.anchorOffset === 0) {
+            setCurrentBlockType('text');
+            updateServer(blockID, 'text', undefined, undefined, page);
           }
         }
       }
