@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { updateServer } from '../../lib/pageController';
-import { textKeybinds } from '../../constants/textTypes';
+import { textKeybinds, stylingLookupTable } from '../../constants/textTypes';
 
 const Text = (
   props: {
@@ -10,16 +10,25 @@ const Text = (
     },
     page: string,
     blockID: string,
-    setCurrentBlockType: React.Dispatch<React.SetStateAction<string>>
+    index: number,
+    type: string,
+    addBlockAtIndex: (index: number) => void,
   },
 ) => {
   const {
     properties,
     page,
     blockID,
-    setCurrentBlockType,
+    index,
+    type,
+    addBlockAtIndex,
   } = props;
   const { value } = properties;
+  const [currentBlockType, setCurrentBlockType] = useState('');
+
+  useEffect(() => {
+    setCurrentBlockType(type);
+  }, [type]);
 
   const handlePotentialTypeChange = (text: string, element: HTMLSpanElement) => {
     Object.keys(textKeybinds).forEach((key) => {
@@ -39,7 +48,7 @@ const Text = (
 
   return (
     <span
-      className="min-h-[1.2em] outline-none"
+      className={`min-h-[1.2em] outline-none ${stylingLookupTable[currentBlockType]}`}
       role="textbox"
       tabIndex={0}
       contentEditable
@@ -57,6 +66,15 @@ const Text = (
             undefined,
             page,
           );
+        }
+      }
+      onKeyDown={
+        (e) => {
+          if (e.code === 'Enter') {
+            e.preventDefault();
+            e.currentTarget.blur();
+            addBlockAtIndex(index + 1);
+          }
         }
       }
     >

@@ -16,9 +16,17 @@ interface BaseBlockProps {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const blockTypes: {[key: string]: any} = {
+  // -=- Page Components -=-
   'page-icon': Icon,
   'page-title': Title,
+
+  // -=- Text Based Components -=-
   text: Text,
+  h1: Text,
+  h2: Text,
+  h3: Text,
+  h4: Text,
+  h5: Text,
 };
 
 const BaseBlock = (props: BaseBlockProps) => {
@@ -32,17 +40,15 @@ const BaseBlock = (props: BaseBlockProps) => {
     addBlockAtIndex,
   } = props;
 
-  const [currentBlockType, setCurrentBlockType] = useState(blockType);
-
   return React.createElement(
-    blockTypes[currentBlockType],
+    blockTypes[blockType],
     {
       properties: properties ?? {},
       style: style ?? {},
+      type: blockType,
       blockID,
       page,
       index,
-      setCurrentBlockType,
       addBlockAtIndex,
     },
   );
