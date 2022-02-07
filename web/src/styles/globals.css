@@ -30,6 +30,10 @@ scrollbar-width: none;
     display: none;
 }
 
+.emoji-mart-category .emoji-mart-emoji span {
+    @apply hover:cursor-pointer
+}
+
 [placeholder]:empty:focus:before {
     content: attr(placeholder);
 }
