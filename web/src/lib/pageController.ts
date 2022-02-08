@@ -1,8 +1,8 @@
 const updateServer = async (
   blockID: string,
   blockType: string | undefined,
-  properties: any | undefined,
-  style: any | undefined,
+  properties: Record<string, unknown> | undefined,
+  style: Record<string, unknown> | undefined,
   page: string,
 ) => {
   const updateResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/page/update-page/${page}`, {
