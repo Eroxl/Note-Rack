@@ -1,3 +1,4 @@
+// -=- Styling lookup tabel for elements -=-
 const stylingLookupTable: {[key: string]: string} = {
   h1: 'text-4xl font-bold',
   h2: 'text-3xl font-bold',
@@ -6,6 +7,7 @@ const stylingLookupTable: {[key: string]: string} = {
   h5: 'text-lg font-bold',
 };
 
+// -=- Keybinds for non-inline elements -=-
 const textKeybinds: {[key: string]: string} = {
   '#': 'h1',
   '##': 'h2',
@@ -14,4 +16,24 @@ const textKeybinds: {[key: string]: string} = {
   '#####': 'h5',
 };
 
-export { stylingLookupTable, textKeybinds };
+// -=- Keybinds for inline elements -=-
+const inlineTextKeybinds: {[key: string]: {regex: RegExp, key: string}} = {
+  '**': {
+    regex: / \*\*(\S?.*?\S)\*\* /gm,
+    key: 'u',
+  },
+  '*': {
+    regex: / \*(\\S?.*?\\S)\* /gm,
+    key: 'u',
+  },
+  '--': {
+    regex: / --(\\S?.*?\\S)-- /gm,
+    key: 'u',
+  },
+  __: {
+    regex: / __(\S?.*?\S)__ /gm,
+    key: 'u',
+  },
+};
+
+export { stylingLookupTable, textKeybinds, inlineTextKeybinds };
