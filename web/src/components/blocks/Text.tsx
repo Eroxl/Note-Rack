@@ -14,6 +14,7 @@ const Text = (props: EditableText) => {
     removeBlock,
   } = props;
   const { value } = properties;
+  const [currentValue, setCurrentValue] = useState('');
   const [currentBlockType, setCurrentBlockType] = useState('');
 
   useEffect(() => {
@@ -23,10 +24,10 @@ const Text = (props: EditableText) => {
   const handlePotentialTypeChange = (text: string, element: HTMLSpanElement) => {
     Object.keys(textKeybinds).forEach((key) => {
       if (text.startsWith(`${key}&nbsp;`)) {
-        element.innerText = text.slice(key.length + 6);
+        element.innerText = element.innerText.slice(key.length + 1);
         setCurrentBlockType(textKeybinds[key]);
       } else if (text.startsWith(`${key} `)) {
-        element.innerText = text.slice(key.length + 1);
+        element.innerText = element.innerText.slice(key.length + 1);
         setCurrentBlockType(textKeybinds[key]);
       } else {
         return;
