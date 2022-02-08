@@ -14,6 +14,9 @@ const textKeybinds: {[key: string]: string} = {
   '###': 'h3',
   '####': 'h4',
   '#####': 'h5',
+  '*': 'u-list',
+  '1.': 'o-list',
+  '[ ]': 'c-list',
 };
 
 // -=- Keybinds for inline elements -=-
