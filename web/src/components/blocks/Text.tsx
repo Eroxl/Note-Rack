@@ -14,7 +14,6 @@ const Text = (props: EditableText) => {
     removeBlock,
   } = props;
   const { value } = properties;
-  const [currentValue, setCurrentValue] = useState('');
   const [currentBlockType, setCurrentBlockType] = useState('');
 
   useEffect(() => {
