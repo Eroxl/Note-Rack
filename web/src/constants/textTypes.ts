@@ -19,19 +19,19 @@ const textKeybinds: {[key: string]: string} = {
 // -=- Keybinds for inline elements -=-
 const inlineTextKeybinds: {[key: string]: {regex: RegExp, key: string}} = {
   '**': {
-    regex: / \*\*(\S?.*?\S)\*\* /gm,
+    regex: /\*\*(\S?.*?\S)\*\*/gm,
     key: 'u',
   },
   '*': {
-    regex: / \*(\\S?.*?\\S)\* /gm,
+    regex: /\*(\\S?.*?\\S)\*/gm,
     key: 'u',
   },
   '--': {
-    regex: / --(\\S?.*?\\S)-- /gm,
+    regex: /--(\\S?.*?\\S)--/gm,
     key: 'u',
   },
   __: {
-    regex: / __(\S?.*?\S)__ /gm,
+    regex: /__(\S?.*?\S)__/gm,
     key: 'u',
   },
 };
