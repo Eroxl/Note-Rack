@@ -34,6 +34,11 @@ scrollbar-width: none;
     @apply hover:cursor-pointer
 }
 
+.emoji-mart-anchor-icon {
+    @apply flex flex-row items-center justify-center
+}
+
+
 [placeholder]:empty:focus:before {
     content: attr(placeholder);
 }
