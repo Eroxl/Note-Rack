@@ -29,6 +29,7 @@ const Editor = (
               page={page as string}
               properties={block.properties}
               style={block.style}
+              index={index}
               addBlockAtIndex={() => {
                 addBlockAtIndex(
                   index + 1,

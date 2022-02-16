@@ -12,6 +12,7 @@ interface BaseBlockProps {
   properties: Record<string, unknown>,
   style: Record<string, unknown>,
   page: string,
+  index: number,
   addBlockAtIndex: (index: number) => void,
   removeBlock: (blockID: string, index: number) => void,
 }

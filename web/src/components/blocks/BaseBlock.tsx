@@ -33,6 +33,7 @@ const BaseBlock = (props: BaseBlockProps) => {
     properties,
     style,
     page,
+    index,
     addBlockAtIndex,
     removeBlock,
   } = props;
@@ -45,6 +46,7 @@ const BaseBlock = (props: BaseBlockProps) => {
       type: blockType,
       blockID,
       page,
+      index,
       addBlockAtIndex,
       removeBlock,
     },
