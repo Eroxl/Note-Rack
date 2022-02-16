@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { updateServer } from '../../lib/pageController';
 import { textKeybinds, stylingLookupTable } from '../../constants/textTypes';
 import { EditableText } from '../../lib/types/blockTypes';
+import { moveCursor, getCursor } from '../../lib/cursor/cursorHelper';
 
 const Text = (props: EditableText) => {
   const {
