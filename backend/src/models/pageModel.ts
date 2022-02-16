@@ -12,6 +12,7 @@ const PageSchema = new Schema({
       },
       properties: {},
       style: {},
+      children: {},
     },
   ],
 });

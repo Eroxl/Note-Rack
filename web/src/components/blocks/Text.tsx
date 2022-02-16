@@ -22,15 +22,10 @@ const Text = (props: EditableText) => {
 
   const handlePotentialTypeChange = (text: string, element: HTMLSpanElement) => {
     Object.keys(textKeybinds).forEach((key) => {
-      if (text.startsWith(`${key}&nbsp;`)) {
-        element.innerText = element.innerText.slice(key.length + 1);
-        setCurrentBlockType(textKeybinds[key]);
-      } else if (text.startsWith(`${key} `)) {
-        element.innerText = element.innerText.slice(key.length + 1);
-        setCurrentBlockType(textKeybinds[key]);
-      } else {
-        return;
-      }
+      if (!(text.startsWith(`${key}&nbsp;`) || text.startsWith(`${key} `))) return;
+
+      element.innerText = element.innerText.slice(key.length + 1);
+      setCurrentBlockType(textKeybinds[key]);
 
       updateServer(blockID, textKeybinds[key], undefined, undefined, page);
     });

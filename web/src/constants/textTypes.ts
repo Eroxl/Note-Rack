@@ -23,15 +23,15 @@ const textKeybinds: {[key: string]: string} = {
 const inlineTextKeybinds: {[key: string]: {regex: RegExp, key: string}} = {
   '**': {
     regex: /\*\*(\S?.*?\S)\*\*/gm,
-    key: 'u',
+    key: 'b',
   },
   '*': {
     regex: /\*(\\S?.*?\\S)\*/gm,
-    key: 'u',
+    key: 'i',
   },
   '--': {
     regex: /--(\\S?.*?\\S)--/gm,
-    key: 'u',
+    key: 's',
   },
   __: {
     regex: /__(\S?.*?\S)__/gm,
