@@ -22,7 +22,7 @@ const Text = (props: EditableText) => {
 
   const handlePotentialTypeChange = (text: string, element: HTMLSpanElement) => {
     Object.keys(textKeybinds).forEach((key) => {
-      if (!(text.startsWith(`${key}&nbsp;`) || text.startsWith(`${key} `))) return;
+      if (!(text.startsWith(`${key}&nbsp;`) || element.innerText.startsWith(`${key} `))) return;
 
       element.innerText = element.innerText.slice(key.length + 1);
       setCurrentBlockType(textKeybinds[key]);

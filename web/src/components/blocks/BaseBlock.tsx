@@ -20,6 +20,10 @@ const blockTypes: {[key: string]: any} = {
   h4: Text,
   h5: Text,
 
+  // -=- Semi-Text Based Components -=-
+  quote: Text,
+  callout: Text,
+
   // -=- List Based Components -=-
   'o-list': List,
   'u-list': List,
