@@ -17,7 +17,7 @@ const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {
   }, []);
 
   return (
-    <div className="h-screen w-screen overflow-hidden bg-amber-50">
+    <div className="h-full w-full overflow-hidden bg-amber-50 no-scrollbar">
       <div className="absolute w-screen h-10 bg-amber-50 z-10" />
       <div className="absolute h-screen w-52 bg-amber-400 opacity-10" />
       {

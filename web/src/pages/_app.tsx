@@ -5,7 +5,7 @@ import type { AppProps } from 'next/app';
 import '../styles/globals.css';
 
 const MyApp = ({ Component, pageProps }: AppProps) => (
-  <div className="h-screen w-screen overflow-hidden">
+  <div className="h-screen w-screen overflow-clip">
     <Component {...pageProps} />
   </div>
 );

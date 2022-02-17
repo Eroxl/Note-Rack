@@ -5,7 +5,7 @@ const stylingLookupTable: {[key: string]: string} = {
   h3: 'text-2xl font-bold',
   h4: 'text-xl font-bold',
   h5: 'text-lg font-bold',
-  quote: 'before:border-2 before:mr-2 before:border-zinc-700',
+  quote: 'border-l-4 pl-3 border-zinc-700',
   callout: 'p-3 bg-black/5',
 };
 

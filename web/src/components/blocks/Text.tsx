@@ -33,7 +33,7 @@ const Text = (props: EditableText) => {
 
   return (
     <span
-      className={`min-h-[1.2em] outline-none ${stylingLookupTable[currentBlockType]}`}
+      className={`min-h-[1.2em] outline-none whitespace-pre-wrap ${stylingLookupTable[currentBlockType]}`}
       role="textbox"
       tabIndex={0}
       contentEditable
@@ -55,7 +55,7 @@ const Text = (props: EditableText) => {
       }
       onKeyDown={
         (e) => {
-          if (e.code === 'Enter') {
+          if (e.code === 'Enter' && !e.shiftKey) {
             e.preventDefault();
             e.currentTarget.blur();
             addBlockAtIndex();
