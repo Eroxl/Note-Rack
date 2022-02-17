@@ -1,4 +1,4 @@
-![](images/Desktop_Example.png)
+![](images/Desktop_Current_State.png)
 <h1 align="center">
   Note Rack
 </h1>
@@ -26,3 +26,13 @@ Currently the planned features / features we hope to include in the final build 
 
 - [ ] PDF / DOCX Exporting
   - Allow users to export the file to a .pdf or .docx file to more easily be able to hand in or print out assignments
+
+## Current State vs. Goal
+
+#### Current State
+*light mode
+<img src="./images/Desktop_Current_State.png" width="500">
+
+#### Goal
+*dark mode
+<img src="./images/Desktop_Example.png" width="500">
