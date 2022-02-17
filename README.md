@@ -33,7 +33,7 @@ Currently the planned features / features we hope to include in the final build 
   - [ ] Underlined: <u>Example</u>
   - [ ] Strike Through: <s>Example</s>
 - [ ] Complex Inline Elements
-  - [ ] Equation Elements: <img src="https://render.githubusercontent.com/render/math?math=e^{i \pi} = -1" />
+  - [ ] Equation Elements
   - [ ] Emojis: 🐛
 - [ ] Block Command Menu Keybind "/"
 
