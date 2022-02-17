@@ -16,6 +16,10 @@ The goal of this project is to create a simple but robust markdown editor that i
 Currently the planned features / features we hope to include in the final build are as follows
 
 - [ ] PDF / DOCX Exporting
+- [ ] Multiple Pages
+  - [ ] Inline Pages
+  - [ ] Page Sidebar / Selector
+  - [ ] Page Navigation
 - [ ] List Elements
   - [ ] Ordered Lists
     1. Example
