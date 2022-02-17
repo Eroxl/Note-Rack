@@ -19,30 +19,4 @@ const textKeybinds: {[key: string]: string} = {
   '[ ]': 'c-list',
 };
 
-// -=- Keybinds for inline elements -=-
-const inlineTextKeybinds: {[key: string]: {regex: RegExp, key: string, testParams: RegExp[]}} = {
-  '**': {
-    regex: /\*\*(\S?.*?\S)\*\*/gm,
-    testParams: [],
-    key: 'b',
-  },
-  '*': {
-    regex: /\*(\S?.*?\S)\*/gm,
-    testParams: [
-      /\*\*(\S?.*?\S)\*/gm,
-    ],
-    key: 'i',
-  },
-  '--': {
-    regex: /--(\S?.*?\S)--/gm,
-    testParams: [],
-    key: 's',
-  },
-  __: {
-    regex: /__(\S?.*?\S)__/gm,
-    testParams: [],
-    key: 'u',
-  },
-};
-
-export { stylingLookupTable, textKeybinds, inlineTextKeybinds };
+export { stylingLookupTable, textKeybinds };

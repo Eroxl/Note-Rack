@@ -1,11 +1,8 @@
-/* eslint-disable jsx-a11y/control-has-associated-label */
-import DOMPurify from 'dompurify';
 import React, { useState, useEffect } from 'react';
 
 import { updateServer } from '../../lib/pageController';
-import { textKeybinds, stylingLookupTable, inlineTextKeybinds } from '../../constants/textTypes';
+import { textKeybinds, stylingLookupTable } from '../../constants/textTypes';
 import { EditableText } from '../../lib/types/blockTypes';
-import { getCursor, moveCursor } from '../../lib/cursor/cursorHelper';
 
 const Text = (props: EditableText) => {
   const {
@@ -34,19 +31,6 @@ const Text = (props: EditableText) => {
     });
   };
 
-  const handlePotentialInlineStyleChange = (text: string, element: HTMLSpanElement) => {
-    Object.keys(inlineTextKeybinds).forEach((key) => {
-      const inlineBind = inlineTextKeybinds[key];
-      if (!inlineBind.testParams.some((regex) => regex.test(text))) {
-        const match = inlineBind.regex.exec(text);
-        if (match) {
-          text = text.replace(inlineBind.regex, `<${inlineBind.key}>$1</${inlineBind.key}>`);
-          element.innerHTML = DOMPurify.sanitize(text);
-        }
-      }
-    });
-  };
-
   return (
     <span
       className={`min-h-[1.2em] outline-none ${stylingLookupTable[currentBlockType]}`}
@@ -57,14 +41,13 @@ const Text = (props: EditableText) => {
       id={blockID}
       onInput={(e) => {
         handlePotentialTypeChange(e.currentTarget.innerHTML, e.currentTarget);
-        handlePotentialInlineStyleChange(e.currentTarget.innerHTML, e.currentTarget);
       }}
       onBlur={
         (e) => {
           updateServer(
             blockID,
             undefined,
-            { value: e.currentTarget.innerHTML },
+            { value: e.currentTarget.innerText },
             undefined,
             page,
           );
@@ -84,9 +67,9 @@ const Text = (props: EditableText) => {
           }
         }
       }
-      // eslint-disable-next-line react/no-danger
-      dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(value) }}
-    />
+    >
+      {value}
+    </span>
   );
 };
 
