@@ -16,13 +16,22 @@ The goal of this project is to create a simple but robust markdown editor that i
 Currently the planned features / features we hope to include in the final build are as follows
 
 - [ ] PDF / DOCX Exporting
-  - Allow users to export the file to a .pdf or .docx file to more easily be able to hand in or print out assignments
-
 - [ ] List Elements
-  - Add ordered, un-ordered and check list blocks
-
+  - [ ] Ordered Lists
+    1. Example
+  - [ ] Un-Ordered Lists
+    * Example
+  - [ ] Check Lists
+    - [ ] Example
 - [ ] Inline Elements
-  - Figure out a way to add inline elements like bold, italic, and equations
+  - [ ] Bold: <b>Example</b>
+  - [ ] Italic: <i>Example</i>
+  - [ ] Underlined: <u>Example</u>
+  - [ ] Strike Through: <s>Example</s>
+- [ ] Complex Inline Elements
+  - [ ] Equation Elements: $f(x) = x^2$
+  - [ ] Emojis: 🐛
+- [ ] Block Command Menu Keybind "/"
 
 ## Current State vs. Goal
 
