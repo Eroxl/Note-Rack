@@ -40,9 +40,7 @@ Currently the planned features / features we hope to include in the final build 
 ## Current State vs. Goal
 
 #### Current State
-*light mode
 <img src="./images/Desktop_Current_State.png" width="500">
 
 #### Goal
-*dark mode
 <img src="./images/Desktop_Example.png" width="500">
