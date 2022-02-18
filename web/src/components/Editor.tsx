@@ -17,10 +17,10 @@ const Editor = (
   const { page } = router.query;
 
   return (
-    <div className="pl-52 h-full w-full overflow-x-clip overflow-y-auto no-scrollbar mt-10">
-      <div className="h-max w-full bg-amber-50 flex flex-col items-center">
-        <div className="bg-blue-300 h-72 w-full -mb-10" />
-        <div className="max-w-4xl w-full text-zinc-700 break-words h-max px-20 flex flex-col gap-3 pb-56 editor">
+    <div className="w-full h-full mt-10 overflow-y-auto pl-52 overflow-x-clip no-scrollbar">
+      <div className="flex flex-col items-center w-full h-max bg-amber-50">
+        <div className="w-full -mb-10 bg-blue-300 h-72" />
+        <div className="flex flex-col w-full max-w-4xl gap-3 px-20 pb-56 break-words text-zinc-700 h-max editor">
           {(pageData as PageDataInterface).message.map((block, index) => (
             <BaseBlock
               blockType={block.blockType}
