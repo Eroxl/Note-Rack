@@ -3,8 +3,8 @@ FROM node:14
 WORKDIR /usr/src/
 
 # -=- Install Packages -=-
-COPY package*.json ./
-RUN npm install --global yarn
+COPY package.json ./
+COPY yarn.lock ./
 RUN yarn
 
 # -=- Copy Source Code -=-
