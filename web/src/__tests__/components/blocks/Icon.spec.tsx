@@ -4,7 +4,7 @@ import { render, fireEvent } from '@testing-library/react';
 
 import Icon from '../../../components/blocks/Icon';
 
-describe('Editor', () => {
+describe('Icon', () => {
   let expectedProps: {
     properties: { value: string },
     blockID: string,
