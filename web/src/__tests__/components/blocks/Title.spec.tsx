@@ -2,7 +2,6 @@ import React from 'react';
 import '@testing-library/jest-dom';
 import { render } from '@testing-library/react';
 
-import { stylingLookupTable } from '../../../constants/textTypes';
 import Title from '../../../components/blocks/Title';
 
 describe('Title', () => {
