@@ -1,10 +1,37 @@
 import express, { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import Redis from 'ioredis';
+import { RateLimiterRedis } from 'rate-limiter-flexible';
 
 import UserModel from '../../models/userModel';
 
+const redisClient = new Redis(+(process.env.REDIS_PORT || 6379), process.env.REDIS_IP, {
+  enableOfflineQueue: false,
+});
+
+redisClient.connect();
+
 const router = express.Router();
+
+const maxWrongAttemptsByIPperDay = 100;
+const maxConsecutiveFailsByUsernameAndIP = 10;
+
+const limiterSlowBruteByIP = new RateLimiterRedis({
+  storeClient: redisClient,
+  keyPrefix: 'login_fail_ip_per_day',
+  points: maxWrongAttemptsByIPperDay,
+  duration: 60 * 60 * 24,
+  blockDuration: 60 * 60 * 24,
+});
+
+const limiterConsecutiveFailsByUsernameAndIP = new RateLimiterRedis({
+  storeClient: redisClient,
+  keyPrefix: 'login_fail_consecutive_username_and_ip',
+  points: maxConsecutiveFailsByUsernameAndIP,
+  duration: 60 * 60 * 24 * 90,
+  blockDuration: 60 * 60,
+});
 
 router.post(
   '/login',
@@ -20,6 +47,31 @@ router.post(
       });
       return;
     }
+
+    const ipAddr = req.ip;
+    const usernameIPkey = `${req.body.email}_${ipAddr}`;
+
+    const [resUsernameAndIP, resSlowByIP] = await Promise.all([
+      limiterConsecutiveFailsByUsernameAndIP.get(usernameIPkey),
+      limiterSlowBruteByIP.get(ipAddr),
+    ]);
+
+    const retrySecs = 0;
+
+    // // Check if IP or Username + IP is already blocked
+    // if (resSlowByIP !== null && resSlowByIP.consumedPoints > maxWrongAttemptsByIPperDay) {
+    //   retrySecs = Math.round(resSlowByIP.msBeforeNext / 1000) || 1;
+    // } else if (
+    //   resUsernameAndIP && resUsernameAndIP.consumedPoints > maxConsecutiveFailsByUsernameAndIP
+    // ) {
+    //   retrySecs = Math.round(resUsernameAndIP.msBeforeNext / 1000) || 1;
+    // }
+
+    // if (retrySecs > 0) {
+    //   res.set('Retry-After', String(retrySecs));
+    //   res.status(429);
+    //   return;
+    // }
 
     // -=- Fetch user -=-
     const user = await UserModel.findOne({ email }).lean();
@@ -42,11 +94,27 @@ router.post(
           message: 'Succesfully logged into account!',
         });
       } else {
-        res.status(403);
-        res.jsonp({
-          status: 'error',
-          message: 'Invalid email or password',
-        });
+        try {
+          const promises = [limiterSlowBruteByIP.consume(ipAddr)];
+          promises.push(limiterConsecutiveFailsByUsernameAndIP.consume(usernameIPkey));
+
+          res.status(403);
+          res.jsonp({
+            status: 'error',
+            message: 'Invalid email or password',
+          });
+        } catch (error: any) {
+          if (error instanceof Error) {
+            throw error;
+          } else {
+            res.set('Retry-After', String(Math.round(error.msBeforeNext / 1000) || 1));
+            res.status(429);
+            res.jsonp({
+              status: 'error',
+              message: 'Too many failed requests',
+            });
+          }
+        }
       }
     } catch (error: any) {
       res.status(403);
