@@ -54,22 +54,22 @@ router.post(
       limiterSlowBruteByIP.get(ipAddr),
     ]);
 
-    const retrySecs = 0;
+    let retrySecs = 0;
 
-    // // Check if IP or Username + IP is already blocked
-    // if (resSlowByIP !== null && resSlowByIP.consumedPoints > maxWrongAttemptsByIPperDay) {
-    //   retrySecs = Math.round(resSlowByIP.msBeforeNext / 1000) || 1;
-    // } else if (
-    //   resUsernameAndIP && resUsernameAndIP.consumedPoints > maxConsecutiveFailsByUsernameAndIP
-    // ) {
-    //   retrySecs = Math.round(resUsernameAndIP.msBeforeNext / 1000) || 1;
-    // }
+    // Check if IP or Username + IP is already blocked
+    if (resSlowByIP !== null && resSlowByIP.consumedPoints > maxWrongAttemptsByIPperDay) {
+      retrySecs = Math.round(resSlowByIP.msBeforeNext / 1000) || 1;
+    } else if (
+      resUsernameAndIP && resUsernameAndIP.consumedPoints > maxConsecutiveFailsByUsernameAndIP
+    ) {
+      retrySecs = Math.round(resUsernameAndIP.msBeforeNext / 1000) || 1;
+    }
 
-    // if (retrySecs > 0) {
-    //   res.set('Retry-After', String(retrySecs));
-    //   res.status(429);
-    //   return;
-    // }
+    if (retrySecs > 0) {
+      res.set('Retry-After', String(retrySecs));
+      res.status(429);
+      return;
+    }
 
     // -=- Fetch user -=-
     const user = await UserModel.findOne({ email }).lean();
