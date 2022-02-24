@@ -10,8 +10,6 @@ const redisClient = new Redis(+(process.env.REDIS_PORT || 6379), process.env.RED
   enableOfflineQueue: false,
 });
 
-redisClient.connect();
-
 const router = express.Router();
 
 const maxWrongAttemptsByIPperDay = 100;
