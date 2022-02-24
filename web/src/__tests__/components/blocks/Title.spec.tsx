@@ -9,9 +9,8 @@ describe('Title', () => {
     properties: { value: string },
     blockID: string,
     page: string,
+    type: string,
     addBlockAtIndex: () => void,
-    removeBlock: () => void,
-
   };
 
   beforeEach(() => {
@@ -21,10 +20,8 @@ describe('Title', () => {
       },
       blockID: 'testingIconBlock',
       page: 'page',
+      type: '',
       addBlockAtIndex: (): void => {
-        throw new Error('Remove block function not implemented.');
-      },
-      removeBlock: (): void => {
         throw new Error('Remove block function not implemented.');
       },
     };
@@ -35,8 +32,8 @@ describe('Title', () => {
       properties,
       blockID,
       page,
+      type,
       addBlockAtIndex,
-      removeBlock,
     } = expectedProps;
 
     const { findByText } = render(
@@ -45,7 +42,7 @@ describe('Title', () => {
         blockID={blockID}
         page={page}
         addBlockAtIndex={addBlockAtIndex}
-        removeBlock={removeBlock}
+        type={type}
       />,
     );
 

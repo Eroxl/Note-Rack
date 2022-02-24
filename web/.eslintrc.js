@@ -34,6 +34,7 @@ module.exports = {
     'import/extensions': 0,
     'react/function-component-definition': 'off',
     'no-param-reassign': 0,
+    '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
   },
   settings: {
     'import/resolver': {
