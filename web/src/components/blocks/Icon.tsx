@@ -49,7 +49,7 @@ const Icon = (
         </button>
       </span>
       <div className={`absolute sm:right-[-133px] right-[0%] top-[110%] z-10 ${isEmojiSelectorActive || 'hidden'}`}>
-        <Picker onSelect={onEmojiChange} recent={['']} />
+        <Picker onSelect={onEmojiChange} recent={['']} native />
       </div>
     </div>
   );
