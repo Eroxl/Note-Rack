@@ -28,9 +28,12 @@ const Icon = (
   };
 
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    function handleClickOutside(event: any) {
-      if (emojiPickerMenuRef.current && !emojiPickerMenuRef.current.contains(event.target)) {
+    function handleClickOutside(event: unknown) {
+      if (
+        emojiPickerMenuRef.current && !emojiPickerMenuRef.current.contains(
+          (event as React.MouseEvent<HTMLElement>).target as Node,
+        )
+      ) {
         setIsEmojiSelectorActive(false);
       }
     }
