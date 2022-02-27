@@ -38,7 +38,6 @@ scrollbar-width: none;
     @apply flex flex-row items-center justify-center
 }
 
-
 [placeholder]:empty:focus:before {
     content: attr(placeholder);
 }

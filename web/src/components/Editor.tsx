@@ -18,9 +18,9 @@ const Editor = (
 
   return (
     <div className="w-full h-full mt-10 overflow-y-auto pl-52 overflow-x-clip no-scrollbar">
-      <div className="flex flex-col items-center w-full h-max bg-amber-50">
+      <div className="flex flex-col items-center w-full h-max bg-amber-50 dark:bg-zinc-700">
         <div className="w-full -mb-10 bg-blue-300 h-72" />
-        <div className="flex flex-col w-full max-w-4xl gap-3 px-20 pb-56 mx-auto break-words text-zinc-700 h-max editor">
+        <div className="flex flex-col w-full max-w-4xl gap-3 px-20 pb-56 mx-auto break-words text-zinc-700 dark:text-amber-50 h-max editor">
           {(pageData as PageDataInterface).message.map((block, index) => (
             <BaseBlock
               blockType={block.blockType}
