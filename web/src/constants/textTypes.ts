@@ -51,6 +51,10 @@ const textKeybinds: {keybind: RegExp, type: string}[] = [
     keybind: /^= /g,
     type: 'callout',
   },
+  {
+    keybind: /^\[= \S+ =\]/gm,
+    type: 'page',
+  },
 ];
 
 export { stylingLookupTable, textKeybinds };
