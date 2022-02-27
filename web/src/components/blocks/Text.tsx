@@ -20,14 +20,14 @@ const Text = (props: EditableText) => {
     setCurrentBlockType(type);
   }, [type]);
 
-  const handlePotentialTypeChange = (text: string, element: HTMLSpanElement) => {
-    Object.keys(textKeybinds).forEach((key) => {
-      if (!(text.startsWith(`${key}&nbsp;`) || element.innerText.startsWith(`${key} `))) return;
+  const handlePotentialTypeChange = (element: HTMLSpanElement) => {
+    textKeybinds.forEach((bind) => {
+      if (!(bind.keybind.test(element.innerText))) return;
 
-      element.innerText = element.innerText.slice(key.length + 1);
-      setCurrentBlockType(textKeybinds[key]);
+      element.innerText = element.innerText.replace(bind.keybind, '');
+      setCurrentBlockType(bind.type);
 
-      updateServer(blockID, textKeybinds[key], undefined, undefined, page);
+      updateServer(blockID, bind.type, undefined, undefined, page);
     });
   };
 
@@ -40,7 +40,7 @@ const Text = (props: EditableText) => {
       suppressContentEditableWarning
       id={blockID}
       onInput={(e) => {
-        handlePotentialTypeChange(e.currentTarget.innerHTML, e.currentTarget);
+        handlePotentialTypeChange(e.currentTarget);
       }}
       onBlur={
         (e) => {

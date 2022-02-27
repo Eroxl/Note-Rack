@@ -10,17 +10,47 @@ const stylingLookupTable: {[key: string]: string} = {
 };
 
 // -=- Keybinds for non-inline elements -=-
-const textKeybinds: {[key: string]: string} = {
-  '#': 'h1',
-  '##': 'h2',
-  '###': 'h3',
-  '####': 'h4',
-  '#####': 'h5',
-  '*': 'u-list',
-  '1.': 'o-list',
-  '[ ]': 'c-list',
-  '>': 'quote',
-  '|': 'callout',
-};
+const textKeybinds: {keybind: RegExp, type: string}[] = [
+  {
+    keybind: /^# /g,
+    type: 'h1',
+  },
+  {
+    keybind: /^## /g,
+    type: 'h2',
+  },
+  {
+    keybind: /^### /g,
+    type: 'h3',
+  },
+  {
+    keybind: /^#### /g,
+    type: 'h4',
+  },
+  {
+    keybind: /^##### /g,
+    type: 'h5',
+  },
+  {
+    keybind: /^\* /g,
+    type: 'u-list',
+  },
+  {
+    keybind: /\d+\. /g,
+    type: 'o-list',
+  },
+  {
+    keybind: /^\[ \]/g,
+    type: 'c-list',
+  },
+  {
+    keybind: /^\| /g,
+    type: 'quote',
+  },
+  {
+    keybind: /^= /g,
+    type: 'callout',
+  },
+];
 
 export { stylingLookupTable, textKeybinds };
