@@ -10,7 +10,15 @@ const stylingLookupTable: {[key: string]: string} = {
 };
 
 // -=- Keybinds for non-inline elements -=-
-const textKeybinds: {keybind: RegExp, type: string}[] = [
+const textKeybinds: {
+  keybind: RegExp,
+  type: string,
+  customFunc?: (
+    properties: Record<string, unknown>,
+    blockID: string,
+    page: string
+  ) => void
+}[] = [
   {
     keybind: /^# /g,
     type: 'h1',

@@ -27,6 +27,14 @@ const Text = (props: EditableText) => {
       element.innerText = element.innerText.replace(bind.keybind, '');
       setCurrentBlockType(bind.type);
 
+      if (bind.customFunc) {
+        bind.customFunc(
+          properties,
+          blockID,
+          page,
+        );
+      }
+
       updateServer(blockID, bind.type, undefined, undefined, page);
     });
   };
