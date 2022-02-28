@@ -70,7 +70,7 @@ const Text = (props: EditableText) => {
           } else if (e.code === 'Backspace' && currentBlockType !== 'text' && window.getSelection()?.anchorOffset === 0) {
             setCurrentBlockType('text');
             updateServer(blockID, 'text', undefined, undefined, page);
-          } else if (e.code === 'Backspace' && currentBlockType === 'text' && e.currentTarget.innerText === '') {
+          } else if (e.code === 'Backspace' && currentBlockType === 'text' && (e.currentTarget.innerText === '' || e.currentTarget.innerText === '\n')) {
             removeBlock();
           }
         }

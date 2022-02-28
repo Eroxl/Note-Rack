@@ -37,7 +37,7 @@ const addBlockAtIndex = async (
     blockID: generatedBlockObject.message.blockID as string,
     blockType: 'text',
     properties: {
-      value: '',
+      value: '\n',
     },
     style: {},
   });

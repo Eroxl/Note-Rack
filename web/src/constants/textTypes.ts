@@ -56,7 +56,7 @@ const textKeybinds: {
     type: 'quote',
   },
   {
-    keybind: /^= /g,
+    keybind: /^``` /g,
     type: 'callout',
   },
   {
