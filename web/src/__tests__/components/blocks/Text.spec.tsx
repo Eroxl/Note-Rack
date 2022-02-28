@@ -12,7 +12,6 @@ describe('Text', () => {
     page: string,
     addBlockAtIndex: () => void,
     removeBlock: () => void,
-
   };
 
   beforeEach(() => {
@@ -20,7 +19,7 @@ describe('Text', () => {
       properties: {
         value: 'Example text',
       },
-      blockID: 'testingIconBlock',
+      blockID: 'testingTextBlock',
       page: 'page',
       addBlockAtIndex: (): void => {
         throw new Error('Add block function not implemented.');
@@ -54,11 +53,11 @@ describe('Text', () => {
         />,
       );
 
-      const iconText = await findByText(properties.value);
+      const textElement = await findByText(properties.value);
 
-      expect(iconText).toBeVisible();
-      expect(iconText).toHaveAttribute('contentEditable', 'true');
-      expect(iconText).toHaveClass(stylingLookupTable[textType]);
+      expect(textElement).toBeVisible();
+      expect(textElement).toHaveAttribute('contentEditable', 'true');
+      expect(textElement).toHaveClass(stylingLookupTable[textType]);
     });
   });
 

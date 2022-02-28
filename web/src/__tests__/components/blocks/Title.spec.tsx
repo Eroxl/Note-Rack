@@ -46,9 +46,9 @@ describe('Title', () => {
       />,
     );
 
-    const iconText = await findByText(properties.value);
+    const titleText = await findByText(properties.value);
 
-    expect(iconText).toBeVisible();
-    expect(iconText).toHaveAttribute('contentEditable', 'true');
+    expect(titleText).toBeVisible();
+    expect(titleText).toHaveAttribute('contentEditable', 'true');
   });
 });
