@@ -1,7 +1,6 @@
 import React from 'react';
 import '@testing-library/jest-dom';
 import { render, fireEvent } from '@testing-library/react';
-import exp from 'constants';
 
 import { stylingLookupTable, textKeybinds } from '../../../constants/textTypes';
 import Text from '../../../components/blocks/Text';
