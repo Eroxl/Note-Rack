@@ -56,9 +56,8 @@ describe('Icon', () => {
 
   test('Emoji picker menu should change the emoji', async () => {
     const { properties, blockID, page } = expectedProps;
-    const requestURL = `${process.env.NEXT_PUBLIC_API_URL}/page/update-page/${page}`;
 
-    fetchMock.mockOnceIf(requestURL, '{}');
+    fetchMock.mockOnce('{}');
 
     const { findByText, findByLabelText } = render(
       <Icon properties={properties} blockID={blockID} page={page} />,
