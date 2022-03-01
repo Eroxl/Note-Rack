@@ -2,7 +2,7 @@
 import React from 'react';
 
 import TitleBreaker from './TitleBreaker';
-import { updateServer } from '../../lib/pageController';
+import updateServer from '../../lib/updateServer';
 import { PermanentEditableText } from '../../lib/types/blockTypes';
 
 const Title = (props: PermanentEditableText) => {

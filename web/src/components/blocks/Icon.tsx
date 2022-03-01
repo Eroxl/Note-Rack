@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import 'emoji-mart/css/emoji-mart.css';
 import { Picker, BaseEmoji } from 'emoji-mart';
 
-import { updateServer } from '../../lib/pageController';
+import updateServer from '../../lib/updateServer';
 import type { PermanentBlock } from '../../lib/types/blockTypes';
 
 const Icon = (
