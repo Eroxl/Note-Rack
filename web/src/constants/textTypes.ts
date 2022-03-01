@@ -17,8 +17,12 @@ const textKeybinds: {
   customFunc?: (
     properties: Record<string, unknown>,
     blockID: string,
-    page: string
-  ) => void
+    page: string,
+    element: Element,
+  ) => {
+    properties?: Record<string, unknown>,
+    style?: Record<string, unknown>,
+  }
 }[] = [
   {
     keybind: /^# /g,
@@ -71,7 +75,7 @@ const textKeybinds: {
     type: 'callout',
   },
   {
-    keybind: /^\[= \S+ =\]/gm,
+    keybind: /^\[= (\S+) =\]/gm,
     plainTextKeybind: '[= Page =]',
     type: 'page',
   },

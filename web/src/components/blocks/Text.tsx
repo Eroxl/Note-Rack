@@ -22,17 +22,22 @@ const Text = (props: EditableText) => {
 
   const handlePotentialTypeChange = (element: HTMLSpanElement) => {
     textKeybinds.forEach((bind) => {
-      if (!(bind.keybind.test(element.innerText))) return;
+      const regexSearch = bind.keybind.exec(element.innerText);
+      if (!regexSearch) return;
 
-      element.innerText = element.innerText.replace(bind.keybind, '');
+      element.innerText = regexSearch[1] ?? '';
       setCurrentBlockType(bind.type);
 
       if (bind.customFunc) {
-        bind.customFunc(
+        const { properties: newBlockProperties, style: newBlockStyle } = bind.customFunc(
           properties,
           blockID,
           page,
+          element,
         );
+
+        updateServer(blockID, bind.type, newBlockProperties, newBlockStyle, page);
+        return;
       }
 
       updateServer(blockID, bind.type, undefined, undefined, page);
