@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import updateServer from '../../lib/updateServer';
-import { textKeybinds, stylingLookupTable } from '../../constants/textTypes';
+import { textKeybinds, stylingLookupTable } from '../../lib/textTypes';
 import { EditableText } from '../../types/blockTypes';
 
 const Text = (props: EditableText) => {

@@ -2,7 +2,7 @@ import React from 'react';
 import '@testing-library/jest-dom';
 import { render, fireEvent } from '@testing-library/react';
 
-import { stylingLookupTable, textKeybinds } from '../../../constants/textTypes';
+import { stylingLookupTable, textKeybinds } from '../../../lib/textTypes';
 import Text from '../../../components/blocks/Text';
 
 describe('Text', () => {
