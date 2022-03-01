@@ -15,14 +15,9 @@ const textKeybinds: {
   plainTextKeybind: string,
   type: string,
   customFunc?: (
-    properties: Record<string, unknown>,
-    blockID: string,
-    page: string,
-    element: Element,
-  ) => {
-    properties?: Record<string, unknown>,
-    style?: Record<string, unknown>,
-  }
+    properties: Record<string, unknown>, blockID: string,
+    page: string, element: Element,
+  ) => { properties?: Record<string, unknown>, style?: Record<string, unknown> }
 }[] = [
   {
     keybind: /^# /g,
