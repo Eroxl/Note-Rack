@@ -75,6 +75,9 @@ const Text = (props: EditableText) => {
           }
         }
       }
+      onCopy={() => {
+        navigator.clipboard.writeText(window.getSelection()?.toString() || '');
+      }}
     >
       {value}
     </span>
