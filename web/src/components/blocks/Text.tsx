@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import updateServer from '../../lib/updateServer';
 import { textKeybinds, stylingLookupTable } from '../../constants/textTypes';
-import { EditableText } from '../../lib/types/blockTypes';
+import { EditableText } from '../../types/blockTypes';
 
 const Text = (props: EditableText) => {
   const {

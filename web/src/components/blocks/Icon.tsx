@@ -3,7 +3,7 @@ import 'emoji-mart/css/emoji-mart.css';
 import { Picker, BaseEmoji } from 'emoji-mart';
 
 import updateServer from '../../lib/updateServer';
-import type { PermanentBlock } from '../../lib/types/blockTypes';
+import type { PermanentBlock } from '../../types/blockTypes';
 
 const Icon = (
   props: PermanentBlock,
