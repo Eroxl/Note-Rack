@@ -22,7 +22,7 @@
 }
 
 .emoji-mart-search input {
-  @apply border-0 border-solid border-black border-opacity-5 !important;
+  @apply border-0 border-solid border-black border-opacity-5 dark:text-black !important;
 }
 
 .emoji-mart-category .emoji-mart-emoji:hover:before {
