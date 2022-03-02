@@ -13,6 +13,7 @@
 .emoji-mart-anchor {
   @apply text-zinc-700/80 dark:text-amber-50/80 !important;
 }
+
 .emoji-mart-anchor-selected {
   @apply text-zinc-700 dark:text-amber-50 !important;
 }
