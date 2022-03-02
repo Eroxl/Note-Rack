@@ -8,7 +8,9 @@ import React from 'react';
 
 const Document = () => (
   <Html>
-    <Head />
+    <Head>
+      <link rel="icon" href="/Memo.svg" type="image/svg+xml" />
+    </Head>
     <body className="dark">
       <Main />
       <NextScript />
