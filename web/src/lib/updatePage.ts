@@ -1,12 +1,4 @@
-interface PageDataInterface {
-  status: string,
-  message: {
-    blockID: string,
-    blockType: string,
-    properties: Record<string, unknown>,
-    style: Record<string, unknown>,
-  }[],
-}
+import PageDataInterface from '../types/pageTypes';
 
 const addBlockAtIndex = async (
   index: number,
@@ -33,7 +25,7 @@ const addBlockAtIndex = async (
   } = await generatedBlockResponse.json();
 
   const tempPageData = pageData as PageDataInterface;
-  tempPageData.message.splice(index, 0, {
+  tempPageData.message.data.splice(index, 0, {
     blockID: generatedBlockObject.message.blockID as string,
     blockType: 'text',
     properties: {
@@ -44,7 +36,10 @@ const addBlockAtIndex = async (
 
   setPageData({
     status: 'Success',
-    message: [...tempPageData.message],
+    message: {
+      style: tempPageData.message.style,
+      data: [...tempPageData.message.data],
+    },
   });
 };
 
@@ -70,11 +65,14 @@ const removeBlock = async (
   });
 
   const tempPageData = pageData as PageDataInterface;
-  tempPageData.message.splice(index, 1);
+  tempPageData.message.data.splice(index, 1);
 
   setPageData({
     status: 'Success',
-    message: [...tempPageData.message],
+    message: {
+      style: tempPageData.message.style,
+      data: [...tempPageData.message.data],
+    },
   });
 };
 
