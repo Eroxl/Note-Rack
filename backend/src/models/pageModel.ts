@@ -3,6 +3,7 @@ import crypto from 'crypto';
 
 const PageSchema = new Schema({
   user: String,
+  style: {},
   data: [
     {
       blockType: String,

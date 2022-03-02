@@ -43,7 +43,7 @@ const BaseBlock = (props: BaseBlockProps) => {
   } = props;
 
   return React.createElement(
-    blockTypes[blockType] ?? blockTypes.text,
+    blockTypes[blockType] ?? 'fragement',
     {
       properties: properties ?? {},
       style: style ?? {},

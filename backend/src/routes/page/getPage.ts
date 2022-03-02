@@ -42,7 +42,10 @@ router.get(
     res.statusCode = 200;
     res.json({
       status: 'success',
-      message: pageData.data,
+      message: {
+        style: pageData.style,
+        data: pageData.data,
+      },
     });
   },
 );

@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction } from 'react';
 import { useRouter } from 'next/router';
 
 import { addBlockAtIndex, removeBlock } from '../lib/updatePage';
-import PageDataInterface from '../lib/types/pageTypes';
+import PageDataInterface from '../types/pageTypes';
 import BaseBlock from './blocks/BaseBlock';
 
 const Editor = (
@@ -16,12 +16,17 @@ const Editor = (
   const router = useRouter();
   const { page } = router.query;
 
+  const colourData = pageData.message.style.colour;
+  const pageColourStyles = {
+    backgroundColor: `#${colourData.r.toString(16)}${colourData.g.toString(16)}${colourData.b.toString(16)}`,
+  };
+
   return (
     <div className="w-full h-full mt-10 overflow-y-auto pl-52 overflow-x-clip no-scrollbar">
       <div className="flex flex-col items-center w-full h-max bg-amber-50 dark:bg-zinc-700">
-        <div className="w-full -mb-10 bg-blue-300 h-72" />
+        <div className="w-full -mb-10 h-72" style={pageColourStyles} />
         <div className="flex flex-col w-full max-w-4xl gap-3 px-20 pb-56 mx-auto break-words text-zinc-700 dark:text-amber-50 h-max editor">
-          {(pageData as PageDataInterface).message.map((block, index) => (
+          {(pageData as PageDataInterface).message.data.map((block, index) => (
             <BaseBlock
               blockType={block.blockType}
               blockID={block.blockID}

@@ -49,6 +49,13 @@ router.post(
       const homePage = await PageModel.create(
         {
           user: username,
+          style: {
+            colour: {
+              r: 147,
+              g: 197,
+              b: 253,
+            },
+          },
           data: [
             {
               blockType: 'page-icon',
