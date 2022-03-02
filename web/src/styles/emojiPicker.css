@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 .emoji-mart {
-  @apply text-zinc-700 dark:text-amber-50 bg-orange-50 dark:bg-neutral-700 border-black border-opacity-5 !important;
+  @apply text-zinc-700 dark:text-amber-50 bg-stone-100 dark:bg-neutral-600 border-black border-opacity-5 !important;
 }
 
 .emoji-mart-bar {
@@ -27,7 +27,7 @@
 }
 
 .emoji-mart-category-label span {
-  @apply bg-orange-50 dark:bg-neutral-700 opacity-90 !important;
+  @apply bg-stone-100 dark:bg-neutral-600 opacity-90 !important;
 }
 
 .emoji-mart-no-results {
