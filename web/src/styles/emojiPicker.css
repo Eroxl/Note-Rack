@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.emoji-mart {
+  @apply text-zinc-700 dark:text-amber-50 bg-orange-50 dark:bg-neutral-700 border-black border-opacity-5 !important;
+}
+
+.emoji-mart-bar {
+  @apply border-0 border-solid border-black border-opacity-5 !important;
+}
+
+.emoji-mart-anchor {
+  @apply text-zinc-700/80 dark:text-amber-50/80 !important;
+}
+.emoji-mart-anchor-selected {
+  @apply text-zinc-700 dark:text-amber-50 !important;
+}
+
+.emoji-mart-anchor-bar {
+  @apply bg-purple-400 transition-all !important;
+}
+
+.emoji-mart-search input {
+  @apply border-0 border-solid border-black border-opacity-5 !important;
+}
+
+.emoji-mart-category .emoji-mart-emoji:hover:before {
+  @apply bg-black bg-opacity-0;
+}
+
+.emoji-mart-category-label span {
+  @apply bg-orange-50 dark:bg-neutral-700 opacity-90 !important;
+}
+
+.emoji-mart-no-results {
+  @apply text-zinc-700 dark:text-amber-50 !important;
+}
+
+.emoji-mart-category .emoji-mart-emoji:hover:before {
+  @apply bg-black dark:bg-white bg-opacity-5 dark:bg-opacity-10 !important;
+}

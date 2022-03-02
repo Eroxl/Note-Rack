@@ -12,7 +12,6 @@ const Icon = (
   const { value: icon } = properties;
 
   const [isEmojiSelectorActive, setIsEmojiSelectorActive] = useState(false);
-  const [isEmojiSelectorDark, setIsEmojiSelectorDark] = useState(false);
   const [currentIcon, setCurrentIcon] = useState(icon);
 
   const emojiPickerMenuRef = useRef<HTMLDivElement>(null);
@@ -27,10 +26,6 @@ const Icon = (
 
     updateData(emoji.native);
   };
-
-  useEffect(() => {
-    setIsEmojiSelectorDark(document.body.classList.contains('dark'));
-  }, [isEmojiSelectorActive]);
 
   useEffect(() => {
     function handleClickOutside(event: unknown) {
@@ -57,7 +52,7 @@ const Icon = (
         </button>
       </span>
       <div className={`absolute sm:right-[-133px] right-[0%] top-[110%] z-10 ${isEmojiSelectorActive || 'hidden'}`}>
-        <Picker onSelect={onEmojiChange} recent={['']} native theme={isEmojiSelectorDark ? 'dark' : 'light'} />
+        <Picker onSelect={onEmojiChange} recent={['']} native />
       </div>
     </div>
   );
