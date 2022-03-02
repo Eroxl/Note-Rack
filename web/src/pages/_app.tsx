@@ -6,7 +6,7 @@ import '../styles/globals.css';
 import '../styles/emojiPicker.css';
 
 const App = ({ Component, pageProps }: AppProps) => (
-  <div className="w-screen h-screen overflow-clip">
+  <div className="w-screen h-screen overflow-clip print:overflow-visible">
     <Component {...pageProps} />
   </div>
 );

@@ -22,9 +22,9 @@ const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {
       <Head>
         <title>Note Rack Page</title>
       </Head>
-      <div className="w-full h-full overflow-hidden bg-amber-50 no-scrollbar dark:bg-zinc-700">
+      <div className="w-full h-full overflow-hidden print:h-max print:overflow-visible bg-amber-50 no-scrollbar dark:bg-zinc-700">
         <div className="absolute z-10 w-screen h-10 print:h-0 bg-amber-50 no-scrollbar dark:bg-zinc-700" />
-        <div className="absolute h-screen w-52 print:w-0 bg-amber-400 opacity-10 no-scrollbar dark:bg-white" />
+        <div className="absolute h-screen print:h-max w-52 print:w-0 bg-amber-400 opacity-10 no-scrollbar dark:bg-white" />
         {
           !pageData.message
             ? <LoadingPage />
