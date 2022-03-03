@@ -46,8 +46,8 @@ const Icon = (
 
   return (
     <div className="relative w-min h-min" ref={emojiPickerMenuRef}>
-      <span className="flex items-center justify-center w-20 h-20 rounded select-none hover:bg-slate-600/5 hover:dark:bg-amber-50/5">
-        <button className="select-none text-7xl w-min h-min" type="button" onClick={() => { setIsEmojiSelectorActive(!isEmojiSelectorActive); }}>
+      <span className="flex items-center justify-center w-20 h-20 rounded select-none print:w-40 print:justify-start hover:bg-slate-600/5 hover:dark:bg-amber-50/5">
+        <button className="select-none text-7xl w-min h-min print:hidden" type="button" onClick={() => { setIsEmojiSelectorActive(!isEmojiSelectorActive); }}>
           {currentIcon}
         </button>
       </span>
