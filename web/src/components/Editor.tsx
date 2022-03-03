@@ -18,14 +18,14 @@ const Editor = (
 
   const colourData = pageData.message.style.colour;
   const pageColourStyles = {
-    backgroundColor: `#${colourData.r.toString(16)}${colourData.g.toString(16)}${colourData.b.toString(16)}`,
+    '--forced-background-colour': `#${colourData.r.toString(16)}${colourData.g.toString(16)}${colourData.b.toString(16)}`,
   };
 
   return (
     <div className="w-full h-full mt-10 overflow-y-auto print:m-0 pl-52 print:p-0 overflow-x-clip no-scrollbar">
-      <div className="flex flex-col items-center w-full h-max bg-amber-50 dark:bg-zinc-700">
-        <div className="w-full -mb-10 h-72 print:h-0 print:m-0" style={pageColourStyles} />
-        <div className="flex flex-col w-full max-w-4xl gap-3 px-20 pb-56 mx-auto break-words print:p-0 text-zinc-700 dark:text-amber-50 h-max editor">
+      <div className="flex flex-col items-center w-full h-max bg-amber-50 dark:bg-zinc-700 print:dark:bg-white print:bg-white">
+        <div className="w-full -mb-10 h-72 print:h-56 print-forced-background" style={pageColourStyles as Record<string, unknown>} />
+        <div className="flex flex-col w-full max-w-4xl gap-3 px-20 pb-56 mx-auto break-words print:p-0 text-zinc-700 dark:text-amber-50 print:dark:text-zinc-700 h-max editor">
           {(pageData as PageDataInterface).message.data.map((block, index) => (
             <BaseBlock
               blockType={block.blockType}
