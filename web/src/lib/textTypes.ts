@@ -9,7 +9,7 @@ const stylingLookupTable: {[key: string]: string} = {
   callout: `
     p-3
     bg-black/5 dark:bg-white/5
-    print:bg-black/0print:dark:bg-white/0 print:dark:bg-black/5
+    print:bg-black/0 print:dark:bg-white/0 print:dark:bg-black/5
     print:before:border-[999px] print:before:-m-3 print:before:border-black/5
     relative print:overflow-hidden print:before:absolute
   `,
