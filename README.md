@@ -38,6 +38,23 @@ Currently the planned features / features I hope to include in the final build a
   - [ ] Equation Elements
   - [ ] Emojis: 🐛
 
+## Keybinds
+- Headings
+  - `#` - H1
+  - `##` - H2
+  - `###` - H3
+  - `####` - H4
+  - `#####` - H5
+- Lists
+  - `*` Ordered List
+  - `1.` Numbered List
+  - `[ ]` Check List
+- Other
+  - `>` Quote
+  - `|` Callout
+  -  `[[ Page Name ]]` Page
+    \* "Page Name" can be any string
+
 ## Current State vs. Goal
 
 #### Current State
