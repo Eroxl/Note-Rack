@@ -76,8 +76,8 @@ const textKeybinds: {
     type: 'callout',
   },
   {
-    keybind: /^\[= (\S+) =\]/gm,
-    plainTextKeybind: '[= Page =]',
+    keybind: /^\[\[ (\S+) \]\]/gm,
+    plainTextKeybind: '[[ Page ]]',
     type: 'page',
   },
 ];
