@@ -26,53 +26,53 @@ const textKeybinds: {
   ) => { properties?: Record<string, unknown>, style?: Record<string, unknown> }
 }[] = [
   {
-    keybind: /^# /g,
+    keybind: /^# (.*)/g,
     plainTextKeybind: '#',
     type: 'h1',
   },
   {
-    keybind: /^## /g,
+    keybind: /^## (.*)/g,
     plainTextKeybind: '##',
     type: 'h2',
   },
   {
-    keybind: /^### /g,
+    keybind: /^### (.*)/g,
     plainTextKeybind: '###',
     type: 'h3',
   },
   {
-    keybind: /^#### /g,
+    keybind: /^#### (.*)/g,
     plainTextKeybind: '####',
     type: 'h4',
   },
   {
-    keybind: /^##### /g,
+    keybind: /^##### (.*)/g,
     plainTextKeybind: '#####',
     type: 'h5',
   },
   {
-    keybind: /^\* /g,
+    keybind: /^\* (.*)/g,
     plainTextKeybind: '*',
     type: 'u-list',
   },
   {
-    keybind: /\d+\. /g,
+    keybind: /\d+\. (.*)/g,
     plainTextKeybind: '1.',
     type: 'o-list',
   },
   {
-    keybind: /^\[\s?\]/g,
+    keybind: /^\[\s?\] (.*)/g,
     plainTextKeybind: '[ ]',
     type: 'c-list',
   },
   {
-    keybind: /^> /g,
+    keybind: /^> (.*)/g,
     plainTextKeybind: '>',
     type: 'quote',
   },
   {
-    keybind: /^\| /g,
-    plainTextKeybind: '```',
+    keybind: /^\| (.*)/g,
+    plainTextKeybind: '|',
     type: 'callout',
   },
   {
