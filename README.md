@@ -52,8 +52,7 @@ Currently the planned features / features I hope to include in the final build a
 - Other
   - `>` Quote
   - `|` Callout
-  -  `[[ Page Name ]]` Page
-    \* "Page Name" can be any string
+  -  `[[ Page Name ]]` Page ("Page Name" can be any string)
 
 ## Current State vs. Goal
 
