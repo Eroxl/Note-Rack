@@ -9,7 +9,14 @@
 ## Planned Features
 Currently the planned features / features I hope to include in the final build are as follows
 
-
+- [x] Blocks
+  - [x] Heading 1-5
+  - [x] Normal Text
+  - [x] Quotes
+  - [x] Callouts
+- [ ] Exporting
+  - [x] PDF
+  - [ ] DOCX
 - [ ] List Elements
   - [ ] Ordered Lists
     1. Example
@@ -17,9 +24,6 @@ Currently the planned features / features I hope to include in the final build a
     * Example
   - [ ] Check Lists
     - [ ] Example
-- [ ] Exporting
-  - [x] PDF
-  - [ ] DOCX
 - [ ] Multiple Pages
   - [ ] Inline Pages
   - [ ] Page Sidebar / Selector
