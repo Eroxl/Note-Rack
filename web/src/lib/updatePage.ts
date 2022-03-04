@@ -41,6 +41,8 @@ const addBlockAtIndex = async (
       data: [...tempPageData.message.data],
     },
   });
+
+  document.getElementById(generatedBlockObject.message.blockID as string)?.focus();
 };
 
 const removeBlock = async (
