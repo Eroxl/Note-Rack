@@ -52,7 +52,7 @@ const PageThumbnail = (props: PageThumbnailProps) => {
           >
             Change Colour
           </button>
-          <div className={`absolute -right-0 sm:-right-[104px] top-[31px] z-20 print:hidden opacity-100 ${isColourMenuActive || 'hidden'}`}>
+          <div className={`absolute -right-0 top-[31px] z-20 print:hidden opacity-100 ${isColourMenuActive || 'hidden'}`}>
             <div className="border-black rounded-md opacity-100 w-80 h-[350px] p-3 text-zinc-700 dark:text-amber-50 bg-stone-100 dark:bg-neutral-600 border-opacity-5 flex flex-col overflow-hidden gap-1">
               <span className="sticky top-0 w-full text-lg font-medium bg-stone-100 dark:bg-neutral-600">
                 Colours
