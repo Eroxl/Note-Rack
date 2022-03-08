@@ -50,8 +50,8 @@ Currently the planned features / features I hope to include in the final build a
   - `#####` - H5
 - Lists
   - `*` Ordered List
-  - `1.` Numbered List
-  - `[ ]` Check List
+  - `1.` Numbered List (1 can be any integer)
+  - `[ ]` or `[]` Check List
 - Other
   - `>` Quote
   - `|` Callout
