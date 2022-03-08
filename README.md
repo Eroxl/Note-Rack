@@ -16,6 +16,10 @@ Currently the planned features / features I hope to include in the final build a
   - [x] Callouts
 - [x] Exporting
   - [x] PDF
+- [x] Page Customization
+  - [x] Page Titles
+  - [x] Page Icons
+  - [x] Page Thumbnails
 - [ ] List Elements
   - [ ] Ordered Lists
     1. Example
