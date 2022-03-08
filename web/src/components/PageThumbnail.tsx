@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-import editStyle from '../lib/editStyle';
 import ColourPicker from './ColoursPicker';
 
 interface PageThumbnailProps {
