@@ -2,9 +2,6 @@
 <h1 align="center">
   Note Rack
 </h1>
-<h6 align="center">
-  The markdown editor specifically designed for students
-</h6>
 
 ## Planned Features
 Currently the planned features / features I hope to include in the final build are as follows
