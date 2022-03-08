@@ -10,14 +10,6 @@ const Colours = [
     ],
   },
   {
-    category: 'Pink',
-    colours: [
-      'F9A8D4',
-      'F472B6',
-      'EC4899',
-    ],
-  },
-  {
     category: 'Orange',
     colours: [
       'FDBA74',
@@ -63,6 +55,30 @@ const Colours = [
       '93C5FD',
       '60A5FA',
       '3B82F6',
+    ],
+  },
+  {
+    category: 'Purple',
+    colours: [
+      'D8B4FE',
+      'C084FC',
+      'A855F7',
+    ],
+  },
+  {
+    category: 'Pink',
+    colours: [
+      'F9A8D4',
+      'F472B6',
+      'EC4899',
+    ],
+  },
+  {
+    category: 'White',
+    colours: [
+      'F9FAFB',
+      'D1D5DB',
+      '71717A',
     ],
   },
 ];

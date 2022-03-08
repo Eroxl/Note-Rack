@@ -45,13 +45,13 @@ const PageThumbnail = (props: PageThumbnailProps) => {
       <div className="flex items-end justify-end w-full h-full max-w-4xl gap-2 mx-auto print:hidden">
         <div ref={colourMenuActiveRef} className="relative">
           <button
-            className={`px-2 py-1 text-xs transition-opacity duration-300 ease-in-out rounded opacity-0 w-28 text-zinc-700/80 dark:text-amber-50/80 bg-amber-50 dark:bg-zinc-700 group-hover:opacity-100 ${isColourMenuActive && 'opacity-100'}`}
+            className={`px-2 py-1 text-xs transition-opacity duration-300 ease-in-out rounded w-28 text-zinc-700/80 dark:text-amber-50/80 bg-amber-50 dark:bg-zinc-700 group-hover:opacity-100 ${isColourMenuActive || 'opacity-0'}`}
             type="button"
             onClick={() => { setIsColourMenuActive(!isColourMenuActive); }}
           >
             Change Colour
           </button>
-          <div className={`absolute -right-0 top-[31px] z-20 print:hidden opacity-100 ${isColourMenuActive || 'hidden'}`}>
+          <div className={`absolute -right-0 top-[31px] z-20 print:hidden ${isColourMenuActive || 'hidden'}`}>
             <ColourPicker
               page={page}
               setActiveColour={setActiveColour}
