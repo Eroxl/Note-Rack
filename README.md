@@ -38,6 +38,7 @@ Currently the planned features / features I hope to include in the final build a
   - [ ] Underlined: <u>Example</u>
   - [ ] Strike Through: <s>Example</s>
   - [ ] Equation Elements
+- [ ] Other
   - [ ] Emojis: 🐛
 
 ## Keybinds
