@@ -57,7 +57,7 @@ Currently the planned features / features I hope to include in the final build a
 ## Current State vs. Goal
 
 #### Current State
-<img src="./images/Desktop_Current_State.png" width="500">
+<img src="./images/Desktop_Current_State_Dark.png" width="500">
 
 #### Goal
 <img src="./images/Desktop_Example.png" width="500">
