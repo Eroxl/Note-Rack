@@ -1,7 +1,7 @@
 import React from 'react';
 
-import editStyle from '../lib/editStyle';
-import Colours from '../constants/Colours';
+import editStyle from '../../lib/editStyle';
+import Colours from '../../constants/Colours';
 
 interface ColourPickerProps {
   page: string,

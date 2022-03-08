@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { addBlockAtIndex, removeBlock } from '../lib/updatePage';
 import PageDataInterface from '../types/pageTypes';
 import BaseBlock from './blocks/BaseBlock';
-import PageThumbnail from './PageThumbnail';
+import PageThumbnail from './pageCustomization/PageThumbnail';
 
 const Editor = (
   props: {
