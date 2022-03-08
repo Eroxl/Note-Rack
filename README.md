@@ -37,7 +37,6 @@ Currently the planned features / features I hope to include in the final build a
   - [ ] Italic: <i>Example</i>
   - [ ] Underlined: <u>Example</u>
   - [ ] Strike Through: <s>Example</s>
-- [ ] Complex Inline Elements
   - [ ] Equation Elements
   - [ ] Emojis: 🐛
 
