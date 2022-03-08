@@ -37,3 +37,12 @@
 .emoji-mart-category .emoji-mart-emoji:hover:before {
   @apply bg-black dark:bg-white bg-opacity-5 dark:bg-opacity-10 !important;
 }
+
+.emoji-mart-scroll {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.emoji-mart-scroll::-webkit-scrollbar {
+  display: none;
+}
