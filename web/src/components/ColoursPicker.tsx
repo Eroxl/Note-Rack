@@ -17,7 +17,7 @@ const ColourPicker = (props: ColourPickerProps) => {
   } = props;
 
   return (
-    <div className="border-black rounded-md opacity-100 w-80 h-[350px] p-3 text-zinc-700 dark:text-amber-50 bg-stone-100 dark:bg-neutral-600 border-opacity-5 flex flex-col overflow-hidden gap-1">
+    <div className="border-black border rounded-md opacity-100 w-80 h-[350px] p-3 text-zinc-700 dark:text-amber-50 bg-stone-100 dark:bg-neutral-600 border-opacity-5 flex flex-col overflow-hidden gap-1">
       <span className="sticky top-0 w-full text-lg font-medium bg-stone-100 dark:bg-neutral-600">
         Colours
       </span>
