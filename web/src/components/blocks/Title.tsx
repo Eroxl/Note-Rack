@@ -2,7 +2,7 @@
 import React from 'react';
 
 import TitleBreaker from './TitleBreaker';
-import updateServer from '../../lib/updateServer';
+import { editBlock } from '../../lib/updatePage';
 import { PermanentEditableText } from '../../types/blockTypes';
 
 const Title = (props: PermanentEditableText) => {
@@ -15,7 +15,7 @@ const Title = (props: PermanentEditableText) => {
   const { value: titleString } = properties;
 
   const onTitleChanged = (text: string) => {
-    updateServer(blockID, undefined, { value: text }, undefined, page);
+    editBlock(blockID, undefined, { value: text }, undefined, page);
   };
 
   return (

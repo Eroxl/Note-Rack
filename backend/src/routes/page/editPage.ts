@@ -156,6 +156,29 @@ router.patch(
         break;
       }
 
+      case 'style': {
+        const typedActionData = actionData as Record<string, unknown>;
+        await PageModel.updateOne(
+          {
+            _id: page,
+          },
+          {
+            $set: {
+              style: {
+                ...typedActionData,
+              },
+            },
+          },
+        );
+
+        res.statusCode = 200;
+        res.json({
+          status: 'success',
+          message: 'Succesfully edited element',
+        });
+        break;
+      }
+
       default:
         res.statusCode = 400;
         res.json({

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import updateServer from '../../lib/updateServer';
+import { editBlock } from '../../lib/updatePage';
 import { textKeybinds, stylingLookupTable } from '../../lib/textTypes';
 import { EditableText } from '../../types/blockTypes';
 
@@ -36,11 +36,11 @@ const Text = (props: EditableText) => {
           element,
         );
 
-        updateServer(blockID, bind.type, newBlockProperties, newBlockStyle, page);
+        editBlock(blockID, bind.type, newBlockProperties, newBlockStyle, page);
         return;
       }
 
-      updateServer(blockID, bind.type, undefined, undefined, page);
+      editBlock(blockID, bind.type, undefined, undefined, page);
     });
   };
 
@@ -57,7 +57,7 @@ const Text = (props: EditableText) => {
       }}
       onBlur={
         (e) => {
-          updateServer(
+          editBlock(
             blockID,
             undefined,
             { value: e.currentTarget.innerText },
@@ -74,7 +74,7 @@ const Text = (props: EditableText) => {
             addBlockAtIndex();
           } else if (e.code === 'Backspace' && currentBlockType !== 'text' && window.getSelection()?.anchorOffset === 0) {
             setCurrentBlockType('text');
-            updateServer(blockID, 'text', undefined, undefined, page);
+            editBlock(blockID, 'text', undefined, undefined, page);
           } else if (e.code === 'Backspace' && currentBlockType === 'text' && (e.currentTarget.innerText === '' || e.currentTarget.innerText === '\n')) {
             removeBlock();
           }

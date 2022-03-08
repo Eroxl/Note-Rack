@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import 'emoji-mart/css/emoji-mart.css';
 import { Picker, BaseEmoji } from 'emoji-mart';
 
-import updateServer from '../../lib/updateServer';
+import { editBlock } from '../../lib/updatePage';
 import type { PermanentBlock } from '../../types/blockTypes';
 
 const Icon = (
@@ -17,7 +17,7 @@ const Icon = (
   const emojiPickerMenuRef = useRef<HTMLDivElement>(null);
 
   const updateData = (updatedIcon: string) => {
-    updateServer(blockID, undefined, { value: updatedIcon }, undefined, page);
+    editBlock(blockID, undefined, { value: updatedIcon }, undefined, page);
   };
 
   const onEmojiChange = (emoji: BaseEmoji) => {
@@ -28,7 +28,7 @@ const Icon = (
   };
 
   useEffect(() => {
-    function handleClickOutside(event: unknown) {
+    const handleClickOutside = (event: unknown) => {
       if (
         emojiPickerMenuRef.current && !emojiPickerMenuRef.current.contains(
           (event as React.MouseEvent<HTMLElement>).target as Node,
@@ -36,7 +36,7 @@ const Icon = (
       ) {
         setIsEmojiSelectorActive(false);
       }
-    }
+    };
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
@@ -51,7 +51,7 @@ const Icon = (
           {currentIcon}
         </button>
       </span>
-      <div className={`absolute sm:right-[-133px] right-[0%] top-[110%] z-10 ${isEmojiSelectorActive || 'hidden'} print:hidden`}>
+      <div className={`absolute sm:right-[-133px] right-[0%] top-[87px] z-10 ${isEmojiSelectorActive || 'hidden'} print:hidden`}>
         <Picker onSelect={onEmojiChange} recent={['']} native />
       </div>
     </div>
