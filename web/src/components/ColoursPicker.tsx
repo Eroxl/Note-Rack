@@ -24,7 +24,7 @@ const ColourPicker = (props: ColourPickerProps) => {
       <div className="overflow-scroll no-scrollbar">
         {
           Colours.map((colourCategory) => (
-            <section className="flex flex-col ">
+            <section className="flex flex-col" key={colourCategory.category}>
               <span className="sticky top-0 w-full font-medium bg-stone-100 dark:bg-neutral-600">
                 {colourCategory.category}
               </span>
@@ -44,6 +44,7 @@ const ColourPicker = (props: ColourPickerProps) => {
                         className="w-1/3 rounded aspect-square"
                         aria-label={`${colourCategory.category} ${hex}`}
                         type="button"
+                        key={formattedHex}
                         style={colourStyle}
                         onClick={() => {
                           setIsColourMenuActive(false);

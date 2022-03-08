@@ -14,9 +14,8 @@ Currently the planned features / features I hope to include in the final build a
   - [x] Normal Text
   - [x] Quotes
   - [x] Callouts
-- [ ] Exporting
+- [x] Exporting
   - [x] PDF
-  - [ ] DOCX
 - [ ] List Elements
   - [ ] Ordered Lists
     1. Example
