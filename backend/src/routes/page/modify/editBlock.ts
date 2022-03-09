@@ -9,7 +9,10 @@ router.patch(
   async (req: Request, res: Response) => {
     const { username } = res.locals;
     const {
-      page, docIDs, properties, blockType,
+      page,
+      docIDs,
+      properties,
+      blockType,
     } = req.body;
 
     if (!username) {
