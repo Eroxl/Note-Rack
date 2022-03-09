@@ -12,8 +12,7 @@ const PageSchema = new Schema({
         default: () => crypto.randomBytes(20).toString('hex'),
       },
       properties: {},
-      style: {},
-      children: {},
+      children: [],
     },
   ],
 });
