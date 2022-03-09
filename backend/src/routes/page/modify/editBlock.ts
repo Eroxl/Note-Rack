@@ -65,6 +65,14 @@ router.patch(
         arrayFilters,
       },
     );
+
+    res.statusCode = 200;
+    res.json({
+      status: 'success',
+      message: {
+        statusMessage: 'Succesfully edited block',
+      },
+    });
   },
 );
 

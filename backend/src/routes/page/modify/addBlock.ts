@@ -82,7 +82,7 @@ router.patch(
     res.json({
       status: 'success',
       message: {
-        statusMessage: 'Succesfully added element',
+        statusMessage: 'Succesfully added block',
         blockID: newBlockId,
       },
     });
