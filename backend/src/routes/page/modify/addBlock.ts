@@ -5,16 +5,16 @@ import PageModel from '../../../models/pageModel';
 
 const router = express.Router();
 
-router.patch(
-  '/add-block',
+router.post(
+  '/:page',
   async (req: Request, res: Response) => {
     const { username } = res.locals;
     const {
-      page,
       docIDs,
       newBlockType,
       newBlockIndex,
     } = req.body;
+    const { page } = req.params;
 
     if (!username) {
       res.statusCode = 401;

@@ -1,6 +1,6 @@
 import express from 'express';
 
-import edit from './modify';
+import modify from './modify';
 import getHomePage from './getHomePage';
 import getPage from './getPage';
 
@@ -21,7 +21,7 @@ router.use(
 // -=- Create The Edit Route -=-
 router.use(
   '/modify/',
-  edit,
+  modify,
 );
 
 export default router;
