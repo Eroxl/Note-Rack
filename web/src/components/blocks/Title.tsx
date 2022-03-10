@@ -15,7 +15,7 @@ const Title = (props: PermanentEditableText) => {
   const { value: titleString } = properties;
 
   const onTitleChanged = (text: string) => {
-    editBlock(blockID, undefined, { value: text }, undefined, page);
+    editBlock([blockID], undefined, { value: text }, page);
   };
 
   return (

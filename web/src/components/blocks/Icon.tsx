@@ -17,7 +17,7 @@ const Icon = (
   const emojiPickerMenuRef = useRef<HTMLDivElement>(null);
 
   const updateData = (updatedIcon: string) => {
-    editBlock(blockID, undefined, { value: updatedIcon }, undefined, page);
+    editBlock([blockID], undefined, { value: updatedIcon }, page);
   };
 
   const onEmojiChange = (emoji: BaseEmoji) => {

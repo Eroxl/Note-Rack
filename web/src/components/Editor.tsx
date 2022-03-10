@@ -43,7 +43,7 @@ const Editor = (
               removeBlock={() => {
                 removeBlock(
                   index,
-                  block._id,
+                  [block._id],
                   page as string,
                   pageData as PageDataInterface,
                   setPageData,

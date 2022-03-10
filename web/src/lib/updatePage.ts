@@ -6,6 +6,7 @@ const addBlockAtIndex = async (
   page: string,
   pageData: PageDataInterface,
   setPageData: (value: Record<string, unknown>) => void,
+  blockIDs?: string[],
 ) => {
   const generatedBlockResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/page/modify/${page}`, {
     method: 'POST',
@@ -15,6 +16,7 @@ const addBlockAtIndex = async (
     body: JSON.stringify({
       'new-block-type': 'text',
       'new-block-index': index,
+      'doc-ids': blockIDs,
     }),
     credentials: 'include',
   });
@@ -45,7 +47,7 @@ const addBlockAtIndex = async (
 
 const removeBlock = async (
   index: number,
-  blockID: string,
+  blockIDs: string[],
   page: string,
   pageData: PageDataInterface,
   setPageData: (value: Record<string, unknown>) => void,
@@ -56,7 +58,7 @@ const removeBlock = async (
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      'doc-ids': [blockID],
+      'doc-ids': blockIDs,
     }),
     credentials: 'include',
   });
@@ -74,25 +76,20 @@ const removeBlock = async (
 };
 
 const editBlock = async (
-  blockID: string,
+  blockIDs: string[],
   blockType: string | undefined,
   properties: Record<string, unknown> | undefined,
-  style: Record<string, unknown> | undefined,
   page: string,
 ) => {
-  const updateResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/page/update-page/${page}`, {
+  const updateResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/page/modify/${page}`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     credentials: 'include',
     body: JSON.stringify({
-      action: 'edit',
-      actionData: {
-        blockID,
-        data: {
-          ...(blockType && { blockType }),
-          ...(properties && { properties }),
-          ...(style && { style }),
-        },
+      'doc-ids': blockIDs,
+      data: {
+        ...(blockType && { blockType }),
+        ...(properties && { properties }),
       },
     }),
   });
