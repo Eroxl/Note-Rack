@@ -6,17 +6,14 @@ const addBlockAtIndex = async (
   pageData: PageDataInterface,
   setPageData: (value: Record<string, unknown>) => void,
 ) => {
-  const generatedBlockResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/page/update-page/${page}`, {
-    method: 'PATCH',
+  const generatedBlockResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/page/modify/${page}`, {
+    method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      action: 'add',
-      actionData: {
-        blockType: 'text',
-        index,
-      },
+      'new-block-type': 'text',
+      'new-block-index': index,
     }),
     credentials: 'include',
   });

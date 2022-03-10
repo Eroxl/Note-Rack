@@ -11,8 +11,8 @@ router.post(
     const { username } = res.locals;
     const {
       docIDs,
-      newBlockType,
-      newBlockIndex,
+      'new-block-type': newBlockType,
+      'new-block-index': newBlockIndex,
     } = req.body;
     const { page } = req.params;
 
