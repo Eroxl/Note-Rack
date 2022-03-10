@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import React, { Dispatch, SetStateAction } from 'react';
 import { useRouter } from 'next/router';
 
@@ -25,8 +26,8 @@ const Editor = (
           {(pageData as PageDataInterface).message.data.map((block, index) => (
             <BaseBlock
               blockType={block.blockType}
-              blockID={block.blockID}
-              key={block.blockID}
+              blockID={block._id}
+              key={block._id}
               page={page as string}
               properties={block.properties}
               style={block.style}
@@ -42,7 +43,7 @@ const Editor = (
               removeBlock={() => {
                 removeBlock(
                   index,
-                  block.blockID,
+                  block._id,
                   page as string,
                   pageData as PageDataInterface,
                   setPageData,

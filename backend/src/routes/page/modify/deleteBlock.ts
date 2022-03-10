@@ -1,4 +1,3 @@
-import mongoose from 'mongoose';
 import express, { Request, Response } from 'express';
 
 import PageModel from '../../../models/pageModel';
@@ -9,7 +8,7 @@ router.delete(
   '/:page',
   async (req: Request, res: Response) => {
     const { username } = res.locals;
-    const { docIDs } = req.body;
+    const { 'doc-ids': docIDs } = req.body;
     const { page } = req.params;
 
     if (!username) {
@@ -44,22 +43,17 @@ router.delete(
     }
 
     const arrayFilters: Record<string, unknown>[] = [];
-    let queryString = 'data.';
+    let queryString = 'data';
 
     (docIDs as string[]).forEach((element, index) => {
       arrayFilters.push({
-        [`${index}._id`]: element,
+        [`a${index}._id`]: element,
       });
 
       if (index < (docIDs.length - 1)) {
-        queryString += `$[${index}].children.`;
-        return;
+        queryString += `.$[a${index}].children`;
       }
-
-      queryString += `$[${index}]`;
     });
-
-    const newBlockId = new mongoose.Types.ObjectId();
 
     await PageModel.updateOne(
       {
@@ -67,7 +61,9 @@ router.delete(
       },
       {
         $pull: {
-          [queryString]: {},
+          [queryString]: {
+            _id: docIDs[docIDs.length - 1],
+          },
         },
       },
       {
@@ -80,7 +76,6 @@ router.delete(
       status: 'success',
       message: {
         statusMessage: 'Succesfully deleted block',
-        blockID: newBlockId,
       },
     });
   },

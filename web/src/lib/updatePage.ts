@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import PageDataInterface from '../types/pageTypes';
 
 const addBlockAtIndex = async (
@@ -23,7 +24,7 @@ const addBlockAtIndex = async (
 
   const tempPageData = pageData as PageDataInterface;
   tempPageData.message.data.splice(index, 0, {
-    blockID: generatedBlockObject.message.blockID as string,
+    _id: generatedBlockObject.message.blockID as string,
     blockType: 'text',
     properties: {
       value: '\n',
@@ -49,16 +50,13 @@ const removeBlock = async (
   pageData: PageDataInterface,
   setPageData: (value: Record<string, unknown>) => void,
 ) => {
-  await fetch(`${process.env.NEXT_PUBLIC_API_URL}/page/update-page/${page}`, {
-    method: 'PATCH',
+  await fetch(`${process.env.NEXT_PUBLIC_API_URL}/page/modify/${page}`, {
+    method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      action: 'delete',
-      actionData: {
-        blockID,
-      },
+      'doc-ids': [blockID],
     }),
     credentials: 'include',
   });

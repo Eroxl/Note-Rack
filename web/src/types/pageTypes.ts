@@ -9,7 +9,7 @@ interface PageDataInterface {
       }
     },
     data: {
-      blockID: string,
+      _id: string,
       blockType: string,
       properties: Record<string, unknown>,
       style: Record<string, unknown>,
