@@ -87,10 +87,8 @@ const editBlock = async (
     credentials: 'include',
     body: JSON.stringify({
       'doc-ids': blockIDs,
-      data: {
-        ...(blockType && { blockType }),
-        ...(properties && { properties }),
-      },
+      ...(blockType && { 'block-type': blockType }),
+      ...(properties && { properties }),
     }),
   });
 

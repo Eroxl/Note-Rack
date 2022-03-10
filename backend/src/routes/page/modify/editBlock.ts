@@ -9,9 +9,9 @@ router.patch(
   async (req: Request, res: Response) => {
     const { username } = res.locals;
     const {
-      docIDs,
+      'doc-ids': docIDs,
       properties,
-      blockType,
+      'block-type': blockType,
     } = req.body;
     const { page } = req.params;
 
@@ -40,15 +40,15 @@ router.patch(
 
     (docIDs as string[]).forEach((element, index) => {
       arrayFilters.push({
-        [`${index}._id`]: element,
+        [`a${index}._id`]: element,
       });
 
       if (index < (docIDs.length - 1)) {
-        queryString += `$[${index}].children.`;
+        queryString += `$[a${index}].children.`;
         return;
       }
 
-      queryString += `$[${index}]`;
+      queryString += `$[a${index}]`;
     });
 
     await PageModel.updateOne(
