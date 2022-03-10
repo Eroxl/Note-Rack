@@ -29,18 +29,18 @@ const Text = (props: EditableText) => {
       setCurrentBlockType(bind.type);
 
       if (bind.customFunc) {
-        const { properties: newBlockProperties, style: newBlockStyle } = bind.customFunc(
+        const { properties: newBlockProperties } = bind.customFunc(
           properties,
           blockID,
           page,
           element,
         );
 
-        editBlock(blockID, bind.type, newBlockProperties, newBlockStyle, page);
+        editBlock([blockID], bind.type, newBlockProperties, page);
         return;
       }
 
-      editBlock(blockID, bind.type, undefined, undefined, page);
+      editBlock([blockID], bind.type, undefined, page);
     });
   };
 
@@ -58,10 +58,9 @@ const Text = (props: EditableText) => {
       onBlur={
         (e) => {
           editBlock(
-            blockID,
+            [blockID],
             undefined,
             { value: e.currentTarget.innerText },
-            undefined,
             page,
           );
         }
@@ -74,7 +73,7 @@ const Text = (props: EditableText) => {
             addBlockAtIndex();
           } else if (e.code === 'Backspace' && currentBlockType !== 'text' && window.getSelection()?.anchorOffset === 0) {
             setCurrentBlockType('text');
-            editBlock(blockID, 'text', undefined, undefined, page);
+            editBlock([blockID], 'text', undefined, page);
           } else if (e.code === 'Backspace' && currentBlockType === 'text' && (e.currentTarget.innerText === '' || e.currentTarget.innerText === '\n')) {
             removeBlock();
           }

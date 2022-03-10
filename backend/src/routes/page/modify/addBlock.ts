@@ -10,9 +10,9 @@ router.post(
   async (req: Request, res: Response) => {
     const { username } = res.locals;
     const {
-      docIDs,
-      newBlockType,
-      newBlockIndex,
+      'doc-ids': docIDs,
+      'new-block-type': newBlockType,
+      'new-block-index': newBlockIndex,
     } = req.body;
     const { page } = req.params;
 

@@ -1,5 +1,4 @@
 import mongoose, { Schema } from 'mongoose';
-import crypto from 'crypto';
 
 const PageSchema = new Schema({
   user: String,
@@ -7,10 +6,6 @@ const PageSchema = new Schema({
   data: [
     {
       blockType: String,
-      blockID: {
-        type: String,
-        default: () => crypto.randomBytes(20).toString('hex'),
-      },
       properties: {},
       children: [],
     },

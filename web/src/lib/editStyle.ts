@@ -1,13 +1,10 @@
 const editStyle = async (style: Record<string, unknown>, page: string) => {
-  const styleUpdateResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/page/update-page/${page}`, {
+  const styleUpdateResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/page/modify-page/${page}`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     credentials: 'include',
     body: JSON.stringify({
-      action: 'style',
-      actionData: {
-        ...style,
-      },
+      style,
     }),
   });
 
@@ -15,7 +12,7 @@ const editStyle = async (style: Record<string, unknown>, page: string) => {
 
   if (styleUpdateResponse.status === 200) return;
 
-  throw new Error(`Addition to server failed because of: ${styleUpdateResponseJSON.message}`);
+  throw new Error(`Couldn't update pages style because: ${styleUpdateResponseJSON.message}`);
 };
 
 export default editStyle;

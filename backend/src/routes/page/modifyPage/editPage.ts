@@ -8,11 +8,7 @@ router.patch(
   '/:page/',
   async (req: Request, res: Response) => {
     const { username } = res.locals;
-    const {
-      'doc-ids': docIDs,
-      properties,
-      'block-type': blockType,
-    } = req.body;
+    const { style } = req.body;
     const { page } = req.params;
 
     if (!username) {
@@ -35,34 +31,16 @@ router.patch(
       return;
     }
 
-    const arrayFilters: Record<string, unknown>[] = [];
-    let queryString = 'data.';
-
-    (docIDs as string[]).forEach((element, index) => {
-      arrayFilters.push({
-        [`a${index}._id`]: element,
-      });
-
-      if (index < (docIDs.length - 1)) {
-        queryString += `$[a${index}].children.`;
-        return;
-      }
-
-      queryString += `$[a${index}]`;
-    });
-
     await PageModel.updateOne(
       {
         _id: page,
       },
       {
         $set: {
-          ...(blockType !== undefined && { [`${queryString}.blockType`]: blockType }),
-          ...(properties !== undefined && { [`${queryString}.properties`]: properties }),
+          style: {
+            ...style,
+          },
         },
-      },
-      {
-        arrayFilters,
       },
     );
 

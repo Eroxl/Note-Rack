@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import PageDataInterface from '../types/pageTypes';
 
 const addBlockAtIndex = async (
@@ -5,18 +6,17 @@ const addBlockAtIndex = async (
   page: string,
   pageData: PageDataInterface,
   setPageData: (value: Record<string, unknown>) => void,
+  blockIDs?: string[],
 ) => {
-  const generatedBlockResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/page/update-page/${page}`, {
-    method: 'PATCH',
+  const generatedBlockResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/page/modify/${page}`, {
+    method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      action: 'add',
-      actionData: {
-        blockType: 'text',
-        index,
-      },
+      'new-block-type': 'text',
+      'new-block-index': index,
+      'doc-ids': blockIDs,
     }),
     credentials: 'include',
   });
@@ -26,7 +26,7 @@ const addBlockAtIndex = async (
 
   const tempPageData = pageData as PageDataInterface;
   tempPageData.message.data.splice(index, 0, {
-    blockID: generatedBlockObject.message.blockID as string,
+    _id: generatedBlockObject.message.blockID as string,
     blockType: 'text',
     properties: {
       value: '\n',
@@ -47,21 +47,18 @@ const addBlockAtIndex = async (
 
 const removeBlock = async (
   index: number,
-  blockID: string,
+  blockIDs: string[],
   page: string,
   pageData: PageDataInterface,
   setPageData: (value: Record<string, unknown>) => void,
 ) => {
-  await fetch(`${process.env.NEXT_PUBLIC_API_URL}/page/update-page/${page}`, {
-    method: 'PATCH',
+  await fetch(`${process.env.NEXT_PUBLIC_API_URL}/page/modify/${page}`, {
+    method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      action: 'delete',
-      actionData: {
-        blockID,
-      },
+      'doc-ids': blockIDs,
     }),
     credentials: 'include',
   });
@@ -79,26 +76,19 @@ const removeBlock = async (
 };
 
 const editBlock = async (
-  blockID: string,
+  blockIDs: string[],
   blockType: string | undefined,
   properties: Record<string, unknown> | undefined,
-  style: Record<string, unknown> | undefined,
   page: string,
 ) => {
-  const updateResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/page/update-page/${page}`, {
+  const updateResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/page/modify/${page}`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     credentials: 'include',
     body: JSON.stringify({
-      action: 'edit',
-      actionData: {
-        blockID,
-        data: {
-          ...(blockType && { blockType }),
-          ...(properties && { properties }),
-          ...(style && { style }),
-        },
-      },
+      'doc-ids': blockIDs,
+      ...(blockType && { 'block-type': blockType }),
+      ...(properties && { properties }),
     }),
   });
 
