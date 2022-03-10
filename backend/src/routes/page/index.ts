@@ -1,7 +1,7 @@
 import express from 'express';
 
+import modify from './modify';
 import getHomePage from './getHomePage';
-import editPage from './editPage';
 import getPage from './getPage';
 
 const router = express.Router();
@@ -12,16 +12,16 @@ router.use(
   getHomePage,
 );
 
-// -=- Create Edit Page API -=-
-router.use(
-  '/',
-  editPage,
-);
-
 // -=- Create Get Page API -=-
 router.use(
   '/',
   getPage,
+);
+
+// -=- Create The Edit Route -=-
+router.use(
+  '/modify/',
+  modify,
 );
 
 export default router;
