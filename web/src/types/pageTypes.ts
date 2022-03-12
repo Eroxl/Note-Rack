@@ -1,3 +1,10 @@
+interface Block {
+  _id: string,
+  blockType: string,
+  properties: Record<string, unknown>,
+  children: Block[]
+}
+
 interface PageDataInterface {
   status: string,
   message: {
@@ -8,12 +15,7 @@ interface PageDataInterface {
         b: number,
       }
     },
-    data: {
-      _id: string,
-      blockType: string,
-      properties: Record<string, unknown>,
-      style: Record<string, unknown>,
-    }[]
+    data: Block[]
   },
 }
 

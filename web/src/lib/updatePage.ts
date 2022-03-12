@@ -31,7 +31,7 @@ const addBlockAtIndex = async (
     properties: {
       value: '\n',
     },
-    style: {},
+    children: [],
   });
 
   setPageData({

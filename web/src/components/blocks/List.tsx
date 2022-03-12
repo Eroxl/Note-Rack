@@ -1,5 +1,10 @@
 import React from 'react';
 
-const List = () => <div />;
+import type { EditableList } from '../../types/blockTypes';
+
+const List = (props: EditableList) => {
+  console.log(props);
+  return <div />;
+};
 
 export default List;

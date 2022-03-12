@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 import { editBlock } from '../../lib/updatePage';
 import { textKeybinds, stylingLookupTable } from '../../lib/textTypes';
@@ -8,27 +8,23 @@ const Text = (props: EditableText) => {
   const {
     properties,
     page,
-    blockID,
     type,
+    blockID,
     addBlockAtIndex,
     removeBlock,
+    setCurrentBlockType,
   } = props;
   const { value } = properties;
-  const [currentBlockType, setCurrentBlockType] = useState('');
 
-  useEffect(() => {
-    setCurrentBlockType(type);
-  }, [type]);
-
-  const handlePotentialTypeChange = (element: HTMLSpanElement) => {
-    textKeybinds.forEach((bind) => {
+  const handlePotentialTypeChange = async (element: HTMLSpanElement) => {
+    textKeybinds.forEach(async (bind) => {
       const regexSearch = bind.keybind.exec(element.innerText);
       if (!regexSearch) return;
 
       element.innerText = regexSearch[1] ?? '';
       setCurrentBlockType(bind.type);
 
-      if (bind.customFunc) {
+      if (bind.customFunc !== undefined) {
         const { properties: newBlockProperties } = bind.customFunc(
           properties,
           blockID,
@@ -36,17 +32,17 @@ const Text = (props: EditableText) => {
           element,
         );
 
-        editBlock([blockID], bind.type, newBlockProperties, page);
+        await editBlock([blockID], bind.type, newBlockProperties, page);
         return;
       }
 
-      editBlock([blockID], bind.type, undefined, page);
+      await editBlock([blockID], bind.type, undefined, page);
     });
   };
 
   return (
     <span
-      className={`min-h-[1.2em] outline-none whitespace-pre-wrap ${stylingLookupTable[currentBlockType]}`}
+      className={`min-h-[1.2em] outline-none whitespace-pre-wrap ${stylingLookupTable[type]}`}
       role="textbox"
       tabIndex={0}
       contentEditable
@@ -71,10 +67,10 @@ const Text = (props: EditableText) => {
             e.preventDefault();
             e.currentTarget.blur();
             addBlockAtIndex();
-          } else if (e.code === 'Backspace' && currentBlockType !== 'text' && window.getSelection()?.anchorOffset === 0) {
+          } else if (e.code === 'Backspace' && type !== 'text' && window.getSelection()?.anchorOffset === 0) {
             setCurrentBlockType('text');
             editBlock([blockID], 'text', undefined, page);
-          } else if (e.code === 'Backspace' && currentBlockType === 'text' && (e.currentTarget.innerText === '' || e.currentTarget.innerText === '\n')) {
+          } else if (e.code === 'Backspace' && type === 'text' && (e.currentTarget.innerText === '' || e.currentTarget.innerText === '\n')) {
             removeBlock();
           }
         }

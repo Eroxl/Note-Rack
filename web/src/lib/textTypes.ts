@@ -1,5 +1,6 @@
 // -=- Styling lookup tabel for elements -=-
 const stylingLookupTable: {[key: string]: string} = {
+  text: '',
   h1: 'text-4xl font-bold',
   h2: 'text-3xl font-bold',
   h3: 'text-2xl font-bold',
@@ -24,7 +25,7 @@ const textKeybinds: {
   customFunc?: (
     properties: Record<string, unknown>, blockID: string,
     page: string, element: Element,
-  ) => { properties?: Record<string, unknown>, style?: Record<string, unknown> }
+  ) => { properties?: Record<string, unknown> }
 }[] = [
   {
     keybind: /^# (.*)/g,
@@ -55,6 +56,7 @@ const textKeybinds: {
     keybind: /^\* (.*)/g,
     plainTextKeybind: '*',
     type: 'u-list',
+    customFunc: (properties) => ({ properties: { relationship: 'sibling', ...properties } }),
   },
   {
     keybind: /\d+\. (.*)/g,

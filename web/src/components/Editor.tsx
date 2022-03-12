@@ -1,3 +1,4 @@
+/* eslint-disable react/no-children-prop */
 /* eslint-disable no-underscore-dangle */
 import React, { Dispatch, SetStateAction } from 'react';
 import { useRouter } from 'next/router';
@@ -30,7 +31,7 @@ const Editor = (
               key={block._id}
               page={page as string}
               properties={block.properties}
-              style={block.style}
+              children={block.children}
               index={index}
               addBlockAtIndex={() => {
                 addBlockAtIndex(
