@@ -1,3 +1,7 @@
+import type { Dispatch, SetStateAction } from 'react';
+
+import type PageDataInterface from './pageTypes';
+
 // -=- Used for the base block -=-
 interface BaseBlockProps {
   blockType: string,
@@ -6,8 +10,8 @@ interface BaseBlockProps {
   children: unknown[]
   page: string,
   index: number,
-  addBlockAtIndex: (index: number) => void,
-  removeBlock: (blockID: string, index: number) => void,
+  pageData: PageDataInterface,
+  setPageData: Dispatch<SetStateAction<PageDataInterface | Record<string, unknown>>>,
 }
 
 // -=- Used for blocks that can't be deleted and are only controlled by the server -=-
