@@ -1,17 +1,22 @@
+/* eslint-disable react/no-children-prop */
+/* eslint-disable @typescript-eslint/no-empty-function */
 import React from 'react';
 import '@testing-library/jest-dom';
 import { render, fireEvent } from '@testing-library/react';
 
 import { stylingLookupTable, textKeybinds } from '../../../lib/textTypes';
 import Text from '../../../components/blocks/Text';
+import PageDataInterface from '../../../types/pageTypes';
+import BaseBlock from '../../../components/blocks/BaseBlock';
 
 describe('Text', () => {
   let expectedProps: {
     properties: { value: string },
     blockID: string,
     page: string,
-    addBlockAtIndex: () => void,
-    removeBlock: () => void,
+    pageData: PageDataInterface
+    setPageData: () => void,
+    setCurrentBlockType: () => void,
   };
 
   beforeEach(() => {
@@ -21,12 +26,23 @@ describe('Text', () => {
       },
       blockID: 'testingTextBlock',
       page: 'page',
-      addBlockAtIndex: (): void => {
-        throw new Error('Add block function not implemented.');
+      pageData: {
+        status: '',
+        message: {
+          style: {
+            colour: {
+              r: 1,
+              g: 2,
+              b: 3,
+            },
+          },
+          data: [],
+        },
       },
-      removeBlock: (): void => {
-        throw new Error('Remove block function not implemented.');
+      setPageData: (): void => {
+        throw new Error('Set page data function is not implemented.');
       },
+      setCurrentBlockType: () => {},
     };
 
     fetchMock.resetMocks();
@@ -38,8 +54,9 @@ describe('Text', () => {
         properties,
         blockID,
         page,
-        addBlockAtIndex,
-        removeBlock,
+        pageData,
+        setPageData,
+        setCurrentBlockType,
       } = expectedProps;
 
       const { findByText } = render(
@@ -48,8 +65,10 @@ describe('Text', () => {
           blockID={blockID}
           page={page}
           type={textType}
-          addBlockAtIndex={addBlockAtIndex}
-          removeBlock={removeBlock}
+          pageData={pageData}
+          setPageData={setPageData}
+          index={0}
+          setCurrentBlockType={setCurrentBlockType}
         />,
       );
 
@@ -67,33 +86,34 @@ describe('Text', () => {
         properties,
         blockID,
         page,
-        addBlockAtIndex,
-        removeBlock,
+        pageData,
+        setPageData,
       } = expectedProps;
-
       fetchMock.mockOnce('{}');
 
-      const { findByText } = render(
-        <Text
-          properties={properties}
-          blockID={blockID}
-          page={page}
-          type="text"
-          addBlockAtIndex={addBlockAtIndex}
-          removeBlock={removeBlock}
-        />,
-      );
-
-      const textElement = await findByText(properties.value);
-
-      expect(textElement).toBeVisible();
-      expect(textElement).toHaveAttribute('contentEditable', 'true');
-
-      fireEvent.input(textElement, {
-        target: { innerText: `${textObject.plainTextKeybind} ` },
-      });
-
       if (stylingLookupTable[textObject.type]) {
+        const { findByText } = render(
+          <BaseBlock
+            index={0}
+            blockID={blockID}
+            page={page}
+            blockType="text"
+            pageData={pageData}
+            properties={properties}
+            setPageData={setPageData}
+            children={[]}
+          />,
+        );
+
+        const textElement = await findByText(properties.value);
+
+        expect(textElement).toBeVisible();
+        expect(textElement).toHaveAttribute('contentEditable', 'true');
+
+        fireEvent.input(textElement, {
+          target: { innerText: `${textObject.plainTextKeybind} ` },
+        });
+
         expect(textElement).toHaveClass(stylingLookupTable[textObject.type]);
       }
     });
