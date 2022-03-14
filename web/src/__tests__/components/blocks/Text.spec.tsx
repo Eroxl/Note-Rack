@@ -4,7 +4,8 @@ import React from 'react';
 import '@testing-library/jest-dom';
 import { render, fireEvent } from '@testing-library/react';
 
-import { stylingLookupTable, textKeybinds } from '../../../lib/textTypes';
+import TextStyles from '../../../constants/TextStyles';
+import textKeybinds from '../../../lib/textKeybinds';
 import Text from '../../../components/blocks/Text';
 import PageDataInterface from '../../../types/pageTypes';
 import BaseBlock from '../../../components/blocks/BaseBlock';
@@ -76,7 +77,7 @@ describe('Text', () => {
 
       expect(textElement).toBeVisible();
       expect(textElement).toHaveAttribute('contentEditable', 'true');
-      expect(textElement).toHaveClass(stylingLookupTable[textType]);
+      expect(textElement).toHaveClass(TextStyles[textType]);
     });
   });
 
@@ -91,7 +92,7 @@ describe('Text', () => {
       } = expectedProps;
       fetchMock.mockOnce('{}');
 
-      if (stylingLookupTable[textObject.type]) {
+      if (TextStyles[textObject.type]) {
         const { findByText } = render(
           <BaseBlock
             index={0}
@@ -114,7 +115,7 @@ describe('Text', () => {
           target: { innerText: `${textObject.plainTextKeybind} ` },
         });
 
-        expect(textElement).toHaveClass(stylingLookupTable[textObject.type]);
+        expect(textElement).toHaveClass(TextStyles[textObject.type]);
       }
     });
   });

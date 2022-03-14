@@ -1,7 +1,8 @@
 import React from 'react';
 
 import { editBlock, addBlockAtIndex, removeBlock } from '../../lib/updatePage';
-import { textKeybinds, stylingLookupTable } from '../../lib/textTypes';
+import TextStyles from '../../constants/TextStyles';
+import textKeybinds from '../../lib/textKeybinds';
 import type { EditableText } from '../../types/blockTypes';
 
 const Text = (props: EditableText) => {
@@ -45,7 +46,7 @@ const Text = (props: EditableText) => {
 
   return (
     <span
-      className={`min-h-[1.2em] outline-none whitespace-pre-wrap ${stylingLookupTable[type]}`}
+      className={`min-h-[1.2em] outline-none whitespace-pre-wrap ${TextStyles[type]}`}
       role="textbox"
       tabIndex={0}
       contentEditable
