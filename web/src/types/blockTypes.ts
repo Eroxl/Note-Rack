@@ -1,3 +1,7 @@
+import type { Dispatch, SetStateAction } from 'react';
+
+import type PageDataInterface from './pageTypes';
+
 // -=- Used for the base block -=-
 interface BaseBlockProps {
   blockType: string,
@@ -6,8 +10,8 @@ interface BaseBlockProps {
   children: unknown[]
   page: string,
   index: number,
-  addBlockAtIndex: (index: number) => void,
-  removeBlock: (blockID: string, index: number) => void,
+  pageData: PageDataInterface,
+  setPageData: Dispatch<SetStateAction<PageDataInterface | Record<string, unknown>>>,
 }
 
 // -=- Used for blocks that can't be deleted and are only controlled by the server -=-
@@ -20,12 +24,13 @@ interface PermanentBlock {
 // -=- Used for for blocks that can't be deleted but can be edited -=-
 interface PermanentEditableText extends PermanentBlock {
   type: string,
-  addBlockAtIndex: () => void,
+  index: number,
+  pageData: PageDataInterface,
+  setPageData: Dispatch<SetStateAction<PageDataInterface | Record<string, unknown>>>,
 }
 
 // -=- Used for p through h1 -=-
 interface EditableText extends PermanentEditableText {
-  removeBlock: () => void,
   setCurrentBlockType: (_type: string) => void,
 }
 
@@ -39,8 +44,6 @@ interface EditableList {
   type: string,
   blockID: [string],
   children: EditableList[]
-  addBlockAtIndex: () => void,
-  removeBlock: () => void,
   setCurrentBlockType: (_type: string) => void,
 }
 

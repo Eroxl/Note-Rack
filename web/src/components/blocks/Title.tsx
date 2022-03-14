@@ -2,7 +2,7 @@
 import React from 'react';
 
 import TitleBreaker from './TitleBreaker';
-import { editBlock } from '../../lib/updatePage';
+import { editBlock, addBlockAtIndex } from '../../lib/updatePage';
 import { PermanentEditableText } from '../../types/blockTypes';
 
 const Title = (props: PermanentEditableText) => {
@@ -10,7 +10,8 @@ const Title = (props: PermanentEditableText) => {
     page,
     blockID,
     properties,
-    addBlockAtIndex,
+    pageData,
+    setPageData,
   } = props;
   const { value: titleString } = properties;
 
@@ -36,7 +37,7 @@ const Title = (props: PermanentEditableText) => {
             if (e.code === 'Enter') {
               e.preventDefault();
               e.currentTarget.blur();
-              addBlockAtIndex();
+              addBlockAtIndex(2, page, pageData, setPageData);
             }
           }
         }

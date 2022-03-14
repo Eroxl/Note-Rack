@@ -6,14 +6,14 @@ import type { BaseBlockProps } from '../../types/blockTypes';
 
 const BaseBlock = (props: BaseBlockProps) => {
   const {
-    properties,
-    blockType,
-    children,
-    blockID,
     page,
     index,
-    addBlockAtIndex,
-    removeBlock,
+    blockID,
+    pageData,
+    children,
+    blockType,
+    properties,
+    setPageData,
   } = props;
 
   const [currentBlockType, setCurrentBlockType] = useState(blockType);
@@ -21,15 +21,15 @@ const BaseBlock = (props: BaseBlockProps) => {
   return React.createElement(
     BlockTypes[currentBlockType] ?? 'fragement',
     {
-      properties: properties ?? {},
-      type: currentBlockType,
-      children: children ?? [],
-      blockID,
       page,
       index,
-      addBlockAtIndex,
-      removeBlock,
+      blockID,
+      pageData,
+      setPageData,
       setCurrentBlockType,
+      type: currentBlockType,
+      children: children ?? [],
+      properties: properties ?? {},
     },
   );
 };

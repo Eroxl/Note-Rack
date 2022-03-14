@@ -3,8 +3,7 @@
 import React, { Dispatch, SetStateAction } from 'react';
 import { useRouter } from 'next/router';
 
-import { addBlockAtIndex, removeBlock } from '../lib/updatePage';
-import PageDataInterface from '../types/pageTypes';
+import type PageDataInterface from '../types/pageTypes';
 import BaseBlock from './blocks/BaseBlock';
 import PageThumbnail from './pageCustomization/PageThumbnail';
 
@@ -28,28 +27,13 @@ const Editor = (
             <BaseBlock
               blockType={block.blockType}
               blockID={block._id}
+              index={index}
               key={block._id}
               page={page as string}
               properties={block.properties}
               children={block.children}
-              index={index}
-              addBlockAtIndex={() => {
-                addBlockAtIndex(
-                  index + 1,
-                  page as string,
-                  pageData as PageDataInterface,
-                  setPageData,
-                );
-              }}
-              removeBlock={() => {
-                removeBlock(
-                  index,
-                  [block._id],
-                  page as string,
-                  pageData as PageDataInterface,
-                  setPageData,
-                );
-              }}
+              pageData={pageData}
+              setPageData={setPageData}
             />
           ))}
         </div>

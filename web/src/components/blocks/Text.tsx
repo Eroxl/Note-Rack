@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { editBlock } from '../../lib/updatePage';
+import { editBlock, addBlockAtIndex, removeBlock } from '../../lib/updatePage';
 import { textKeybinds, stylingLookupTable } from '../../lib/textTypes';
 import { EditableText } from '../../types/blockTypes';
 
@@ -9,9 +9,10 @@ const Text = (props: EditableText) => {
     properties,
     page,
     type,
+    index,
     blockID,
-    addBlockAtIndex,
-    removeBlock,
+    pageData,
+    setPageData,
     setCurrentBlockType,
   } = props;
   const { value } = properties;
@@ -69,12 +70,12 @@ const Text = (props: EditableText) => {
           if (e.code === 'Enter' && !e.shiftKey) {
             e.preventDefault();
             e.currentTarget.blur();
-            addBlockAtIndex();
+            addBlockAtIndex(index + 1, page, pageData, setPageData);
           } else if (e.code === 'Backspace' && type !== 'text' && window.getSelection()?.anchorOffset === 0) {
             setCurrentBlockType('text');
             editBlock([blockID], 'text', undefined, page);
           } else if (e.code === 'Backspace' && type === 'text' && (e.currentTarget.innerText === '' || e.currentTarget.innerText === '\n')) {
-            removeBlock();
+            removeBlock(index, [blockID], page, pageData, setPageData);
           }
         }
       }
