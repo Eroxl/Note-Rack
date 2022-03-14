@@ -5,43 +5,31 @@ import { Picker, BaseEmoji } from 'emoji-mart';
 import { editBlock } from '../../lib/updatePage';
 import type { PermanentBlock } from '../../types/blockTypes';
 
-const Icon = (
-  props: PermanentBlock,
-) => {
+const Icon = (props: PermanentBlock) => {
   const { properties, page, blockID } = props;
   const { value: icon } = properties;
 
-  const [isEmojiSelectorActive, setIsEmojiSelectorActive] = useState(false);
   const [currentIcon, setCurrentIcon] = useState(icon);
+  const [isEmojiSelectorActive, setIsEmojiSelectorActive] = useState(false);
 
   const emojiPickerMenuRef = useRef<HTMLDivElement>(null);
-
-  const updateData = (updatedIcon: string) => {
-    editBlock([blockID], undefined, { value: updatedIcon }, page);
-  };
 
   const onEmojiChange = (emoji: BaseEmoji) => {
     setCurrentIcon(emoji.native);
     setIsEmojiSelectorActive(false);
 
-    updateData(emoji.native);
+    editBlock([blockID], undefined, { value: emoji.native }, page);
   };
 
   useEffect(() => {
-    const handleClickOutside = (event: unknown) => {
-      if (
-        emojiPickerMenuRef.current && !emojiPickerMenuRef.current.contains(
-          (event as React.MouseEvent<HTMLElement>).target as Node,
-        )
-      ) {
+    const handleClickOutside = (event: React.MouseEvent<HTMLElement>) => {
+      const { current } = emojiPickerMenuRef;
+      if (current && !current.contains(event.target as Node)) {
         setIsEmojiSelectorActive(false);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
+    document.addEventListener('mousedown', handleClickOutside as () => void);
   }, [emojiPickerMenuRef]);
 
   return (
