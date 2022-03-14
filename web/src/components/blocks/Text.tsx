@@ -25,8 +25,10 @@ const Text = (props: EditableText) => {
       element.innerText = regexSearch[1] ?? '';
       setCurrentBlockType(bind.type);
 
-      if (bind.customFunc !== undefined) {
-        const { properties: newBlockProperties } = bind.customFunc(
+      let newBlockProperties;
+
+      if (bind.customFunc) {
+        newBlockProperties = bind.customFunc(
           {
             ...properties,
             value: element.innerText,
@@ -35,12 +37,9 @@ const Text = (props: EditableText) => {
           page,
           element,
         );
-
-        await editBlock([blockID], bind.type, newBlockProperties, page);
-        return;
       }
 
-      await editBlock([blockID], bind.type, undefined, page);
+      await editBlock([blockID], bind.type, newBlockProperties, page);
     });
   };
 
@@ -57,12 +56,7 @@ const Text = (props: EditableText) => {
       }}
       onBlur={
         (e) => {
-          editBlock(
-            [blockID],
-            undefined,
-            { value: e.currentTarget.innerText },
-            page,
-          );
+          editBlock([blockID], undefined, { value: e.currentTarget.innerText }, page);
         }
       }
       onKeyDown={

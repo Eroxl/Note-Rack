@@ -25,7 +25,7 @@ const textKeybinds: {
   customFunc?: (
     properties: Record<string, unknown>, blockID: string,
     page: string, element: Element,
-  ) => { properties?: Record<string, unknown> }
+  ) => Record<string, unknown>,
 }[] = [
   {
     keybind: /^# (.*)/g,
@@ -56,7 +56,7 @@ const textKeybinds: {
     keybind: /^\* (.*)/g,
     plainTextKeybind: '*',
     type: 'u-list',
-    customFunc: (properties) => ({ properties: { relationship: 'sibling', ...properties } }),
+    customFunc: (properties) => ({ relationship: 'sibling', ...properties }),
   },
   {
     keybind: /\d+\. (.*)/g,
