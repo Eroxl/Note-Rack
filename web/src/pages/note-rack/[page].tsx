@@ -4,7 +4,7 @@ import Head from 'next/head';
 
 import Editor from '../../components/Editor';
 import LoadingPage from '../../components/LoadingPage';
-import PageDataInterface from '../../types/pageTypes';
+import type PageDataInterface from '../../types/pageTypes';
 
 const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {
   const [pageData, setPageData] = useState<PageDataInterface | Record<string, unknown>>({});

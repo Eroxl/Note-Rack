@@ -3,7 +3,7 @@ import React from 'react';
 
 import TitleBreaker from './TitleBreaker';
 import { editBlock, addBlockAtIndex } from '../../lib/updatePage';
-import { PermanentEditableText } from '../../types/blockTypes';
+import type { PermanentEditableText } from '../../types/blockTypes';
 
 const Title = (props: PermanentEditableText) => {
   const {

@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-import PageDataInterface from '../types/pageTypes';
+import type PageDataInterface from '../types/pageTypes';
 
 const addBlockAtIndex = async (
   index: number,

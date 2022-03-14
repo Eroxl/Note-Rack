@@ -2,7 +2,7 @@ import React from 'react';
 
 import { editBlock, addBlockAtIndex, removeBlock } from '../../lib/updatePage';
 import { textKeybinds, stylingLookupTable } from '../../lib/textTypes';
-import { EditableText } from '../../types/blockTypes';
+import type { EditableText } from '../../types/blockTypes';
 
 const Text = (props: EditableText) => {
   const {
