@@ -26,7 +26,10 @@ const Text = (props: EditableText) => {
 
       if (bind.customFunc !== undefined) {
         const { properties: newBlockProperties } = bind.customFunc(
-          properties,
+          {
+            ...properties,
+            value: element.innerText,
+          },
           blockID,
           page,
           element,

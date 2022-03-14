@@ -30,12 +30,18 @@ interface EditableText extends PermanentEditableText {
 }
 
 // -=- Used for ol and ul elements -=-
-interface EditableList extends EditableText {
+interface EditableList {
   properties: {
     value: string,
     relationship: 'sibling' | 'child',
   },
+  page: string,
+  type: string,
+  blockID: [string],
   children: EditableList[]
+  addBlockAtIndex: () => void,
+  removeBlock: () => void,
+  setCurrentBlockType: (_type: string) => void,
 }
 
 // -=- Used for check list elements -=-

@@ -1,7 +1,6 @@
 import Icon from '../components/blocks/Icon';
 import Title from '../components/blocks/Title';
 import Text from '../components/blocks/Text';
-import List from '../components/blocks/List';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const BlockTypes: {[key: string]: any} = {
@@ -20,10 +19,6 @@ const BlockTypes: {[key: string]: any} = {
   // -=- Semi-Text Based Components -=-
   quote: Text,
   callout: Text,
-
-  // -=- List Based Components -=-
-  'o-list': List,
-  'u-list': List,
 };
 
 export default BlockTypes;
