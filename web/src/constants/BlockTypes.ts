@@ -1,6 +1,7 @@
 import Icon from '../components/blocks/Icon';
 import Title from '../components/blocks/Title';
 import Text from '../components/blocks/Text';
+import PageBlock from '../components/blocks/PageBlock';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const BlockTypes: {[key: string]: any} = {
@@ -19,6 +20,9 @@ const BlockTypes: {[key: string]: any} = {
   // -=- Semi-Text Based Components -=-
   quote: Text,
   callout: Text,
+
+  // -=- Inline Page Component -=-
+  page: PageBlock,
 };
 
 export default BlockTypes;
