@@ -34,22 +34,6 @@ const textKeybinds: {
     type: 'h5',
   },
   {
-    keybind: /^\* (.*)/g,
-    plainTextKeybind: '*',
-    type: 'u-list',
-    customFunc: (properties) => ({ relationship: 'sibling', ...properties }),
-  },
-  {
-    keybind: /\d+\. (.*)/g,
-    plainTextKeybind: '1.',
-    type: 'o-list',
-  },
-  {
-    keybind: /^\[\s?\] (.*)/g,
-    plainTextKeybind: '[ ]',
-    type: 'c-list',
-  },
-  {
     keybind: /^> (.*)/g,
     plainTextKeybind: '>',
     type: 'quote',
