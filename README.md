@@ -17,13 +17,6 @@ Currently the planned features / features I hope to include in the final build a
   - [x] Page Titles
   - [x] Page Icons
   - [x] Page Thumbnails
-- [ ] List Elements
-  - [ ] Ordered Lists
-    1. Example
-  - [ ] Un-Ordered Lists
-    * Example
-  - [ ] Check Lists
-    - [ ] Example
 - [ ] Multiple Pages
   - [ ] Inline Pages
   - [ ] Page Sidebar / Selector
@@ -35,6 +28,13 @@ Currently the planned features / features I hope to include in the final build a
   - [ ] Underlined: <u>Example</u>
   - [ ] Strike Through: <s>Example</s>
   - [ ] Equation Elements
+- [ ] List Elements
+  - [ ] Ordered Lists
+    1. Example
+  - [ ] Un-Ordered Lists
+    * Example
+  - [ ] Check Lists
+    - [ ] Example
 - [ ] Other
   - [ ] Emojis: 🐛
 
@@ -45,10 +45,6 @@ Currently the planned features / features I hope to include in the final build a
   - `###` - H3
   - `####` - H4
   - `#####` - H5
-- Lists
-  - `*` Ordered List
-  - `1.` Numbered List (1 can be any integer)
-  - `[ ]` or `[]` Check List
 - Other
   - `>` Quote
   - `|` Callout
