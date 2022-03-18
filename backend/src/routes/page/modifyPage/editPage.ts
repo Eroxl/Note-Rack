@@ -31,7 +31,8 @@ router.patch(
       return;
     }
 
-    const formattedStyleProps = Object.keys(style).map((styleElement) => [`style.${styleElement}`, style[styleElement]]);
+    const formattedStyleProps = Object.fromEntries(Object.keys(style).map((styleElement) => [`style.${styleElement}`, style[styleElement]]));
+    console.log(formattedStyleProps);
 
     await PageModel.updateOne(
       {
