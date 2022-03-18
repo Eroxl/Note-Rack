@@ -4,6 +4,7 @@ import modifyPage from './modifyPage';
 import modify from './modify';
 import getHomePage from './getHomePage';
 import getPage from './getPage';
+import getPageInfo from './getPageInfo';
 
 const router = express.Router();
 
@@ -17,6 +18,12 @@ router.use(
 router.use(
   '/',
   getPage,
+);
+
+// -=- Create Get Page Info API -=-
+router.use(
+  '/',
+  getPageInfo,
 );
 
 // -=- Create The Edit Route -=-

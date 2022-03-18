@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+
+import getPageInfo from '../../lib/getPageInfo';
 
 interface PageBlockProps {
   blockID: string;
@@ -11,6 +13,17 @@ interface PageBlockProps {
 const PageBlock = (props: PageBlockProps) => {
   const { blockID, properties } = props;
   const { value } = properties;
+
+  const [currentValue, setCurrentValue] = useState(value);
+
+  useEffect(() => {
+    (async () => {
+      const { style } = await getPageInfo(blockID);
+      const { icon, name } = style;
+
+      setCurrentValue(`${icon} ${name}`);
+    })();
+  }, [value]);
 
   return (
     <Link href={
@@ -28,7 +41,7 @@ const PageBlock = (props: PageBlockProps) => {
       >
         [[
         {' '}
-        {value}
+        {currentValue}
         {' '}
         ]]
       </a>
