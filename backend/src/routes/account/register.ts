@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 
 import UserModel from '../../models/userModel';
 import PageModel from '../../models/pageModel';
+import PageTreeModel from '../../models/pageTreeModel';
 
 const router = express.Router();
 
@@ -44,8 +45,8 @@ router.post(
     );
 
     try {
-      // EROXL: This is only temporary
-      // TODO: When we verify the email create this page there
+    // EROXL: This is only temporary
+    // TODO: When we verify the email create this page there
       const homePage = await PageModel.create(
         {
           user: username,
@@ -70,6 +71,13 @@ router.post(
               },
             },
           ],
+        },
+      );
+
+      await PageTreeModel.create(
+        {
+          _id: username,
+          subPages: [],
         },
       );
 

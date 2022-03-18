@@ -8,7 +8,7 @@ const textKeybinds: {
   customFunc?: (
     properties: Record<string, unknown>, blockID: string,
     page: string, element: Element,
-  ) => Record<string, unknown>,
+  ) => Promise<Record<string, unknown>>,
 }[] = [
   {
     keybind: /^# (.*)/g,
@@ -49,10 +49,17 @@ const textKeybinds: {
     keybind: /^\[\[ (\S+) \]\]/gm,
     plainTextKeybind: '[[ Page ]]',
     type: 'page',
-    customFunc: (properties, blockID) => {
-      const { value } = properties;
-
-      // TODO: Create a new page based on this blocks props
+    customFunc: async (properties, blockID, page) => {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/page/modify-page/${page}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          'new-page-id': blockID,
+        }),
+        credentials: 'include',
+      });
       Router.replace(`/note-rack/${blockID}/`);
 
       return (properties);

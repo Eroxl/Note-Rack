@@ -24,12 +24,11 @@ const Text = (props: EditableText) => {
       if (!regexSearch) return;
 
       element.innerText = regexSearch[1] ?? '';
-      setCurrentBlockType(bind.type);
 
       let newBlockProperties;
 
       if (bind.customFunc) {
-        newBlockProperties = bind.customFunc(
+        newBlockProperties = await bind.customFunc(
           {
             ...properties,
             value: element.innerText,
@@ -40,7 +39,10 @@ const Text = (props: EditableText) => {
         );
       }
 
+      console.log(bind.type);
+
       await editBlock([blockID], bind.type, newBlockProperties, page);
+      setCurrentBlockType(bind.type);
     });
   };
 

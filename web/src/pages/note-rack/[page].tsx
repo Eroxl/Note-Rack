@@ -15,7 +15,7 @@ const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {
     (async () => {
       setPageData(await pageDataReq);
     })();
-  }, []);
+  }, [pageDataReq]);
 
   return (
     <>

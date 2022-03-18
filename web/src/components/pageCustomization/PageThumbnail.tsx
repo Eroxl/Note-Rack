@@ -21,7 +21,7 @@ const PageThumbnail = (props: PageThumbnailProps) => {
     setActiveColour({
       '--forced-background-colour': `#${colour.r.toString(16).padStart(2, '0')}${colour.g.toString(16).padStart(2, '0')}${colour.b.toString(16).padStart(2, '0')}`,
     });
-  }, []);
+  }, [colour]);
 
   useEffect(() => {
     const handleClickOutside = (event: unknown) => {
