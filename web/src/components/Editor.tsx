@@ -6,6 +6,8 @@ import { useRouter } from 'next/router';
 import type PageDataInterface from '../types/pageTypes';
 import BaseBlock from './blocks/BaseBlock';
 import PageThumbnail from './pageCustomization/PageThumbnail';
+import Title from './blocks/Title';
+import Icon from './blocks/Icon';
 
 const Editor = (
   props: {
@@ -23,6 +25,18 @@ const Editor = (
       <div className="flex flex-col items-center w-full h-max bg-amber-50 dark:bg-zinc-700 print:dark:bg-white print:bg-white">
         <PageThumbnail colour={pageData.message.style.colour} page={page as string} />
         <div className="flex flex-col w-full max-w-4xl gap-3 px-20 pb-56 mx-auto break-words print:p-0 text-zinc-700 dark:text-amber-50 print:dark:text-zinc-700 h-max editor">
+          <Icon
+            page={page as string}
+            icon={pageData.message.style.icon}
+          />
+          <Title
+            page={page as string}
+            pageData={pageData}
+            index={1}
+            setPageData={setPageData}
+            title={pageData.message.style.name}
+          />
+
           {(pageData as PageDataInterface).message.data.map((block, index) => (
             <BaseBlock
               blockType={block.blockType}

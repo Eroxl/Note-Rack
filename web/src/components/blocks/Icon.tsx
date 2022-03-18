@@ -2,12 +2,15 @@ import React, { useState, useEffect, useRef } from 'react';
 import 'emoji-mart/css/emoji-mart.css';
 import { Picker, BaseEmoji } from 'emoji-mart';
 
-import { editBlock } from '../../lib/updatePage';
 import type { PermanentBlock } from '../../types/blockTypes';
+import editStyle from '../../lib/editStyle';
 
-const Icon = (props: PermanentBlock) => {
-  const { properties, page, blockID } = props;
-  const { value: icon } = properties;
+interface IconProps extends PermanentBlock {
+  icon: string,
+}
+
+const Icon = (props: IconProps) => {
+  const { page, icon } = props;
 
   const [currentIcon, setCurrentIcon] = useState(icon);
   const [isEmojiSelectorActive, setIsEmojiSelectorActive] = useState(false);
@@ -18,7 +21,7 @@ const Icon = (props: PermanentBlock) => {
     setCurrentIcon(emoji.native);
     setIsEmojiSelectorActive(false);
 
-    editBlock([blockID], undefined, { value: emoji.native }, page);
+    editStyle({ icon: emoji.native }, page);
   };
 
   useEffect(() => {
