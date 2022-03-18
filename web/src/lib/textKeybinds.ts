@@ -46,7 +46,7 @@ const textKeybinds: {
     type: 'callout',
   },
   {
-    keybind: /^\[\[ (\S+) \]\]/gm,
+    keybind: /^\[\[ (.+) \]\]/gm,
     plainTextKeybind: '[[ Page ]]',
     type: 'page',
     customFunc: async (properties, blockID, page) => {

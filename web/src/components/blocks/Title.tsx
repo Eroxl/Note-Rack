@@ -2,21 +2,25 @@
 import React from 'react';
 
 import TitleBreaker from './TitleBreaker';
-import { editBlock, addBlockAtIndex } from '../../lib/updatePage';
+import { addBlockAtIndex } from '../../lib/updatePage';
 import type { PermanentEditableText } from '../../types/blockTypes';
+import editStyle from '../../lib/editStyle';
 
-const Title = (props: PermanentEditableText) => {
+interface TitleProps extends PermanentEditableText {
+  title: string,
+}
+
+const Title = (props: TitleProps) => {
   const {
     page,
-    blockID,
-    properties,
+    title,
     pageData,
     setPageData,
   } = props;
-  const { value: titleString } = properties;
 
   const onTitleChanged = (text: string) => {
-    editBlock([blockID], undefined, { value: text }, page);
+    // TODO:EROXL: Refactor this
+    editStyle({ name: text }, page);
   };
 
   return (
@@ -42,7 +46,7 @@ const Title = (props: PermanentEditableText) => {
           }
         }
       >
-        {titleString}
+        {title}
       </span>
       <TitleBreaker />
     </>

@@ -14,6 +14,8 @@ interface PageDataInterface {
         g: number,
         b: number,
       }
+      name: string,
+      icon: string,
     },
     data: Block[]
   },

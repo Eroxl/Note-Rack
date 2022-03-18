@@ -90,21 +90,10 @@ router.post(
           g: 197,
           b: 253,
         },
+        icon: '📝',
+        name: 'New Notebook',
       },
-      data: [
-        {
-          blockType: 'page-icon',
-          properties: {
-            value: '📝',
-          },
-        },
-        {
-          blockType: 'page-title',
-          properties: {
-            value: 'New Notebook',
-          },
-        },
-      ],
+      data: [],
     });
 
     res.statusCode = 200;

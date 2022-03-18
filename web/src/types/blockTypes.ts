@@ -16,14 +16,11 @@ interface BaseBlockProps {
 
 // -=- Used for blocks that can't be deleted and are only controlled by the server -=-
 interface PermanentBlock {
-  properties: { value: string },
-  blockID: string,
   page: string,
 }
 
 // -=- Used for for blocks that can't be deleted but can be edited -=-
 interface PermanentEditableText extends PermanentBlock {
-  type: string,
   index: number,
   pageData: PageDataInterface,
   setPageData: Dispatch<SetStateAction<PageDataInterface | Record<string, unknown>>>,

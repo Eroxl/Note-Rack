@@ -31,15 +31,15 @@ router.patch(
       return;
     }
 
+    const formattedStyleProps = Object.fromEntries(Object.keys(style).map((styleElement) => [`style.${styleElement}`, style[styleElement]]));
+
     await PageModel.updateOne(
       {
         _id: page,
       },
       {
         $set: {
-          style: {
-            ...style,
-          },
+          ...formattedStyleProps,
         },
       },
     );
