@@ -25,6 +25,10 @@ const Icon = (props: IconProps) => {
   };
 
   useEffect(() => {
+    setCurrentIcon(icon);
+  }, [icon]);
+
+  useEffect(() => {
     const handleClickOutside = (event: React.MouseEvent<HTMLElement>) => {
       const { current } = emojiPickerMenuRef;
       if (current && !current.contains(event.target as Node)) {
