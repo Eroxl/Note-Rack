@@ -41,7 +41,9 @@ const PageBlock = (props: PageBlockProps) => {
       >
         [[
         {' '}
-        {currentValue}
+        <span className="underline">
+          {currentValue}
+        </span>
         {' '}
         ]]
       </a>
