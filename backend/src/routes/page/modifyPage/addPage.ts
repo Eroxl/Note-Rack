@@ -38,7 +38,7 @@ router.post(
     const pageMap = await PageMapModel.findById(page).lean();
 
     const arrayFilters: Record<string, unknown>[] = [];
-    let queryString = 'subPages.';
+    let queryString = 'subPages';
 
     if (pageMap) {
       pageMap.pathToPage.forEach((element: string, index: number) => {
@@ -46,11 +46,7 @@ router.post(
           [`a${index}._id`]: element,
         });
 
-        if (index < (pageMap.pathToPage.length - 1)) {
-          queryString += `$[a${index}].subPages.`;
-        }
-
-        queryString += `$[a${index}]`;
+        queryString += `.$[a${index}].subPages`;
       });
     }
 
@@ -60,7 +56,7 @@ router.post(
       },
       {
         $push: {
-          [queryString !== 'subPages.' ? queryString : 'subPages']: {
+          [queryString]: {
             $each: [{
               _id: newPageId,
               subPages: [],
