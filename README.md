@@ -18,7 +18,7 @@ Currently the planned features / features I hope to include in the final build a
   - [x] Page Icons
   - [x] Page Thumbnails
 - [ ] Multiple Pages
-  - [ ] Inline Pages
+  - [x] Inline Pages
   - [ ] Page Sidebar / Selector
   - [ ] Page Navigation
 - [ ] Block Command Menu Keybind "/"
