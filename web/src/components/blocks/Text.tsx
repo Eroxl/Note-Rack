@@ -39,8 +39,6 @@ const Text = (props: EditableText) => {
         );
       }
 
-      console.log(bind.type);
-
       await editBlock([blockID], bind.type, newBlockProperties, page);
       setCurrentBlockType(bind.type);
     });

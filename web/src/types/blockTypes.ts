@@ -28,6 +28,11 @@ interface PermanentEditableText extends PermanentBlock {
 
 // -=- Used for p through h1 -=-
 interface EditableText extends PermanentEditableText {
+  properties: {
+    value: string,
+  },
+  type: string,
+  blockID: string,
   setCurrentBlockType: (_type: string) => void,
 }
 
