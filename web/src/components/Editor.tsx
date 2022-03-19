@@ -32,7 +32,7 @@ const Editor = (
           <Title
             page={page as string}
             pageData={pageData}
-            index={1}
+            index={0}
             setPageData={setPageData}
             title={pageData.message.style.name}
           />

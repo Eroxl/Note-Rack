@@ -13,6 +13,7 @@ interface TitleProps extends PermanentEditableText {
 const Title = (props: TitleProps) => {
   const {
     page,
+    index,
     title,
     pageData,
     setPageData,
@@ -41,7 +42,7 @@ const Title = (props: TitleProps) => {
             if (e.code === 'Enter') {
               e.preventDefault();
               e.currentTarget.blur();
-              addBlockAtIndex(2, page, pageData, setPageData);
+              addBlockAtIndex(index, page, pageData, setPageData);
             }
           }
         }
