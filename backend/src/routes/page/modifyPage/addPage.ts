@@ -41,9 +41,8 @@ router.post(
     let queryString = 'subPages';
 
     if (pageMap) {
-      pageMap.pathToPage = pageMap.pathToPage.slice(1);
       pageMap.pathToPage.push(page);
-      pageMap.pathToPage.forEach((element: string, index: number) => {
+      pageMap.pathToPage.slice(1).forEach((element: string, index: number) => {
         arrayFilters.push({
           [`a${index}._id`]: element,
         });
@@ -51,9 +50,6 @@ router.post(
         queryString += `.$[a${index}].subPages`;
       });
     }
-
-    console.log(arrayFilters);
-    console.log(queryString);
 
     await PageTreeModel.updateOne(
       {

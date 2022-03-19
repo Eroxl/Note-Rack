@@ -1,5 +1,6 @@
 import express from 'express';
 
+import getPageTree from './getPageTree';
 import register from './register';
 import login from './login';
 
@@ -15,6 +16,12 @@ router.use(
 router.use(
   '/',
   login,
+);
+
+// -=- Create Get Page Tree API -=-
+router.use(
+  '/',
+  getPageTree,
 );
 
 export default router;
