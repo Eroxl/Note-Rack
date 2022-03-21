@@ -60,6 +60,7 @@ router.post(
           [queryString]: {
             $each: [{
               _id: newPageId,
+              expanded: false,
               subPages: [],
             }],
           },
