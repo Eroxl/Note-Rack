@@ -1,10 +1,11 @@
-![](images/Desktop_Current_State.png)
+<p align="center">
+  <img src="https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji@13.1.0/color/svg/1F4DD.svg" height="200">
+</p>
 <h1 align="center">
   Note Rack
 </h1>
 
 ## Planned Features
-Currently the planned features / features I hope to include in the final build are as follows
 
 - [x] Blocks
   - [x] Heading 1-5
@@ -21,7 +22,6 @@ Currently the planned features / features I hope to include in the final build a
   - [x] Inline Pages
   - [ ] Page Sidebar / Selector
   - [ ] Page Navigation
-- [ ] Block Command Menu Keybind "/"
 - [ ] Inline Elements
   - [ ] Bold: <b>Example</b>
   - [ ] Italic: <i>Example</i>
@@ -36,7 +36,8 @@ Currently the planned features / features I hope to include in the final build a
   - [ ] Check Lists
     - [ ] Example
 - [ ] Other
-  - [ ] Emojis: 🐛
+  - [ ] Block Selector Menu: "/"
+  - [ ] Emoji Selector Menu: ":"
 
 ## Keybinds
 - Headings
@@ -50,10 +51,10 @@ Currently the planned features / features I hope to include in the final build a
   - `|` Callout
   -  `[[ Page Name ]]` Page ("Page Name" can be any string)
 
-## Current State vs. Goal
+## Examples
 
-#### Current State
+#### Current State (dark mode)
 <img src="./images/Desktop_Current_State_Dark.png" width="500">
 
-#### Goal
-<img src="./images/Desktop_Example.png" width="500">
+#### Current State (light mode)
+<img src="./images/Desktop_Current_State.png" width="500">

@@ -55,7 +55,7 @@ const PageSidebarItem = (props: PageSidebarItemProps) => {
           prefetch={false}
         >
           <a className="truncate" href={`/note-rack/${pageID}`}>
-            {`${currentIcon} ${currentName}`}
+            {`${currentIcon} ${currentName || 'Untitled'}`}
           </a>
         </Link>
       </p>
