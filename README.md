@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://cdn.jsdelivr.net/gh/hfg-gmuend/openmoji@13.1.0/color/svg/1F4DD.svg" height="200">
+  <img src="./web/src/public/Memo.svg" height="200">
 </p>
 <h1 align="center">
   Note Rack
