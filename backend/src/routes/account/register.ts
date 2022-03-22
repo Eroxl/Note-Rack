@@ -1,6 +1,8 @@
+/* eslint-disable no-underscore-dangle */
 import express, { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 
+import PageMapModel from '../../models/pageMap';
 import UserModel from '../../models/userModel';
 import PageModel from '../../models/pageModel';
 import PageTreeModel from '../../models/pageTreeModel';
@@ -70,12 +72,16 @@ router.post(
         },
       );
 
+      await PageMapModel.create({
+        _id: homePage._id,
+        pathToPage: [],
+      });
+
       await UserModel.create({
         username,
         email,
         password: passwordHash,
         verified: false,
-        // eslint-disable-next-line no-underscore-dangle
         homePage: homePage._id,
       });
 

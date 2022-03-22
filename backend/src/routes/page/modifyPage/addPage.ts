@@ -72,7 +72,6 @@ router.post(
     );
 
     const newPageMap = pageMap !== null ? pageMap.pathToPage : [];
-    newPageMap.push(page);
 
     await PageMapModel.create({
       _id: newPageId,
