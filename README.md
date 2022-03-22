@@ -1,11 +1,8 @@
-<p align="center">
-  <img src="./web/src/public/Memo.svg" height="200">
-</p>
 <h1 align="center">
-  Note Rack
+  📝 Note Rack
 </h1>
 
-## Planned Features
+## 🌱 Planned Features
 
 - [x] Blocks
   - [x] Heading 1-5
@@ -39,7 +36,7 @@
   - [ ] Block Selector Menu: "/"
   - [ ] Emoji Selector Menu: ":"
 
-## Keybinds
+## 🎹 Keybinds
 - Headings
   - `#` - H1
   - `##` - H2
@@ -51,10 +48,10 @@
   - `|` Callout
   -  `[[ Page Name ]]` Page ("Page Name" can be any string)
 
-## Examples
+## 🔬 Examples
 
-#### Current State (dark mode)
+#### Current State (dark)
 <img src="./images/Desktop_Current_State_Dark.png" width="500">
 
-#### Current State (light mode)
+#### Current State (light)
 <img src="./images/Desktop_Current_State.png" width="500">
