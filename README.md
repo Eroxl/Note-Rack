@@ -37,10 +37,7 @@
   * Page Navigation
   * Page Styling
 * Exporting
-  <details>
-    <summary>PDF Exporting</summary>
-    <embed src="./images/Note Rack Page.pdf" width="500" height="375" type="application/pdf" />
-  </details>
+  * [PDF Exporting](./images/Note%20Rack%20Page.pdf)
 
 ## 🎹 Keybinds
 - Headings
