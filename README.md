@@ -4,17 +4,6 @@
 
 ## 🌱 Planned Features
 
-- [x] Blocks
-  - [x] Heading 1-5
-  - [x] Normal Text
-  - [x] Quotes
-  - [x] Callouts
-- [x] Exporting
-  - [x] PDF
-- [x] Page Customization
-  - [x] Page Titles
-  - [x] Page Icons
-  - [x] Page Thumbnails
 - [ ] Multiple Pages
   - [x] Inline Pages
   - [ ] Page Sidebar / Selector
@@ -35,6 +24,7 @@
 - [ ] Other
   - [ ] Block Selector Menu: "/"
   - [ ] Emoji Selector Menu: ":"
+  - [ ] Better Caret Control
 
 ## 🎹 Keybinds
 - Headings
