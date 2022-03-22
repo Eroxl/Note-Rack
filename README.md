@@ -26,6 +26,22 @@
   - [ ] Emoji Selector Menu: ":"
   - [ ] Better Caret Control
 
+# 🌳 Features
+* Basic Markdown Syntax
+  * H1, H2, H3, H4, H5
+  * Quotes
+* Custom Markdown Syntax
+  * Call Outs
+* Page Management
+  * Sub Pages
+  * Page Navigation
+  * Page Styling
+* Exporting
+  <details>
+    <summary>PDF Exporting</summary>
+    <embed src="./images/Note Rack Page.pdf" width="500" height="375" type="application/pdf" />
+  </details>
+
 ## 🎹 Keybinds
 - Headings
   - `#` - H1
