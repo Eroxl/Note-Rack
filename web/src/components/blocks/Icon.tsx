@@ -22,6 +22,7 @@ const Icon = (props: IconProps) => {
     setIsEmojiSelectorActive(false);
 
     editStyle({ icon: emoji.native }, page);
+    document.dispatchEvent(new CustomEvent('changePageTitle', { detail: { newIcon: emoji.native } }));
   };
 
   useEffect(() => {

@@ -20,7 +20,6 @@ const Title = (props: TitleProps) => {
   } = props;
 
   const onTitleChanged = (text: string) => {
-    // TODO:EROXL: Refactor this
     editStyle({ name: text }, page);
   };
 
@@ -44,6 +43,11 @@ const Title = (props: TitleProps) => {
               e.currentTarget.blur();
               addBlockAtIndex(index, page, pageData, setPageData);
             }
+          }
+        }
+        onInput={
+          (e) => {
+            document.dispatchEvent(new CustomEvent('changePageTitle', { detail: { newTitle: e.currentTarget.innerText } }));
           }
         }
       >

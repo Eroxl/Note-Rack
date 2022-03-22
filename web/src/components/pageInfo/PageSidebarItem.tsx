@@ -1,13 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
-interface PageSidebarItemProps {
-  _id: string,
-  style: Record<string, unknown>,
-  expanded: boolean,
-  parentExpanded: boolean,
-  subPages: PageSidebarItemProps[],
-}
+import type { PageSidebarItemProps } from './PageSidebarItemProps';
 
 const PageSidebarItem = (props: PageSidebarItemProps) => {
   const {
@@ -18,7 +13,29 @@ const PageSidebarItem = (props: PageSidebarItemProps) => {
     subPages,
   } = props;
 
+  const [currentName, setCurrentName] = useState(style.name);
+  const [currentIcon, setCurrentIcon] = useState(style.icon);
   const [isExpanded, setIsExpanded] = useState(expanded);
+
+  const router = useRouter();
+
+  useEffect(() => {
+    const changeTitle = (event: CustomEvent) => {
+      const { detail } = event;
+      const { newTitle, newIcon } = detail;
+
+      if (newIcon !== undefined) setCurrentIcon(newIcon);
+      if (newTitle !== undefined) setCurrentName(newTitle);
+    };
+
+    if (router.query.page === pageID) {
+      document.addEventListener('changePageTitle', changeTitle as EventListener);
+    }
+
+    return () => {
+      document.removeEventListener('changePageTitle', changeTitle as EventListener);
+    };
+  });
 
   return (
     <div className={`pl-3 ${parentExpanded || 'hidden'}`}>
@@ -38,7 +55,7 @@ const PageSidebarItem = (props: PageSidebarItemProps) => {
           prefetch={false}
         >
           <a className="truncate" href={`/note-rack/${pageID}`}>
-            {`${style.icon || ''} ${style.name || 'Untitled'}`}
+            {`${currentIcon} ${currentName}`}
           </a>
         </Link>
       </p>

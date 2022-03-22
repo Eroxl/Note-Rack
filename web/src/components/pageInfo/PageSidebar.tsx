@@ -1,14 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
+import type { PageSidebarItemProps } from './PageSidebarItemProps';
 import PageSidebarItem from './PageSidebarItem';
-
-interface PageSidebarItemProps {
-  _id: string,
-  style: Record<string, unknown>,
-  expanded: boolean,
-  parentExpanded: boolean,
-  subPages: PageSidebarItemProps[]
-}
 
 const PageSidebar = () => {
   const [isLoading, setIsLoading] = useState(true);
