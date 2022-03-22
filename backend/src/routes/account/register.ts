@@ -68,7 +68,14 @@ router.post(
       await PageTreeModel.create(
         {
           _id: username,
-          subPages: [],
+          subPages: [
+            {
+              _id: homePage._id,
+              expanded: false,
+              style: {},
+              subPages: [],
+            },
+          ],
         },
       );
 

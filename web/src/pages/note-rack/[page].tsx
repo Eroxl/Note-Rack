@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
 
+import PageSidebar from '../../components/pageInfo/PageSidebar';
 import Editor from '../../components/Editor';
 import LoadingPage from '../../components/LoadingPage';
 import type PageDataInterface from '../../types/pageTypes';
@@ -24,7 +25,7 @@ const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {
       </Head>
       <div className="w-full h-full overflow-hidden print:h-max print:overflow-visible bg-amber-50 no-scrollbar dark:bg-zinc-700 print:dark:bg-white">
         <div className="absolute z-10 w-screen h-10 print:h-0 bg-amber-50 no-scrollbar dark:bg-zinc-700 print:dark:bg-white" />
-        <div className="absolute h-screen print:h-max w-52 print:w-0 bg-amber-400 opacity-10 no-scrollbar dark:bg-white" />
+        <PageSidebar />
         {
           !pageData.message
             ? <LoadingPage />

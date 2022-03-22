@@ -42,7 +42,7 @@ router.post(
 
     if (pageMap) {
       pageMap.pathToPage.push(page);
-      pageMap.pathToPage.slice(1).forEach((element: string, index: number) => {
+      pageMap.pathToPage.forEach((element: string, index: number) => {
         arrayFilters.push({
           [`a${index}._id`]: element,
         });
@@ -61,6 +61,7 @@ router.post(
             $each: [{
               _id: newPageId,
               expanded: false,
+              style: {},
               subPages: [],
             }],
           },

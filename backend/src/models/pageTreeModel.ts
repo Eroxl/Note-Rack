@@ -5,6 +5,7 @@ const PageTreeSchema = new Schema({});
 PageTreeSchema.add({
   _id: Schema.Types.String,
   expanded: Schema.Types.Boolean,
+  style: {},
   subPages: [PageTreeSchema],
 });
 
