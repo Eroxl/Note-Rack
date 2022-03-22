@@ -2,7 +2,7 @@
   📝 Note Rack
 </h1>
 
-## 🌱 Planned Features
+## 🌱 In Progress
 
 - [ ] Multiple Pages
   - [x] Inline Pages
