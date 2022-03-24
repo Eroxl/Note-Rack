@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 import type { PageSidebarItemProps } from './PageSidebarItemProps';
+import editPageTree from '../../lib/editPageTree';
 
 const PageSidebarItem = (props: PageSidebarItemProps) => {
   const {
@@ -40,7 +41,7 @@ const PageSidebarItem = (props: PageSidebarItemProps) => {
   return (
     <div className={`pl-3 ${parentExpanded || 'hidden'}`}>
       <p className={`flex flex-row items-center w-full gap-2 text-opacity-100 dark:text-amber-50/75 text-zinc-800/75 ${router.query.page === pageID && 'dark:text-white text-black'}`}>
-        <button type="button" onClick={() => { setIsExpanded(!isExpanded); }}>
+        <button type="button" onClick={() => { setIsExpanded(!isExpanded); editPageTree(pageID, !isExpanded); }}>
           <svg viewBox="0 0 100 100" className={`w-3 h-3 ${isExpanded ? 'rotate-180' : 'rotate-90'} fill-current transition-transform`}>
             <polygon points="5.9,88.2 50,11.8 94.1,88.2 " />
           </svg>

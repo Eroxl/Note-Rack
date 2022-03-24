@@ -1,5 +1,6 @@
 import express from 'express';
 
+import editPageTreeExpansion from './editPageTreeExpansion';
 import getPageTree from './getPageTree';
 import register from './register';
 import login from './login';
@@ -22,6 +23,12 @@ router.use(
 router.use(
   '/',
   getPageTree,
+);
+
+// -=- Create Edit Page Tree API -=-
+router.use(
+  '/',
+  editPageTreeExpansion,
 );
 
 export default router;
