@@ -7,7 +7,7 @@ const textKeybinds: {
   type: string,
   customFunc?: (
     properties: Record<string, unknown>, blockID: string,
-    page: string, element: Element,
+    page: string, element: unknown,
   ) => Promise<Record<string, unknown>>,
 }[] = [
   {
@@ -49,7 +49,7 @@ const textKeybinds: {
     keybind: /^\[\[ (.+) \]\]/gm,
     plainTextKeybind: '[[ Page ]]',
     type: 'page',
-    customFunc: async (properties, blockID, page) => {
+    customFunc: async (properties, blockID, page, element) => {
       await fetch(`${process.env.NEXT_PUBLIC_API_URL}/page/modify-page/${page}`, {
         method: 'POST',
         headers: {
@@ -57,6 +57,7 @@ const textKeybinds: {
         },
         body: JSON.stringify({
           'new-page-id': blockID,
+          'new-page-name': (element as HTMLSpanElement).innerText,
         }),
         credentials: 'include',
       });

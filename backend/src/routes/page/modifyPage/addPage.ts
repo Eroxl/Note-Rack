@@ -33,6 +33,7 @@ router.post(
     const { page } = req.params;
     const {
       'new-page-id': newPageId,
+      'new-page-name': newPageName,
     } = req.body;
 
     const pageMap = await PageMapModel.findById(page).lean();
@@ -68,7 +69,7 @@ router.post(
                   b: 253,
                 },
                 icon: '📝',
-                name: 'New Notebook',
+                name: newPageName || 'New Notebook',
               },
               subPages: [],
             }],
@@ -97,7 +98,7 @@ router.post(
           b: 253,
         },
         icon: '📝',
-        name: 'New Notebook',
+        name: newPageName || 'New Notebook',
       },
       data: [],
     });
