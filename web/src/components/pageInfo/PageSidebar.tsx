@@ -22,7 +22,7 @@ const PageSidebar = () => {
   }, []);
 
   return (
-    <div className="absolute h-screen pt-10 pr-3 print:h-max w-52 print:w-0 bg-amber-400/10 no-scrollbar dark:bg-white/10">
+    <div className="absolute h-screen pt-12 pr-3 print:h-max w-52 print:w-0 bg-amber-400/10 no-scrollbar dark:bg-white/10">
       {!isLoading && (
         (pageTree as PageSidebarItemProps[]).map((pageItem) => {
           const {
