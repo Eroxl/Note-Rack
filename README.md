@@ -5,9 +5,11 @@
 ## 🌱 In Progress
 
 - [ ] Multiple Pages
-  - [x] Inline Pages
-  - [ ] Page Sidebar / Selector
-  - [ ] Page Navigation
+  - [ ] Inline Pages
+    - [x] Adding Inline Pages
+    - [ ] Deleting Inline Pages
+  - [x] Page Sidebar / Selector
+  - [x] Page Navigation
 - [ ] Inline Elements
   - [ ] Bold: <b>Example</b>
   - [ ] Italic: <i>Example</i>
