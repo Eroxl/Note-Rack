@@ -61,7 +61,15 @@ router.post(
             $each: [{
               _id: newPageId,
               expanded: false,
-              style: {},
+              style: {
+                colour: {
+                  r: 147,
+                  g: 197,
+                  b: 253,
+                },
+                icon: '📝',
+                name: 'New Notebook',
+              },
               subPages: [],
             }],
           },
