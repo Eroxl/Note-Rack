@@ -11,8 +11,10 @@ const TextStyles: {[key: string]: string} = {
     p-3
     bg-black/5 dark:bg-white/5
     print:bg-transparent print:dark:bg-transparent
+    print:before:content-['test']
+    print:h-full print:w-full
     print:before:h-full print:before:w-full
-    print:before:border-[999px] print:before:-m-3 print:before:border-black/5
+    print:before:border-[999px] print:before:-mt-3 print:before:-ml-3 print:before:border-black/5
     relative print:overflow-hidden print:before:absolute
   `,
 };
