@@ -20,9 +20,9 @@ const Colours = [
   {
     category: 'Yellow',
     colours: [
-      'FCD34D',
-      'FBBF24',
-      'F59E0B',
+      'FDE047',
+      'FACC15',
+      'EAB308',
     ],
   },
   {
