@@ -46,7 +46,7 @@ const Text = (props: EditableText) => {
 
   return (
     <span
-      className={`min-h-[1.2em] outline-none whitespace-pre-wrap ${TextStyles[type]}`}
+      className={`min-h-[1.2em] outline-none whitespace-pre-wrap w-full ${TextStyles[type]}`}
       role="textbox"
       tabIndex={0}
       contentEditable
