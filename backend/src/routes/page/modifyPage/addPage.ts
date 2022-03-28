@@ -1,8 +1,7 @@
 import express, { Request, Response } from 'express';
 
-import PageMapModel from '../../../models/pageMap';
+import addPage from '../../../helpers/addPage';
 import PageTreeModel from '../../../models/pageTreeModel';
-import PageModel from '../../../models/pageModel';
 
 const router = express.Router();
 
@@ -36,72 +35,12 @@ router.post(
       'new-page-name': newPageName,
     } = req.body;
 
-    const pageMap = await PageMapModel.findById(page).lean();
-
-    const arrayFilters: Record<string, unknown>[] = [];
-    let queryString = 'subPages';
-
-    if (pageMap) {
-      pageMap.pathToPage.push(page);
-      pageMap.pathToPage.forEach((element: string, index: number) => {
-        arrayFilters.push({
-          [`a${index}._id`]: element,
-        });
-
-        queryString += `.$[a${index}].subPages`;
-      });
-    }
-
-    await PageTreeModel.updateOne(
-      {
-        _id: username,
-      },
-      {
-        $push: {
-          [queryString]: {
-            $each: [{
-              _id: newPageId,
-              expanded: false,
-              style: {
-                colour: {
-                  r: 147,
-                  g: 197,
-                  b: 253,
-                },
-                icon: '📝',
-                name: newPageName || 'New Notebook',
-              },
-              subPages: [],
-            }],
-          },
-        },
-      },
-      {
-        arrayFilters,
-      },
+    await addPage(
+      page,
+      username,
+      newPageId,
+      newPageName,
     );
-
-    const newPageMap = pageMap !== null ? pageMap.pathToPage : [];
-
-    await PageMapModel.create({
-      _id: newPageId,
-      pathToPage: newPageMap,
-    });
-
-    await PageModel.create({
-      _id: newPageId,
-      user: username,
-      style: {
-        colour: {
-          r: 147,
-          g: 197,
-          b: 253,
-        },
-        icon: '📝',
-        name: newPageName || 'New Notebook',
-      },
-      data: [],
-    });
 
     res.statusCode = 200;
     res.json({
