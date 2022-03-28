@@ -36,6 +36,8 @@ describe('Text', () => {
               g: 2,
               b: 3,
             },
+            name: 'Page',
+            icon: '🌳',
           },
           data: [],
         },

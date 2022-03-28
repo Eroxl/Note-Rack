@@ -6,16 +6,14 @@ import Icon from '../../../components/blocks/Icon';
 
 describe('Icon', () => {
   let expectedProps: {
-    properties: { value: string },
+    value: string,
     blockID: string,
     page: string,
   };
 
   beforeEach(() => {
     expectedProps = {
-      properties: {
-        value: '📘',
-      },
+      value: '📘',
       blockID: 'testingIconBlock',
       page: 'page',
     };
@@ -24,13 +22,13 @@ describe('Icon', () => {
   });
 
   test('Should render the "icon" block and not render the "picker menu"', async () => {
-    const { properties, blockID, page } = expectedProps;
+    const { value, page } = expectedProps;
 
     const { findByText, findByLabelText } = render(
-      <Icon properties={properties} blockID={blockID} page={page} />,
+      <Icon icon={value} page={page} />,
     );
 
-    const iconText = await findByText(properties.value);
+    const iconText = await findByText(value);
     const emojiSelectorMenu = (await findByLabelText('Emoji Mart™')).closest('div');
 
     expect(iconText).toBeVisible();
@@ -40,13 +38,13 @@ describe('Icon', () => {
   });
 
   test('Emoji picker menu should be toggleable', async () => {
-    const { properties, blockID, page } = expectedProps;
+    const { value, page } = expectedProps;
 
     const { findByText, findByLabelText } = render(
-      <Icon properties={properties} blockID={blockID} page={page} />,
+      <Icon icon={value} page={page} />,
     );
 
-    const iconButton = await findByText(properties.value);
+    const iconButton = await findByText(value);
     const emojiSelectorMenu = (await findByLabelText('Emoji Mart™')).closest('div');
 
     expect(emojiSelectorMenu).toHaveClass('hidden');
@@ -55,15 +53,15 @@ describe('Icon', () => {
   });
 
   test('Emoji picker menu should change the emoji', async () => {
-    const { properties, blockID, page } = expectedProps;
+    const { value, page } = expectedProps;
 
     fetchMock.mockOnce('{}');
 
     const { findByText, findByLabelText } = render(
-      <Icon properties={properties} blockID={blockID} page={page} />,
+      <Icon icon={value} page={page} />,
     );
 
-    const iconButton = await findByText(properties.value);
+    const iconButton = await findByText(value);
     fireEvent.click(iconButton);
     const emojiSelectionButton = await findByLabelText('😞, disappointed');
     fireEvent.click(emojiSelectionButton);
