@@ -2,7 +2,8 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import React from 'react';
 import '@testing-library/jest-dom';
-import { render, fireEvent } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { render, act } from '@testing-library/react';
 
 import TextStyles from '../../../constants/TextStyles';
 import textKeybinds from '../../../lib/textKeybinds';
@@ -23,7 +24,7 @@ describe('Text', () => {
   beforeEach(() => {
     expectedProps = {
       properties: {
-        value: 'Example text',
+        value: 'Test text',
       },
       blockID: 'testingTextBlock',
       page: 'page',
@@ -42,9 +43,7 @@ describe('Text', () => {
           data: [],
         },
       },
-      setPageData: (): void => {
-        throw new Error('Set page data function is not implemented.');
-      },
+      setPageData: (): void => {},
       setCurrentBlockType: () => {},
     };
 
@@ -113,9 +112,11 @@ describe('Text', () => {
         expect(textElement).toBeVisible();
         expect(textElement).toHaveAttribute('contentEditable', 'true');
 
-        fireEvent.input(textElement, {
-          target: { innerText: `${textObject.plainTextKeybind} ` },
-        });
+        textElement.innerHTML = '';
+
+        userEvent.type(textElement, `${textObject.plainTextKeybind}{space}`);
+
+        expect(textElement).toBeEmptyDOMElement();
 
         expect(textElement).toHaveClass(TextStyles[textObject.type]);
       }
