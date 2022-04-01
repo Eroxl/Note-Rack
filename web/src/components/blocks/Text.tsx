@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { editBlock, addBlockAtIndex, removeBlock } from '../../lib/updatePage';
+import { editBlock, addBlockAtIndex, removeBlock } from '../../lib/pages/updatePage';
 import TextStyles from '../../constants/TextStyles';
 import textKeybinds from '../../lib/textKeybinds';
 import type { EditableText } from '../../types/blockTypes';

@@ -2,9 +2,9 @@
 import React from 'react';
 
 import TitleBreaker from './TitleBreaker';
-import { addBlockAtIndex } from '../../lib/updatePage';
+import { addBlockAtIndex } from '../../lib/pages/updatePage';
 import type { PermanentEditableText } from '../../types/blockTypes';
-import editStyle from '../../lib/editStyle';
+import editStyle from '../../lib/pages/editStyle';
 
 interface TitleProps extends PermanentEditableText {
   title: string,

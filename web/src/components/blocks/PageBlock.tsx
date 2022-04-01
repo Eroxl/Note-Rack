@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 
-import getPageInfo from '../../lib/getPageInfo';
+import getPageInfo from '../../lib/pages/getPageInfo';
 
 interface PageBlockProps {
   blockID: string;
