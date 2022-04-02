@@ -35,7 +35,7 @@
   - [ ] Block Handles
     - Allow blocks to be moved using a block handle
 
-# 🌳 Features
+## 🌳 Features
 * Basic Markdown Syntax
   * H1, H2, H3, H4, H5
   * Quotes
