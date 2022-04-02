@@ -10,6 +10,8 @@
     - [ ] Deleting Inline Pages
   - [x] Page Sidebar / Selector
   - [x] Page Navigation
+  - [ ] Proper Page Sorting
+    - Correctly sort pages in the page tree based on their position in their parent page
 - [ ] Inline Elements
   - [ ] Bold: <b>Example</b>
   - [ ] Italic: <i>Example</i>
@@ -25,8 +27,13 @@
     - [ ] Example
 - [ ] Other
   - [ ] Block Selector Menu: "/"
+    - Allow users to change the current block or create a new block using a menu
   - [ ] Emoji Selector Menu: ":"
+    - Allow users to select and insert emojis using a menu
   - [ ] Better Caret Control
+    - Correctly handle caret movements like a native textbox between different blocks
+  - [ ] Block Handles
+    - Allow blocks to be moved using a block handle
 
 # 🌳 Features
 * Basic Markdown Syntax
