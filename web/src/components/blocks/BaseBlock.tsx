@@ -21,7 +21,7 @@ const BaseBlock = (props: BaseBlockProps) => {
 
   return (
     <div className="relative flex group">
-      <BlockHandle />
+      <BlockHandle index={index} setPageData={setPageData} pageData={pageData} />
       {
         React.createElement(
           BlockTypes[currentBlockType] ?? 'fragement',

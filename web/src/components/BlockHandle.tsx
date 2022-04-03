@@ -1,6 +1,16 @@
 import React, { useRef } from 'react';
+import type { Dispatch, SetStateAction } from 'react';
 
-const BlockHandle = () => {
+import PageDataInterface from '../types/pageTypes';
+
+interface BlockHandleProps {
+  index: number,
+  pageData: PageDataInterface,
+  setPageData: Dispatch<SetStateAction<PageDataInterface | Record<string, unknown>>>,
+}
+
+const BlockHandle = (props: BlockHandleProps) => {
+  const { index, pageData, setPageData } = props;
   const handleRef = useRef<HTMLDivElement>(null);
 
   return (
