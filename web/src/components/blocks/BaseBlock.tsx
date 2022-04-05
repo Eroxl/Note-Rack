@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react/no-children-prop */
 import React, { useState, useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
@@ -23,7 +22,7 @@ const BaseBlock = (props: BaseBlockProps) => {
 
   const [currentBlockType, setCurrentBlockType] = useState(blockType);
 
-  const [_dragData, drag, preview] = useDrag(() => ({
+  const [, drag, preview] = useDrag(() => ({
     type: 'draggableBlock',
     item: () => ({ blockID, index }),
   }), [index]);
