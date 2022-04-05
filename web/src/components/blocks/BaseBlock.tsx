@@ -2,7 +2,7 @@
 import React, { useState, useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 
-import BlockHandle from '../BlockHandle';
+import BlockHandle from './BlockHandle';
 import BlockTypes from '../../constants/BlockTypes';
 import type { BaseBlockProps } from '../../types/blockTypes';
 
