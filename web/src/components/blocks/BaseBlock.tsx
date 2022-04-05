@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react/no-children-prop */
 import React, { useState, useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
@@ -21,7 +22,7 @@ const BaseBlock = (props: BaseBlockProps) => {
   const blockRef = useRef<HTMLDivElement>(null);
 
   const [currentBlockType, setCurrentBlockType] = useState(blockType);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   const [_dragData, drag, preview] = useDrag(() => ({
     type: 'draggableBlock',
     item: () => ({ blockID, index }),
@@ -33,7 +34,11 @@ const BaseBlock = (props: BaseBlockProps) => {
       hovered: monitor.isOver() && (monitor.getItem() as { index: number }).index !== index,
     }),
     drop: (item) => {
-      // TODO: Add dropping functionality
+      const { index: itemIndex } = item as { index: number };
+      const pageDataCopy = { ...pageData };
+      pageDataCopy.message.data.splice(index + 1, 0, pageData.message.data[itemIndex]);
+      pageDataCopy.message.data.splice(itemIndex + 1, 1);
+      setPageData(pageDataCopy);
     },
   }));
 
@@ -60,7 +65,7 @@ const BaseBlock = (props: BaseBlockProps) => {
       }
       {
         hovered && (
-          <div className="absolute w-full h-1 bg-blue-200 -bottom-2" />
+          <div className="absolute w-full h-0.5 bg-blue-400 -bottom-2 print:hidden" />
         )
       }
     </div>
