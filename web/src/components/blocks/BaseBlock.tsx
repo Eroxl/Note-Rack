@@ -26,7 +26,7 @@ const BaseBlock = (props: BaseBlockProps) => {
   const [_dragData, drag, preview] = useDrag(() => ({
     type: 'draggableBlock',
     item: () => ({ blockID, index }),
-  }));
+  }), [index]);
 
   const [{ hovered }, drop] = useDrop(() => ({
     accept: 'draggableBlock',
@@ -38,9 +38,10 @@ const BaseBlock = (props: BaseBlockProps) => {
       const pageDataCopy = { ...pageData };
       pageDataCopy.message.data.splice(index + 1, 0, pageData.message.data[itemIndex]);
       pageDataCopy.message.data.splice(itemIndex + 1, 1);
+      console.log(index, itemIndex);
       setPageData(pageDataCopy);
     },
-  }));
+  }), [index]);
 
   preview(drop(blockRef));
 
