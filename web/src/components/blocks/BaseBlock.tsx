@@ -36,9 +36,11 @@ const BaseBlock = (props: BaseBlockProps) => {
       const { index: itemIndex } = item as { index: number };
       const pageDataCopy = { ...pageData };
 
+      const offset = itemIndex > index ? 1 : 0;
+
       // FIXME: There's some issues with this when dragging up vs dragging down (dragging up works)
       pageDataCopy.message.data.splice(index + 1, 0, pageData.message.data[itemIndex]);
-      pageDataCopy.message.data.splice(itemIndex + 1, 1);
+      pageDataCopy.message.data.splice(itemIndex + offset, 1);
       setPageData(pageDataCopy);
     },
   }), [index]);
