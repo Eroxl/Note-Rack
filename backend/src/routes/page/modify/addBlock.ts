@@ -13,6 +13,7 @@ router.post(
       'doc-ids': docIDs,
       'new-block-type': newBlockType,
       'new-block-index': newBlockIndex,
+      'new-block-properties': newBlockProperties,
     } = req.body;
     const { page } = req.params;
 
@@ -66,8 +67,7 @@ router.post(
             $each: [{
               _id: newBlockId,
               blockType: newBlockType,
-              properties: {},
-              style: {},
+              properties: newBlockProperties || {},
             }],
             $position: newBlockIndex,
           },
