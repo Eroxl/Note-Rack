@@ -1,6 +1,6 @@
-import mongoose from 'mongoose';
 import express, { Request, Response } from 'express';
 
+import addBlock from '../../../helpers/blocks/addBlock';
 import PageModel from '../../../models/pageModel';
 
 const router = express.Router();
@@ -37,45 +37,12 @@ router.post(
       return;
     }
 
-    const arrayFilters: Record<string, unknown>[] = [];
-    let queryString = 'data.';
-
-    if (docIDs) {
-      (docIDs as string[]).forEach((element, index) => {
-        arrayFilters.push({
-          [`${index}._id`]: element,
-        });
-
-        if (index < (docIDs.length - 1)) {
-          queryString += `$[${index}].children.`;
-          return;
-        }
-
-        queryString += `$[${index}]`;
-      });
-    }
-
-    const newBlockId = new mongoose.Types.ObjectId();
-
-    await PageModel.updateOne(
-      {
-        _id: page,
-      },
-      {
-        $push: {
-          [queryString !== 'data.' ? queryString : 'data']: {
-            $each: [{
-              _id: newBlockId,
-              blockType: newBlockType,
-              properties: newBlockProperties || {},
-            }],
-            $position: newBlockIndex,
-          },
-        },
-      },
-      {
-        arrayFilters,
-      },
+    const newBlockID = await addBlock(
+      page,
+      docIDs,
+      newBlockIndex,
+      newBlockType,
+      newBlockProperties || {},
     );
 
     res.statusCode = 200;
@@ -83,7 +50,7 @@ router.post(
       status: 'success',
       message: {
         statusMessage: 'Succesfully added block',
-        blockID: newBlockId,
+        blockID: newBlockID,
       },
     });
   },

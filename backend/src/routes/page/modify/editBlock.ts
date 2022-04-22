@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 
+import editBlock from '../../../helpers/blocks/editBlock';
 import PageModel from '../../../models/pageModel';
 
 const router = express.Router();
@@ -35,35 +36,11 @@ router.patch(
       return;
     }
 
-    const arrayFilters: Record<string, unknown>[] = [];
-    let queryString = 'data.';
-
-    (docIDs as string[]).forEach((element, index) => {
-      arrayFilters.push({
-        [`a${index}._id`]: element,
-      });
-
-      if (index < (docIDs.length - 1)) {
-        queryString += `$[a${index}].children.`;
-        return;
-      }
-
-      queryString += `$[a${index}]`;
-    });
-
-    await PageModel.updateOne(
-      {
-        _id: page,
-      },
-      {
-        $set: {
-          ...(blockType !== undefined && { [`${queryString}.blockType`]: blockType }),
-          ...(properties !== undefined && { [`${queryString}.properties`]: properties }),
-        },
-      },
-      {
-        arrayFilters,
-      },
+    await editBlock(
+      page,
+      docIDs,
+      blockType,
+      properties,
     );
 
     res.statusCode = 200;
