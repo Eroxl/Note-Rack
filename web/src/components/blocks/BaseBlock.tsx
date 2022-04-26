@@ -84,7 +84,7 @@ const BaseBlock = (props: BaseBlockProps) => {
       <BlockHandle draggableRef={drag} />
       {
         React.createElement(
-          BlockTypes[currentBlockType] ?? 'fragement',
+          BlockTypes[currentBlockType] ?? BlockTypes.text,
           {
             page,
             index,
