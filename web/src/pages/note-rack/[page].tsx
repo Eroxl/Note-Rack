@@ -23,7 +23,29 @@ const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {
   return (
     <>
       <Head>
-        <title>Note Rack Page</title>
+        {
+          !pageData.message
+            ? (
+              <title>Loading...</title>
+            )
+            : (
+              <>
+                <title>{(pageData as PageDataInterface).message.style.name}</title>
+                <link
+                  rel="icon"
+                  href={`
+                    data:image/svg+xml,
+                    <svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22>
+                      <text y=%22.9em%22 font-size=%2290%22>
+                        ${(pageData as PageDataInterface).message.style.icon}
+                      </text>
+                    </svg>
+                  `}
+                  type="image/svg+xml"
+                />
+              </>
+            )
+        }
       </Head>
       <div className="w-full h-full overflow-hidden print:h-max print:overflow-visible bg-amber-50 no-scrollbar dark:bg-zinc-700 print:dark:bg-white">
         <div className="absolute z-10 w-screen h-10 print:h-0 bg-amber-50 no-scrollbar dark:bg-zinc-700 print:dark:bg-white" />
