@@ -32,8 +32,6 @@
     - Allow users to select and insert emojis using a menu
   - [ ] Better Caret Control
     - Correctly handle caret movements like a native textbox between different blocks
-  - [ ] Block Handles
-    - Allow blocks to be moved using a block handle
 
 ## 🌳 Features
 * Basic Markdown Syntax
