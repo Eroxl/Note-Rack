@@ -53,7 +53,7 @@ const PageSidebarItem = (props: PageSidebarItemProps) => {
               query: { page: pageID },
             }
           }
-          prefetch={isExpanded && parentExpanded}
+          prefetch={isExpanded && parentExpanded ? undefined : false}
         >
           <a className="truncate" href={`/note-rack/${pageID}`}>
             {`${currentIcon} ${currentName || 'Untitled'}`}
@@ -76,6 +76,7 @@ const PageSidebarItem = (props: PageSidebarItemProps) => {
               subPages={subPageSubPages}
               style={subPageStyle}
               parentExpanded={parentExpanded && isExpanded}
+              key={subPageID}
             />
           );
         })

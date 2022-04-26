@@ -36,6 +36,7 @@ const PageSidebar = () => {
               style={style}
               _id={_id}
               subPages={subPages}
+              key={_id}
             />
           );
         })
