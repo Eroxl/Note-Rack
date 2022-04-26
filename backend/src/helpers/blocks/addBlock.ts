@@ -8,6 +8,7 @@ const addBlock = async (
   index: number,
   type: string,
   properties: Record<string, unknown>,
+  blockID?: string,
 ): Promise<string> => {
   const arrayFilters: Record<string, unknown>[] = [];
   let queryString = 'data.';
@@ -27,7 +28,7 @@ const addBlock = async (
     });
   }
 
-  const newBlockId = new mongoose.Types.ObjectId();
+  const newBlockId = blockID || new mongoose.Types.ObjectId();
 
   await PageModel.updateOne(
     {

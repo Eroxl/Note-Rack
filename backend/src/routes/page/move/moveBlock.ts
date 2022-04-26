@@ -1,6 +1,8 @@
 import express, { Request, Response } from 'express';
 
+import addBlock from '../../../helpers/blocks/addBlock';
 import PageModel from '../../../models/pageModel';
+import deleteBlock from '../../../helpers/blocks/deleteBlock';
 
 const router = express.Router();
 
@@ -10,8 +12,11 @@ router.patch(
     const { username } = res.locals;
     const {
       'doc-ids': docIDs,
+      'current-block-id': currentBlockID,
       'current-index': currentIndex,
       'new-index': newIndex,
+      'current-block-type': blockType,
+      'current-block-properties': properties,
     } = req.body;
     const { page } = req.params;
 
@@ -32,7 +37,24 @@ router.patch(
         status: 'error',
         message: 'You do not have access to this page or it does not exist...',
       });
+      return;
     }
+
+    const offset = currentIndex > newIndex ? 1 : 0;
+
+    await deleteBlock(
+      page,
+      [...docIDs, currentBlockID],
+    );
+
+    await addBlock(
+      page,
+      docIDs,
+      newIndex + offset,
+      blockType,
+      properties,
+      currentBlockID,
+    );
   },
 );
 
