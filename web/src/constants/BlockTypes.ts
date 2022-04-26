@@ -1,6 +1,6 @@
 import Icon from '../components/blocks/Icon';
 import Title from '../components/blocks/Title';
-import Text from '../components/blocks/Text';
+import TextBlock from '../components/blocks/TextBlock';
 import PageBlock from '../components/blocks/PageBlock';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -10,16 +10,16 @@ const BlockTypes: {[key: string]: any} = {
   'page-title': Title,
 
   // -=- Text Based Components -=-
-  text: Text,
-  h1: Text,
-  h2: Text,
-  h3: Text,
-  h4: Text,
-  h5: Text,
+  text: TextBlock,
+  h1: TextBlock,
+  h2: TextBlock,
+  h3: TextBlock,
+  h4: TextBlock,
+  h5: TextBlock,
 
   // -=- Semi-Text Based Components -=-
-  quote: Text,
-  callout: Text,
+  quote: TextBlock,
+  callout: TextBlock,
 
   // -=- Inline Page Component -=-
   page: PageBlock,

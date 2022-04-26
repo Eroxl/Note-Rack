@@ -3,11 +3,11 @@
 import React from 'react';
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
-import { render, act } from '@testing-library/react';
+import { render } from '@testing-library/react';
 
 import TextStyles from '../../../constants/TextStyles';
 import textKeybinds from '../../../lib/textKeybinds';
-import Text from '../../../components/blocks/Text';
+import TextBlock from '../../../components/blocks/TextBlock';
 import PageDataInterface from '../../../types/pageTypes';
 import BaseBlock from '../../../components/blocks/BaseBlock';
 
@@ -62,7 +62,7 @@ describe('Text', () => {
       } = expectedProps;
 
       const { findByText } = render(
-        <Text
+        <TextBlock
           properties={properties}
           blockID={blockID}
           page={page}

@@ -5,7 +5,7 @@ import TextStyles from '../../constants/TextStyles';
 import textKeybinds from '../../lib/textKeybinds';
 import type { EditableText } from '../../types/blockTypes';
 
-const Text = (props: EditableText) => {
+const TextBlock = (props: EditableText) => {
   const {
     properties,
     page,
@@ -83,4 +83,4 @@ const Text = (props: EditableText) => {
   );
 };
 
-export default Text;
+export default TextBlock;
