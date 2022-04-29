@@ -55,6 +55,12 @@ router.patch(
       properties,
       currentBlockID,
     );
+
+    res.statusCode = 200;
+    res.json({
+      status: 'success',
+      message: 'Successfully moved block!',
+    });
   },
 );
 
