@@ -16,6 +16,8 @@ const BaseBlock = (props: BaseBlockProps) => {
     blockType,
     properties,
     setPageData,
+    isMenuOpen,
+    setIsMenuOpen,
   } = props;
 
   const blockRef = useRef<HTMLDivElement>(null);
@@ -81,7 +83,11 @@ const BaseBlock = (props: BaseBlockProps) => {
 
   return (
     <div ref={blockRef} className="relative flex group" key={blockID}>
-      <BlockHandle draggableRef={drag} />
+      <BlockHandle
+        draggableRef={drag}
+        isGlobalMenuOpen={isMenuOpen}
+        setIsGlobalMenuOpen={setIsMenuOpen}
+      />
       {
         React.createElement(
           BlockTypes[currentBlockType] ?? BlockTypes.text,

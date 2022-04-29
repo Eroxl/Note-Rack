@@ -1,6 +1,6 @@
 /* eslint-disable react/no-children-prop */
 /* eslint-disable no-underscore-dangle */
-import React, { Dispatch, SetStateAction } from 'react';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import type PageDataInterface from '../types/pageTypes';
@@ -16,13 +16,16 @@ const Editor = (
   },
 ) => {
   const { pageData, setPageData } = props;
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const router = useRouter();
   const { page } = router.query;
 
   return (
-    <div className="w-full h-full mt-10 overflow-y-auto print:m-0 pl-52 print:p-0 overflow-x-clip no-scrollbar">
-      <div className="flex flex-col items-center w-full h-max bg-amber-50 dark:bg-zinc-700 print:dark:bg-white print:bg-white">
+    <div className="w-full h-full mt-10 overflow-y-auto print:m-0 pl-52 print:p-0 overflow-x-clip no-scrollbar" id="main-editor">
+      <div
+        className="flex flex-col items-center w-full h-max bg-amber-50 dark:bg-zinc-700 print:dark:bg-white print:bg-white"
+      >
         <PageThumbnail colour={pageData.message.style.colour} page={page as string} />
         <div
           className="flex flex-col w-full max-w-4xl gap-3 px-20 pb-56 mx-auto break-words print:p-0 text-zinc-700 dark:text-amber-50 print:dark:text-zinc-700 h-max editor"
@@ -50,6 +53,8 @@ const Editor = (
               children={block.children}
               pageData={pageData}
               setPageData={setPageData}
+              isMenuOpen={isMenuOpen}
+              setIsMenuOpen={setIsMenuOpen}
             />
           ))}
         </div>

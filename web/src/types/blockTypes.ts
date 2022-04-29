@@ -12,6 +12,8 @@ interface BaseBlockProps {
   index: number,
   pageData: PageDataInterface,
   setPageData: Dispatch<SetStateAction<PageDataInterface | Record<string, unknown>>>,
+  isMenuOpen: boolean,
+  setIsMenuOpen: Dispatch<SetStateAction<boolean>>,
 }
 
 // -=- Used for blocks that can't be deleted and are only controlled by the server -=-
