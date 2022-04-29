@@ -104,6 +104,8 @@ describe('Text', () => {
             properties={properties}
             setPageData={setPageData}
             children={[]}
+            isMenuOpen={false}
+            setIsMenuOpen={(): void => {}}
           />,
         );
 
