@@ -1,0 +1,17 @@
+{
+  "name": "math-input",
+  "version": "1.0.0",
+  "description": "A simple inline math editor for complex equations built for markdown editors",
+  "main": "index.js",
+  "repository": "https://github.com/Eroxl/Note-Rack/tree/main/packages/math-input",
+  "author": "Eroxl",
+  "license": "AGPL-3.0-only",
+  "private": true,
+  "scripts": {
+    "build": "tsc && node ./"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.31",
+    "typescript": "^4.6.4"
+  }
+}
