@@ -1,6 +1,6 @@
 {
   "name": "inline-math-input",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A simple inline math editor for complex equations built for markdown editors",
   "main": "index.js",
   "repository": "https://github.com/Eroxl/Note-Rack/tree/main/packages/math-input",
