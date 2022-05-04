@@ -6,7 +6,7 @@
   "repository": "https://github.com/Eroxl/Note-Rack/tree/main/packages/math-input",
   "author": "Eroxl",
   "license": "AGPL-3.0-only",
-  "private": true,
+  "private": false,
   "scripts": {
     "build": "tsc && node ./"
   },
