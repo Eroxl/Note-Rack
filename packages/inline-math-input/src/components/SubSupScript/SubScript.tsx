@@ -1,5 +1,7 @@
 import React from 'react';
 
+import '../../styles/index.css';
+
 interface SubScriptProps {
   children: React.ReactNode[] | React.ReactNode,
   style?: React.CSSProperties | undefined,
@@ -10,6 +12,7 @@ const SubScript: React.FC<SubScriptProps> = (props) => {
 
   return (
     <span
+      className="math"
       style={{
         position: 'relative',
         fontSize: '0.8em',

@@ -2,6 +2,7 @@ import React from 'react';
 
 import SubScript from './SubScript';
 import SuperScript from './SuperScript';
+import '../../styles/index.css';
 
 interface SubAndSuperScriptProps {
   superScript?: string | undefined,
@@ -15,6 +16,7 @@ const SubAndSubAndSuperScript: React.FC<SubAndSuperScriptProps> = (props) => {
   if (subScript) {
     return (
       <span
+        className="math"
         style={{
           display: 'inline-block',
           position: 'relative',

@@ -6,3 +6,12 @@
 .symbola {
   font-family: "symbola";
 }
+
+@font-face {
+  font-family: "math";
+  font-family: "CMSY10", "CMEX10", "Symbol", "Times";
+}
+
+.math {
+  font-family: "math";
+}
