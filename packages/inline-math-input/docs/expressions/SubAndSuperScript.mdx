@@ -1,0 +1,52 @@
+---
+name: Sub And Super Script
+menu: Expressions
+route: /expressions/sub-and-sup-script
+---
+
+import { Playground, Props } from 'docz'
+
+import SubAndSuperScript from '../../src/components/expressions/SubAndSuperScript'
+import SuperScript from '../../src/components/expressions/SuperScript'
+import SubScript from '../../src/components/expressions/SubScript'
+
+# Sub Script
+Allows you to combine both super and subscript on one component.
+
+## Basic Usage
+
+<Playground>
+  <span>
+    <span>
+      x
+    </span>
+    <SubAndSuperScript
+      superScript={2}
+      subScript={1}
+    />
+  </span>
+</Playground>
+
+## Advanced Usage
+
+<Playground>
+  <span>
+    <span>
+      x
+    </span>
+    <SubAndSuperScript
+      superScript={
+        <span>
+        <span>
+          z
+        </span>
+        <SubAndSuperScript
+          superScript={3}
+          subScript={1}
+        />
+        </span>
+      }
+      subScript={1}
+    />
+  </span>
+</Playground>

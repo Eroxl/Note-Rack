@@ -1,11 +1,11 @@
 import React from 'react';
 
-interface SuperScriptProps {
-  children?: React.ReactNode[] | React.ReactNode | undefined,
+interface SubScriptProps {
+  children: React.ReactNode[] | React.ReactNode,
   style?: React.CSSProperties | undefined,
 }
 
-const SuperScript: React.FC<SuperScriptProps> = (props) => {
+const SubScript: React.FC<SubScriptProps> = (props) => {
   const { children, style } = props;
 
   return (
@@ -13,7 +13,7 @@ const SuperScript: React.FC<SuperScriptProps> = (props) => {
       style={{
         position: 'relative',
         fontSize: '0.8em',
-        verticalAlign: '0.5em',
+        verticalAlign: '-0.5em',
         ...style,
       }}
     >
@@ -22,4 +22,4 @@ const SuperScript: React.FC<SuperScriptProps> = (props) => {
   );
 };
 
-export default SuperScript;
+export default SubScript;
