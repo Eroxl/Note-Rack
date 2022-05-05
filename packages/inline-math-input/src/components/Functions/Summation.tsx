@@ -1,7 +1,6 @@
 import React from 'react';
 
 import '../../styles/index.css';
-import SubAndSubAndSuperScript from '../SubSupScript/SubAndSuperScript';
 
 interface IntegralProps {
   limit: string,
