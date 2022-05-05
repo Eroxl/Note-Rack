@@ -8,13 +8,14 @@
   "private": false,
   "scripts": {
     "build": "tsc",
-    "dev": "docz dev --typescript",
+    "dev": "docz dev --typescript --ignore README.md",
     "lint": "yarn eslint src/** --fix --ext .js,.jsx,.ts,.tsx",
     "lint:check": "yarn eslint src/** --ext .js,.jsx,.ts,.tsx"
   },
   "devDependencies": {
     "@emotion/core": "10.1.1",
     "@types/node": "^17.0.31",
+    "@types/react-dom": "^18.0.3",
     "@typescript-eslint/eslint-plugin": "^5.22.0",
     "@typescript-eslint/parser": "^5.22.0",
     "docz": "^2.4.0",
