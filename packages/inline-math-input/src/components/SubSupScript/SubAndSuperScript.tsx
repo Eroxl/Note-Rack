@@ -12,22 +12,30 @@ interface SubAndSuperScriptProps {
 const SubAndSubAndSuperScript: React.FC<SubAndSuperScriptProps> = (props) => {
   const { superScript, subScript, style } = props;
 
+  if (subScript) {
+    return (
+      <span
+        style={{
+          display: 'inline-block',
+          position: 'relative',
+          verticalAlign: '-0.5em',
+          ...style,
+        }}
+      >
+        <SuperScript style={{ display: 'block' }}>
+          {superScript}
+        </SuperScript>
+        <SubScript style={{ display: 'block' }}>
+          {subScript}
+        </SubScript>
+      </span>
+    );
+  }
+
   return (
-    <span
-      style={{
-        display: 'inline-block',
-        position: 'relative',
-        verticalAlign: '-0.5em',
-        ...style,
-      }}
-    >
-      <SuperScript style={{ display: 'block' }}>
-        {superScript}
-      </SuperScript>
-      <SubScript style={{ display: 'block' }}>
-        {subScript}
-      </SubScript>
-    </span>
+    <SuperScript>
+      {superScript}
+    </SuperScript>
   );
 };
 

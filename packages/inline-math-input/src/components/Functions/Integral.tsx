@@ -1,5 +1,6 @@
 import React from 'react';
 
+import '../../styles/index.css';
 import SubAndSubAndSuperScript from '../SubSupScript/SubAndSuperScript';
 
 interface IntegralProps {
@@ -12,7 +13,15 @@ const Integral: React.FC<IntegralProps> = (props) => {
 
   return (
     <span>
-      ∫
+      <span
+        className="symbola"
+        style={{
+          fontSize: '1.5em',
+          fontWeight: 'lighter',
+        }}
+      >
+        ∫
+      </span>
       <SubAndSubAndSuperScript
         superScript={to}
         subScript={from}

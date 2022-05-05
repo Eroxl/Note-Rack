@@ -1,0 +1,8 @@
+@font-face {
+  font-family: "symbola";
+  src: url("./fonts/Symbola.ttf") format("truetype");
+}
+
+.symbola {
+  font-family: "symbola";
+}
