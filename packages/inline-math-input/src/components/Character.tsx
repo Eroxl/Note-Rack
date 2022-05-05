@@ -18,7 +18,7 @@ const Character: React.FC<CharacterProps> = (props) => {
     greekCharacters.forEach((characterInfo) => {
       const { name, uppercase, lowercase } = characterInfo;
 
-      editedText = editedText.replace(new RegExp(`${name}`, 'gi'), (match) => {
+      editedText = editedText.replaceAll(new RegExp(`${name}`, 'gi'), (match) => {
         if (/^[A-Z]/.test(match)) {
           return uppercase;
         }
@@ -29,7 +29,7 @@ const Character: React.FC<CharacterProps> = (props) => {
     mathSymbols.forEach((symbolInfo) => {
       const { plaintext, unicode } = symbolInfo;
 
-      editedText = editedText.replace(plaintext, unicode);
+      editedText = editedText.replaceAll(plaintext, unicode);
     });
 
     setParsedText(editedText);
