@@ -1,0 +1,28 @@
+---
+name: Super Script
+menu: Subscript And Superscript
+route: /sub-and-sup-script/super-script
+---
+
+import { Playground, Props } from 'docz'
+import SuperScript from '../../src/components/SubSupScript/SuperScript'
+
+# Super Script
+Allows you to create a super script character in your text and equations that can be any arbitrary height.
+
+## Usage Examples
+
+<Playground>
+  <span>
+    <span>
+      x
+    </span>
+    <SuperScript>
+      2
+      <SuperScript>
+        3
+      </SuperScript>
+    </SuperScript>
+  </span>
+</Playground>
+

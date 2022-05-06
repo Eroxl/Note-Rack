@@ -1,0 +1,29 @@
+---
+name: Summation
+menu: Functions
+route: /functions/summation
+---
+
+import { Playground, Props } from 'docz'
+
+import SubScript from '../../src/components/SubSupScript/SubScript'
+import SuperScript from '../../src/components/SubSupScript/SuperScript'
+import Summation from '../../src/components/Functions/Summation'
+
+# Summation
+Allows you to incorporate summations into equations.
+
+## Usage Examples
+
+<Playground>
+  <Summation limit="n" index="i=0" />
+</Playground>
+
+<Playground>
+  <span className="math">
+    <Summation limit="n" index="i=1" />
+    {' '}
+    x<SubScript>i</SubScript> = 
+    x<SubScript>1</SubScript> + x<SubScript>2</SubScript> + ... + x<SubScript>n</SubScript>
+  </span>
+</Playground>
