@@ -12,7 +12,7 @@ interface IconProps extends PermanentBlock {
 const Icon = (props: IconProps) => {
   const { page, icon } = props;
 
-  const [currentIcon, setCurrentIcon] = useState(icon);
+  const [currentIcon, setCurrentIcon] = useState(icon || '📝');
   const [isEmojiSelectorActive, setIsEmojiSelectorActive] = useState(false);
 
   const emojiPickerMenuRef = useRef<HTMLDivElement>(null);

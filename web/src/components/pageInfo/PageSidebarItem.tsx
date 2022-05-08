@@ -14,8 +14,9 @@ const PageSidebarItem = (props: PageSidebarItemProps) => {
     subPages,
   } = props;
 
-  const [currentName, setCurrentName] = useState(style.name);
-  const [currentIcon, setCurrentIcon] = useState(style.icon);
+  const [currentSubPages, setCurrentSubPages] = useState(subPages);
+  const [currentName, setCurrentName] = useState(style.name || 'Untitled');
+  const [currentIcon, setCurrentIcon] = useState(style.icon || '📝');
   const [isExpanded, setIsExpanded] = useState(expanded);
 
   const router = useRouter();
@@ -29,12 +30,33 @@ const PageSidebarItem = (props: PageSidebarItemProps) => {
       if (newTitle !== undefined) setCurrentName(newTitle);
     };
 
+    const changeChildren = (event: CustomEvent) => {
+      const { detail } = event;
+      const {
+        newPageID,
+        newPageStyle,
+      } = detail;
+
+      const currentSubPagesCopy = [...currentSubPages];
+      currentSubPagesCopy.push({
+        _id: newPageID,
+        expanded: false,
+        style: newPageStyle,
+        parentExpanded: expanded,
+        subPages: [],
+      });
+
+      setCurrentSubPages(currentSubPagesCopy);
+    };
+
     if (router.query.page === pageID) {
       document.addEventListener('changePageTitle', changeTitle as EventListener);
+      document.addEventListener('addPage', changeChildren as EventListener);
     }
 
     return () => {
       document.removeEventListener('changePageTitle', changeTitle as EventListener);
+      document.removeEventListener('addPage', changeChildren as EventListener);
     };
   });
 
@@ -61,7 +83,7 @@ const PageSidebarItem = (props: PageSidebarItemProps) => {
         </Link>
       </p>
       {
-        subPages.map((subPage) => {
+        currentSubPages.map((subPage) => {
           const {
             expanded: subPageExpanded,
             _id: subPageID,

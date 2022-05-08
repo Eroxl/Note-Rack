@@ -63,6 +63,16 @@ const textKeybinds: {
       });
       Router.replace(`/note-rack/${blockID}/`);
 
+      const addPageEvent = new CustomEvent('addPage', {
+        detail: {
+          newPageID: blockID,
+          newPageStyle: {
+            name: (element as HTMLSpanElement).innerText,
+          },
+        },
+      });
+      document.dispatchEvent(addPageEvent);
+
       return (properties);
     },
   },
