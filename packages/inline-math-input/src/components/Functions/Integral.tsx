@@ -1,7 +1,8 @@
 import React from 'react';
 
 import '../../styles/index.css';
-import SubAndSubAndSuperScript from '../SubSupScript/SubAndSuperScript';
+import SubScript from '../SubSupScript/SubScript';
+import SuperScript from '../SubSupScript/SuperScript';
 
 interface IntegralProps {
   from: string,
@@ -22,10 +23,21 @@ const Integral: React.FC<IntegralProps> = (props) => {
       >
         ∫
       </span>
-      <SubAndSubAndSuperScript
-        superScript={to}
-        subScript={from}
-      />
+      <span
+        className="math"
+        style={{
+          display: 'inline-block',
+          position: 'relative',
+          verticalAlign: '-0.5em',
+        }}
+      >
+        <SuperScript style={{ display: 'block', marginLeft: '0.15em' }}>
+          {to}
+        </SuperScript>
+        <SubScript style={{ display: 'block', marginLeft: '-0.2em' }}>
+          {from}
+        </SubScript>
+      </span>
     </span>
   );
 };
