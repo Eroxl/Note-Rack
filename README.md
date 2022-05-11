@@ -6,10 +6,7 @@
 
 - [ ] Multiple Pages
   - [ ] Inline Pages
-    - [x] Adding Inline Pages
     - [ ] Deleting Inline Pages
-  - [x] Page Sidebar / Selector
-  - [x] Page Navigation
   - [ ] Proper Page Sorting
     - Correctly sort pages in the page tree based on their position in their parent page
 - [ ] Inline Elements
