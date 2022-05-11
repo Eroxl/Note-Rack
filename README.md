@@ -5,8 +5,7 @@
 ## 🌱 In Progress
 
 - [ ] Multiple Pages
-  - [ ] Inline Pages
-    - [ ] Deleting Inline Pages
+  - [ ] Deleting Pages
   - [ ] Proper Page Sorting
     - Correctly sort pages in the page tree based on their position in their parent page
 - [ ] Inline Elements
