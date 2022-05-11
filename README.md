@@ -17,19 +17,7 @@
   - [ ] Italic: <i>Example</i>
   - [ ] Underlined: <u>Example</u>
   - [ ] Strike Through: <s>Example</s>
-  - [ ] Equation Elements
-- [ ] List Elements
-  - [ ] Ordered Lists
-    1. Example
-  - [ ] Un-Ordered Lists
-    * Example
-  - [ ] Check Lists
-    - [ ] Example
 - [ ] Other
-  - [ ] Block Selector Menu: "/"
-    - Allow users to change the current block or create a new block using a menu
-  - [ ] Emoji Selector Menu: ":"
-    - Allow users to select and insert emojis using a menu
   - [ ] Better Caret Control
     - Correctly handle caret movements like a native textbox between different blocks
 
