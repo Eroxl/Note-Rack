@@ -1,0 +1,5 @@
+# ~ Demo Components
+src/demo/**
+
+# ~ Demo App
+src/index.tsx
