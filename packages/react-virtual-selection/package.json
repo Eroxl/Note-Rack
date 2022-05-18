@@ -1,6 +1,6 @@
 {
   "name": "react-virtual-selection",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "A component to select children like in native OS desktops.",
   "main": "index.js",
   "repository": "https://github.com/Eroxl/Note-Rack/tree/main/packages/react-virtual-selection",
