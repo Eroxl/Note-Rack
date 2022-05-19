@@ -1,14 +1,15 @@
 {
   "name": "react-virtual-selection",
-  "version": "1.0.3",
+  "version": "1.0.10",
   "description": "A component to select children like in native OS desktops.",
-  "main": "index.js",
+  "main": "./dist/index.js",
   "repository": "https://github.com/Eroxl/Note-Rack/tree/main/packages/react-virtual-selection",
   "author": "Eroxl",
   "license": "AGPL-3.0-only",
   "private": false,
   "scripts": {
     "dev": "webpack-dev-server --hot --config ./webpack.config.js",
+    "build": "tsc",
     "lint": "eslint ./src/ --fix",
     "lint:check": "eslint ./src/"
   },
