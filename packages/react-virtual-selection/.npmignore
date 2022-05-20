@@ -1,5 +1,6 @@
-# ~ Demo Components
-src/demo/**
-
-# ~ Demo App
-src/index.tsx
+src/
+images/
+.eslintrc.js
+index.html
+postcss.config.js
+tailwind.config.js

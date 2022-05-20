@@ -99,9 +99,14 @@ const Selectable: React.FC<SelectableProps> = (props) => {
         isSelecting && (
           <div
             draggable={false}
-            className={`absolute bg-white bg-opacity-40 ${selectionClassName || ''}`}
+            className={selectionClassName}
             style={{
+              position: 'absolute',
+              backgroundColor: '#fff',
+              opacity: 0.4,
+
               ...selectionStyle,
+
               top: Math.min(selectionArea.startY, selectionArea.endY),
               left: Math.min(selectionArea.startX, selectionArea.endX),
               width: Math.abs(selectionArea.startX - selectionArea.endX),

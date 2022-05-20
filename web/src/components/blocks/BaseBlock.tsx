@@ -1,5 +1,5 @@
 /* eslint-disable react/no-children-prop */
-import React, { useState, useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 
 import BlockHandle from './BlockHandle';
@@ -79,10 +79,10 @@ const BaseBlock = (props: BaseBlockProps) => {
     },
   }), [index]);
 
-  preview(drop(blockRef));
+  preview(drop(blockRef as React.RefObject<HTMLDivElement>));
 
   return (
-    <div ref={blockRef} className="relative flex group" key={blockID}>
+    <div ref={blockRef as React.RefObject<HTMLDivElement>} className="relative flex group" key={blockID}>
       <BlockHandle
         draggableRef={drag}
         isGlobalMenuOpen={isMenuOpen}

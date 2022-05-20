@@ -3252,7 +3252,7 @@ jest@^27.5.1:
 
 "js-tokens@^3.0.0 || ^4.0.0", js-tokens@^4.0.0:
   version "4.0.0"
-  resolved "https://registry.npmjs.org/js-tokens/-/js-tokens-4.0.0.tgz"
+  resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-4.0.0.tgz#19203fb59991df98e3a287050d4647cdeaf32499"
   integrity sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==
 
 js-yaml@^3.13.1:
@@ -4065,6 +4065,11 @@ react-refresh@0.8.3:
   version "0.8.3"
   resolved "https://registry.npmjs.org/react-refresh/-/react-refresh-0.8.3.tgz"
   integrity sha512-X8jZHc7nCMjaCqoU+V2I0cOhNW+QMBwSUkeXnTi8IPe6zaRWfn60ZzvFDZqWPfmSJfjub7dDW1SP0jaHWLu/hg==
+
+react-virtual-selection@^1.0.17:
+  version "1.0.17"
+  resolved "https://registry.yarnpkg.com/react-virtual-selection/-/react-virtual-selection-1.0.17.tgz#9071e1d182d0863e79a7956b999f15ad60158384"
+  integrity sha512-fDCBc/x7zYCtvkrERay6khgMSajgbUUzTRiJjI/FsOvu5jXkMWSdxggrHHjVazeZJETCcBrVdleyMJzxfqitkw==
 
 react@17.0.2:
   version "17.0.2"

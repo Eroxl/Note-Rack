@@ -1,4 +1,6 @@
-![](https://raw.githubusercontent.com/Eroxl/Note-Rack/main/packages/react-virtual-selection/images/Example.gif)
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Eroxl/Note-Rack/main/packages/react-virtual-selection/images/Example.gif" width="450"/>
+</p>
 
 # React Virtual Selection
 Select elements using a native OS like selector

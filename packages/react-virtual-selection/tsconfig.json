@@ -13,7 +13,9 @@
     "outDir": "dist",
     "sourceMap": true,
     "jsx": "preserve",
+    "declaration": true,
+    "declarationMap": true,
   },
   "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "dist", "src/index.tsx", "src/demo/**"],
 }
