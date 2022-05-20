@@ -1,6 +1,6 @@
 {
   "name": "react-virtual-selection",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "A component to select children like in native OS desktops.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -8,7 +8,7 @@
   "author": "Eroxl",
   "license": "AGPL-3.0-only",
   "private": false,
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
     "dev": "webpack-dev-server --hot --config ./webpack.config.js",
     "build:types": "tsc -b .",
