@@ -8,12 +8,16 @@ interface SelectableProps {
   children: React.ReactNode[] | React.ReactNode;
   selectionStyle?: React.CSSProperties;
   selectionClassName?: string;
+  style?: React.CSSProperties;
+  className?: string;
 }
 
 const Selectable: React.FC<SelectableProps> = (props) => {
   const {
     children,
     accepts,
+    style,
+    className,
     selectionClassName,
     selectionStyle,
   } = props;
@@ -32,6 +36,12 @@ const Selectable: React.FC<SelectableProps> = (props) => {
 
   return (
     <div
+      className={className}
+      style={{
+        height: '100%',
+        width: '100%',
+        ...style,
+      }}
       ref={selectableRef}
       onMouseMove={(e) => {
         if (!isSelecting || !accepts) return;
