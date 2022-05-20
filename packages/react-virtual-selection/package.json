@@ -1,6 +1,6 @@
 {
   "name": "react-virtual-selection",
-  "version": "1.0.15",
+  "version": "1.0.16",
   "description": "A component to select children like in native OS desktops.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -12,7 +12,7 @@
   "scripts": {
     "dev": "webpack-dev-server --hot --config ./webpack.config.js",
     "build:types": "tsc -b .",
-    "build:esm": "swc -C module.type=es6 -d dist src/",
+    "build:esm": "swc -C module.type=commonjs -d dist src/",
     "build": "yarn run build:esm && yarn run build:types",
     "lint": "eslint ./src/ --fix",
     "lint:check": "eslint ./src/"
