@@ -24,6 +24,8 @@ class SelectionManger {
     selector: { top: number; bottom: number, left: number, right: number },
     type: string,
   ) {
+    if (!this.selectables[type]) return [];
+
     const {
       top: selectorTop,
       bottom: selectorBottom,
@@ -60,6 +62,8 @@ class SelectionManger {
   }
 
   public clearSelectable(type: string) {
+    if (!this.selectables[type]) return;
+
     this.selectables[type].every(({ setSelected }) => setSelected(false));
   }
 
@@ -82,6 +86,8 @@ class SelectionManger {
     removedSelectableRef: React.MutableRefObject<unknown>,
     type: string,
   ) {
+    if (!this.selectables[type]) return;
+
     const index = this.selectables[type].findIndex(
       ({ selectableRef: s }) => s === removedSelectableRef,
     );

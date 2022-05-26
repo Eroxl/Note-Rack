@@ -4067,9 +4067,9 @@ react-refresh@0.8.3:
   integrity sha512-X8jZHc7nCMjaCqoU+V2I0cOhNW+QMBwSUkeXnTi8IPe6zaRWfn60ZzvFDZqWPfmSJfjub7dDW1SP0jaHWLu/hg==
 
 react-virtual-selection@^1.0.17:
-  version "1.0.17"
-  resolved "https://registry.yarnpkg.com/react-virtual-selection/-/react-virtual-selection-1.0.17.tgz#9071e1d182d0863e79a7956b999f15ad60158384"
-  integrity sha512-fDCBc/x7zYCtvkrERay6khgMSajgbUUzTRiJjI/FsOvu5jXkMWSdxggrHHjVazeZJETCcBrVdleyMJzxfqitkw==
+  version "1.0.21"
+  resolved "https://registry.yarnpkg.com/react-virtual-selection/-/react-virtual-selection-1.0.21.tgz#99ac69120778555dca8594267a332e3c5e6ca0e7"
+  integrity sha512-m4HMmaqt7isrO8I4OROOclJD8Tgl3ECTt/+qRNcjUaiJrcpAFSftXCcrMvEAdyJ18bCtdqzNeKIb9I2CXOnNsQ==
 
 react@17.0.2:
   version "17.0.2"

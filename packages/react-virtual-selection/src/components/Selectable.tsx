@@ -98,6 +98,8 @@ const Selectable: React.FC<SelectableProps> = (props) => {
 
         const selectedItemsData = selectedElements.map((el) => el());
 
+        if (!selectionManager.selectableWatchers[accepts]) return;
+
         selectionManager.selectableWatchers[accepts].forEach((watcher) => {
           watcher(selectedItemsData);
         });
