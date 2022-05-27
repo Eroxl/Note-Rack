@@ -5,6 +5,15 @@
 # React Virtual Selection
 Select elements using a native OS like selector
 
+## Installation
+```bash
+npm install react-virtual-selection
+```
+or
+```bash
+yarn add react-virtual-selection
+```
+
 ## Usage
 
 #### `useSelectable`
