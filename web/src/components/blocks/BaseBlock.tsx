@@ -1,5 +1,5 @@
 /* eslint-disable react/no-children-prop */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import { useSelectable } from 'react-virtual-selection';
 
@@ -24,8 +24,6 @@ const BaseBlock = (props: BaseBlockProps) => {
   const [currentBlockType, setCurrentBlockType] = useState(blockType);
 
   const [selected, selectableRef] = useSelectable('blocks', () => ({ blockID }));
-
-  useEffect(() => { console.log(selected); }, [selected]);
 
   const [, drag, preview] = useDrag(() => ({
     type: 'draggableBlock',
