@@ -1,6 +1,7 @@
 /* eslint-disable react/no-children-prop */
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
+import { useSelectable } from 'react-virtual-selection';
 
 import BlockHandle from './BlockHandle';
 import BlockTypes from '../../constants/BlockTypes';
@@ -20,9 +21,11 @@ const BaseBlock = (props: BaseBlockProps) => {
     setIsMenuOpen,
   } = props;
 
-  const blockRef = useRef<HTMLDivElement>(null);
-
   const [currentBlockType, setCurrentBlockType] = useState(blockType);
+
+  const [selected, selectableRef] = useSelectable('blocks', () => ({ blockID }));
+
+  useEffect(() => { console.log(selected); }, [selected]);
 
   const [, drag, preview] = useDrag(() => ({
     type: 'draggableBlock',
@@ -79,10 +82,10 @@ const BaseBlock = (props: BaseBlockProps) => {
     },
   }), [index]);
 
-  preview(drop(blockRef as React.RefObject<HTMLDivElement>));
+  preview(drop(selectableRef as React.RefObject<HTMLDivElement>));
 
   return (
-    <div ref={blockRef as React.RefObject<HTMLDivElement>} className="relative flex group" key={blockID}>
+    <div ref={selectableRef as React.RefObject<HTMLDivElement>} className={`relative flex group ${selected && 'bg-sky-300/20'}`} key={blockID}>
       <BlockHandle
         draggableRef={drag}
         isGlobalMenuOpen={isMenuOpen}

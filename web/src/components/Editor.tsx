@@ -30,7 +30,7 @@ const Editor = (
         >
           <PageThumbnail colour={pageData.message.style.colour} page={page as string} />
           <div
-            className="flex flex-col w-full max-w-4xl gap-3 px-20 pb-56 mx-auto break-words print:p-0 text-zinc-700 dark:text-amber-50 print:dark:text-zinc-700 h-max editor"
+            className="flex flex-col w-full max-w-4xl gap-3 px-20 pb-56 mx-auto break-words select-none print:p-0 text-zinc-700 dark:text-amber-50 print:dark:text-zinc-700 h-max editor"
           >
             <Icon
               page={page as string}
