@@ -11,7 +11,7 @@ const Document = () => (
     <Head>
       <link rel="icon" href="/Memo.svg" type="image/svg+xml" />
     </Head>
-    <body className="">
+    <body className="dark">
       <Main />
       <NextScript />
     </body>
