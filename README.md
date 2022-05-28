@@ -17,6 +17,10 @@
   - [ ] Better Caret Control
     - Correctly handle caret movements like a native textbox between different blocks
 
+## 🔮 Future Plans
+- [ ] Custom blocks
+- [ ] Custom colour themes
+
 ## 🌳 Features
 * Basic Markdown Syntax
   * H1, H2, H3, H4, H5
