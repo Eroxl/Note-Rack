@@ -1,7 +1,7 @@
 /* eslint-disable react/no-children-prop */
 import React, { useState } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
-import { useSelectable } from 'react-virtual-selection';
+import { useSelectable, SelectionManager } from 'react-virtual-selection';
 
 import BlockHandle from './BlockHandle';
 import BlockTypes from '../../constants/BlockTypes';
@@ -83,7 +83,18 @@ const BaseBlock = (props: BaseBlockProps) => {
   preview(drop(selectableRef as React.RefObject<HTMLDivElement>));
 
   return (
-    <div ref={selectableRef as React.RefObject<HTMLDivElement>} className={`relative flex group ${selected && 'bg-sky-300/20'}`} key={blockID}>
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+    <div
+      ref={selectableRef as React.RefObject<HTMLDivElement>}
+      className={`relative flex group ${selected && 'bg-sky-300/20'}`}
+      key={blockID}
+      onMouseDown={(e) => { e.stopPropagation(); }}
+      onFocus={() => {
+        SelectionManager.Instance.highlightSelected({
+          top: Infinity, bottom: Infinity, left: Infinity, right: Infinity,
+        }, 'blocks');
+      }}
+    >
       <BlockHandle
         draggableRef={drag}
         isGlobalMenuOpen={isMenuOpen}
