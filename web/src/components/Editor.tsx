@@ -1,14 +1,20 @@
 /* eslint-disable react/no-children-prop */
 /* eslint-disable no-underscore-dangle */
-import React, { Dispatch, SetStateAction, useState } from 'react';
+import React, {
+  Dispatch,
+  SetStateAction,
+  useState,
+  useEffect,
+} from 'react';
 import { useRouter } from 'next/router';
-import { Selectable } from 'react-virtual-selection';
+import { Selectable, useSelectionCollector } from 'react-virtual-selection';
 
 import type PageDataInterface from '../types/pageTypes';
 import BaseBlock from './blocks/BaseBlock';
 import PageThumbnail from './pageCustomization/PageThumbnail';
 import Title from './blocks/Title';
 import Icon from './blocks/Icon';
+import { removeBlock } from '../lib/pages/updatePage';
 
 const Editor = (
   props: {
@@ -19,8 +25,31 @@ const Editor = (
   const { pageData, setPageData } = props;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const router = useRouter();
-  const { page } = router.query;
+  const { page } = useRouter().query;
+
+  const selectionData = useSelectionCollector('blocks');
+
+  useEffect(() => {
+    const handleSelectionEvents = async (event: KeyboardEvent) => {
+      if (event.key === 'Backspace') {
+        for (let i = 0; i < selectionData.length; i += 1) {
+          const { blockID, index } = selectionData[i] as { blockID: string, index: number };
+
+          console.log(index);
+
+          // TODO:EROXL: 2020-05-21: Can't do more than one CRUD operation at a time.
+          // eslint-disable-next-line no-await-in-loop
+          await removeBlock(index - i, [blockID], page as string, pageData, setPageData);
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleSelectionEvents);
+
+    return () => {
+      document.removeEventListener('keydown', handleSelectionEvents);
+    };
+  }, [selectionData]);
 
   return (
     <Selectable accepts="blocks">

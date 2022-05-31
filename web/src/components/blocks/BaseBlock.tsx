@@ -23,7 +23,13 @@ const BaseBlock = (props: BaseBlockProps) => {
 
   const [currentBlockType, setCurrentBlockType] = useState(blockType);
 
-  const [selected, selectableRef] = useSelectable('blocks', () => ({ blockID }));
+  const [selected, selectableRef] = useSelectable(
+    'blocks',
+    () => ({
+      blockID,
+      index,
+    }),
+  );
 
   const [, drag, preview] = useDrag(() => ({
     type: 'draggableBlock',
