@@ -1,6 +1,12 @@
-import PageModel from '../../models/pageModel';
+interface deleteBlockQueryProps {
+  'doc-ids': string[];
+}
 
-const deleteBlock = async (page: string, docIDs: string[]) => {
+const addBlockQuery = async (props: unknown) => {
+  const {
+    'doc-ids': docIDs,
+  } = props as deleteBlockQueryProps;
+
   const arrayFilters: Record<string, unknown>[] = [];
   let queryString = 'data';
 
@@ -14,10 +20,7 @@ const deleteBlock = async (page: string, docIDs: string[]) => {
     }
   });
 
-  await PageModel.updateOne(
-    {
-      _id: page,
-    },
+  return [
     {
       $pull: {
         [queryString]: {
@@ -25,10 +28,8 @@ const deleteBlock = async (page: string, docIDs: string[]) => {
         },
       },
     },
-    {
-      arrayFilters,
-    },
-  );
+    arrayFilters,
+  ];
 };
 
-export default deleteBlock;
+export default addBlockQuery;
