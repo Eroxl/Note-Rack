@@ -21,7 +21,7 @@ const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {
     })();
 
     // -=- Setup Auto Saving -=-
-    setInterval(() => { SaveManager.sendToServer(); }, 10000);
+    setInterval(() => { SaveManager.sendToServer(); }, 2500);
   }, [pageDataReq]);
 
   return (
