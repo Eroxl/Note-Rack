@@ -1,6 +1,5 @@
 import express from 'express';
 
-import move from './move';
 import modifyPage from './modifyPage';
 import modify from './modify';
 import getHomePage from './getHomePage';
@@ -27,19 +26,13 @@ router.use(
   getPageInfo,
 );
 
-// -=- Create The Modify Route -=-
+// -=- Create Modify Block API -=-
 router.use(
-  '/modify/',
+  '/',
   modify,
 );
 
-// -=- Create The Move Route -=-
-router.use(
-  '/move/',
-  move,
-);
-
-// -=- Create The Edit Page Route -=-
+// -=- Create Modify Page API -=-
 router.use(
   '/modify-page/',
   modifyPage,

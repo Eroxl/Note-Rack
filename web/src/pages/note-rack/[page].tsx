@@ -8,6 +8,7 @@ import PageSidebar from '../../components/pageInfo/PageSidebar';
 import Editor from '../../components/Editor';
 import LoadingPage from '../../components/LoadingPage';
 import type PageDataInterface from '../../types/pageTypes';
+import SaveManager from '../../classes/SaveManager';
 
 const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {
   const [pageData, setPageData] = useState<PageDataInterface | Record<string, unknown>>({});
@@ -18,6 +19,9 @@ const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {
     (async () => {
       setPageData(await pageDataReq);
     })();
+
+    // -=- Setup Auto Saving -=-
+    setInterval(() => { SaveManager.sendToServer(); }, 2500);
   }, [pageDataReq]);
 
   return (
