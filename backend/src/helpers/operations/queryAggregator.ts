@@ -1,20 +1,23 @@
 import PageModel from '../../models/pageModel';
 
-const queryAggregator = async (queries: Promise<Record<string, unknown>[]>, page: string) => {
-  PageModel.bulkWrite(
-    (await queries).map((query) => ({
-      updateOne: {
-        filter: {
-          _id: page,
+const queryAggregator = async (queries: Promise<Record<string, unknown>>[], page: string) => {
+  Promise.all(queries).then((results) => {
+    PageModel.bulkWrite(
+      results.map((query) => ({
+        updateOne: {
+          filter: {
+            _id: page,
+          },
+          update: query[0],
+          arrayFilters: query[1],
+          upsert: true,
         },
-        update: query[0],
-        arrayFilters: query[0],
+      })),
+      {
+        ordered: true,
       },
-    })),
-    {
-      ordered: true,
-    },
-  );
+    );
+  });
 };
 
 export default queryAggregator;

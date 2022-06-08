@@ -1,8 +1,10 @@
+import { Types } from 'mongoose';
+
 interface deleteBlockQueryProps {
   'doc-ids': string[];
 }
 
-const addBlockQuery = async (props: unknown) => {
+const deleteBlockQuery = async (props: unknown) => {
   const {
     'doc-ids': docIDs,
   } = props as deleteBlockQueryProps;
@@ -11,13 +13,12 @@ const addBlockQuery = async (props: unknown) => {
   let queryString = 'data';
 
   (docIDs as string[]).forEach((element, index) => {
-    arrayFilters.push({
-      [`a${index}._id`]: element,
-    });
+    if (index === docIDs.length - 1) return;
 
-    if (index < (docIDs.length - 1)) {
-      queryString += `.$[a${index}].children`;
-    }
+    queryString += `.$[a${index}].children`;
+    arrayFilters.push({
+      [`a${index}._id`]: new Types.ObjectId(element),
+    });
   });
 
   return [
@@ -32,4 +33,4 @@ const addBlockQuery = async (props: unknown) => {
   ];
 };
 
-export default addBlockQuery;
+export default deleteBlockQuery;

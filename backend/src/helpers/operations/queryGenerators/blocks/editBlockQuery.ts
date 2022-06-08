@@ -1,3 +1,5 @@
+import { Types } from 'mongoose';
+
 interface editBlockQueryProps {
   'doc-ids': string[];
   'block-type': string,
@@ -16,7 +18,7 @@ const editBlockQuery = async (props: unknown) => {
 
   docIDs.forEach((element, index) => {
     arrayFilters.push({
-      [`a${index}._id`]: element,
+      [`a${index}._id`]: new Types.ObjectId(element),
     });
 
     if (index < (docIDs.length - 1)) {

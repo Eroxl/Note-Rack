@@ -1,5 +1,7 @@
+import { Types } from 'mongoose';
+
 interface addBlockQueryProps {
-  'doc-ids': string[];
+  'doc-ids': string[] | undefined;
   'new-block-type': string;
   'new-block-index': number,
   'new-block-properties': Record<string, unknown>,
@@ -19,17 +21,17 @@ const addBlockQuery = async (props: unknown) => {
   let queryString = 'data.';
 
   if (docIDs) {
-    (docIDs as string[]).forEach((element, docIDIndex) => {
+    docIDs.forEach((element, docIDIndex) => {
       arrayFilters.push({
-        [`${docIDIndex}._id`]: element,
+        [`${docIDIndex}._id`]: new Types.ObjectId(element),
       });
 
       if (docIDIndex < (docIDs.length - 1)) {
-        queryString += `$[${docIDIndex}].children.`;
+        queryString += `$[a${docIDIndex}].children.`;
         return;
       }
 
-      queryString += `$[${docIDIndex}]`;
+      queryString += `$[a${docIDIndex}]`;
     });
   }
 

@@ -2,27 +2,27 @@ import addBlockQuery from './blocks/addBlockQuery';
 import deleteBlockQuery from './blocks/deleteBlockQuery';
 import editBlockQuery from './blocks/editBlockQuery';
 
-const queryGenerator = async (operations: Record<string, unknown>[]) => {
-  operations.map((operation) => {
+const queryGenerator = (operations: Record<string, unknown>[]) => {
+  const completedOperations = operations.map((operation) => {
     // -=- Add Block -=-
     if (operation.type === 'addBlock') {
-      return addBlockQuery(operation);
+      return addBlockQuery(operation.data);
     }
 
     // -=- Delete Block -=-
     if (operation.type === 'deleteBlock') {
-      return deleteBlockQuery(operation);
+      return deleteBlockQuery(operation.data);
     }
 
     // -=- Edit Block -=-
     if (operation.type === 'editBlock') {
-      return editBlockQuery(operation);
+      return editBlockQuery(operation.data);
     }
 
-    return null;
+    return Promise.resolve({});
   });
 
-  return operations;
+  return completedOperations;
 };
 
 export default queryGenerator;

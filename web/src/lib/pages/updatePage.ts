@@ -1,5 +1,8 @@
 /* eslint-disable no-underscore-dangle */
+import crypto from 'crypto';
+
 import type PageDataInterface from '../../types/pageTypes';
+import SaveManager from '../../classes/SaveManager';
 
 const addBlockAtIndex = async (
   index: number,
@@ -8,25 +11,23 @@ const addBlockAtIndex = async (
   setPageData: (value: Record<string, unknown>) => void,
   blockIDs?: string[],
 ) => {
-  const generatedBlockResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/page/modify/${page}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
+  const objectID = crypto.randomBytes(12).toString('hex');
+
+  SaveManager.save(
+    'addBlock',
+    {
+      'doc-ids': blockIDs,
       'new-block-type': 'text',
       'new-block-index': index,
-      'doc-ids': blockIDs,
-    }),
-    credentials: 'include',
-  });
-  const generatedBlockObject: {
-    message: { blockID: string }
-  } = await generatedBlockResponse.json();
+      'new-block-properties': {},
+      'new-block-id': objectID,
+    },
+    page,
+  );
 
   const tempPageData = pageData as PageDataInterface;
   tempPageData.message.data.splice(index, 0, {
-    _id: generatedBlockObject.message.blockID as string,
+    _id: objectID,
     blockType: 'text',
     properties: {
       value: '\n',
@@ -42,7 +43,7 @@ const addBlockAtIndex = async (
     },
   });
 
-  document.getElementById(generatedBlockObject.message.blockID as string)?.focus();
+  document.getElementById(objectID)?.focus();
 };
 
 const removeBlock = async (
@@ -52,16 +53,13 @@ const removeBlock = async (
   pageData: PageDataInterface,
   setPageData: (value: Record<string, unknown>) => void,
 ) => {
-  await fetch(`${process.env.NEXT_PUBLIC_API_URL}/page/modify/${page}`, {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
+  SaveManager.save(
+    'deleteBlock',
+    {
       'doc-ids': blockIDs,
-    }),
-    credentials: 'include',
-  });
+    },
+    page,
+  );
 
   const tempPageData = pageData as PageDataInterface;
   tempPageData.message.data.splice(index, 1);
@@ -81,22 +79,15 @@ const editBlock = async (
   properties: Record<string, unknown> | undefined,
   page: string,
 ) => {
-  const updateResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/page/modify/${page}`, {
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
-    credentials: 'include',
-    body: JSON.stringify({
+  SaveManager.save(
+    'editBlock',
+    {
       'doc-ids': blockIDs,
-      ...(blockType && { 'block-type': blockType }),
-      ...(properties && { properties }),
-    }),
-  });
-
-  const updateResponseJSON = await updateResponse.json();
-
-  if (updateResponse.status === 200) return;
-
-  throw new Error(`Addition to server failed because of: ${updateResponseJSON.message}`);
+      'block-type': blockType,
+      'block-properties': properties,
+    },
+    page,
+  );
 };
 
 export { addBlockAtIndex, removeBlock, editBlock };
