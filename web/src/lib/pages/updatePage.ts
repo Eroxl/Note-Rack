@@ -1,3 +1,4 @@
+/* eslint-disable no-promise-executor-return */
 /* eslint-disable no-underscore-dangle */
 import crypto from 'crypto';
 
@@ -43,6 +44,8 @@ const addBlockAtIndex = async (
     },
   });
 
+  // ~ Wait for page to update before adding block
+  await new Promise((resolve) => setTimeout(resolve, 5));
   document.getElementById(objectID)?.focus();
 };
 
