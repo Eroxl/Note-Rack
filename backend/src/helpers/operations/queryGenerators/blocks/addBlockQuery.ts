@@ -23,7 +23,7 @@ const addBlockQuery = async (props: unknown) => {
   if (docIDs) {
     docIDs.forEach((element, docIDIndex) => {
       arrayFilters.push({
-        [`${docIDIndex}._id`]: new Types.ObjectId(element),
+        [`a${docIDIndex}._id`]: new Types.ObjectId(element),
       });
 
       if (docIDIndex < (docIDs.length - 1)) {

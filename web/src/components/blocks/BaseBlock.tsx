@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import { useSelectable, SelectionManager } from 'react-virtual-selection';
 
+import { moveBlock } from '../../lib/pages/updatePage';
 import BlockHandle from './BlockHandle';
 import BlockTypes from '../../constants/BlockTypes';
 import type { BaseBlockProps } from '../../types/blockTypes';
@@ -36,8 +37,6 @@ const BaseBlock = (props: BaseBlockProps) => {
     item: () => ({
       blockID,
       index,
-      blockType,
-      properties,
     }),
   }), [index]);
 
@@ -46,42 +45,23 @@ const BaseBlock = (props: BaseBlockProps) => {
     collect: (monitor) => ({
       hovered: monitor.isOver() && (monitor.getItem() as { index: number }).index !== index,
     }),
-    drop: (item) => {
+    drop: async (item) => {
       const {
         index: itemIndex,
         blockID: itemBlockID,
-        blockType: itemBlockType,
-        properties: itemProperties,
       } = item as {
         index: number,
         blockID: string,
-        blockType: string,
-        properties: Record<string, unknown>
       };
 
-      const pageDataCopy = { ...pageData };
-
-      const offset = itemIndex > index ? 1 : 0;
-
-      pageDataCopy.message.data.splice(index + 1, 0, pageData.message.data[itemIndex]);
-      pageDataCopy.message.data.splice(itemIndex + offset, 1);
-      setPageData(pageDataCopy);
-
-      fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/page/move/${page}`,
-        {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({
-            'doc-ids': [],
-            'current-block-id': itemBlockID,
-            'current-index': itemIndex,
-            'new-index': index,
-            'current-block-type': itemBlockType,
-            'current-block-properties': itemProperties,
-          }),
-        },
+      // -=- Move Block -=-
+      await moveBlock(
+        [itemBlockID],
+        itemIndex,
+        index,
+        page,
+        pageData,
+        setPageData,
       );
     },
   }), [index]);

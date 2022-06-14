@@ -11,6 +11,8 @@ const addBlockAtIndex = async (
   pageData: PageDataInterface,
   setPageData: (value: Record<string, unknown>) => void,
   blockIDs?: string[],
+  blockType?: string,
+  blockProperties?: Record<string, unknown>,
 ) => {
   const objectID = crypto.randomBytes(12).toString('hex');
 
@@ -18,9 +20,9 @@ const addBlockAtIndex = async (
     'addBlock',
     {
       'doc-ids': blockIDs,
-      'new-block-type': 'text',
+      'new-block-type': blockType || 'text',
       'new-block-index': index,
-      'new-block-properties': {},
+      'new-block-properties': blockProperties || {},
       'new-block-id': objectID,
     },
     page,
@@ -29,8 +31,8 @@ const addBlockAtIndex = async (
   const tempPageData = pageData as PageDataInterface;
   tempPageData.message.data.splice(index, 0, {
     _id: objectID,
-    blockType: 'text',
-    properties: {
+    blockType: blockType || 'text',
+    properties: blockProperties || {
       value: '\n',
     },
     children: [],
@@ -93,4 +95,48 @@ const editBlock = async (
   );
 };
 
-export { addBlockAtIndex, removeBlock, editBlock };
+// TODO: Add support for children blocks / nested blocks
+const moveBlock = async (
+  blockIDs: string[],
+  currentIndex: number,
+  newIndex: number,
+  page: string,
+  pageData: PageDataInterface,
+  setPageData: (value: Record<string, unknown>) => void,
+) => {
+  const offset = currentIndex > newIndex ? 1 : 0;
+
+  SaveManager.save(
+    'deleteBlock',
+    {
+      'doc-ids': blockIDs,
+    },
+    page,
+  );
+
+  SaveManager.save(
+    'addBlock',
+    {
+      'doc-ids': blockIDs.length > 1 ? blockIDs : undefined,
+      'new-block-index': newIndex + offset,
+      'new-block-id': blockIDs[blockIDs.length - 1],
+      'new-block-type': pageData.message.data[currentIndex].blockType,
+      'new-block-properties': pageData.message.data[currentIndex].properties,
+    },
+    page,
+  );
+
+  // -=- Update page data -=-
+  const pageDataCopy = { ...pageData };
+
+  pageDataCopy.message.data.splice(newIndex + 1, 0, pageData.message.data[currentIndex]);
+  pageDataCopy.message.data.splice(currentIndex + offset, 1);
+  setPageData(pageDataCopy);
+};
+
+export {
+  addBlockAtIndex,
+  removeBlock,
+  editBlock,
+  moveBlock,
+};

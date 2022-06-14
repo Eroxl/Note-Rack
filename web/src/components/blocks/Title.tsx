@@ -3,7 +3,7 @@ import React from 'react';
 import { useDrop } from 'react-dnd';
 
 import TitleBreaker from './TitleBreaker';
-import { addBlockAtIndex } from '../../lib/pages/updatePage';
+import { addBlockAtIndex, moveBlock } from '../../lib/pages/updatePage';
 import type { PermanentEditableText } from '../../types/blockTypes';
 import editStyle from '../../lib/pages/editStyle';
 
@@ -29,39 +29,21 @@ const Title = (props: TitleProps) => {
     collect: (monitor) => ({
       hovered: monitor.isOver() && (monitor.getItem() as { index: number }).index !== index,
     }),
-    drop: (item) => {
+    drop: async (item) => {
       const {
         index: itemIndex,
         blockID: itemBlockID,
-        blockType: itemBlockType,
-        properties: itemProperties,
       } = item as {
         index: number,
         blockID: string,
-        blockType: string,
-        properties: Record<string, unknown>
       };
-      const pageDataCopy = { ...pageData };
-
-      pageDataCopy.message.data.splice(index, 0, pageData.message.data[itemIndex]);
-      pageDataCopy.message.data.splice(itemIndex + 1, 1);
-      setPageData(pageDataCopy);
-
-      fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/page/move/${page}`,
-        {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({
-            'doc-ids': [],
-            'current-block-id': itemBlockID,
-            'current-index': itemIndex,
-            'new-index': index - 1,
-            'current-block-type': itemBlockType,
-            'current-block-properties': itemProperties,
-          }),
-        },
+      await moveBlock(
+        [itemBlockID],
+        itemIndex,
+        index - 1,
+        page,
+        pageData,
+        setPageData,
       );
     },
   }), [index]);
