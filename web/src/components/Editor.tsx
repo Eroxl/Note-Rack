@@ -16,12 +16,12 @@ import Title from './blocks/Title';
 import Icon from './blocks/Icon';
 import { removeBlock } from '../lib/pages/updatePage';
 
-const Editor = (
-  props: {
-    pageData: PageDataInterface,
-    setPageData: Dispatch<SetStateAction<PageDataInterface | Record<string, unknown>>>
-  },
-) => {
+interface EditorProps {
+  pageData: PageDataInterface,
+  setPageData: Dispatch<SetStateAction<PageDataInterface | Record<string, unknown>>>
+}
+
+const Editor = (props: EditorProps) => {
   const { pageData, setPageData } = props;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
