@@ -30,13 +30,12 @@ const Editor = (props: EditorProps) => {
   const selectionData = useSelectionCollector('blocks');
 
   useEffect(() => {
-    const handleSelectionEvents = async (event: KeyboardEvent) => {
+    const handleSelectionEvents = (event: KeyboardEvent) => {
       if (event.key === 'Backspace') {
         for (let i = 0; i < selectionData.length; i += 1) {
           const { blockID, index } = selectionData[i] as { blockID: string, index: number };
 
-          // eslint-disable-next-line no-await-in-loop
-          await removeBlock(index - i, [blockID], page as string, pageData, setPageData);
+          removeBlock(index - i, [blockID], page as string, pageData, setPageData);
         }
       }
     };
