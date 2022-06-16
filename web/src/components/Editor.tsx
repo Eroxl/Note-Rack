@@ -35,7 +35,6 @@ const Editor = (props: EditorProps) => {
         for (let i = 0; i < selectionData.length; i += 1) {
           const { blockID, index } = selectionData[i] as { blockID: string, index: number };
 
-          // TODO:EROXL: 2020-05-21: Can't do more than one CRUD operation at a time.
           // eslint-disable-next-line no-await-in-loop
           await removeBlock(index - i, [blockID], page as string, pageData, setPageData);
         }
