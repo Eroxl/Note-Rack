@@ -29,6 +29,7 @@ const BaseBlock = (props: BaseBlockProps) => {
     () => ({
       blockID,
       index,
+      isBlockPage: blockType === 'page',
     }),
   );
 

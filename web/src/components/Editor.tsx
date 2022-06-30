@@ -33,9 +33,15 @@ const Editor = (props: EditorProps) => {
     const handleSelectionEvents = (event: KeyboardEvent) => {
       if (event.key === 'Backspace') {
         for (let i = 0; i < selectionData.length; i += 1) {
-          const { blockID, index } = selectionData[i] as { blockID: string, index: number };
+          const {
+            blockID,
+            index,
+            isBlockPage,
+          } = selectionData[i] as {blockID: string, index: number, isBlockPage: boolean };
 
-          removeBlock(index - i, [blockID], page as string, pageData, setPageData);
+          if (!isBlockPage) {
+            removeBlock(index - i, [blockID], page as string, pageData, setPageData);
+          }
         }
       }
     };
