@@ -41,6 +41,8 @@ const Editor = (props: EditorProps) => {
 
           if (!isBlockPage) {
             removeBlock(index - i, [blockID], page as string, pageData, setPageData);
+          } else {
+            // TODO: Remove the page and subpages
           }
         }
       }
