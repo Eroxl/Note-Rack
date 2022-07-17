@@ -1,0 +1,108 @@
+paths:
+  /page/modify/{page}:
+    post:
+      description: Modify a group of blocks on a page using a set of operations
+      tags:
+        - Pages
+        - Blocks
+      parameters:
+        - in: path
+          name: page
+          description: The page to modify
+          required: true
+          schema:
+            type: string
+            example: 02a80903359f073357d677a3
+            pattern: ^[a-f\d]{24}$
+        - in: query
+          name: body
+          description: The operations to perform on the page
+          required: true
+          schema: 
+            type: object
+            properties:
+              operations:
+                type: array
+                items:
+                  oneOf:
+                    - type: object
+                      properties:
+                        operation:
+                          type: string
+                          description: The type of operation to perform
+                          example: addBlock
+                        data:
+                          type: object
+                          description: The data to perform the operation with
+                          properties:
+                            doc-ids:
+                              type: array
+                              description: The IDs of the documents to perform the operation on
+                              items:
+                                type: string
+                                pattern: ^[a-f\d]{24}$
+                            new-block-type:
+                              type: string
+                              description: The type of block to add
+                              example: text
+                            new-block-index:
+                              type: number
+                              description: The index of the block to add
+                            new-block-properties:
+                              type: object
+                              description: The properties of the block to add
+                            new-block-id:
+                              type: string
+                              description: The ID of the block to add
+                              pattern: ^[a-f\d]{24}$
+                    - type: object
+                      properties:
+                        operation:
+                          type: string
+                          description: The type of operation to perform
+                          example: deleteBlock
+                        data:
+                          type: object
+                          description: The data to perform the operation with
+                          properties:
+                            doc-ids:
+                              type: array
+                              description: The IDs of the documents to perform the operation on
+                              items:
+                                type: string
+                                pattern: ^[a-f\d]{24}$
+                                minItems: 1
+                    - type: object
+                      properties:
+                        operation:
+                          type: string
+                          description: The type of operation to perform
+                          example: updateBlock
+                        data:
+                          type: object
+                          description: The data to perform the operation with
+                          properties:
+                            doc-ids:
+                              type: array
+                              description: The IDs of the documents to perform the operation on
+                              items:
+                                type: string
+                                pattern: ^[a-f\d]{24}$
+                            block-type:
+                              type: string
+                              description: The type to update the block to
+                              example: text
+                            block-properties:
+                              type: object
+                              description: The properties to update the block with
+                              example:
+                                text: Hello World
+      responses:
+        '200':
+          description: Successfully modified page
+        '400':
+          description: The user didn't provide any operations to perform
+        '401':
+          description: User not logged in
+        '404':
+          description: User doesn't have access to the page or page doesn't exist
