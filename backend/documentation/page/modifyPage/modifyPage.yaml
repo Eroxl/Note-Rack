@@ -1,0 +1,86 @@
+paths:
+  /page/modify-page/{page}:
+    post:
+      description: Create a page
+      tags:
+        - Pages
+      parameters:
+        - in: path
+          name: page
+          description: The page to create the new page under
+          required: true
+          schema:
+            type: string
+            example: 02a80903359f073357d677a3
+            pattern: ^[a-f\d]{24}$
+        - in: query
+          name: body
+          description: The information about the new page
+          required: true
+          schema: 
+            type: object
+            properties:
+              new-page-id: 
+                type: string
+                description: The ID of the new page
+                pattern: ^[a-f\d]{24}$
+              new-page-name:
+                type: string
+                description: The name of the new page
+      responses:
+        '200':
+          description: Created the page
+        '401':
+          description: The user is not logged in or doesn't have access to the page
+        '500':
+          description: The page couldn't be created
+    delete:
+      description: Delete a page
+      tags:
+        - Pages
+      parameters:
+        - in: path
+          name: page
+          description: The page to delete
+          required: true
+          schema:
+            type: string
+            example: 02a80903359f073357d677a3
+            pattern: ^[a-f\d]{24}$
+      responses:
+        '200':
+          description: Deleted the page
+        '401':
+          description: The user is not logged in or doesn't have access to the page
+        '500':
+          description: The page couldn't be deleted
+    patch:
+      description: Edit a pages style
+      tags:
+        - Pages
+      parameters:
+        - in: path
+          name: page
+          description: The page to edit
+          required: true
+          schema:
+            type: string
+            example: 02a80903359f073357d677a3
+            pattern: ^[a-f\d]{24}$
+        - in: query
+          name: body
+          description: The information about the new page
+          required: true
+          schema: 
+            type: object
+            properties:
+              style:
+                type: object
+                description: The new style of the page
+      responses:
+        '200':
+          description: Edited the page
+        '401':
+          description: The user is not logged in or doesn't have access to the page
+        '500':
+          description: The page couldn't be edited
