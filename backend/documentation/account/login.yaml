@@ -1,0 +1,30 @@
+paths:
+  /account/login:
+    post:
+      description: Login to an account
+      tags:
+        - Account
+      parameters:
+        - in: query
+          name: body
+          description: The email and password to login with
+          required: true
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+                description: The email of the user
+              password:
+                type: string
+                description: The password of the user
+        - in: query
+      responses:
+        '200': 
+          description: Succesfully logged in
+        '400':
+          description: The user didn't provide an email or password
+        '403':
+          description: Invalid email or password
+        '429':
+          description: The user has been timed out for too many failed login attempts

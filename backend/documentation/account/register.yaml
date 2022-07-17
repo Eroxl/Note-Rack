@@ -1,0 +1,32 @@
+paths:
+  /account/register:
+    post:
+      description: Register a new account
+      tags:
+        - Account
+      parameters:
+        - in: query
+          name: body
+          description: The email, username and password to create the account with
+          required: true
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+                description: The email of the user
+              password:
+                type: string
+                description: The password of the user
+              username:
+                type: string
+                description: The username of the user
+      responses:
+        '200': 
+          description: Successfully created the account
+        '400':
+          description: The user didn't provide a valid email or password or username
+        '409':
+          description: The user already exists
+        '500':
+          description: The user couldn't be created
