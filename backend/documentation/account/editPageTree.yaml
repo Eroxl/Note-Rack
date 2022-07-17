@@ -1,0 +1,30 @@
+paths:
+  /account/edit-page-tree/{page}:
+    post:
+      description: Edit a users page tree
+      tags:
+        - Account
+        - Pages
+      parameters:
+        - in: path
+          name: page
+          description: The page to edit
+          required: true
+          schema:
+            type: string
+            example: 02a80903359f073357d677a3
+        - in: query
+          name: body
+          description: The information about page trees nodes state
+          required: true
+          schema: 
+            type: object
+            properties:
+              new-exansion-state:
+                type: boolean
+                description: The new expansion state of the page tree node
+      responses:
+        '200': 
+          description: Returns the page tree
+        '400':
+          description: The user isn't logged in
