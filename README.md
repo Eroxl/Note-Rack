@@ -2,25 +2,6 @@
   📝 Note Rack
 </h1>
 
-## 🌱 In Progress
-
-- [ ] Multiple Pages
-  - [ ] Deleting Pages
-  - [ ] Proper Page Sorting
-    - Correctly sort pages in the page tree based on their position in their parent page
-- [ ] Inline Elements
-  - [ ] Bold: <b>Example</b>
-  - [ ] Italic: <i>Example</i>
-  - [ ] Underlined: <u>Example</u>
-  - [ ] Strike Through: <s>Example</s>
-- [ ] Other
-  - [ ] Better Caret Control
-    - Correctly handle caret movements like a native textbox between different blocks
-
-## 🔮 Future Plans
-- [ ] Custom blocks
-- [ ] Custom colour themes
-
 ## 🌳 Features
 * Basic Markdown Syntax
   * H1, H2, H3, H4, H5
