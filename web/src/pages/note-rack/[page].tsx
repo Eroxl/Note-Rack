@@ -73,7 +73,7 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
 
   return ({
     props: (async () => ({
-      pageDataReq: await (await fetch(`${process.env.NEXT_PUBLIC_API_URL}/page/get-page/${page}`, {
+      pageDataReq: await (await fetch(`${process.env.LOCAL_API_URL}/page/get-page/${page}`, {
         headers: {
           Cookie: Object.keys(cookies).map((cookieKey) => `${cookieKey}=${cookies[cookieKey]}`).join('; '),
         },
