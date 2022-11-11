@@ -15,8 +15,8 @@ const PageSidebarItem = (props: PageSidebarItemProps) => {
   } = props;
 
   const [currentSubPages, setCurrentSubPages] = useState(subPages);
-  const [currentName, setCurrentName] = useState(style.name || 'Untitled');
-  const [currentIcon, setCurrentIcon] = useState(style.icon || '📝');
+  const [currentName, setCurrentName] = useState(style?.name || 'Untitled');
+  const [currentIcon, setCurrentIcon] = useState(style?.icon || '📝');
   const [isExpanded, setIsExpanded] = useState(expanded);
 
   const router = useRouter();

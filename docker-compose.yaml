@@ -1,0 +1,67 @@
+version: '3.8'
+services:
+  web:
+    build: ./web
+    ports:
+      - 3000:3000
+    expose:
+      - 3000
+    restart: always
+    networks:
+      - web-backend
+    depends_on:
+      - backend
+    environment:
+      LOCAL_API_URL: http://backend:8000
+  
+  backend:
+    build: ./backend
+    ports:
+      - 8000:8000
+    expose:
+      - 8000
+    restart: always
+    networks:
+      - web-backend
+      - backend-mongo
+      - backend-redis
+    depends_on:
+      - mongo
+      - redis
+    environment:
+      MONGO_URL: "mongodb://mongo:27017"
+      REDIS_IP: "redis"
+      REDIS_PORT: "6379"
+  
+  mongo:
+    image: mongo:4.0-xenial
+    restart: always
+    networks:
+      - backend-mongo
+    expose:
+      - 27017
+    volumes:
+      - mongo-data:/data/db
+    logging:
+      driver: none
+  
+  redis:
+    image: redis:5.0.5-alpine
+    restart: always
+    networks:
+      - backend-redis
+    expose:
+      - 6379
+    volumes:
+      - redis-data:/data
+    logging:
+      driver: none
+
+volumes:
+  redis-data:
+  mongo-data:
+
+networks:
+  web-backend:
+  backend-mongo:
+  backend-redis:
