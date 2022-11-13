@@ -20,10 +20,11 @@ const TextBlock = (props: EditableText) => {
 
   const handlePotentialTypeChange = async (element: HTMLSpanElement) => {
     textKeybinds.forEach(async (bind) => {
-      const regexSearch = bind.keybind.exec(element.innerText);
+      const regexSearch = bind.keybind.exec(element.textContent || '');
+
       if (!regexSearch) return;
 
-      element.innerText = regexSearch[1] ?? '';
+      element.textContent = regexSearch[1] ?? '';
 
       let newBlockProperties;
 
@@ -31,7 +32,7 @@ const TextBlock = (props: EditableText) => {
         newBlockProperties = await bind.customFunc(
           {
             ...properties,
-            value: element.innerText,
+            value: element.textContent,
           },
           blockID,
           page,

@@ -1,6 +1,8 @@
 import React from 'react';
 import '@testing-library/jest-dom';
 import { render } from '@testing-library/react';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
 import Title from '../../../components/blocks/Title';
 import PageDataInterface from '../../../types/pageTypes';
@@ -50,13 +52,15 @@ describe('Title', () => {
     } = expectedProps;
 
     const { findByText } = render(
-      <Title
-        index={2}
-        page=""
-        title={value}
-        pageData={pageData}
-        setPageData={setPageData}
-      />,
+      <DndProvider backend={HTML5Backend}>
+        <Title
+          index={2}
+          page=""
+          title={value}
+          pageData={pageData}
+          setPageData={setPageData}
+        />
+      </DndProvider>,
     );
 
     const titleText = await findByText(value);

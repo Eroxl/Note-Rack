@@ -4,6 +4,9 @@ import React from 'react';
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 import { render } from '@testing-library/react';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import { act } from 'react-dom/test-utils';
 
 import TextStyles from '../../../constants/TextStyles';
 import textKeybinds from '../../../lib/textKeybinds';
@@ -83,6 +86,7 @@ describe('Text', () => {
   });
 
   textKeybinds.forEach((textObject) => {
+    if (textObject.customFunc) return;
     test(`Should allow style change from normal text to ${textObject.type}`, async () => {
       const {
         properties,
@@ -95,18 +99,20 @@ describe('Text', () => {
 
       if (TextStyles[textObject.type]) {
         const { findByText } = render(
-          <BaseBlock
-            index={0}
-            blockID={blockID}
-            page={page}
-            blockType="text"
-            pageData={pageData}
-            properties={properties}
-            setPageData={setPageData}
-            children={[]}
-            isMenuOpen={false}
-            setIsMenuOpen={(): void => {}}
-          />,
+          <DndProvider backend={HTML5Backend}>
+            <BaseBlock
+              index={0}
+              blockID={blockID}
+              page={page}
+              blockType="text"
+              pageData={pageData}
+              properties={properties}
+              setPageData={setPageData}
+              children={[]}
+              isMenuOpen={false}
+              setIsMenuOpen={(): void => {}}
+            />
+          </DndProvider>,
         );
 
         const textElement = await findByText(properties.value);
@@ -114,9 +120,15 @@ describe('Text', () => {
         expect(textElement).toBeVisible();
         expect(textElement).toHaveAttribute('contentEditable', 'true');
 
-        textElement.innerHTML = '';
+        await act(async () => {
+          textElement.innerHTML = '';
 
-        userEvent.type(textElement, `${textObject.plainTextKeybind}{space}`);
+          userEvent.type(textElement, `${textObject.plainTextKeybind}{space}`);
+
+          // Wait 100ms for the change to be applied
+          // eslint-disable-next-line no-promise-executor-return
+          await new Promise((r) => setTimeout(r, 100));
+        });
 
         expect(textElement).toBeEmptyDOMElement();
 
