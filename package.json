@@ -7,7 +7,7 @@
     "cypress": "^11.2.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "docker-compose build && docker-compose up -d && cypress run"
   },
   "repository": {
     "type": "git",
