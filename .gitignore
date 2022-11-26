@@ -9,3 +9,7 @@
 
 # -=- VS Code -=-
 **/.vscode
+
+# -=- Cypress -=-
+**/cypress/screenshots
+**/cypress/videos
