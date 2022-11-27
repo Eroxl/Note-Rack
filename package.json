@@ -7,7 +7,7 @@
     "cypress": "^11.2.0"
   },
   "scripts": {
-    "test": "docker-compose down -v && docker-compose build && docker-compose up -d && cypress run",
+    "test": "docker-compose down -v && docker-compose build && docker-compose up -d && cypress run --browser chrome",
     "test:manual": "docker-compose down -v && docker-compose build && docker-compose up -d && cypress open"
   },
   "repository": {
@@ -22,3 +22,4 @@
   },
   "homepage": "https://github.com/Eroxl/Note-Rack#readme"
 }
+ 
