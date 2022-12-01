@@ -1,0 +1,25 @@
+{
+  "name": "note-rack",
+  "version": "1.0.0",
+  "description": "<h1 align=\"center\">   📝 Note Rack </h1>",
+  "main": "index.js",
+  "devDependencies": {
+    "cypress": "^11.2.0"
+  },
+  "scripts": {
+    "test": "docker-compose down -v && docker-compose build && docker-compose up -d && cypress run --browser chrome",
+    "test:manual": "docker-compose down -v && docker-compose build && docker-compose up -d && cypress open"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Eroxl/Note-Rack.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Eroxl/Note-Rack/issues"
+  },
+  "homepage": "https://github.com/Eroxl/Note-Rack#readme"
+}
+ 
