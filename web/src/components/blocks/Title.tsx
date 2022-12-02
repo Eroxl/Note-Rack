@@ -76,6 +76,7 @@ const Title = (props: TitleProps) => {
             document.dispatchEvent(new CustomEvent('changePageTitle', { detail: { newTitle: e.currentTarget.innerText } }));
           }
         }
+        data-cy="page-title"
       >
         {title}
       </span>
