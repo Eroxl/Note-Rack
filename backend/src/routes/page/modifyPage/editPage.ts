@@ -1,4 +1,6 @@
-import express, { Request, Response } from 'express';
+import express from 'express';
+import { SessionRequest } from 'supertokens-node/framework/express';
+import { verifySession } from 'supertokens-node/recipe/session/framework/express';
 
 import PageTreeModel from '../../../models/pageTreeModel';
 import PageMapModel from '../../../models/pageMap';
@@ -8,8 +10,9 @@ const router = express.Router();
 
 router.patch(
   '/:page/',
-  async (req: Request, res: Response) => {
-    const { username } = res.locals;
+  verifySession(),
+  async (req: SessionRequest, res) => {
+    const username = req.session!.getUserId();
     const { style } = req.body;
     const { page } = req.params;
 
