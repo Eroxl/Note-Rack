@@ -95,4 +95,32 @@ describe('Edit Page', () => {
 
     cy.wait(2500);
   });
+
+  it('Changes the type of text block', () => {
+    cy.get('[data-cy=block-text]').click();
+
+    cy.type('{delete}' * 'This is a test'.length);
+
+    let currentStyle = {};
+      
+    cy.get('[data-cy=block-text]')
+      .invoke('attr', 'style')
+      .then((style) => {
+        currentStyle = style;
+      });
+
+    expect(currentStyle).to.not.equal({});
+
+    cy.get('[data-cy=block-text]').should('have.text', '');
+
+    cy.get('[data-cy=block-text]').type('# H1');
+
+    cy.get('[data-cy=block-text]').should('have.text', 'H1');
+
+    cy.get('[data-cy=block-text]').should('have.attr', 'style').should('not.equal', currentStyle);
+  
+    cy.get('[data-cy=page-title]').click();
+
+    cy.wait(2500);
+  });
 });

@@ -51,10 +51,6 @@ class SaveManager {
     const saveManager = SaveManager.getInstance();
     const { saveData, pageSaveData } = saveManager;
 
-    if (!Object.keys(saveData).length || !Object.keys(pageSaveData).length) {
-      return;
-    }
-
     Object.keys(saveData).forEach(async (page) => {
       const data = saveData[page];
 
