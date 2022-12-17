@@ -86,7 +86,7 @@ services:
     expose:
       - 3567
     environment:
-      MYSQL_CONNECTION_URI: mysql://supertokens_user:somePassword@db:3306/supertokens
+      MYSQL_CONNECTION_URI: mysql://supertokens_user:somePassword@sql:3306/supertokens
     networks:
       - supertokens-sql
       - backend-supertokens
