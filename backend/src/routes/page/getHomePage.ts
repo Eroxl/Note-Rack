@@ -1,4 +1,6 @@
-import express, { Request, Response } from 'express';
+import express from 'express';
+import { SessionRequest } from 'supertokens-node/framework/express';
+import { verifySession } from 'supertokens-node/recipe/session/framework/express';
 
 import UserModel from '../../models/userModel';
 
@@ -6,8 +8,9 @@ const router = express.Router();
 
 router.post(
   '/get-home-page',
-  async (req: Request, res: Response) => {
-    const { username } = res.locals;
+  verifySession(),
+  async (req: SessionRequest, res) => {
+    const username = req.session!.getUserId();
 
     if (!username) {
       res.statusCode = 401;
