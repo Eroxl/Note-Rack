@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-import ThirdPartyEmailPassword, { Google, Github, Apple } from 'supertokens-node/recipe/thirdpartyemailpassword';
+import ThirdParty, { Github, Google, Apple } from 'supertokens-node/recipe/thirdparty';
 import Session from 'supertokens-node/recipe/session';
 import SuperTokens from 'supertokens-node';
 
@@ -9,6 +9,30 @@ import PageMapModel from './models/pageMap';
 import PageTreeModel from './models/pageTreeModel';
 
 const setupAuth = () => {
+  // -=- Add OAuth Keys -=-
+  const {
+    GOOGLE_CLIENT_ID,
+    GOOGLE_CLIENT_SECRET,
+  } = process.env;
+
+  const {
+    GITHUB_CLIENT_ID,
+    GITHUB_CLIENT_SECRET,
+  } = process.env;
+
+  const {
+    APPLE_TEAM_ID,
+    APPLE_CLIENT_ID,
+    APPLE_KEY_ID,
+    APPLE_PRIVATE_KEY,
+  } = process.env;
+
+  // -=- Check OAuth Keys Exist -=-
+  if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) throw Error('Missing Google OAuth Keys');
+  if (!GITHUB_CLIENT_ID || !GITHUB_CLIENT_SECRET) throw Error('Missing Github OAuth Keys');
+  if (!APPLE_TEAM_ID || !APPLE_CLIENT_ID || !APPLE_KEY_ID || !APPLE_PRIVATE_KEY) throw Error('Missing Apple OAuth Keys');
+
+  // -=- Setup SuperTokens -=-
   SuperTokens.init({
     framework: 'express',
     supertokens: {
@@ -22,36 +46,36 @@ const setupAuth = () => {
       websiteBasePath: '/auth',
     },
     recipeList: [
-      ThirdPartyEmailPassword.init({
-        providers: [
-          // TODO: Replace them with OAuth keys for production use.
-          Google({
-            clientId: '1060725074195-kmeum4crr01uirfl2op9kd5acmi9jutn.apps.googleusercontent.com',
-            clientSecret: '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',
-          }),
-          Github({
-            clientId: '467101b197249757c71f',
-            clientSecret: 'e97051221f4b6426e8fe8d51486396703012f5bd',
-          }),
-          Apple({
-            clientId: '4398792-io.supertokens.example.service',
-            clientSecret: {
-              keyId: '7M48Y4RYDL',
-              privateKey:
-                '-----BEGIN PRIVATE KEY-----\nMIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgu8gXs+XYkqXD6Ala9Sf/iJXzhbwcoG5dMh1OonpdJUmgCgYIKoZIzj0DAQehRANCAASfrvlFbFCYqn3I2zeknYXLwtH30JuOKestDbSfZYxZNMqhF/OzdZFTV0zc5u5s3eN+oCWbnvl0hM+9IW0UlkdA\n-----END PRIVATE KEY-----',
-              teamId: 'YWQCXGJRJL',
-            },
-          }),
-        ],
+      ThirdParty.init({
+        signInAndUpFeature: {
+          providers: [
+            Google({
+              clientId: GOOGLE_CLIENT_ID,
+              clientSecret: GOOGLE_CLIENT_SECRET,
+            }),
+            Github({
+              clientId: GITHUB_CLIENT_ID,
+              clientSecret: GITHUB_CLIENT_SECRET,
+            }),
+            Apple({
+              clientId: APPLE_CLIENT_ID,
+              clientSecret: {
+                keyId: APPLE_KEY_ID,
+                privateKey: APPLE_PRIVATE_KEY,
+                teamId: APPLE_TEAM_ID,
+              },
+            }),
+          ],
+        },
         override: {
           apis: (originalImplementation) => ({
             ...originalImplementation,
             signInUpPOST: async (input: any) => {
               // -=- Verify Original Implementation -=-
-              if (originalImplementation.thirdPartySignInUpPOST === undefined) throw Error('Should never come here');
+              if (originalImplementation.signInUpPOST === undefined) throw Error('Should never come here');
 
               // -=- Run Original Implementation -=-
-              const response = await originalImplementation.thirdPartySignInUpPOST(input);
+              const response = await originalImplementation.signInUpPOST(input);
 
               // -=- Check Response Status -=-
               if (response.status !== 'OK') return response;
