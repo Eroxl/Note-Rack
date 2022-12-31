@@ -19,6 +19,10 @@ mongoose.connect(process.env.MONGO_URL ?? '');
 const app = express();
 const port = 8000;
 
+// -=- Setup Super Tokens -=-
+setupAuth();
+app.use(middleware());
+
 // -=- Add CORS headers -=-
 app.use(cors({
   origin: 'http://127.0.0.1:3000',
@@ -28,10 +32,6 @@ app.use(cors({
 
 // -=- Setup body parser -=-
 app.use(bodyParser.json());
-
-// -=- Setup Super Tokens -=-
-setupAuth();
-app.use(middleware());
 
 // -=- Add API Routes -=-
 app.use('/', routes);
