@@ -14,7 +14,7 @@ const Home: NextPage = () => (
 export const getServerSideProps = async (context: GetServerSidePropsContext) => {
   const { req } = context;
 
-  if (req.cookies['ssn-token'] || req.cookies['rfrsh-token']) {
+  if (req.cookies.accessToken) {
     return {
       redirect: {
         permanent: true,

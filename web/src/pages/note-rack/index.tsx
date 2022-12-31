@@ -9,7 +9,7 @@ const NoteRack = () => {
         const pageID = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/page/get-home-page`, { method: 'POST', credentials: 'include' });
 
         if (pageID.status === 401) {
-          Router.push('/login');
+          Router.push('/auth/login');
           return;
         }
         const pageJSON = await pageID.json();

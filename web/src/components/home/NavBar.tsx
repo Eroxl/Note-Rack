@@ -12,8 +12,8 @@ const NavBar = () => (
       </Link>
     </div>
     <div className="flex flex-row-reverse">
-      <Link href="/login#">
-        <a href="/login#" className="px-5 py-2 my-auto text-xl font-semibold bg-red-400 rounded text-amber-50">Login</a>
+      <Link href="/auth/login#">
+        <a href="/auth/login#" className="px-5 py-2 my-auto text-xl font-semibold bg-red-400 rounded text-amber-50">Login</a>
       </Link>
     </div>
   </div>
