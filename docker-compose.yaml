@@ -60,6 +60,20 @@ services:
     logging:
       driver: none
 
+  supertokens:
+    image: registry.supertokens.io/supertokens/supertokens-mysql:4.2
+    depends_on:
+      - sql
+    expose:
+      - 3567
+    environment:
+      mysql_connection_uri: mysql://supertokens_user:somePassword@sql:3306/supertokens
+    networks:
+      - supertokens-sql
+      - backend-supertokens
+    restart:
+      always
+
   sql:
     image: mysql:latest
     environment:
@@ -73,30 +87,8 @@ services:
       - supertokens-sql
     volumes:
       - sql-data:/var/lib/mysql
-    restart: unless-stopped
-    healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
-      timeout: 20s
-      retries: 10
-
-  supertokens:
-    image: registry.supertokens.io/supertokens/supertokens-mysql:4.2
-    depends_on:
-      - sql
-    expose:
-      - 3567
-    environment:
-      MYSQL_CONNECTION_URI: mysql://supertokens_user:somePassword@sql:3306/supertokens
-    networks:
-      - supertokens-sql
-      - backend-supertokens
-    restart: unless-stopped
-    healthcheck:
-      test: >
-        bash -c 'exec 3<>/dev/tcp/127.0.0.1/3567 && echo -e "GET /hello HTTP/1.1\r\nhost: 127.0.0.1:3567\r\nConnection: close\r\n\r\n" >&3 && cat <&3 | grep "Hello"'
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    restart:
+      always
 
 volumes:
   redis-data:
