@@ -1,5 +1,9 @@
-import ThirdPartyEmailPasswordReact from 'supertokens-auth-react/recipe/thirdpartyemailpassword';
 import SessionReact from 'supertokens-auth-react/recipe/session';
+import ThirdParty, {
+  Github,
+  Google,
+  Apple,
+} from 'supertokens-auth-react/recipe/thirdparty';
 import Router from 'next/router';
 
 const superTokensConfig = () => ({
@@ -11,12 +15,12 @@ const superTokensConfig = () => ({
     websiteBasePath: '/auth',
   },
   recipeList: [
-    ThirdPartyEmailPasswordReact.init({
+    ThirdParty.init({
       signInAndUpFeature: {
         providers: [
-          ThirdPartyEmailPasswordReact.Google.init(),
-          ThirdPartyEmailPasswordReact.Github.init(),
-          ThirdPartyEmailPasswordReact.Apple.init(),
+          Github.init(),
+          Google.init(),
+          Apple.init(),
         ],
       },
     }),
