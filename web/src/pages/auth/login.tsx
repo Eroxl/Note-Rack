@@ -14,7 +14,7 @@ const authButtonClicked = async (company: string) => {
 
   const authURL = await getAuthorisationURLWithQueryParamsAndSetState({
     providerId: company.toLowerCase(),
-    authorisationURL: `http://127.0.0.1:3000/auth/callback/${company.toLowerCase()}`,
+    authorisationURL: `${process.env.NEXT_PUBLIC_BASE_URL}/auth/callback/${company.toLowerCase()}`,
   });
 
   window.location

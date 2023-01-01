@@ -21,17 +21,20 @@ const port = 8000;
 
 // -=- Setup Super Tokens -=-
 setupAuth();
-app.use(middleware());
+
+// -=- Setup body parser -=-
+app.use(bodyParser.json());
 
 // -=- Add CORS headers -=-
 app.use(cors({
   origin: 'http://127.0.0.1:3000',
   allowedHeaders: ['content-type', ...supertokens.getAllCORSHeaders()],
+  methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'],
   credentials: true,
 }));
 
-// -=- Setup body parser -=-
-app.use(bodyParser.json());
+// -=- Add Super Tokens Middleware -=-
+app.use(middleware());
 
 // -=- Add API Routes -=-
 app.use('/', routes);

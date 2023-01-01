@@ -8,8 +8,8 @@ import Router from 'next/router';
 const superTokensConfig = () => ({
   appInfo: {
     appName: 'Note Rack',
-    apiDomain: 'http://127.0.0.1:8000',
-    websiteDomain: 'http://127.0.0.1:3000',
+    apiDomain: process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000',
+    websiteDomain: process.env.NEXT_PUBLIC_BASE_URL || 'http://127.0.0.1:3000',
     apiBasePath: '/auth',
     websiteBasePath: '/auth',
   },

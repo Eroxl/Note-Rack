@@ -31,7 +31,7 @@ const setupAuth = () => {
       connectionURI: 'http://supertokens:3567',
     },
     appInfo: {
-      apiDomain: '127.0.0.1:8000',
+      apiDomain: 'http://127.0.0.1:8000',
       appName: 'Note Rack',
       websiteDomain: 'http://127.0.0.1:3000',
       apiBasePath: '/auth',
