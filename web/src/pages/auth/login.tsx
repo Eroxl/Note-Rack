@@ -78,7 +78,6 @@ const LoginPage = () => (
 
         <AuthButton company="Github" />
         <AuthButton company="Google" />
-        <AuthButton company="Apple" />
       </div>
     </div>
   </div>

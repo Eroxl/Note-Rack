@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-import ThirdParty, { Github, Google, Apple } from 'supertokens-node/recipe/thirdparty';
+import ThirdParty, { Github, Google } from 'supertokens-node/recipe/thirdparty';
 import Session from 'supertokens-node/recipe/session';
 import SuperTokens from 'supertokens-node';
 
@@ -20,17 +20,9 @@ const setupAuth = () => {
     GITHUB_CLIENT_SECRET,
   } = process.env;
 
-  const {
-    APPLE_TEAM_ID,
-    APPLE_CLIENT_ID,
-    APPLE_KEY_ID,
-    APPLE_PRIVATE_KEY,
-  } = process.env;
-
   // -=- Check OAuth Keys Exist -=-
   if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) throw Error('Missing Google OAuth Keys');
   if (!GITHUB_CLIENT_ID || !GITHUB_CLIENT_SECRET) throw Error('Missing Github OAuth Keys');
-  if (!APPLE_TEAM_ID || !APPLE_CLIENT_ID || !APPLE_KEY_ID || !APPLE_PRIVATE_KEY) throw Error('Missing Apple OAuth Keys');
 
   // -=- Setup SuperTokens -=-
   SuperTokens.init({
@@ -56,14 +48,6 @@ const setupAuth = () => {
             Github({
               clientId: GITHUB_CLIENT_ID,
               clientSecret: GITHUB_CLIENT_SECRET,
-            }),
-            Apple({
-              clientId: APPLE_CLIENT_ID,
-              clientSecret: {
-                keyId: APPLE_KEY_ID,
-                privateKey: APPLE_PRIVATE_KEY,
-                teamId: APPLE_TEAM_ID,
-              },
             }),
           ],
         },

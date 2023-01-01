@@ -2,7 +2,6 @@ import SessionReact from 'supertokens-auth-react/recipe/session';
 import ThirdParty, {
   Github,
   Google,
-  Apple,
 } from 'supertokens-auth-react/recipe/thirdparty';
 import Router from 'next/router';
 
@@ -20,7 +19,6 @@ const superTokensConfig = () => ({
         providers: [
           Github.init(),
           Google.init(),
-          Apple.init(),
         ],
       },
     }),
