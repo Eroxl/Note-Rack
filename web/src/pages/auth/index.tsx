@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import AuthButton from '../../components/home/AuthButton';
 import AuthNavBar from '../../components/home/AuthNavBar';
