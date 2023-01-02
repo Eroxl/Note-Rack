@@ -6,13 +6,6 @@ const UserScheme = new Schema({
     required: true,
     unique: true,
   },
-  email: {
-    type: Schema.Types.String,
-    required: true,
-    unique: true,
-  },
-  password: Schema.Types.String,
-  verified: Schema.Types.Boolean,
   homePage: Schema.Types.String,
 });
 

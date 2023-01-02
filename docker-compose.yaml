@@ -1,4 +1,5 @@
 version: '3.8'
+
 services:
   web:
     build: ./web
@@ -6,13 +7,12 @@ services:
       - 3000:3000
     expose:
       - 3000
-    restart: always
+    restart: unless-stopped
     networks:
       - web-backend
     depends_on:
       - backend
-    environment:
-      LOCAL_API_URL: http://backend:8000
+      - supertokens
   
   backend:
     build: ./backend
@@ -20,14 +20,16 @@ services:
       - 8000:8000
     expose:
       - 8000
-    restart: always
+    restart: unless-stopped
     networks:
       - web-backend
       - backend-mongo
       - backend-redis
+      - backend-supertokens
     depends_on:
       - mongo
       - redis
+      - supertokens
     environment:
       MONGO_URL: "mongodb://mongo:27017"
       REDIS_IP: "redis"
@@ -35,7 +37,7 @@ services:
   
   mongo:
     image: mongo:4.0-xenial
-    restart: always
+    restart: unless-stopped
     networks:
       - backend-mongo
     expose:
@@ -47,7 +49,7 @@ services:
   
   redis:
     image: redis:5.0.5-alpine
-    restart: always
+    restart: unless-stopped
     networks:
       - backend-redis
     expose:
@@ -57,11 +59,54 @@ services:
     logging:
       driver: none
 
+  supertokens:
+    image: registry.supertokens.io/supertokens/supertokens-mysql:4.2
+    depends_on:
+      - sql
+    expose:
+      - 3567
+    environment:
+      mysql_connection_uri: mysql://supertokens_user:somePassword@sql:3306/supertokens
+    networks:
+      - supertokens-sql
+      - backend-supertokens
+    restart:
+      unless-stopped
+    healthcheck:
+      test: >
+        bash -c 'exec 3<>/dev/tcp/127.0.0.1/3567 && echo -e "GET /hello HTTP/1.1\r\nhost: 127.0.0.1:3567\r\nConnection: close\r\n\r\n" >&3 && cat <&3 | grep "Hello"'
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  sql:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: supertokens_user
+      MYSQL_PASSWORD: somePassword 
+      MYSQL_DATABASE: supertokens
+    expose:
+      - 3306
+    networks:
+      - supertokens-sql
+    volumes:
+      - sql-data:/var/lib/mysql
+    restart:
+      unless-stopped
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 10
+
 volumes:
   redis-data:
   mongo-data:
+  sql-data:
 
 networks:
   web-backend:
   backend-mongo:
   backend-redis:
+  backend-supertokens:
+  supertokens-sql:

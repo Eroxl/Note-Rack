@@ -1,13 +1,14 @@
 import bodyParser from 'body-parser';
-import cookieParser from 'cookie-parser';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUI from 'swagger-ui-express';
 import mongoose from 'mongoose';
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import { middleware, errorHandler } from 'supertokens-node/framework/express';
+import supertokens from 'supertokens-node';
 
-import verifyValidityOfToken from './auth';
+import setupAuth from './setupAuth';
 import routes from './routes/index';
 
 // -=- Connect to MongoDB with dotenv file -=-
@@ -18,15 +19,22 @@ mongoose.connect(process.env.MONGO_URL ?? '');
 const app = express();
 const port = 8000;
 
-// -=- Add CORS headers -=-
-app.use(cors({ origin: 'http://127.0.0.1:3000', credentials: true }));
+// -=- Setup Super Tokens -=-
+setupAuth();
 
-// -=- Setup body & cookie parser & cors -=-
+// -=- Setup body parser -=-
 app.use(bodyParser.json());
-app.use(cookieParser());
 
-// -=- Setup jwt token authentication middleware -=-
-app.use(verifyValidityOfToken);
+// -=- Add CORS headers -=-
+app.use(cors({
+  origin: 'http://127.0.0.1:3000',
+  allowedHeaders: ['content-type', ...supertokens.getAllCORSHeaders()],
+  methods: ['GET', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
+  credentials: true,
+}));
+
+// -=- Add Super Tokens Middleware -=-
+app.use(middleware());
 
 // -=- Add API Routes -=-
 app.use('/', routes);
@@ -53,6 +61,9 @@ app.use(
     },
   ),
 );
+
+// -=- Setup Super Tokens Error Handling -=-
+app.use(errorHandler());
 
 // -=- Start The Express Server -=-
 app.listen(port);

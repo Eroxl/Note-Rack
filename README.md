@@ -15,6 +15,26 @@
 * Exporting
   * [PDF Exporting](./images/Note%20Rack%20Page.pdf)
 
+## 📦 Installation
+1. Clone the repository
+```bash
+git clone
+```
+2. Install dependencies
+```bash
+yarn install
+```
+3. Build the application
+```bash
+docker-compose build
+```
+4. Run the application
+```bash
+docker-compose up
+```
+5. Navigate to `http://127.0.0.1:3000`
+
+
 ## 🎹 Keybinds
 - Headings
   - `#` - H1

@@ -4,10 +4,10 @@ import Head from 'next/head';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
+import type PageDataInterface from '../../types/pageTypes';
 import PageSidebar from '../../components/pageInfo/PageSidebar';
 import Editor from '../../components/Editor';
 import LoadingPage from '../../components/LoadingPage';
-import type PageDataInterface from '../../types/pageTypes';
 import SaveManager from '../../classes/SaveManager';
 
 const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {
