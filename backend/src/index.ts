@@ -29,7 +29,7 @@ app.use(bodyParser.json());
 app.use(cors({
   origin: 'http://127.0.0.1:3000',
   allowedHeaders: ['content-type', ...supertokens.getAllCORSHeaders()],
-  methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'],
+  methods: ['GET', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
   credentials: true,
 }));
 
