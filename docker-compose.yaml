@@ -78,6 +78,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    logging:
+      driver: none
 
   sql:
     image: mysql:latest
@@ -98,6 +100,8 @@ services:
       test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
       timeout: 20s
       retries: 10
+    logging:
+      driver: none
 
 volumes:
   redis-data:
