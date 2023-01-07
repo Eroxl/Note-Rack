@@ -15,6 +15,18 @@
 * Exporting
     * [PDF Exporting](./images/Note%20Rack%20Page.pdf)
 
+## 🎹 Keybinds
+- Headings
+    - `#` - H1
+    - `##` - H2
+    - `###` - H3
+    - `####` - H4
+    - `#####` - H5
+- Other
+    - `>` Quote
+    - `|` Callout
+    -  `[[ Page Name ]]` Page ("Page Name" can be any string)
+
 ## 📦 Installation
 1. Download the repo
     * Clone the repo
@@ -109,18 +121,6 @@
         cd ../web && \
         yarn dev
         ```
-
-## 🎹 Keybinds
-- Headings
-    - `#` - H1
-    - `##` - H2
-    - `###` - H3
-    - `####` - H4
-    - `#####` - H5
-- Other
-    - `>` Quote
-    - `|` Callout
-    -  `[[ Page Name ]]` Page ("Page Name" can be any string)
 
 ## 🔬 Examples
 
