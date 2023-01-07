@@ -49,7 +49,7 @@
     4. Copy the client environment file and fill in the values
         ```bash
         cd ../web && \
-        cp .env.example .env.local
+        cp ./src/.env.example ./src/.env.local
         ```
 
     5. Run the Docker Compose file
