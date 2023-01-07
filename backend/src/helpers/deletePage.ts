@@ -1,5 +1,6 @@
 // import PageModel from '../models/pageModel';
 import PageMapModel from '../models/pageMap';
+import PageModel from '../models/pageModel';
 import PageTreeModel from '../models/pageTreeModel';
 
 interface pageTreeType {
@@ -71,8 +72,15 @@ const deletePage = async (
   
   deletePageFromTree(pageID, pageMap.pathToPage);
 
-  // ~ Delete the sub pages
+  // ~ Delete the sub pages maps
   PageMapModel.deleteMany({
+    _id: {
+      $in: pagesToDelete,
+    },
+  });
+
+  // ~ Delete the sub pages
+  PageModel.deleteMany({
     _id: {
       $in: pagesToDelete,
     },
