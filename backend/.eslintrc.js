@@ -22,6 +22,9 @@ module.exports = {
     ],
     'import/extensions': 0,
     'react/function-component-definition': 'off',
+    'no-underscore-dangle': {
+      allow: ['_id'],
+    },
   },
   settings: {
     'import/resolver': {

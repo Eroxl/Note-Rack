@@ -1,6 +1,4 @@
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-underscore-dangle */
-import PageModel from '../models/pageModel';
+// import PageModel from '../models/pageModel';
 import PageMapModel from '../models/pageMap';
 import PageTreeModel from '../models/pageTreeModel';
 
@@ -9,70 +7,76 @@ interface pageTreeType {
   subPages: pageTreeType[],
 }
 
-const fullyRemovePage = async (
+const deletePage = async (
   pageID: string,
-  pathToPage: string[],
   username: string,
 ) => {
-  const arrayFilters: Record<string, unknown>[] = [];
-  let queryString = '';
+  // -=- Get Information -=-
+  // ~ Get the page tree and map
+  const pageTree = await PageTreeModel.findOne({ user: username }).lean();
+  const pageMap = await PageMapModel.findById(pageID).lean() as { pathToPage: string[] } || undefined;
 
-  pathToPage.forEach((element: string, index: number) => {
-    arrayFilters.push({
-      [`a${index}._id`]: element,
+  // ~ Check if the user has a page tree and map
+  if (!pageMap || !pageTree) {
+    // NOTE:EROXL: Should never happen
+    throw new Error('User does not have a page tree or map.');
+  }
+
+  // -=- Get Sub Pages -=-
+  const getSubPages = (page: pageTreeType) => {
+    return page.subPages.flatMap((subPage): string[] => ([
+      subPage._id,
+      ...getSubPages(subPage),
+    ]));
+  };
+
+  const pagesToDelete = [pageID, ...getSubPages(pageTree)];
+
+  // -=- Delete Sub Pages -=-
+  // ~ Delete the top level page from the page tree
+  const deletePageFromTree = (page: string, pathToPage: string[]) => {
+    const arrayFilters: Record<string, unknown>[] = [];
+    let queryString = 'subPages';
+
+    // ~ Check if the top level page is the root page
+    if (pathToPage.length === 0) throw new Error('Cannot delete the root page.');
+
+    // ~ Get the path to the top level page
+    pathToPage.forEach((element, index) => {
+      if (index === pathToPage.length - 1) return;
+
+      queryString += `.$[a${index}].subPages`;
+      arrayFilters.push({
+        [`a${index}._id`]: element,
+      });
     });
 
-    if (index < (pathToPage.length - 1)) {
-      queryString += `$[a${index}].subPages.`;
-    }
-  });
-
-  await PageTreeModel.updateOne(
-    {
-      user: username,
-    },
-    {
-      $pull: {
-        [queryString]: {
-          _id: pageID,
+    // ~ Delete the top level page
+    PageTreeModel.updateOne(
+      {
+        user: username,
+      },
+      {
+        $pull: {
+          [queryString]: {
+            _id: page,
+          },
         },
       },
+      {
+        arrayFilters,
+      },
+    );
+  };
+  
+  deletePageFromTree(pageID, pageMap.pathToPage);
+
+  // ~ Delete the sub pages
+  PageMapModel.deleteMany({
+    _id: {
+      $in: pagesToDelete,
     },
-    {
-      arrayFilters,
-    },
-  );
-
-  await PageModel.findOneAndRemove({ _id: pageID, username });
-};
-
-const deletePage = async (
-  page: string,
-  username: string,
-  pageTree?: pageTreeType,
-  pageMap?: string[],
-) => {
-  if (!pageTree || !pageMap) {
-    pageTree = await PageTreeModel.findOne({ user: username }).lean();
-    pageMap = await PageMapModel.findById(page).lean();
-
-    if (!pageMap || !pageTree) {
-      throw new Error('User does not have a page tree or map.');
-    }
-  }
-
-  fullyRemovePage(page, pageMap, username);
-
-  if (pageTree.subPages.length > 0) {
-    pageTree.subPages.forEach((subPage) => {
-      deletePage(
-        subPage._id,
-        username,
-        pageTree,
-        pageMap?.concat([page]),
-      );
-    });
-  }
+  });
 };
 
 export default deletePage;
