@@ -30,7 +30,7 @@ const PageSidebarItem = (props: PageSidebarItemProps) => {
       if (newTitle !== undefined) setCurrentName(newTitle);
     };
 
-    const changeChildren = (event: CustomEvent) => {
+    const addChild = (event: CustomEvent) => {
       const { detail } = event;
       const {
         newPageID,
@@ -49,14 +49,28 @@ const PageSidebarItem = (props: PageSidebarItemProps) => {
       setCurrentSubPages(currentSubPagesCopy);
     };
 
+    const removeChild = (event: CustomEvent) => {
+      const { detail } = event;
+      const { deletedPageID } = detail;
+
+      const currentSubPagesCopy = [...currentSubPages];
+
+      const deletedPageIndex = currentSubPagesCopy.findIndex((page) => page._id === deletedPageID);
+      currentSubPagesCopy.splice(deletedPageIndex, 1);
+
+      setCurrentSubPages(currentSubPagesCopy);
+    };
+
     if (router.query.page === pageID) {
       document.addEventListener('changePageTitle', changeTitle as EventListener);
-      document.addEventListener('addPage', changeChildren as EventListener);
+      document.addEventListener('addPage', addChild as EventListener);
+      document.addEventListener('deletePage', removeChild as EventListener);
     }
 
     return () => {
       document.removeEventListener('changePageTitle', changeTitle as EventListener);
-      document.removeEventListener('addPage', changeChildren as EventListener);
+      document.removeEventListener('addPage', addChild as EventListener);
+      document.removeEventListener('deletePage', removeChild as EventListener);
     };
   });
 

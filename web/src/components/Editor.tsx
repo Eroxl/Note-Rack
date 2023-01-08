@@ -41,6 +41,9 @@ const Editor = (props: EditorProps) => {
           } = selectionData[i] as {blockID: string, index: number, isBlockPage: boolean };
 
           if (isBlockPage) {
+            document.dispatchEvent(
+              new CustomEvent('deletePage', { detail: { pageID: blockID } })
+            );
             deletePage(blockID);
           }
 
