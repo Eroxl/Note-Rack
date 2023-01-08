@@ -15,6 +15,7 @@ import PageThumbnail from './pageCustomization/PageThumbnail';
 import Title from './blocks/Title';
 import Icon from './blocks/Icon';
 import { removeBlock } from '../lib/pages/updatePage';
+import deletePage from '../lib/deletePage';
 
 interface EditorProps {
   pageData: PageDataInterface,
@@ -39,11 +40,11 @@ const Editor = (props: EditorProps) => {
             isBlockPage,
           } = selectionData[i] as {blockID: string, index: number, isBlockPage: boolean };
 
-          if (!isBlockPage) {
-            removeBlock(index - i, [blockID], page as string, pageData, setPageData);
-          } else {
-            // TODO: Remove the page and subpages
+          if (isBlockPage) {
+            deletePage(blockID);
           }
+
+          removeBlock(index - i, [blockID], page as string, pageData, setPageData);
         }
       }
     };

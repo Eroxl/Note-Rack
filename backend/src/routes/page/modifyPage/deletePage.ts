@@ -24,7 +24,7 @@ router.delete(
     const { page } = req.params;
 
     try {
-      deletePage(
+      await deletePage(
         page,
         username,
       );
@@ -32,8 +32,9 @@ router.delete(
       res.statusCode = 500;
       res.json({
         status: 'error',
-        message: 'Something went wrong and the page could not be deleted',
+        message: `Something went wrong and the page could not be deleted, error: ${(error as Error).message}}`,
       });
+      return;
     }
 
     res.statusCode = 200;

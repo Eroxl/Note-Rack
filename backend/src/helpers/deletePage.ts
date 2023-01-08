@@ -2,6 +2,7 @@
 import PageMapModel from '../models/pageMap';
 import PageModel from '../models/pageModel';
 import PageTreeModel from '../models/pageTreeModel';
+import mongoose from 'mongoose';
 
 interface pageTreeType {
   _id: string,
@@ -14,7 +15,7 @@ const deletePage = async (
 ) => {
   // -=- Get Information -=-
   // ~ Get the page tree and map
-  const pageTree = await PageTreeModel.findOne({ user: username }).lean();
+  const pageTree = await PageTreeModel.findOne({ _id: username }).lean();
   const pageMap = await PageMapModel.findById(pageID).lean() as { pathToPage: string[] } || undefined;
 
   // ~ Check if the user has a page tree and map
@@ -24,18 +25,30 @@ const deletePage = async (
   }
 
   // -=- Get Sub Pages -=-
-  const getSubPages = (page: pageTreeType) => {
-    return page.subPages.flatMap((subPage): string[] => ([
-      subPage._id,
-      ...getSubPages(subPage),
-    ]));
+  const getSubPages = (page: pageTreeType, pathToPage: string[], pageID: string) => {
+    // ~ Traverse pageTree using pageMap.pathToPage
+    let subPage = page;
+    [...pathToPage, pageID].forEach((element) => {
+      subPage = subPage.subPages.find((page) => page._id === element) as pageTreeType;
+    });
+
+    // ~ Get all sub pages
+    const subPages: string[] = [];
+    const traverse = (page: pageTreeType) => {
+      subPages.push(page._id);
+      page.subPages.forEach((page) => traverse(page));
+    }
+    traverse(subPage);
+
+    return subPages;
   };
 
-  const pagesToDelete = [pageID, ...getSubPages(pageTree)];
+  const pagesToDelete = getSubPages(pageTree, pageMap.pathToPage, pageID)
+    .map((id) => new mongoose.Types.ObjectId(id));
 
   // -=- Delete Sub Pages -=-
   // ~ Delete the top level page from the page tree
-  const deletePageFromTree = (page: string, pathToPage: string[]) => {
+  const deletePageFromTree = async (page: string, pathToPage: string[], username: string) => {
     const arrayFilters: Record<string, unknown>[] = [];
     let queryString = 'subPages';
 
@@ -44,7 +57,9 @@ const deletePage = async (
 
     // ~ Get the path to the top level page
     pathToPage.forEach((element, index) => {
-      if (index === pathToPage.length - 1) return;
+      // NOTE:EROXL: This is because the root of the page tree is 
+      //             technically a sub page so we don't need to -1 the index
+      if (index === pathToPage.length) return;
 
       queryString += `.$[a${index}].subPages`;
       arrayFilters.push({
@@ -53,9 +68,9 @@ const deletePage = async (
     });
 
     // ~ Delete the top level page
-    PageTreeModel.updateOne(
+    await PageTreeModel.updateOne(
       {
-        user: username,
+        _id: username,
       },
       {
         $pull: {
@@ -70,17 +85,17 @@ const deletePage = async (
     );
   };
   
-  deletePageFromTree(pageID, pageMap.pathToPage);
-
+  await deletePageFromTree(pageID, pageMap.pathToPage, username);
+  
   // ~ Delete the sub pages maps
-  PageMapModel.deleteMany({
+  await PageMapModel.deleteMany({
     _id: {
       $in: pagesToDelete,
     },
   });
 
   // ~ Delete the sub pages
-  PageModel.deleteMany({
+  await PageModel.deleteMany({
     _id: {
       $in: pagesToDelete,
     },
