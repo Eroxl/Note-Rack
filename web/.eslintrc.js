@@ -35,6 +35,9 @@ module.exports = {
     'react/function-component-definition': 'off',
     'no-param-reassign': 0,
     '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+    'no-underscore-dangle': {
+      allow: ['_id'],
+    },
   },
   settings: {
     'import/resolver': {
