@@ -42,26 +42,21 @@
     2. Navigate to the repository
         * If you cloned the repo
             ```bash
-            cd ./note-rack
+            cd Note-Rack
             ```
         * If you downloaded the zip file
-            1. Locate the zip file
-            2. Unzip the file
-            3. Navigate to the folder
+            1. Unzip the file
                 ```bash
-                cd ./Note-Rack-main
+                unzip main.zip
+                ```
+            2. Navigate to the folder
+                ```bash
+                cd Note-Rack-main
                 ```
 
-    3. Copy the server environment file and fill in the values
+    3. Set up environment
         ```bash
-        cd ./backend && \
-        cp .env.example .env
-        ```
-
-    4. Copy the client environment file and fill in the values
-        ```bash
-        cd ../web && \
-        cp ./src/.env.example ./src/.env.local
+        ci/setup_env.sh
         ```
 
     5. Run the Docker Compose file
