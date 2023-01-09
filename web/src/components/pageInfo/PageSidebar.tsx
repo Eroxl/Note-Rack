@@ -37,6 +37,7 @@ const PageSidebar = () => {
               _id={_id}
               subPages={subPages}
               key={_id}
+              pagePath={[]}
             />
           );
         })

@@ -2,21 +2,23 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
+import type { PagePath } from './PagePath';
 import type { PageSidebarItemProps } from './PageSidebarItemProps';
 import editPageTree from '../../lib/pageTrees/editPageTree';
 
-const PageSidebarItem = (props: PageSidebarItemProps) => {
+const PageSidebarItem = (props: PageSidebarItemProps & { pagePath: PagePath[] }) => {
   const {
     _id: pageID,
     expanded,
     style,
     parentExpanded,
     subPages,
+    pagePath,
   } = props;
 
   const [currentSubPages, setCurrentSubPages] = useState(subPages);
-  const [currentName, setCurrentName] = useState(style?.name || 'Untitled');
-  const [currentIcon, setCurrentIcon] = useState(style?.icon || '📝');
+  const [currentName, setCurrentName] = useState<string>(style?.name as string || 'Untitled');
+  const [currentIcon, setCurrentIcon] = useState<string>(style?.icon as string || '📝');
   const [isExpanded, setIsExpanded] = useState(expanded);
 
   const router = useRouter();
@@ -65,6 +67,13 @@ const PageSidebarItem = (props: PageSidebarItemProps) => {
       document.addEventListener('changePageTitle', changeTitle as EventListener);
       document.addEventListener('addPage', addChild as EventListener);
       document.addEventListener('deletePage', removeChild as EventListener);
+
+      // -=- Update page path -=-
+      document.dispatchEvent(new CustomEvent('pagePath', { detail: [...pagePath, {
+        name: currentName,
+        icon: currentIcon,
+        pageID,
+      }] }));
     }
 
     return () => {
@@ -113,6 +122,14 @@ const PageSidebarItem = (props: PageSidebarItemProps) => {
               style={subPageStyle}
               parentExpanded={parentExpanded && isExpanded}
               key={subPageID}
+              pagePath={[
+                ...pagePath,
+                {
+                  pageID,
+                  icon: currentIcon,
+                  name: currentName,
+                }
+              ]}
             />
           );
         })
