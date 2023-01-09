@@ -54,9 +54,20 @@
                 cd Note-Rack-main
                 ```
 
-    3. Set up environment
+    3. Copy the server environment file and fill in the values
         ```bash
-        ci/setup_env.sh
+        cd ./backend && \
+        cp .env.example .env && \
+        nano .env && \
+        cd ../
+        ```
+
+    4. Copy the client environment file and fill in the values
+        ```bash
+        cd ./web/src && \
+        cp .env.example .env.local && \
+        nano .env.local && \
+        cd ../../
         ```
 
     5. Run the Docker Compose file
@@ -96,24 +107,28 @@
     6. Copy the server environment file and fill in the values
         ```bash
         cd ./backend && \
-        cp .env.example .env
+        cp .env.example .env && \
+        nano .env && \
+        cd ../
         ```
 
     7. Copy the client environment file and fill in the values
         ```bash
-        cd ../web && \
-        cp .env.example .env.local
+        cd ./web/src && \
+        cp .env.example .env.local && \
+        nano .env.local && \
+        cd ../../
         ```
 
     8. Run the server
         ```bash
-        cd ../backend && \
+        cd ./backend && \
         yarn dev
         ```
 
     9. Run the client
         ```bash
-        cd ../web && \
+        cd ./web && \
         yarn dev
         ```
 
