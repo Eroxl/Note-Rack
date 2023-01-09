@@ -42,26 +42,32 @@
     2. Navigate to the repository
         * If you cloned the repo
             ```bash
-            cd ./note-rack
+            cd Note-Rack
             ```
         * If you downloaded the zip file
-            1. Locate the zip file
-            2. Unzip the file
-            3. Navigate to the folder
+            1. Unzip the file
                 ```bash
-                cd ./Note-Rack-main
+                unzip main.zip
+                ```
+            2. Navigate to the folder
+                ```bash
+                cd Note-Rack-main
                 ```
 
     3. Copy the server environment file and fill in the values
         ```bash
         cd ./backend && \
-        cp .env.example .env
+        cp .env.example .env && \
+        nano .env && \
+        cd ../
         ```
 
     4. Copy the client environment file and fill in the values
         ```bash
-        cd ../web && \
-        cp ./src/.env.example ./src/.env.local
+        cd ./web/src && \
+        cp .env.example .env.local && \
+        nano .env.local && \
+        cd ../../
         ```
 
     5. Run the Docker Compose file
@@ -101,24 +107,28 @@
     6. Copy the server environment file and fill in the values
         ```bash
         cd ./backend && \
-        cp .env.example .env
+        cp .env.example .env && \
+        nano .env && \
+        cd ../
         ```
 
     7. Copy the client environment file and fill in the values
         ```bash
-        cd ../web && \
-        cp .env.example .env.local
+        cd ./web/src && \
+        cp .env.example .env.local && \
+        nano .env.local && \
+        cd ../../
         ```
 
     8. Run the server
         ```bash
-        cd ../backend && \
+        cd ./backend && \
         yarn dev
         ```
 
     9. Run the client
         ```bash
-        cd ../web && \
+        cd ./web && \
         yarn dev
         ```
 
