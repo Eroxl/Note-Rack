@@ -24,16 +24,12 @@ services:
     networks:
       - web-backend
       - backend-mongo
-      - backend-redis
       - backend-supertokens
     depends_on:
       - mongo
-      - redis
       - supertokens
     environment:
       MONGO_URL: "mongodb://mongo:27017"
-      REDIS_IP: "redis"
-      REDIS_PORT: "6379"
   
   mongo:
     image: mongo:4.0-xenial
@@ -46,18 +42,6 @@ services:
       - mongo-data:/data/db
     logging:
       driver: none
-  
-  redis:
-    image: redis:5.0.5-alpine
-    restart: unless-stopped
-    networks:
-      - backend-redis
-    expose:
-      - 6379
-    volumes:
-      - redis-data:/data
-    logging:
-      driver: none
 
   supertokens:
     image: registry.supertokens.io/supertokens/supertokens-mysql:4.2
@@ -66,7 +50,7 @@ services:
     expose:
       - 3567
     environment:
-      mysql_connection_uri: mysql://supertokens_user:somePassword@sql:3306/supertokens
+      MYSQL_CONNECTION_URI: mysql://supertokens_user:somePassword@sql:3306/supertokens
     networks:
       - supertokens-sql
       - backend-supertokens
@@ -104,13 +88,11 @@ services:
       driver: none
 
 volumes:
-  redis-data:
   mongo-data:
   sql-data:
 
 networks:
   web-backend:
   backend-mongo:
-  backend-redis:
   backend-supertokens:
   supertokens-sql:
