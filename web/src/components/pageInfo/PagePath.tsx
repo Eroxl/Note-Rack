@@ -24,7 +24,7 @@ const PagePath = () => {
   })
 
   return (
-    <div className="flex items-center w-full h-full gap-2 p-2 dark:text-amber-50 text-zinc-800">
+    <div className="flex items-center w-full h-full gap-2 p-2 dark:text-amber-50 text-zinc-800 print:hidden">
       {pagePath.map((page, index) => (
         <>
           <span key={`page-path-${page.pageID}-icon`}>
