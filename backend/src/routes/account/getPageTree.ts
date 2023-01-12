@@ -21,7 +21,7 @@ router.get(
       return;
     }
 
-    const userTree = await PageTreeModel.findOne({ username }).lean();
+    const userTree = await PageTreeModel.findById(username).lean();
 
     if (!userTree) {
       res.statusCode = 401;

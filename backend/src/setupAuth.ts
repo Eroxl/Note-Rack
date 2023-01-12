@@ -52,14 +52,14 @@ const setupAuth = () => {
           ],
         },
         override: {
-          apis: (originalImplementation) => ({
+          functions: (originalImplementation) => ({
             ...originalImplementation,
-            signInUpPOST: async (input: any) => {
+            signInUp: async (input: any) => {
               // -=- Verify Original Implementation -=-
-              if (originalImplementation.signInUpPOST === undefined) throw Error('Should never come here');
+              if (originalImplementation.signInUp === undefined) throw Error('Should never come here');
 
               // -=- Run Original Implementation -=-
-              const response = await originalImplementation.signInUpPOST(input);
+              const response = await originalImplementation.signInUp(input);
 
               // -=- Check Response Status -=-
               if (response.status !== 'OK') return response;
