@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 
 interface PagePath {
@@ -26,15 +27,28 @@ const PagePath = () => {
   return (
     <div className="flex items-center w-full h-full gap-2 p-2 dark:text-amber-50 text-zinc-800 print:hidden">
       {pagePath.map((page, index) => (
-        <div className="flex items-center gap-2">
-          <span key={`page-path-${page.pageID}-icon`}>
-            {page.icon}
-          </span>
-          <span key={`page-path-${page.pageID}-name`}>
-            {page.name}
-          </span>
-          {index !== pagePath.length - 1 && <span key={`page-path-${page.pageID}-slash`}> / </span>}
-        </div>
+        <Link
+          href={
+            {
+              pathname: '/note-rack/[page]',
+              query: { page: page.pageID },
+            }
+          }
+          prefetch={index !== pagePath.length - 1}
+        >
+          <a 
+            className="flex items-center gap-2"
+            href={`/note-rack/${page.pageID}`}
+          >
+            <span key={`page-path-${page.pageID}-icon`}>
+              {page.icon}
+            </span>
+            <span key={`page-path-${page.pageID}-name`}>
+              {page.name}
+            </span>
+            {index !== pagePath.length - 1 && <span key={`page-path-${page.pageID}-slash`}> / </span>}
+          </a>
+        </Link>
       ))}
     </div>
   );
