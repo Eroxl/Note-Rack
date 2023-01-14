@@ -26,7 +26,7 @@ const PagePath = () => {
   return (
     <div className="flex items-center w-full h-full gap-2 p-2 dark:text-amber-50 text-zinc-800 print:hidden">
       {pagePath.map((page, index) => (
-        <>
+        <div className="flex items-center gap-2">
           <span key={`page-path-${page.pageID}-icon`}>
             {page.icon}
           </span>
@@ -34,7 +34,7 @@ const PagePath = () => {
             {page.name}
           </span>
           {index !== pagePath.length - 1 && <span key={`page-path-${page.pageID}-slash`}> / </span>}
-        </>
+        </div>
       ))}
     </div>
   );
