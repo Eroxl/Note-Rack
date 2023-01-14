@@ -1,12 +1,13 @@
-import bodyParser from 'body-parser';
-import swaggerJSDoc from 'swagger-jsdoc';
-import swaggerUI from 'swagger-ui-express';
-import mongoose from 'mongoose';
-import express from 'express';
-import dotenv from 'dotenv';
-import cors from 'cors';
 import { middleware, errorHandler } from 'supertokens-node/framework/express';
 import supertokens from 'supertokens-node';
+import swaggerJSDoc from 'swagger-jsdoc';
+import swaggerUI from 'swagger-ui-express';
+import express from 'express';
+import expressWs from 'express-ws';
+import bodyParser from 'body-parser';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import cors from 'cors';
 
 import setupAuth from './setupAuth';
 import routes from './routes/index';
@@ -43,6 +44,9 @@ app.use(cors({
 
 // -=- Add Super Tokens Middleware -=-
 app.use(middleware());
+
+// -=- Add Websocket Support -=-
+expressWs(app);
 
 // -=- Add API Routes -=-
 app.use('/', routes);
