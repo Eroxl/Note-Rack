@@ -4,6 +4,7 @@
   "description": "Note Rack",
   "main": "index.js",
   "devDependencies": {
+    "@types/express-ws": "^3.0.1",
     "cypress": "^11.2.0"
   },
   "scripts": {
@@ -28,5 +29,7 @@
     "url": "https://github.com/Eroxl/Note-Rack/issues"
   },
   "homepage": "https://github.com/Eroxl/Note-Rack#readme",
-  "dependencies": {}
+  "dependencies": {
+    "express-ws": "^5.0.2"
+  }
 }
