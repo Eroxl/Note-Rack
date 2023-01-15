@@ -24,16 +24,29 @@ const setupAuth = () => {
   if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) throw Error('Missing Google OAuth Keys');
   if (!GITHUB_CLIENT_ID || !GITHUB_CLIENT_SECRET) throw Error('Missing Github OAuth Keys');
 
+  // -=- URL Info -=-
+  const {
+    API_DOMAIN,
+    WEBSITE_DOMAIN,
+    SUPERTOKENS_CONNECTION_URI,
+  } = process.env;
+
+  // -=- Check URL Info Exists -=-
+  if (!API_DOMAIN) throw Error('Missing API Domain');
+  if (!WEBSITE_DOMAIN) throw Error('Missing Website Domain');
+  if (!SUPERTOKENS_CONNECTION_URI) throw Error('Missing Supertokens Connection URI');
+
   // -=- Setup SuperTokens -=-
   SuperTokens.init({
     framework: 'express',
     supertokens: {
-      connectionURI: 'http://supertokens:3567',
+      connectionURI: SUPERTOKENS_CONNECTION_URI,
+      apiKey: process.env.SUPERTOKENS_API_KEY,
     },
     appInfo: {
-      apiDomain: 'http://127.0.0.1:8000',
+      apiDomain: API_DOMAIN,
       appName: 'Note Rack',
-      websiteDomain: 'http://127.0.0.1:3000',
+      websiteDomain: WEBSITE_DOMAIN,
       apiBasePath: '/auth',
       websiteBasePath: '/auth',
     },
