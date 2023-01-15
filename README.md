@@ -2,6 +2,10 @@
     📝 Note Rack
 </h1>
 
+<div align="center">
+    <a href="https://wakatime.com/badge/user/f69fecb5-785d-48d4-a275-ee9a147ec35a/project/c6a2aa40-78a1-4946-bcb9-e350f5b1254c"><img src="https://wakatime.com/badge/user/f69fecb5-785d-48d4-a275-ee9a147ec35a/project/c6a2aa40-78a1-4946-bcb9-e350f5b1254c.svg" alt="Wakatime Note Rack stats"></a>
+</div>
+
 ## 🌳 Features
 * Basic Markdown Syntax
     * H1, H2, H3, H4, H5
