@@ -2,6 +2,10 @@
     📝 Note Rack
 </h1>
 
+<div align="center">
+    <a href="https://wakatime.com/@Eroxl"><img src="https://wakatime.com/badge/user/f69fecb5-785d-48d4-a275-ee9a147ec35a/project/c6a2aa40-78a1-4946-bcb9-e350f5b1254c.svg" alt="Wakatime Note Rack stats"></a>
+</div>
+
 ## 🌳 Features
 * Basic Markdown Syntax
     * H1, H2, H3, H4, H5
@@ -34,50 +38,54 @@
         git clone https://github.com/Eroxl/Note-Rack.git
         ```
     * Or download the [zip file](https://github.com/Eroxl/Note-Rack/archive/refs/heads/main.zip)
-1. With Docker
+
+2. Navigate to the repository
+    * If you cloned the repo
+        ```bash
+        cd Note-Rack
+        ```
+    * If you downloaded the zip file
+        1. Unzip the file
+            ```bash
+            unzip main.zip
+            ```
+        2. Navigate to the folder
+            ```bash
+            cd Note-Rack-main
+            ```
+
+2. Copy the server environment file and fill in the values
+    ```bash
+    cp ./backend/.env.example /backend.env
+    ```
+    * If you want to open it in a text editor
+        ```bash
+        nano ./backend/.env
+        ```
+
+3. Copy the client environment file and fill in the values
+    ```bash
+    cp ./web/src/.env.example ./web/src/.env.local
+    ```
+
+    * If you want to open it in a text editor
+        ```bash
+        nano ./web/src/.env.local
+        ```
+
+4. With Docker
     1. Install Docker and Docker Compose
         - [Docker](https://docs.docker.com/get-docker/)
         - [Docker Compose](https://docs.docker.com/compose/install/)
 
-    2. Navigate to the repository
-        * If you cloned the repo
-            ```bash
-            cd Note-Rack
-            ```
-        * If you downloaded the zip file
-            1. Unzip the file
-                ```bash
-                unzip main.zip
-                ```
-            2. Navigate to the folder
-                ```bash
-                cd Note-Rack-main
-                ```
-
-    3. Copy the server environment file and fill in the values
-        ```bash
-        cd ./backend && \
-        cp .env.example .env && \
-        nano .env && \
-        cd ../
-        ```
-
-    4. Copy the client environment file and fill in the values
-        ```bash
-        cd ./web/src && \
-        cp .env.example .env.local && \
-        nano .env.local && \
-        cd ../../
-        ```
-
-    5. Run the Docker Compose file
+    2. Run the Docker Compose file
         ```bash
         docker-compose up --build
         ```
 
     6. Navigate to the web application at [http://127.0.0.1:3000](http://127.0.0.1:3000)
 
-2. Without Docker
+5. Without Docker
     1. Install Node.js
         - [Node.js](https://nodejs.org/en/download/)
 
@@ -103,30 +111,14 @@
             - [Supertokens](https://supertokens.com/docs/thirdparty/pre-built-ui/setup/core/without-docker)
         - Cloud
             - [Supertokens](https://supertokens.com/docs/thirdparty/pre-built-ui/setup/core/saas-setup)
-    
-    6. Copy the server environment file and fill in the values
-        ```bash
-        cd ./backend && \
-        cp .env.example .env && \
-        nano .env && \
-        cd ../
-        ```
 
-    7. Copy the client environment file and fill in the values
-        ```bash
-        cd ./web/src && \
-        cp .env.example .env.local && \
-        nano .env.local && \
-        cd ../../
-        ```
-
-    8. Run the server
+    6. Run the server
         ```bash
         cd ./backend && \
         yarn dev
         ```
 
-    9. Run the client
+    7. Run the client
         ```bash
         cd ./web && \
         yarn dev

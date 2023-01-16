@@ -30,6 +30,9 @@ services:
       - supertokens
     environment:
       MONGO_URL: "mongodb://mongo:27017"
+      SUPERTOKENS_URL: "http://supertokens:3567"
+      WEBSITE_DOMAIN: "http://127.0.0.1:3000"
+      API_DOMAIN: "http://127.0.0.1:8000"
   
   mongo:
     image: mongo:4.0-xenial
