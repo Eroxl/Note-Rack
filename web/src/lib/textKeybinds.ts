@@ -76,6 +76,11 @@ const textKeybinds: {
       return (properties);
     },
   },
+  {
+    keybind: /^\$\$ (.*)/g,
+    plainTextKeybind: '$$',
+    type: 'math',
+  },
 ];
 
 export default textKeybinds;

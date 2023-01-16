@@ -2,6 +2,7 @@ import Icon from '../components/blocks/Icon';
 import Title from '../components/blocks/Title';
 import TextBlock from '../components/blocks/TextBlock';
 import PageBlock from '../components/blocks/PageBlock';
+import MathBlock from '../components/blocks/MathBlock';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const BlockTypes: {[key: string]: any} = {
@@ -23,6 +24,9 @@ const BlockTypes: {[key: string]: any} = {
 
   // -=- Inline Page Component -=-
   page: PageBlock,
+
+  // -=- Other Components -=-
+  math: MathBlock,
 };
 
 export default BlockTypes;
