@@ -28,19 +28,19 @@ const setupAuth = () => {
   const {
     API_DOMAIN,
     WEBSITE_DOMAIN,
-    SUPERTOKENS_CONNECTION_URI,
+    SUPERTOKENS_URL,
   } = process.env;
 
   // -=- Check URL Info Exists -=-
   if (!API_DOMAIN) throw Error('Missing API Domain');
   if (!WEBSITE_DOMAIN) throw Error('Missing Website Domain');
-  if (!SUPERTOKENS_CONNECTION_URI) throw Error('Missing Supertokens Connection URI');
+  if (!SUPERTOKENS_URL) throw Error('Missing Supertokens Connection URI');
 
   // -=- Setup SuperTokens -=-
   SuperTokens.init({
     framework: 'express',
     supertokens: {
-      connectionURI: SUPERTOKENS_CONNECTION_URI,
+      connectionURI: SUPERTOKENS_URL,
       apiKey: process.env.SUPERTOKENS_API_KEY,
     },
     appInfo: {
