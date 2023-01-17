@@ -91,7 +91,7 @@ const MathBlock = (props: EditableText) => {
         )
         : (
           <span
-            className="min-h-[1.2em] outline-none whitespace-pre-wrap w-full"
+            className="min-h-[1.2em] outline-none whitespace-pre-wrap w-full flex justify-center align-middle"
             dangerouslySetInnerHTML={{ __html: katex.renderToString(currentValue, { throwOnError: false }) || 'Edit to enter KaTeX' }}
           />
         )
