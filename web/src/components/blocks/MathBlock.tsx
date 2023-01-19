@@ -26,14 +26,13 @@ const MathBlock = (props: EditableText) => {
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (!isEditing || !e.target) return;
-
       const target = e.target as HTMLElement;
 
-      if (target.id !== blockID) {
-        setIsEditing(false);
-        editBlock([blockID], 'math', { value: currentValue }, page);
-      }
+      if (!isEditing || !e.target || !target.closest(`#${blockID}`)) return;
+
+
+      setIsEditing(false);
+      editBlock([blockID], 'math', { value: currentValue }, page);
     };
 
     document.addEventListener('click', handleClickOutside);
@@ -60,6 +59,7 @@ const MathBlock = (props: EditableText) => {
             contentEditable
             suppressContentEditableWarning
             id={blockID}
+            key={blockID}
             onBlur={
               (e) => {
                 setCurrentValue(e.currentTarget.innerText);
@@ -95,7 +95,7 @@ const MathBlock = (props: EditableText) => {
               className="min-h-[1.2em] outline-none whitespace-pre-wrap opacity-50"
               role="button"
               tabIndex={0}
-              onClick={() => setIsEditing(true)}
+              key={`preview-${blockID}`}
             >
               Edit to enter KaTeX
             </span>
