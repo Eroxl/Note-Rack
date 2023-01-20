@@ -29,6 +29,7 @@
 - Other
     - `>` Quote
     - `|` Callout
+    - `$$` Math [KaTeX](https://katex.org/)
     -  `[[ Page Name ]]` Page ("Page Name" can be any string)
 
 ## 📦 Installation
