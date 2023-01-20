@@ -129,6 +129,3 @@
 
 #### Current State (dark)
 <img src="./images/Desktop_Current_State_Dark.png" width="500">
-
-#### Current State (light)
-<img src="./images/Desktop_Current_State.png" width="500">
