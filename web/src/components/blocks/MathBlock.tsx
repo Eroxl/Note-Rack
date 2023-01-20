@@ -28,7 +28,9 @@ const MathBlock = (props: EditableText) => {
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
 
-      if (!isEditing || !e.target || !target.closest(`#${blockID}`)) return;
+      if (!isEditing || !e.target) return;
+
+      if (target.id === blockID || target.id === `preview-${blockID}`) return;
 
 
       setIsEditing(false);
@@ -42,11 +44,32 @@ const MathBlock = (props: EditableText) => {
     };
   }, [isEditing, blockID]);
 
+  const switchToEditing = () => {
+    setIsEditing(true);
+
+    setTimeout(() => {
+      const element = document.getElementById(blockID);
+
+      if (element) {
+        const range = document.createRange();
+        const sel = window.getSelection();
+
+        range.setStart(element.childNodes[0], element.textContent?.length || 0);
+        range.collapse(true);
+
+        sel?.removeAllRanges();
+        sel?.addRange(range);
+
+        element.focus();
+      }
+    }, 10);
+  };
+
   return (
     <div
       className="min-h-[1.2em] w-full"
-      onClick={(isEditing || !currentValue) ? undefined : () => setIsEditing(true)}
-      id={blockID}
+      onClick={(isEditing || !currentValue) ? undefined : switchToEditing}
+      id={`${blockID}-container`}
       role={(isEditing || !currentValue) ? 'textbox' : 'button'}
       tabIndex={0}
     >
@@ -95,7 +118,9 @@ const MathBlock = (props: EditableText) => {
               className="min-h-[1.2em] outline-none whitespace-pre-wrap opacity-50"
               role="button"
               tabIndex={0}
+              id={`preview-${blockID}`}
               key={`preview-${blockID}`}
+              onClick={switchToEditing}
             >
               Edit to enter KaTeX
             </span>
