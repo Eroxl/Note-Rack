@@ -1,14 +1,21 @@
 {
   "name": "note-rack",
   "version": "1.0.0",
-  "description": "<h1 align=\"center\">   📝 Note Rack </h1>",
+  "description": "Note Rack",
   "main": "index.js",
   "devDependencies": {
     "cypress": "^11.2.0"
   },
   "scripts": {
     "test": "docker-compose down -v && docker-compose build && docker-compose up -d && cypress run --browser chrome",
-    "test:manual": "docker-compose down -v && docker-compose build && docker-compose up -d && cypress open"
+    "test:manual": "docker-compose down -v && docker-compose build && docker-compose up -d && cypress open",
+    
+    "dev": "docker-compose -f docker-compose.dev.yaml build && docker-compose -f docker-compose.dev.yaml up",
+    "dev:down": "docker-compose -f docker-compose.dev.yaml down",
+    
+    "build": "docker-compose build",
+    "start": "yarn build && docker-compose up",
+    "start:down": "docker-compose down"
   },
   "repository": {
     "type": "git",
