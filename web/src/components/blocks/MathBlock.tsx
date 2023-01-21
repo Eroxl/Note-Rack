@@ -24,26 +24,6 @@ const MathBlock = (props: EditableText) => {
     setCurrentValue(value);
   }, [value]);
 
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-
-      if (!isEditing || !e.target) return;
-
-      if (target.id === blockID || target.id === `preview-${blockID}`) return;
-
-
-      setIsEditing(false);
-      editBlock([blockID], 'math', { value: currentValue }, page);
-    };
-
-    document.addEventListener('click', handleClickOutside);
-
-    return () => {
-      document.removeEventListener('click', handleClickOutside);
-    };
-  }, [isEditing, blockID]);
-
   const switchToEditing = () => {
     setIsEditing(true);
 
@@ -54,7 +34,7 @@ const MathBlock = (props: EditableText) => {
         const range = document.createRange();
         const sel = window.getSelection();
 
-        range.setStart(element.childNodes[0], element.textContent?.length || 0);
+        range.setStart(element.childNodes[0] || element, element.textContent?.length || 0);
         range.collapse(true);
 
         sel?.removeAllRanges();
@@ -67,7 +47,7 @@ const MathBlock = (props: EditableText) => {
 
   return (
     <div
-      className="min-h-[1.2em] w-full"
+      className="min-h-[1.2em] w-full h-full flex items-center justify-center"
       onClick={(isEditing || !currentValue) ? undefined : switchToEditing}
       id={`${blockID}-container`}
       role={(isEditing || !currentValue) ? 'textbox' : 'button'}
@@ -76,7 +56,7 @@ const MathBlock = (props: EditableText) => {
       {isEditing
         ? (
           <span
-            className="min-h-[1.2em] outline-none whitespace-pre-wrap w-full flex"
+            className="min-h-[1.2em] outline-none whitespace-pre-wrap w-full"
             role="textbox"
             tabIndex={0}
             contentEditable
@@ -96,7 +76,10 @@ const MathBlock = (props: EditableText) => {
                   e.preventDefault();
                   e.currentTarget.blur();
                   addBlockAtIndex(index + 1, page, pageData, setPageData);
-                } else if (e.code === 'Backspace' && (e.currentTarget.innerText === '' || e.currentTarget.innerText === '\n')) {
+                } else if (e.code === 'Backspace' && window.getSelection()?.anchorOffset === 0) {
+                  setCurrentBlockType('text');
+                  editBlock([blockID], 'text', undefined, page);
+                } else if (e.code === 'Backspace' && e.currentTarget.innerText === '') {
                   e.preventDefault();
                   e.currentTarget.blur();
                   setCurrentBlockType('text');
@@ -108,7 +91,15 @@ const MathBlock = (props: EditableText) => {
               navigator.clipboard.writeText(`$$ ${window.getSelection()?.toString() || ''}`);
             }}
           >
-            {currentValue}
+            {
+              (() => {
+                if (currentValue !== '\n') {
+                  return (
+                    currentValue
+                  );
+                }
+              })()
+            }
           </span>
         )
         : (
