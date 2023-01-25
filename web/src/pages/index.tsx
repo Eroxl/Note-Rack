@@ -6,6 +6,7 @@ import Session from 'supertokens-auth-react/recipe/session';
 import NavBar from '../components/home/NavBar';
 
 const Home: NextPage = () => {
+  // TODO:EROXL: (2023-01-24) This should be done server side when the request is made
   useEffect(() => {
     (async () => {
       // -=- Verification -=-
@@ -20,6 +21,8 @@ const Home: NextPage = () => {
     })();
   }, []);
 
+  // -=- Render -=-
+  // ~ Render the home page, if the user is not logged in
   return (
     <div className="w-screen h-screen bg-amber-50">
       <div className="h-full mx-auto max-w-7xl">
