@@ -1,6 +1,7 @@
 import Router from 'next/router';
 
-// -=- Keybinds for non-inline elements -=-
+// -=- Keybinds -=-
+// ~ Keybinds for block elements
 const textKeybinds: {
   keybind: RegExp,
   plainTextKeybind: string,
@@ -50,6 +51,7 @@ const textKeybinds: {
     plainTextKeybind: '[[ Page ]]',
     type: 'page',
     customFunc: async (properties, blockID, page, element) => {
+      // ~ Send a POST request to the API to create a new page
       await fetch(`${process.env.NEXT_PUBLIC_API_URL}/page/modify-page/${page}`, {
         method: 'POST',
         headers: {
@@ -61,8 +63,11 @@ const textKeybinds: {
         }),
         credentials: 'include',
       });
+
+      // ~ Redirect to the new page
       Router.replace(`/note-rack/${blockID}/`);
 
+      // ~ Dispatch an event to add the new page to the sidebar
       const addPageEvent = new CustomEvent('addPage', {
         detail: {
           newPageID: blockID,
@@ -73,6 +78,7 @@ const textKeybinds: {
       });
       document.dispatchEvent(addPageEvent);
 
+      // ~ Return the new block properties
       return (properties);
     },
   },

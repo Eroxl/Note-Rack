@@ -14,8 +14,10 @@ const addBlockAtIndex = async (
   blockType?: string,
   blockProperties?: Record<string, unknown>,
 ) => {
+  // ~ Generate a random ID for the block
   const objectID = crypto.randomBytes(12).toString('hex');
 
+  // ~ Save the change to the server
   SaveManager.save(
     'addBlock',
     {
@@ -28,6 +30,7 @@ const addBlockAtIndex = async (
     page,
   );
 
+  // ~ Add the block to the page
   const tempPageData = pageData as PageDataInterface;
   tempPageData.message.data.splice(index, 0, {
     _id: objectID,
@@ -38,6 +41,7 @@ const addBlockAtIndex = async (
     children: [],
   });
 
+  // ~ Update the page
   setPageData({
     status: 'Success',
     message: {
@@ -46,7 +50,7 @@ const addBlockAtIndex = async (
     },
   });
 
-  // ~ Wait for page to update before adding block
+  // ~ Wait for page to update before adding the block
   await new Promise((resolve) => setTimeout(resolve, 5));
   document.getElementById(objectID)?.focus();
 };
@@ -58,6 +62,7 @@ const removeBlock = async (
   pageData: PageDataInterface,
   setPageData: (value: Record<string, unknown>) => void,
 ) => {
+  // ~ Save the change to the server
   SaveManager.save(
     'deleteBlock',
     {
@@ -66,9 +71,11 @@ const removeBlock = async (
     page,
   );
 
+  // ~ Remove the block from the page
   const tempPageData = pageData as PageDataInterface;
   tempPageData.message.data.splice(index, 1);
 
+  // ~ Update the page
   setPageData({
     status: 'Success',
     message: {
@@ -84,6 +91,7 @@ const editBlock = async (
   properties: Record<string, unknown> | undefined,
   page: string,
 ) => {
+  // ~ Save the change to the server
   SaveManager.save(
     'editBlock',
     {
@@ -104,8 +112,11 @@ const moveBlock = async (
   pageData: PageDataInterface,
   setPageData: (value: Record<string, unknown>) => void,
 ) => {
+  // ~ Figure out if the block is being moved up or down
   const offset = currentIndex > newIndex ? 1 : 0;
 
+  // -=- Save the change to the server -=-
+  // ~ Delete the block at the old index
   SaveManager.save(
     'deleteBlock',
     {
@@ -114,6 +125,7 @@ const moveBlock = async (
     page,
   );
 
+  // ~ Add the block at the new index
   SaveManager.save(
     'addBlock',
     {
@@ -134,6 +146,7 @@ const moveBlock = async (
   setPageData(pageDataCopy);
 };
 
+// -=- Exports -=-
 export {
   addBlockAtIndex,
   removeBlock,

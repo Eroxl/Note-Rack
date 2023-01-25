@@ -1,4 +1,4 @@
-// -=- Styling lookup tabel for elements -=-
+// ~ Styling lookup table for elements
 const TextStyles: {[key: string]: string} = {
   text: '',
   h1: 'text-4xl font-bold',
