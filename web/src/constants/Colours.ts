@@ -1,5 +1,6 @@
 // SOURCE: Tailwind Colours - https://tailwindcss.com/docs/customizing-colors
 
+// ~ Colour lookup table for note rack page thumbnails
 const Colours = [
   {
     category: 'Red',
@@ -83,11 +84,17 @@ const Colours = [
   },
 ];
 
+// -=- Conversion -=-
+// ~ Convert colours to a more useful format
 const ConvertColours = () => (
   Colours.map((colourCategory) => ({
     category: colourCategory.category,
     colours: colourCategory.colours.map((colour) => {
+      // -=- Conversion -=-
+      // ~ Convert hex to rgb
       const [r, g, b] = [colour.substring(0, 2), colour.substring(2, 4), colour.substring(4)];
+      
+      // ~ Return converted colour's hex and rgb values
       return {
         hex: colour,
         colours: {
