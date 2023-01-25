@@ -7,10 +7,15 @@ import '../styles/globals.css';
 import '../styles/emojiPicker.css';
 import superTokensConfig from '../config/superTokensConfig';
 
+// -=- Initialization -=-
+// ~ If we're in the browser, initialize SuperTokens
 if (typeof window !== 'undefined') {
+  // ~ Initialize SuperTokens
   SuperTokensReact.init(superTokensConfig());
 }
 
+// -=- App -=-
+// ~ The main app component
 const App = ({ Component, pageProps }: AppProps) => (
   <SuperTokensWrapper>
     <div className="w-screen h-screen overflow-clip print:overflow-visible">
