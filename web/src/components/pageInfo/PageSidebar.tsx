@@ -9,20 +9,29 @@ const PageSidebar = () => {
 
   useEffect(() => {
     (async () => {
+      // -=- Fetching -=-
+      // ~ Fetch the page tree
       const pageTreeResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/account/get-page-tree`, {
         method: 'GET',
         credentials: 'include',
       });
 
+      // -=- Parsing -=-
+      // ~ Parse the page tree
       const pageTreeObject = await pageTreeResponse.json();
 
+      // -=- Setting -=-
+      // ~ Set the page tree, if it exists
       setPageTree(pageTreeObject.message.subPages);
+
+      // ~ Set the loading state to false
       setIsLoading(false);
     })();
   }, []);
 
   return (
     <div className="absolute h-screen pt-12 pr-3 select-none print:h-max w-52 print:w-0 bg-amber-400/10 no-scrollbar dark:bg-white/10">
+      {/* ~ Render the page tree after it has been loaded */}
       {!isLoading && (
         (pageTree as PageSidebarItemProps[]).map((pageItem) => {
           const {

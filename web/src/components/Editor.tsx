@@ -26,39 +26,49 @@ const Editor = (props: EditorProps) => {
   const { pageData, setPageData } = props;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+  // -=- Setup Page Data -=-
+  // ~ Get the page ID
   const { page } = useRouter().query;
 
+  // -=- Setup Selection -=-
   const selectionData = useSelectionCollector('blocks');
 
   useEffect(() => {
     const handleSelectionEvents = (event: KeyboardEvent) => {
-      if (event.key === 'Backspace') {
-        for (let i = 0; i < selectionData.length; i += 1) {
-          const {
-            blockID,
-            index,
-            isBlockPage,
-          } = selectionData[i] as {blockID: string, index: number, isBlockPage: boolean };
+      // ~ If the user is not pressing the backspace key, return
+      if (event.key !== 'Backspace') return;
+      
+      // ~ Iterate over all the selected blocks
+      for (let i = 0; i < selectionData.length; i += 1) {
+        const {
+          blockID,
+          index,
+          isBlockPage,
+        } = selectionData[i] as {blockID: string, index: number, isBlockPage: boolean };
 
-          if (isBlockPage) {
-            document.dispatchEvent(
-              new CustomEvent('deletePage', { detail: { pageID: blockID } })
-            );
-            deletePage(blockID);
-          }
-
-          removeBlock(index - i, [blockID], page as string, pageData, setPageData);
+        // ~ If the block is a page, delete the page differently
+        if (isBlockPage) {
+          document.dispatchEvent(
+            new CustomEvent('deletePage', { detail: { pageID: blockID } })
+          );
+          deletePage(blockID);
         }
+
+        // ~ Remove the block from the page
+        removeBlock(index - i, [blockID], page as string, pageData, setPageData);
       }
     };
 
+    // ~ Add the event listener
     document.addEventListener('keydown', handleSelectionEvents);
 
+    // ~ Remove the event listener, when the component unmounts
     return () => {
       document.removeEventListener('keydown', handleSelectionEvents);
     };
   }, [selectionData]);
 
+  // -=- Render -=-
   return (
     <Selectable
       accepts="blocks"
@@ -68,14 +78,18 @@ const Editor = (props: EditorProps) => {
         <div
           className="flex flex-col items-center w-full h-max bg-amber-50 dark:bg-zinc-700 print:dark:bg-white print:bg-white bg-"
         >
+          {/* ~ Render the page thumbnail */}
           <PageThumbnail colour={pageData.message.style.colour} page={page as string} />
+          {/* ~ Render the main interactive editor */}
           <div
             className="flex flex-col w-full max-w-4xl gap-3 px-20 pb-56 mx-auto break-words select-none print:p-0 text-zinc-700 dark:text-amber-50 print:dark:text-zinc-700 h-max editor"
           >
+            {/* ~ Render the page icon */}
             <Icon
               page={page as string}
               icon={pageData.message.style.icon}
             />
+            {/* ~ Render the title */}
             <Title
               page={page as string}
               pageData={pageData}
@@ -84,6 +98,7 @@ const Editor = (props: EditorProps) => {
               title={pageData.message.style.name}
             />
 
+            {/* ~ Render the blocks */}
             {(pageData as PageDataInterface).message.data.map((block, index) => (
               <BaseBlock
                 blockType={block.blockType}

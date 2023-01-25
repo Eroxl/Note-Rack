@@ -24,6 +24,7 @@ const BaseBlock = (props: BaseBlockProps) => {
 
   const [currentBlockType, setCurrentBlockType] = useState(blockType);
 
+  // -=- Setup Selection -=-
   const [selected, selectableRef] = useSelectable(
     'blocks',
     () => ({
@@ -33,6 +34,7 @@ const BaseBlock = (props: BaseBlockProps) => {
     }),
   );
 
+  // -=- Setup Drag and Drop -=-
   const [, drag, preview] = useDrag(() => ({
     type: 'draggableBlock',
     item: () => ({
@@ -41,6 +43,7 @@ const BaseBlock = (props: BaseBlockProps) => {
     }),
   }), [index]);
 
+  // =- Setup Drop -=-
   const [{ hovered }, drop] = useDrop(() => ({
     accept: 'draggableBlock',
     collect: (monitor) => ({

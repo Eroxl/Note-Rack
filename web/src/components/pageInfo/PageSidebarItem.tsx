@@ -24,6 +24,7 @@ const PageSidebarItem = (props: PageSidebarItemProps & { pagePath: PagePath[] })
   const router = useRouter();
 
   useEffect(() => {
+    // -=- Handle the page title change event -=-
     const changeTitle = (event: CustomEvent) => {
       const { detail } = event;
       const { newTitle, newIcon } = detail;
@@ -32,6 +33,7 @@ const PageSidebarItem = (props: PageSidebarItemProps & { pagePath: PagePath[] })
       if (newTitle !== undefined) setCurrentName(newTitle);
     };
 
+    // -=- Handle the add page event -=-
     const addChild = (event: CustomEvent) => {
       const { detail } = event;
       const {
@@ -51,6 +53,7 @@ const PageSidebarItem = (props: PageSidebarItemProps & { pagePath: PagePath[] })
       setCurrentSubPages(currentSubPagesCopy);
     };
 
+    // -=- Handle the delete page event -=-
     const removeChild = (event: CustomEvent) => {
       const { detail } = event;
       const { deletedPageID } = detail;
@@ -63,6 +66,7 @@ const PageSidebarItem = (props: PageSidebarItemProps & { pagePath: PagePath[] })
       setCurrentSubPages(currentSubPagesCopy);
     };
 
+    // -=- Add the event listeners -=-
     if (router.query.page === pageID) {
       document.addEventListener('changePageTitle', changeTitle as EventListener);
       document.addEventListener('addPage', addChild as EventListener);
@@ -76,6 +80,8 @@ const PageSidebarItem = (props: PageSidebarItemProps & { pagePath: PagePath[] })
       }] }));
     }
 
+    // -=- Cleanup -=-
+    // ~ Remove the event listeners, on unmount
     return () => {
       document.removeEventListener('changePageTitle', changeTitle as EventListener);
       document.removeEventListener('addPage', addChild as EventListener);
