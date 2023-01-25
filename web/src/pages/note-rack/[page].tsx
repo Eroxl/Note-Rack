@@ -17,11 +17,14 @@ const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {
 
   // TODO:EROXL: Add error handling here...
   useEffect(() => {
+    // -=- Setup Page Data -=-
+    // ~ Get the page data
     (async () => {
       setPageData(await pageDataReq);
     })();
 
     // -=- Setup Auto Saving -=-
+    // ~ Every 2.5 seconds, send the page changes to the server
     setInterval(() => { SaveManager.sendToServer(); }, 2500);
   }, [pageDataReq]);
 
@@ -70,10 +73,13 @@ const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {
 };
 
 export const getServerSideProps = async (context: GetServerSidePropsContext) => {
+  // -=- Get Cookies -=-
   const { req, params } = context;
   const { page } = params as { page: string };
   const { cookies } = req;
 
+  // -=- Get Page Data -=-
+  // ~ Get the page data from the server, and return it to the client
   return ({
     props: (async () => ({
       pageDataReq: await (await fetch(`${process.env.LOCAL_API_URL}/page/get-page/${page}`, {
