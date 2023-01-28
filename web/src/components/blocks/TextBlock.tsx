@@ -75,9 +75,6 @@ const TextBlock = (props: EditableText) => {
           }
         }
       }
-      onCopy={() => {
-        navigator.clipboard.writeText(window.getSelection()?.toString() || '');
-      }}
       data-cy="block-text"
     >
       {value}
