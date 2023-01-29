@@ -1,5 +1,6 @@
 import React from 'react';
 
+import renderInlineBlocks from './renderInlineBlocks';
 import handlePotentialTypeChange from './handlePotentialTypeChange';
 import { editBlock, addBlockAtIndex, removeBlock } from '../../../lib/pages/updatePage';
 import TextStyles from '../../../constants/TextStyles';
@@ -27,13 +28,7 @@ const TextBlock = (props: EditableText) => {
       suppressContentEditableWarning
       id={blockID}
       onInput={(e) => {
-        handlePotentialTypeChange(
-          e.currentTarget,
-          properties,
-          blockID,
-          page,
-          setCurrentBlockType,
-        );
+        handlePotentialTypeChange(e.currentTarget, properties, blockID, page, setCurrentBlockType);
       }}
       onBlur={
         (e) => {
@@ -56,7 +51,7 @@ const TextBlock = (props: EditableText) => {
       }
       data-cy="block-text"
     >
-      {value}
+      {renderInlineBlocks(value)}
     </span>
   );
 };
