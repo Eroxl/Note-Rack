@@ -48,10 +48,18 @@ const Selectable: React.FC<SelectableProps> = (props) => {
 
         const { clientX, clientY } = e;
 
+        // ~ Ensure that clientX and clientY are within the bounds of the selectable area
+        if (clientX < 0 || clientY < 0) return;
+
+        if (
+          clientX > (selectableRef.current?.clientWidth || 0)
+          || clientY > (selectableRef.current?.clientHeight || 0)
+        ) return;
+
         setSelectionArea({
           ...selectionArea,
-          endY: Math.min(clientY, selectableRef.current?.clientHeight || 0),
-          endX: Math.min(clientX, selectableRef.current?.clientWidth || 0),
+          endY: clientY,
+          endX: clientX,
         });
 
         selectionManager.highlightSelected(
