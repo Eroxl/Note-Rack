@@ -4,7 +4,7 @@ interface NestableStyleBlockProps {
   children: React.ReactNode;
 }
 
-const getNestableStyleBlock = (className: string) => (
+const getNestableStyleBlock = (className: string, plaintextKeybind: string) => (
   (props: NestableStyleBlockProps) => {
     const { children } = props;
     
@@ -15,6 +15,7 @@ const getNestableStyleBlock = (className: string) => (
         tabIndex={0}
         contentEditable
         suppressContentEditableWarning
+        data-plaintext-keybind={plaintextKeybind}
       >
         {children}
       </span>

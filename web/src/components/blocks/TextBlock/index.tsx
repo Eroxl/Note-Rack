@@ -1,5 +1,6 @@
 import React from 'react';
 
+import getTextRepresentation from './getTextRepresentation';
 import renderInlineBlocks from './renderInlineBlocks';
 import handlePotentialTypeChange from './handlePotentialTypeChange';
 import { editBlock, addBlockAtIndex, removeBlock } from '../../../lib/pages/updatePage';
@@ -32,7 +33,9 @@ const TextBlock = (props: EditableText) => {
       }}
       onBlur={
         (e) => {
-          editBlock([blockID], undefined, { value: e.currentTarget.innerText }, page);
+          editBlock([blockID], undefined, {
+            value: getTextRepresentation(e.currentTarget),
+          }, page);
         }
       }
       onKeyDown={
