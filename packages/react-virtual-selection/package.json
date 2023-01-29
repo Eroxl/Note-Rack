@@ -1,6 +1,6 @@
 {
   "name": "react-virtual-selection",
-  "version": "1.0.21",
+  "version": "1.0.23",
   "description": "A component to select children like in native OS desktops.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

@@ -50,8 +50,8 @@ const Selectable: React.FC<SelectableProps> = (props) => {
 
         setSelectionArea({
           ...selectionArea,
-          endY: clientY,
-          endX: clientX,
+          endY: Math.min(clientY, selectableRef.current?.clientHeight || 0),
+          endX: Math.min(clientX, selectableRef.current?.clientWidth || 0),
         });
 
         selectionManager.highlightSelected(
