@@ -10,7 +10,7 @@ const getNestableStyleBlock = (className: string) => (
     
     return (
       <span
-        className={className}
+        className={`${className} outline-none whitespace-pre-wrap`}
         role="textbox"
         tabIndex={0}
         contentEditable
