@@ -18,7 +18,7 @@
     "react-dnd": "^15.1.2",
     "react-dnd-html5-backend": "^15.1.3",
     "react-dom": "17.0.2",
-    "react-virtual-selection": "^1.0.17",
+    "react-virtual-selection": "1.0.22",
     "supertokens-auth-react": "^0.28.1"
   },
   "devDependencies": {
