@@ -1,3 +1,9 @@
+/**
+ * Gets the page info from the API
+ * @param {string} page The page that you want to get the info of
+ * @throws {Error} If the page info failed to get
+ * @returns The page info
+ */
 const getPageInfo = async (page: string) => {
   // -=- Fetch -=-
   // ~ Send a GET request to the API to get the page's info

@@ -1,3 +1,7 @@
+/**
+ * Make a GET request to the API to get the page tree of the user.
+ * @return The page tree.
+ */
 const getPageTree = async () => {
   // -=- Request -=-
   // ~ Send a GET request to the API to get the page tree

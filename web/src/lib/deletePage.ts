@@ -1,3 +1,9 @@
+/**
+ * Deletes a page from the database.
+ * @param {string} page - The page to delete.
+ * @throws {Error} - If the page failed to delete.
+ */
+
 const deletePage = async (page: string) => {
   // -=- Request -=-
   // ~ Send a DELETE request to the API
@@ -15,7 +21,6 @@ const deletePage = async (page: string) => {
 
   // ~ If the response is 200 (Ok), return
   if (deletePageResp.status === 200) return;
-
 
   // -=- Error Handling -=-
   // ~ If the response is not 200 (Ok), throw an error

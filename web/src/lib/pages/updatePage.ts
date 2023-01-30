@@ -5,6 +5,16 @@ import crypto from 'crypto';
 import type PageDataInterface from '../../types/pageTypes';
 import SaveManager from '../../classes/SaveManager';
 
+/**
+ * This function is used to  add a block to the page at the specified index
+ * @param index The index to add the block at
+ * @param page The page to add the block to
+ * @param pageData The page data
+ * @param setPageData The function to set the page data
+ * @param blockIDs The IDs of the path to the block
+ * @param blockType The type of the block
+ * @param blockProperties The properties of the block
+ */
 const addBlockAtIndex = async (
   index: number,
   page: string,
@@ -55,6 +65,14 @@ const addBlockAtIndex = async (
   document.getElementById(objectID)?.focus();
 };
 
+/**
+ * This function is used to remove a block from a page.
+ * @param index The index of the block to remove
+ * @param blockIDs The IDs of the blocks to remove
+ * @param page The page to remove the block from
+ * @param pageData The current data of the page
+ * @param setPageData A function to set the page data
+ */
 const removeBlock = async (
   index: number,
   blockIDs: string[],
@@ -85,6 +103,13 @@ const removeBlock = async (
   });
 };
 
+/** 
+ * Edit a block on the page
+ * @param blockIDs The IDs of the blocks to edit
+ * @param blockType The type of the block
+ * @param properties The properties of the block
+ * @param page The page to edit the block on
+ */
 const editBlock = async (
   blockIDs: string[],
   blockType: string | undefined,
@@ -104,6 +129,17 @@ const editBlock = async (
 };
 
 // TODO: Add support for children blocks / nested blocks
+/**
+ * This function moves a block from one index to another. It does so by first
+ * saving the change to the server, and then updating the page data.
+ *
+ * @param blockIDs The IDs of the blocks to move
+ * @param currentIndex The index to move the block from
+ * @param newIndex The index to move the block to
+ * @param page The page that the block is on
+ * @param pageData The page data for the page the block is on
+ * @param setPageData The function to update the page data
+ */
 const moveBlock = async (
   blockIDs: string[],
   currentIndex: number,

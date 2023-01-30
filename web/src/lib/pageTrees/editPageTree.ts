@@ -1,3 +1,12 @@
+/**
+ * This function sends a PATCH request to the API to change the expansion state of a page in the page tree.
+ *
+ * @param page: The page name.
+ * @param expanded: The new expansion state of the page.
+ * @throws {Error} - If the page failed to edit.
+ *
+ * @returns: The response from the API.
+ */
 const editPageTree = async (page: string, expanded: boolean) => {
   // -=- Request -=-
   // ~ Send a PATCH request to the API to change the expansion state of the page

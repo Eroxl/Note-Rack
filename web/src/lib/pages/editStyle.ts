@@ -1,3 +1,9 @@
+/**
+ * Edit a page's style
+ * @param {Object} style The new style
+ * @param {string} page The page to edit
+ * @throws {Error} - If the page failed to edit.
+ */
 const editStyle = async (style: Record<string, unknown>, page: string) => {
   // -=- Fetch -=-
   // ~ Send a PATCH request to the API to update the page's style
