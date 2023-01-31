@@ -25,7 +25,7 @@ import InlineTypes from '../../../constants/InlineTypes';
 const renderInlineBlocks = (text: string) => {
   const parsedText = parseInlineBlocks(text);
 
-  const recursiveRender = (types: string[], value: string): React.ReactNode => {
+  const recursiveRender = (types: string[], value: string, index: number = 0): React.ReactNode => {
     const blockType = types.shift();
 
     const Block = InlineTypes[blockType || ''] || React.Fragment;
@@ -35,11 +35,11 @@ const renderInlineBlocks = (text: string) => {
       : value;
 
     return React.createElement(Block, {
-      children,
-    });
+      key: `${index}-${blockType}`,
+    }, children);
   };
 
-  return parsedText.map((block) => recursiveRender(block.types, block.value));
+  return parsedText.map((block, index) => recursiveRender(block.types, block.value, index));
 };
 
 export default renderInlineBlocks;

@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import rangy from 'rangy';
 
 import getTextRepresentation from './getTextRepresentation';
 import renderInlineBlocks from './renderInlineBlocks';
@@ -19,6 +20,11 @@ const TextBlock = (props: EditableText) => {
     setCurrentBlockType,
   } = props;
   const { value } = properties;
+  const [currentValue, setCurrentValue] = useState(value);
+
+  useEffect(() => {
+    setCurrentValue(value);
+  }, [value]);
 
   return (
     <span
@@ -30,11 +36,24 @@ const TextBlock = (props: EditableText) => {
       id={blockID}
       onInput={(e) => {
         handlePotentialTypeChange(e.currentTarget, properties, blockID, page, setCurrentBlockType);
+        
+        const getCursorPosition = () => {
+          const selection = rangy.getSelection();
+          const range = selection.getRangeAt(0);
+          const rangeClone = range.cloneRange();
+          rangeClone.selectNodeContents(e.currentTarget);
+          rangeClone.setEnd(range.endContainer, range.endOffset);
+          const offset = rangeClone.toString().length;
+
+          return offset;
+        }
+
+        const cursorPosition = getCursorPosition();
       }}
       onBlur={
         (e) => {
           editBlock([blockID], undefined, {
-            value: getTextRepresentation(e.currentTarget),
+            value: getTextRepresentation(e.currentTarget) || '',
           }, page);
         }
       }
@@ -54,7 +73,7 @@ const TextBlock = (props: EditableText) => {
       }
       data-cy="block-text"
     >
-      {renderInlineBlocks(value)}
+      {renderInlineBlocks(currentValue)}
     </span>
   );
 };
