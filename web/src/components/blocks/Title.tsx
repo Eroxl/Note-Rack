@@ -49,7 +49,7 @@ const Title = (props: TitleProps) => {
   }), [index]);
 
   return (
-    <div className="relative flex flex-col">
+    <div className="relative flex flex-col" id="page-title">
       <span
         className="text-5xl font-bold outline-none empty:before:content-['Untitled'] empty:before:opacity-30 pb-3"
         contentEditable

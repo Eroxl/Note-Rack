@@ -71,7 +71,7 @@ const TextBlock = (props: EditableText) => {
             setCurrentBlockType('text');
             editBlock([blockID], 'text', undefined, page);
           } else if (e.code === 'Backspace' && type === 'text' && (e.currentTarget.innerText === '' || e.currentTarget.innerText === '\n')) {
-            removeBlock(index, [blockID], page, pageData, setPageData);
+            removeBlock(index, [blockID], page, pageData, setPageData, true);
           }
         }
       }

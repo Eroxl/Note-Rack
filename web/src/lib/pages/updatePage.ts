@@ -61,6 +61,7 @@ const removeBlock = async (
   page: string,
   pageData: PageDataInterface,
   setPageData: (value: Record<string, unknown>) => void,
+  moveFocusToPreviousBlock = false,
 ) => {
   // ~ Save the change to the server
   SaveManager.save(
@@ -83,6 +84,45 @@ const removeBlock = async (
       data: [...tempPageData.message.data],
     },
   });
+
+  if (!moveFocusToPreviousBlock) return;
+
+  // ~ Wait for the page to update to focus the end of the previous block
+  await new Promise((resolve) => setTimeout(resolve, 5));
+
+  /**
+   * Select the end of the element
+   * @param element The element to focus
+   */
+  const selectEnd = (element: HTMLElement) => {
+    element.focus();
+    // ~ Move the cursor to the end of the block unless the only text is a newline
+    if (element.textContent === '\n') return;
+
+    const range = document.createRange();
+    const sel = window.getSelection();
+    range.setStart(element, element.childNodes.length);
+    range.collapse(true);
+    sel?.removeAllRanges();
+    sel?.addRange(range);
+  };
+
+  // ~ Find the previous editable block
+  while (index > 0) {
+    index -= 1;
+
+    const block = document.getElementById(tempPageData.message.data[index]._id);
+    if (block?.getAttribute('contenteditable') === 'true') {
+      selectEnd(block);
+      return;
+    }
+  }
+
+  // ~ If there is no previous editable block, focus the first editable block
+  const block = document.getElementById('page-title')?.firstChild;
+  if (!block) return;
+
+  selectEnd(block as HTMLElement);
 };
 
 const editBlock = async (
