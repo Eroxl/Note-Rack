@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { isCaretAtTop, isCaretAtBottom } from '../../lib/caretHelpers';
 import { editBlock, addBlockAtIndex, removeBlock } from '../../lib/pages/updatePage';
 import TextStyles from '../../constants/TextStyles';
 import textKeybinds from '../../lib/textKeybinds';
@@ -72,6 +73,10 @@ const TextBlock = (props: EditableText) => {
             editBlock([blockID], 'text', undefined, page);
           } else if (e.code === 'Backspace' && type === 'text' && (e.currentTarget.innerText === '' || e.currentTarget.innerText === '\n')) {
             removeBlock(index, [blockID], page, pageData, setPageData, true);
+          } else if (e.code === 'ArrowUp') {
+            console.log(isCaretAtTop(e.currentTarget));
+          } else if (e.code === 'ArrowDown') {
+            console.log(isCaretAtBottom(e.currentTarget));
           }
         }
       }
