@@ -2,7 +2,7 @@
 /* eslint-disable no-underscore-dangle */
 import crypto from 'crypto';
 
-import focusBlockAtIndex from '../focusBlockAtIndex';
+import { focusBlockAtIndex } from '../focusHelpers';
 import type PageDataInterface from '../../types/pageTypes';
 import SaveManager from '../../classes/SaveManager';
 

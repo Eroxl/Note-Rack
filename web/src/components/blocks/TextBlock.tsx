@@ -1,6 +1,6 @@
 import React from 'react';
 
-import focusBlockAtIndex from '../../lib/focusBlockAtIndex';
+import { focusBlockAtIndexRelativeToTop, focusBlockAtIndexRelativeToBottom } from '../../lib/focusHelpers';
 import { isCaretAtTop, isCaretAtBottom } from '../../lib/caretHelpers';
 import { editBlock, addBlockAtIndex, removeBlock } from '../../lib/pages/updatePage';
 import TextStyles from '../../constants/TextStyles';
@@ -76,12 +76,19 @@ const TextBlock = (props: EditableText) => {
             removeBlock(index, [blockID], page, pageData, setPageData, true);
           } else if (e.code === 'ArrowUp' && isCaretAtTop(e.currentTarget)) {
             e.currentTarget.blur();
+            e.preventDefault();
 
-            focusBlockAtIndex(index, pageData);
+            // ~ Get the offset of the current range
+            const range = window.getSelection()?.getRangeAt(0).startOffset || 0;
+
+            console.log(range);
+            
+            focusBlockAtIndexRelativeToTop(index, pageData, range);
           } else if (e.code === 'ArrowDown' && isCaretAtBottom(e.currentTarget)) {
             e.currentTarget.blur();
+            e.preventDefault();
 
-            focusBlockAtIndex(index + 2, pageData);
+            focusBlockAtIndexRelativeToBottom(index + 2, pageData, 0);
           }
         }
       }

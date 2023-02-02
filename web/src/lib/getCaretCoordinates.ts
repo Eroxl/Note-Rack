@@ -5,9 +5,9 @@ const getCaretCoordinates = () => {
 
   const range = selection.getRangeAt(0).cloneRange();
   range.collapse(true);
-  
+
   const rect = range.getClientRects()[0];
-  
+
   if (!rect) return;
     
   return {

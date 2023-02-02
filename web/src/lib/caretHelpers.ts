@@ -19,8 +19,6 @@ const isCaretAtTop = (element: HTMLElement) => {
   const elementPosition = element.getBoundingClientRect().top + topPadding;
   const caretPosition = y - elementPosition;
 
-  console.log(caretPosition, caretPosition < 5);
-
   // ~ Check if the caret is at the top of the element (within 5px)
   return caretPosition < 5;
 }
@@ -40,8 +38,6 @@ const isCaretAtBottom = (element: HTMLElement) => {
   const elementPosition = element.getBoundingClientRect().bottom - bottomPadding;
 
   const caretPosition = (elementPosition - y) - getStyle(element, 'line-height');
-
-  console.log(caretPosition, caretPosition < 0);
 
   // ~ Check if the caret is at the bottom of the element (within 5px)
   return caretPosition < 5;
