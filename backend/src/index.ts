@@ -25,9 +25,17 @@ setupAuth();
 // -=- Setup body parser -=-
 app.use(bodyParser.json());
 
+// -=- URL Info -=-
+const {
+  WEBSITE_DOMAIN,
+} = process.env;
+
+// -=- Check URL Info Exists -=-
+if (!WEBSITE_DOMAIN) throw Error('Missing Website Domain');
+
 // -=- Add CORS headers -=-
 app.use(cors({
-  origin: 'http://127.0.0.1:3000',
+  origin: WEBSITE_DOMAIN,
   allowedHeaders: ['content-type', ...supertokens.getAllCORSHeaders()],
   methods: ['GET', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
   credentials: true,
