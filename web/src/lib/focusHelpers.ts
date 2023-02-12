@@ -1,10 +1,8 @@
 import type PageDataInterface from '../types/pageTypes';
 
-const getMaxPosition = (node: Node): number => {
-  if (node.nodeType !== Node.TEXT_NODE) return 0;
-
+const getFirstLineLength = (node: Node): number => {
   // ~ Get the first newline character
-  const newlineIndex = node.textContent?.indexOf('\n') || -1;
+  const newlineIndex = node.textContent?.slice(0, -1).indexOf('\n') || -1;
 
   // ~ If there is no newline character, return the length of the text
   if (newlineIndex === -1) return node.textContent?.length || 0;
@@ -13,11 +11,26 @@ const getMaxPosition = (node: Node): number => {
   return newlineIndex;
 };
 
+const getLengthExcludingLastLine = (node: Node): number => {
+  // ~ Get the 2nd last newline character
+  const newlineIndex = node.textContent?.slice(0, -1).lastIndexOf('\n') || -1;
+
+  // ~ If there is no newline character, return 0
+  if (newlineIndex === -1) return 0;
+
+  // ~ If there is a newline character, return the index of the newline character
+  return newlineIndex + 1;
+};
+
 const getClosestTextNode = (node: Node): Node => {
   return document.createNodeIterator(node, NodeFilter.SHOW_TEXT).nextNode() || node;
 };
 
-const getNextEditableBlock = (index: number, pageData: PageDataInterface): HTMLElement | undefined => {
+const getNextEditableBlock = (
+  index: number,
+  pageData: PageDataInterface,
+  direction: 'up' | 'down' = 'up'
+): HTMLElement | undefined => {
   // ~ Find the previous editable block
   while (index > 0) {
     index -= 1;
@@ -35,7 +48,7 @@ const getNextEditableBlock = (index: number, pageData: PageDataInterface): HTMLE
   return block as HTMLElement;
 };
 
-const focusBlockAtIndex = async (
+const focusBlockAtIndex = (
   index: number,
   pageData: PageDataInterface,
 ) => {
@@ -47,7 +60,7 @@ const focusBlockAtIndex = async (
 };
 
 
-const focusBlockAtIndexRelativeToTop = async (
+const focusBlockAtIndexRelativeToTop = (
   index: number,
   pageData: PageDataInterface,
   position: number,
@@ -55,19 +68,30 @@ const focusBlockAtIndexRelativeToTop = async (
   const block = getNextEditableBlock(index, pageData);
   if (!block) return;
 
-  console.log(getMaxPosition(getClosestTextNode(block)));
-
-  const offset = Math.min(position, getMaxPosition(getClosestTextNode(block)));
+  const offset = Math.min(position, getFirstLineLength(getClosestTextNode(block)));
 
   // ~ Focus the block
   selectEnd(block, offset);
 };
 
-const focusBlockAtIndexRelativeToBottom = async (
+const focusBlockAtIndexRelativeToBottom = (
   index: number,
   pageData: PageDataInterface,
   position: number,
 ) => {
+  const block = getNextEditableBlock(index, pageData);
+  if (!block) return;
+
+  const closestTextNode = getClosestTextNode(block);
+  const lengthExcludingLastLine = getLengthExcludingLastLine(closestTextNode);
+
+  const offset = Math.min(
+    lengthExcludingLastLine + position,
+    closestTextNode.textContent?.length || 0,
+  );
+
+  // ~ Focus the block
+  selectEnd(block, offset);
 };
 
 /**
@@ -93,4 +117,4 @@ const selectEnd = (element: HTMLElement, position: number) => {
   sel?.addRange(range);
 };
 
-export { focusBlockAtIndex, focusBlockAtIndexRelativeToTop, focusBlockAtIndexRelativeToBottom };
+export { focusBlockAtIndex, focusBlockAtIndexRelativeToTop, focusBlockAtIndexRelativeToBottom, getLengthExcludingLastLine };

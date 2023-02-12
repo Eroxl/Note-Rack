@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { focusBlockAtIndexRelativeToTop, focusBlockAtIndexRelativeToBottom } from '../../lib/focusHelpers';
+import { focusBlockAtIndexRelativeToTop, focusBlockAtIndexRelativeToBottom, getLengthExcludingLastLine } from '../../lib/focusHelpers';
 import { isCaretAtTop, isCaretAtBottom } from '../../lib/caretHelpers';
 import { editBlock, addBlockAtIndex, removeBlock } from '../../lib/pages/updatePage';
 import TextStyles from '../../constants/TextStyles';
@@ -79,16 +79,30 @@ const TextBlock = (props: EditableText) => {
             e.preventDefault();
 
             // ~ Get the offset of the current range
-            const range = window.getSelection()?.getRangeAt(0).startOffset || 0;
-
-            console.log(range);
+            const offset = window.getSelection()?.getRangeAt(0).startOffset || 0;
             
-            focusBlockAtIndexRelativeToTop(index, pageData, range);
+            focusBlockAtIndexRelativeToBottom(
+              index,
+              pageData,
+              offset
+            );
           } else if (e.code === 'ArrowDown' && isCaretAtBottom(e.currentTarget)) {
             e.currentTarget.blur();
             e.preventDefault();
 
-            focusBlockAtIndexRelativeToBottom(index + 2, pageData, 0);
+            const offset = window.getSelection()?.getRangeAt(0).startOffset || 0;
+
+            const distanceFromBottom = (
+              offset - getLengthExcludingLastLine(e.currentTarget)
+            );
+
+            console.log(distanceFromBottom)
+
+            focusBlockAtIndexRelativeToTop(
+              index + 2,
+              pageData,
+              distanceFromBottom
+            );
           }
         }
       }
