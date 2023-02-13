@@ -31,21 +31,33 @@ const getNextEditableBlock = (
   pageData: PageDataInterface,
   direction: 'up' | 'down' = 'up'
 ): HTMLElement | undefined => {
-  // ~ Find the previous editable block
-  while (index > 0) {
-    index -= 1;
+  if (direction === 'up') {
+    // ~ Find the previous editable block
+    while (index > 0) {
+      index -= 1;
+
+      const block = document.getElementById(pageData.message.data[index]._id)
+      if (block?.getAttribute('contenteditable') === 'true') {
+        return block;
+      }
+    }
+
+    // ~ If there is no previous editable block, focus the first editable block
+    const block = document.getElementById('page-title')?.firstChild;
+    if (!block) return;
+
+    return block as HTMLElement;
+  }
+
+  // ~ Find the next editable block
+  while (index < pageData.message.data.length - 1) {
+    index += 1;
 
     const block = document.getElementById(pageData.message.data[index]._id)
     if (block?.getAttribute('contenteditable') === 'true') {
       return block;
     }
   }
-
-  // ~ If there is no previous editable block, focus the first editable block
-  const block = document.getElementById('page-title')?.firstChild;
-  if (!block) return;
-
-  return block as HTMLElement;
 };
 
 const focusBlockAtIndex = (
@@ -65,7 +77,7 @@ const focusBlockAtIndexRelativeToTop = (
   pageData: PageDataInterface,
   position: number,
 ) => {
-  const block = getNextEditableBlock(index, pageData);
+  const block = getNextEditableBlock(index, pageData, 'down');
   if (!block) return;
 
   const offset = Math.min(position, getFirstLineLength(getClosestTextNode(block)));

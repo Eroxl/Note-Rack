@@ -99,7 +99,7 @@ const TextBlock = (props: EditableText) => {
             console.log(distanceFromBottom)
 
             focusBlockAtIndexRelativeToTop(
-              index + 2,
+              index,
               pageData,
               distanceFromBottom
             );
