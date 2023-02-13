@@ -96,8 +96,6 @@ const TextBlock = (props: EditableText) => {
               offset - getLengthExcludingLastLine(e.currentTarget)
             );
 
-            console.log(distanceFromBottom)
-
             focusBlockAtIndexRelativeToTop(
               index,
               pageData,

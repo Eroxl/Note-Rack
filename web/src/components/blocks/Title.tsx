@@ -6,6 +6,8 @@ import TitleBreaker from './TitleBreaker';
 import { addBlockAtIndex, moveBlock } from '../../lib/pages/updatePage';
 import type { PermanentEditableText } from '../../types/blockTypes';
 import editStyle from '../../lib/pages/editStyle';
+import { isCaretAtBottom } from '../../lib/caretHelpers';
+import { focusBlockAtIndexRelativeToTop, getLengthExcludingLastLine } from '../../lib/focusHelpers';
 
 interface TitleProps extends PermanentEditableText {
   title: string,
@@ -68,6 +70,21 @@ const Title = (props: TitleProps) => {
               e.preventDefault();
               e.currentTarget.blur();
               addBlockAtIndex(index, page, pageData, setPageData);
+            } else if (e.code === 'ArrowDown' && isCaretAtBottom(e.currentTarget)) {
+              e.currentTarget.blur();
+              e.preventDefault();
+  
+              const offset = window.getSelection()?.getRangeAt(0).startOffset || 0;
+  
+              const distanceFromBottom = (
+                offset - getLengthExcludingLastLine(e.currentTarget)
+              );
+    
+              focusBlockAtIndexRelativeToTop(
+                index,
+                pageData,
+                distanceFromBottom
+              );
             }
           }
         }
