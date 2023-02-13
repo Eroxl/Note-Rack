@@ -81,7 +81,7 @@ const Title = (props: TitleProps) => {
               );
     
               focusBlockAtIndexRelativeToTop(
-                index,
+                index-1,
                 pageData,
                 distanceFromBottom
               );
