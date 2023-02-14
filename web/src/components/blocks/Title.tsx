@@ -6,8 +6,8 @@ import TitleBreaker from './TitleBreaker';
 import { addBlockAtIndex, moveBlock } from '../../lib/pages/updatePage';
 import type { PermanentEditableText } from '../../types/blockTypes';
 import editStyle from '../../lib/pages/editStyle';
-import { isCaretAtBottom } from '../../lib/caretHelpers';
-import { focusBlockAtIndexRelativeToTop, getLengthExcludingLastLine } from '../../lib/focusHelpers';
+import { isCaretAtBottom } from '../../lib/helpers/caretHelpers';
+import { focusBlockAtIndexRelativeToTop, getLengthExcludingLastLine } from '../../lib/helpers/focusHelpers';
 
 interface TitleProps extends PermanentEditableText {
   title: string,

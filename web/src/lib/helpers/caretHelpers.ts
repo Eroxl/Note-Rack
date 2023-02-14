@@ -1,4 +1,4 @@
-import getCaretCoordinates from './getCaretCoordinates';
+import getCaretCoordinates from '../getCaretCoordinates';
 
 const isElementFocused = (element: HTMLElement) => document.activeElement === element;
 

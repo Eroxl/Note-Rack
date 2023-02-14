@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { focusBlockAtIndexRelativeToTop, focusBlockAtIndexRelativeToBottom, getLengthExcludingLastLine } from '../../lib/focusHelpers';
-import { isCaretAtTop, isCaretAtBottom } from '../../lib/caretHelpers';
+import { focusBlockAtIndexRelativeToTop, focusBlockAtIndexRelativeToBottom, getLengthExcludingLastLine } from '../../lib/helpers/focusHelpers';
+import { isCaretAtTop, isCaretAtBottom } from '../../lib/helpers/caretHelpers';
 import { editBlock, addBlockAtIndex, removeBlock } from '../../lib/pages/updatePage';
 import TextStyles from '../../constants/TextStyles';
 import textKeybinds from '../../lib/textKeybinds';
