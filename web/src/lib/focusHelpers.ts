@@ -153,4 +153,9 @@ const selectEnd = (element: HTMLElement, position: number) => {
   sel?.addRange(range);
 };
 
-export { focusBlockAtIndex, focusBlockAtIndexRelativeToTop, focusBlockAtIndexRelativeToBottom, getLengthExcludingLastLine };
+export {
+  focusBlockAtIndex,
+  focusBlockAtIndexRelativeToTop,
+  focusBlockAtIndexRelativeToBottom,
+  getLengthExcludingLastLine 
+};
