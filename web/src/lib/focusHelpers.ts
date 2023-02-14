@@ -1,8 +1,8 @@
 import type PageDataInterface from '../types/pageTypes';
 
-const getFirstLineLength = (node: Node): number => {
+const getFirstLineLength = (node: HTMLElement): number => {
   // ~ Get the first newline character
-  const newlineIndex = node.textContent?.slice(0, -1).indexOf('\n') || -1;
+  const newlineIndex = node.innerText?.slice(0, -1).indexOf('\n') || -1;
 
   // ~ If there is no newline character, return the length of the text
   if (newlineIndex === -1) return node.textContent?.length || 0;
@@ -11,9 +11,9 @@ const getFirstLineLength = (node: Node): number => {
   return newlineIndex;
 };
 
-const getLengthExcludingLastLine = (node: Node): number => {
+const getLengthExcludingLastLine = (node: HTMLElement): number => {
   // ~ Get the 2nd last newline character
-  const newlineIndex = node.textContent?.slice(0, -1).lastIndexOf('\n') || -1;
+  const newlineIndex = node.innerText?.slice(0, -1).lastIndexOf('\n') || -1;
 
   // ~ If there is no newline character, return 0
   if (newlineIndex === -1) return 0;
@@ -22,8 +22,23 @@ const getLengthExcludingLastLine = (node: Node): number => {
   return newlineIndex + 1;
 };
 
-const getClosestTextNode = (node: Node): Node => {
-  return document.createNodeIterator(node, NodeFilter.SHOW_TEXT).nextNode() || node;
+const getClosestTextNode = (node: Node): Node[] => {
+  // ~ Get all the text nodes in the element
+  const textNodes = [];
+
+  let iterator = document.createNodeIterator(node, NodeFilter.SHOW_TEXT).nextNode()
+  while (iterator) {
+    textNodes.push(iterator);
+    
+    iterator = document.createNodeIterator(node, NodeFilter.SHOW_TEXT).nextNode()
+    if (iterator && textNodes.includes(iterator)) break;
+  }
+
+  // ~ If there are no text nodes, return the element
+  if (textNodes.length === 0) return [node];
+
+  // ~ Return the text nodes
+  return textNodes;
 };
 
 const getNextEditableBlock = (
@@ -80,7 +95,7 @@ const focusBlockAtIndexRelativeToTop = (
   const block = getNextEditableBlock(index, pageData, 'down');
   if (!block) return;
 
-  const offset = Math.min(position, getFirstLineLength(getClosestTextNode(block)));
+  const offset = Math.min(position, getFirstLineLength(block));
 
   // ~ Focus the block
   selectEnd(block, offset);
@@ -94,12 +109,11 @@ const focusBlockAtIndexRelativeToBottom = (
   const block = getNextEditableBlock(index, pageData);
   if (!block) return;
 
-  const closestTextNode = getClosestTextNode(block);
-  const lengthExcludingLastLine = getLengthExcludingLastLine(closestTextNode);
+  const lengthExcludingLastLine = getLengthExcludingLastLine(block);
 
   const offset = Math.min(
     lengthExcludingLastLine + position,
-    closestTextNode.textContent?.length || 0,
+    block.textContent?.length || 0,
   );
 
   // ~ Focus the block
@@ -119,10 +133,20 @@ const selectEnd = (element: HTMLElement, position: number) => {
   const range = document.createRange();
   const sel = window.getSelection();
 
+  const textNodes = getClosestTextNode(element);
+
   if (position !== -1) {
-    range.setStart(getClosestTextNode(element), Math.min(position, element.textContent?.length || 0));
+    range.setStart(textNodes.slice(-1)[0], Math.min(position, element.textContent?.length || 0));
   } else {
-    range.setStart(getClosestTextNode(element), element.childNodes.length);
+    textNodes.forEach((node) => {
+      const length = node.textContent?.length || 0;
+
+      position -= length;
+
+      if (position < 0) {
+        range.setStart(node, length + position);
+      }
+    });
   }
 
   sel?.removeAllRanges();
