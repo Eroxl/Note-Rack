@@ -1,6 +1,6 @@
 import getCaretCoordinates from '../getCaretCoordinates';
 
-const isElementFocused = (element: HTMLElement) => document.activeElement === element;
+const isElementFocused = (element: HTMLElement) => document.activeElement === element || element.contains(document.activeElement);
 
 const getStyle = (element: HTMLElement, style: string) => +window.getComputedStyle(element).getPropertyValue(style).replace('px', '');
 

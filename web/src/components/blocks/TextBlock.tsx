@@ -75,22 +75,42 @@ const TextBlock = (props: EditableText) => {
           } else if (e.code === 'Backspace' && type === 'text' && (e.currentTarget.innerText === '' || e.currentTarget.innerText === '\n')) {
             removeBlock(index, [blockID], page, pageData, setPageData, true);
           } else if (e.code === 'ArrowUp' && isCaretAtTop(e.currentTarget)) {
-            e.currentTarget.blur();
-            e.preventDefault();
+            // e.currentTarget.blur();
+            // e.preventDefault();
 
-            // ~ Get the offset of the current range
-            const offset = window.getSelection()?.getRangeAt(0).startOffset || 0;
+            // // ~ Get the offset of the current range
+            // const offset = window.getSelection()?.getRangeAt(0).startOffset || 0;
             
-            focusBlockAtIndexRelativeToBottom(
-              index,
-              pageData,
-              offset
-            );
+            // focusBlockAtIndexRelativeToBottom(
+            //   index,
+            //   pageData,
+            //   offset
+            // );
           } else if (e.code === 'ArrowDown' && isCaretAtBottom(e.currentTarget)) {
             e.currentTarget.blur();
             e.preventDefault();
 
-            const offset = window.getSelection()?.getRangeAt(0).startOffset || 0;
+            const range = window.getSelection()?.getRangeAt(0);
+
+            if (!range) return;
+
+            const fullText = e.currentTarget.innerText || '';
+            const rangeElementText = range.startContainer.textContent || '';
+
+            let offset = fullText.length - rangeElementText.length + range.startOffset;
+
+            if (range.endContainer !== e.currentTarget.lastElementChild) {
+              let foundLastElement = false;
+              Array.from(e.currentTarget.childNodes).reverse().forEach((node) => {
+                foundLastElement = foundLastElement
+                  ? true
+                  : node === range.endContainer;
+        
+                if (foundLastElement) return;
+
+                offset -= node.textContent?.length || 1;
+              });
+            }
 
             const distanceFromBottom = (
               offset - getLengthExcludingLastLine(e.currentTarget)

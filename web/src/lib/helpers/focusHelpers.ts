@@ -135,7 +135,7 @@ const selectEnd = (element: HTMLElement, position: number) => {
 
   const textNodes = getClosestTextNode(element);
 
-  if (position !== -1) {
+  if (position === -1) {
     range.setStart(textNodes.slice(-1)[0], Math.min(position, element.textContent?.length || 0));
   } else {
     textNodes.forEach((node) => {
@@ -143,8 +143,10 @@ const selectEnd = (element: HTMLElement, position: number) => {
 
       position -= length;
 
-      if (position < 0) {
-        range.setStart(node, length + position);
+      if (position <= 0) {
+        const index = Math.min(position + length, length)
+
+        range.setStart(node, index);
       }
     });
   }
