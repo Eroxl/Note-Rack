@@ -75,17 +75,17 @@ const TextBlock = (props: EditableText) => {
           } else if (e.code === 'Backspace' && type === 'text' && (e.currentTarget.innerText === '' || e.currentTarget.innerText === '\n')) {
             removeBlock(index, [blockID], page, pageData, setPageData, true);
           } else if (e.code === 'ArrowUp' && isCaretAtTop(e.currentTarget)) {
-            // e.currentTarget.blur();
-            // e.preventDefault();
+            e.currentTarget.blur();
+            e.preventDefault();
 
-            // // ~ Get the offset of the current range
-            // const offset = window.getSelection()?.getRangeAt(0).startOffset || 0;
+            // ~ Get the offset of the current range
+            const offset = window.getSelection()?.getRangeAt(0).startOffset || 0;
             
-            // focusBlockAtIndexRelativeToBottom(
-            //   index,
-            //   pageData,
-            //   offset
-            // );
+            focusBlockAtIndexRelativeToBottom(
+              index,
+              pageData,
+              offset
+            );
           } else if (e.code === 'ArrowDown' && isCaretAtBottom(e.currentTarget)) {
             e.currentTarget.blur();
             e.preventDefault();
