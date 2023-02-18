@@ -75,7 +75,6 @@ const TextBlock = (props: EditableText) => {
           } else if (e.code === 'Backspace' && type === 'text' && (e.currentTarget.innerText === '' || e.currentTarget.innerText === '\n')) {
             removeBlock(index, [blockID], page, pageData, setPageData, true);
           } else if (e.code === 'ArrowUp' && isCaretAtTop(e.currentTarget)) {
-            e.currentTarget.blur();
             e.preventDefault();
 
             // ~ Get the offset of the current range
@@ -87,7 +86,6 @@ const TextBlock = (props: EditableText) => {
               offset
             );
           } else if (e.code === 'ArrowDown' && isCaretAtBottom(e.currentTarget)) {
-            e.currentTarget.blur();
             e.preventDefault();
 
             const range = window.getSelection()?.getRangeAt(0);
