@@ -18,7 +18,7 @@ const isCaretAtTop = (element: HTMLElement) => {
   const topPadding = getStyle(element, 'padding-top');
   const elementPosition = element.getBoundingClientRect().top + topPadding;
   const caretPosition = y - elementPosition;
-
+  
   // ~ Check if the caret is at the top of the element (within 5px)
   return caretPosition < 5;
 }
