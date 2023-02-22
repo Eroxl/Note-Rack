@@ -110,8 +110,14 @@ const TextBlock = (props: EditableText) => {
               });
             }
 
+            let lengthExcludingLastLine = getLengthExcludingLastLine(e.currentTarget);
+
+            if (lengthExcludingLastLine !== 0) {
+              lengthExcludingLastLine += 1;
+            }
+
             const distanceFromBottom = (
-              offset - getLengthExcludingLastLine(e.currentTarget)
+              offset - lengthExcludingLastLine
             );
 
             focusBlockAtIndexRelativeToTop(

@@ -2,7 +2,7 @@ import type PageDataInterface from '../../types/pageTypes';
 
 const getFirstLineLength = (node: HTMLElement): number => {
   // ~ Get the first newline character
-  const newlineIndex = node.innerText?.slice(0, -1).indexOf('\n') || -1;
+  const newlineIndex = node.innerText.slice(0, -1).indexOf('\n') || -1;
 
   // ~ If there is no newline character, return the length of the text
   if (newlineIndex === -1) return node.textContent?.length || 0;
@@ -13,25 +13,33 @@ const getFirstLineLength = (node: HTMLElement): number => {
 
 const getLengthExcludingLastLine = (node: HTMLElement): number => {
   // ~ Get the 2nd last newline character
-  const newlineIndex = node.innerText?.slice(0, -1).lastIndexOf('\n') || -1;
+  const newlineIndex = node.innerText.slice(0, -1).lastIndexOf('\n') || -1;
 
   // ~ If there is no newline character, return 0
   if (newlineIndex === -1) return 0;
 
   // ~ If there is a newline character, return the index of the newline character
-  return newlineIndex + 1;
+  return newlineIndex;
 };
 
 const getClosestTextNode = (node: Node): Node[] => {
   // ~ Get all the text nodes in the element
   const textNodes = [];
 
-  let iterator = document.createNodeIterator(node, NodeFilter.SHOW_TEXT).nextNode()
-  while (iterator) {
-    textNodes.push(iterator);
+  // ~ Get all text nodes or br elements
+  const iterator = document.createNodeIterator(node, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT, {
+    acceptNode: (node) => {
+      if (node.nodeName === 'BR') return NodeFilter.FILTER_ACCEPT;
+      if (node.nodeName === '#text') return NodeFilter.FILTER_ACCEPT;
+      return NodeFilter.FILTER_SKIP;
+    }
+  });
+
+  let nextNode = iterator.nextNode();
+  while (nextNode) {
+    textNodes.push(nextNode);
     
-    iterator = document.createNodeIterator(node, NodeFilter.SHOW_TEXT).nextNode()
-    if (iterator && textNodes.includes(iterator)) break;
+    nextNode = iterator.nextNode()
   }
 
   // ~ If there are no text nodes, return the element
@@ -109,7 +117,11 @@ const focusBlockAtIndexRelativeToBottom = (
   const block = getNextEditableBlock(index, pageData);
   if (!block) return;
 
-  const lengthExcludingLastLine = getLengthExcludingLastLine(block);
+  let lengthExcludingLastLine = getLengthExcludingLastLine(block);
+
+  if (lengthExcludingLastLine >= position) {
+    lengthExcludingLastLine += 1;
+  }
 
   const offset = Math.min(
     lengthExcludingLastLine + position,
@@ -139,12 +151,16 @@ const selectEnd = (element: HTMLElement, position: number) => {
     range.setStart(textNodes.slice(-1)[0], Math.min(position, element.textContent?.length || 0));
   } else {
     textNodes.forEach((node) => {
-      const length = node.textContent?.length || 0;
+      if (position <= 0) return;
+
+      const length = node.nodeName === '#text'
+      ? node.textContent?.length || 0
+      : 1;
 
       position -= length;
 
       if (position <= 0) {
-        const index = Math.min(position + length, length)
+        const index = Math.max(Math.min(position + length, length), 0);
 
         range.setStart(node, index);
       }
