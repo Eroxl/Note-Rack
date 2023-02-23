@@ -119,7 +119,7 @@ const focusBlockAtIndexRelativeToBottom = (
 
   let lengthExcludingLastLine = getLengthExcludingLastLine(block);
 
-  if (lengthExcludingLastLine >= position) {
+  if (lengthExcludingLastLine !== 0) {
     lengthExcludingLastLine += 1;
   }
 
@@ -156,6 +156,10 @@ const selectEnd = (element: HTMLElement, position: number) => {
       const length = node.nodeName === '#text'
       ? node.textContent?.length || 0
       : 1;
+
+      if (node.nodeName === 'BR') {
+        
+      }
 
       position -= length;
 
