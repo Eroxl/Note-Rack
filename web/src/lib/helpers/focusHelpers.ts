@@ -150,23 +150,29 @@ const selectEnd = (element: HTMLElement, position: number) => {
   if (position === -1) {
     range.setStart(textNodes.slice(-1)[0], Math.min(position, element.textContent?.length || 0));
   } else {
+    const lastTextNode = textNodes.findLast((node) => node.nodeName === '#text');
+
     textNodes.forEach((node) => {
       if (position < 0) return;
 
       const length = node.nodeName === '#text'
-      ? node.textContent?.length || 0
-      : 1;
-
-      if (node.nodeName === 'BR') {
-        
-      }
+        ? node.textContent?.length || 0
+        : 1;
 
       position -= length;
 
-      if (position <= 0) {
+      if (position <= 0 || node === lastTextNode) {
+        console.log(node);
+
         const index = Math.max(Math.min(position + length, length), 0);
 
-        range.setStart(node, index);
+        if (node.textContent?.at(index - 1) === '\n') {
+          range.setStart(node, Math.max(index - 1, 0));
+        } else {
+          range.setStart(node, index);
+        }
+
+        position = -1;
       }
     });
   }
