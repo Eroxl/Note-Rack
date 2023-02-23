@@ -73,7 +73,6 @@ const BaseBlock = (props: BaseBlockProps) => {
   preview(drop(selectableRef as React.RefObject<HTMLDivElement>));
 
   return (
-    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
     <div
       ref={selectableRef as React.RefObject<HTMLDivElement>}
       className={`relative flex group ${selected && 'bg-sky-300/20'}`}
