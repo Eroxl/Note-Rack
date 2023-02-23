@@ -1,11 +1,12 @@
 import React from 'react';
 
-import { focusBlockAtIndexRelativeToTop, focusBlockAtIndexRelativeToBottom, getLengthExcludingLastLine } from '../../lib/helpers/focusHelpers';
 import { isCaretAtTop, isCaretAtBottom } from '../../lib/helpers/caretHelpers';
 import { editBlock, addBlockAtIndex, removeBlock } from '../../lib/pages/updatePage';
 import TextStyles from '../../constants/TextStyles';
 import textKeybinds from '../../lib/textKeybinds';
 import type { EditableText } from '../../types/blockTypes';
+import handleKeyDown from '../../lib/blockNavigation/handleKeyDown';
+import handleKeyUp from '../../lib/blockNavigation/handleKeyUp';
 
 const TextBlock = (props: EditableText) => {
   const {
@@ -75,62 +76,20 @@ const TextBlock = (props: EditableText) => {
           } else if (e.code === 'Backspace' && type === 'text' && (e.currentTarget.innerText === '' || e.currentTarget.innerText === '\n')) {
             removeBlock(index, [blockID], page, pageData, setPageData, true);
           } else if (e.code === 'ArrowUp' && isCaretAtTop(e.currentTarget)) {
-            e.preventDefault();
-
-            // ~ Get the offset of the current range
-            const offset = window.getSelection()?.getRangeAt(0).startOffset || 0;
-            
-            focusBlockAtIndexRelativeToBottom(
+            handleKeyUp(
+              e,
               index,
               pageData,
-              offset
             );
           } else if (e.code === 'ArrowDown' && isCaretAtBottom(e.currentTarget)) {
-            e.preventDefault();
-
-            const range = window.getSelection()?.getRangeAt(0);
-
-            if (!range) return;
-
-            const fullText = e.currentTarget.innerText || '';
-            const rangeElementText = range.startContainer.textContent || '';
-
-            let offset = fullText.length - rangeElementText.length + range.startOffset;
-
-            if (range.endContainer !== e.currentTarget.lastElementChild) {
-              let foundLastElement = false;
-              Array.from(e.currentTarget.childNodes).reverse().forEach((node) => {
-                foundLastElement = foundLastElement
-                  ? true
-                  : node === range.endContainer;
-        
-                if (foundLastElement) return;
-
-                offset -= node.textContent?.length || 1;
-              });
-            }
-
-            let lengthExcludingLastLine = getLengthExcludingLastLine(e.currentTarget);
-
-            if (lengthExcludingLastLine !== 0) {
-              lengthExcludingLastLine += 1;
-            }
-
-            const distanceFromBottom = (
-              offset - lengthExcludingLastLine
-            );
-
-            focusBlockAtIndexRelativeToTop(
+            handleKeyDown(
+              e,
               index,
               pageData,
-              distanceFromBottom
             );
           }
         }
       }
-      onCopy={() => {
-        navigator.clipboard.writeText(window.getSelection()?.toString() || '');
-      }}
       data-cy="block-text"
     >
       {value}

@@ -7,7 +7,7 @@ import { addBlockAtIndex, moveBlock } from '../../lib/pages/updatePage';
 import type { PermanentEditableText } from '../../types/blockTypes';
 import editStyle from '../../lib/pages/editStyle';
 import { isCaretAtBottom, isCaretAtTop } from '../../lib/helpers/caretHelpers';
-import { focusBlockAtIndexRelativeToTop, getLengthExcludingLastLine } from '../../lib/helpers/focusHelpers';
+import handleKeyDown from '../../lib/blockNavigation/handleKeyDown';
 
 interface TitleProps extends PermanentEditableText {
   title: string,
@@ -71,19 +71,11 @@ const Title = (props: TitleProps) => {
               e.currentTarget.blur();
               addBlockAtIndex(index, page, pageData, setPageData);
             } else if (e.code === 'ArrowDown' && isCaretAtBottom(e.currentTarget)) {
-              e.preventDefault();
-  
-              const offset = window.getSelection()?.getRangeAt(0).startOffset || 0;
-  
-              const distanceFromBottom = (
-                offset - getLengthExcludingLastLine(e.currentTarget)
-              );
-    
-              focusBlockAtIndexRelativeToTop(
+              handleKeyDown(
+                e,
                 index-1,
                 pageData,
-                distanceFromBottom
-              );
+              )
             } else if (e.code === 'ArrowUp' && isCaretAtTop(e.currentTarget)) {
               e.preventDefault();
             }
