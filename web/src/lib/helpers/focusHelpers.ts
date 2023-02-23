@@ -151,7 +151,7 @@ const selectEnd = (element: HTMLElement, position: number) => {
     range.setStart(textNodes.slice(-1)[0], Math.min(position, element.textContent?.length || 0));
   } else {
     textNodes.forEach((node) => {
-      if (position <= 0) return;
+      if (position < 0) return;
 
       const length = node.nodeName === '#text'
       ? node.textContent?.length || 0
