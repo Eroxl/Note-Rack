@@ -56,6 +56,7 @@ const PagePath = () => {
               }
             }
             prefetch={index !== pagePath.length - 1}
+            key={`page-path-${page.pageID}`}
           >
             <a 
               href={`/note-rack/${page.pageID}`}
