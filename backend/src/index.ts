@@ -10,7 +10,6 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 
 import setupAuth from './setupAuth';
-import routes from './routes/index';
 
 // -=- Connect to MongoDB with dotenv file -=-
 dotenv.config();
@@ -47,6 +46,8 @@ app.use(middleware());
 
 // -=- Add Websocket Support -=-
 expressWs(app);
+
+import routes from './routes/index';
 
 // -=- Add API Routes -=-
 app.use('/', routes);
