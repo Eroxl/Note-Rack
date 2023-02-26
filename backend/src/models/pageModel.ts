@@ -2,6 +2,13 @@ import mongoose, { Schema } from 'mongoose';
 
 const PageSchema = new Schema({
   user: String,
+  permissions: [
+    {
+      read: [String],
+      write: [String],
+      usernameRegex: String
+    }
+  ],
   style: {},
   data: [
     {
