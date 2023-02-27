@@ -4,9 +4,10 @@ const PageSchema = new Schema({
   user: String,
   permissions: [
     {
-      read: [String],
-      write: [String],
-      usernameRegex: String
+      read: Boolean,
+      write: Boolean,
+      admin: Boolean,
+      username: String
     }
   ],
   style: {},
