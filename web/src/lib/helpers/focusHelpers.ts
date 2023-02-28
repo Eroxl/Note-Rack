@@ -148,7 +148,7 @@ const selectEnd = (element: HTMLElement, position: number) => {
   const textNodes = getClosestTextNode(element);
 
   if (position === -1) {
-    range.setStart(textNodes.slice(-1)[0], Math.min(position, element.textContent?.length || 0));
+    range.setStart(textNodes.slice(-1)[0], element.textContent?.length || 0);
   } else {
     const lastTextNode = textNodes.findLast((node) => node.nodeName === '#text');
 
