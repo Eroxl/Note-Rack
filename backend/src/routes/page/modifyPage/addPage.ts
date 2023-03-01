@@ -1,36 +1,16 @@
 import express from 'express';
-import { SessionRequest } from 'supertokens-node/framework/express';
-import { verifySession } from 'supertokens-node/recipe/session/framework/express';
 
 import addPage from '../../../helpers/addPage';
-import PageTreeModel from '../../../models/pageTreeModel';
+import verifyPermissions from '../../../middleware/verifyPermissions';
+import type { PageRequest } from '../../../middleware/verifyPermissions';
 
 const router = express.Router();
 
 router.post(
   '/:page/',
-  verifySession(),
-  async (req: SessionRequest, res) => {
-    const username = req.session!.getUserId();
-
-    if (!username) {
-      res.statusCode = 401;
-      res.json({
-        status: 'error',
-        message: 'Please login to view this page!',
-      });
-      return;
-    }
-
-    const pageTree = await PageTreeModel.findOne({ user: username }, 'user').lean();
-
-    if (!pageTree) {
-      res.statusCode = 500;
-      res.json({
-        status: 'error',
-        message: 'You do not have any pages to add to!',
-      });
-    }
+  verifyPermissions(['write']),
+  async (req: PageRequest, res) => {
+    const pageOwner = req.pageData.user;
 
     const { page } = req.params;
     const {
@@ -40,7 +20,7 @@ router.post(
 
     await addPage(
       page,
-      username,
+      pageOwner,
       newPageId,
       newPageName,
     );

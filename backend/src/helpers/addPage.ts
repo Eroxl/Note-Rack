@@ -10,6 +10,11 @@ const addPage = async (
 ) => {
   const pageMap = await PageMapModel.findById(page).lean();
 
+  if (!pageMap) {
+    // NOTE:EROXL: Should never happen
+    throw new Error('Page not found');
+  }
+
   const arrayFilters: Record<string, unknown>[] = [];
   let queryString = 'subPages';
 
