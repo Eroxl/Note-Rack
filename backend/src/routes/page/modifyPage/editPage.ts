@@ -10,7 +10,7 @@ const router = express.Router();
 
 router.patch(
   '/:page/',
-  verifyPermissions(['write']),
+  verifyPermissions(['admin']),
   async (req: PageRequest, res) => {
     const { style } = req.body;
     const { page } = req.params;
