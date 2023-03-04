@@ -32,11 +32,15 @@ const Editor = (props: EditorProps) => {
 
   // -=- Setup Selection -=-
   const selectionData = useSelectionCollector('blocks');
+  const [selectionDataConsumed, setSelectionDataConsumed] = useState(false);
 
   useEffect(() => {
     const handleSelectionEvents = (event: KeyboardEvent) => {
       // ~ If the user is not pressing the backspace key, return
       if (event.key !== 'Backspace') return;
+
+      // ~ If the selection data has already been consumed, return
+      if (selectionDataConsumed) return;
       
       // ~ Iterate over all the selected blocks
       for (let i = 0; i < selectionData.length; i += 1) {
@@ -57,6 +61,9 @@ const Editor = (props: EditorProps) => {
         // ~ Remove the block from the page
         removeBlock(index - i, [blockID], page as string, pageData, setPageData);
       }
+
+      // ~ Reset the selection data
+      setSelectionDataConsumed(true);
     };
 
     // ~ Add the event listener
@@ -66,6 +73,11 @@ const Editor = (props: EditorProps) => {
     return () => {
       document.removeEventListener('keydown', handleSelectionEvents);
     };
+  }, [selectionData, selectionDataConsumed]);
+
+  useEffect(() => {
+    // ~ Reset the selection data, when the selection changes
+    setSelectionDataConsumed(false);
   }, [selectionData]);
 
   // -=- Render -=-
