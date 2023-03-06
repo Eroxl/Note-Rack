@@ -10,6 +10,7 @@ import PageSidebar from '../../components/pageInfo/PageSidebar';
 import Editor from '../../components/Editor';
 import LoadingPage from '../../components/LoadingPage';
 import SaveManager from '../../classes/SaveManager';
+import ShareButton from '../../components/pageCustomization/ShareButton';
 
 const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {
   const [pageData, setPageData] = useState<PageDataInterface | Record<string, unknown>>({});
@@ -56,8 +57,11 @@ const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {
         }
       </Head>
       <div className="w-full h-full overflow-hidden print:h-max print:overflow-visible bg-amber-50 no-scrollbar dark:bg-zinc-700 print:dark:bg-white">
-        <div className="absolute z-10 w-screen h-10 print:h-0 bg-amber-50 no-scrollbar dark:bg-zinc-700 print:dark:bg-white">
-          <PagePath />
+        <div className="absolute">
+          <div className="relative z-10 flex w-screen h-10 print:h-0 bg-amber-50 no-scrollbar dark:bg-zinc-700 print:dark:bg-white">
+            <PagePath />
+            <ShareButton />
+          </div>
         </div>
         <PageSidebar />
         <DndProvider backend={HTML5Backend}>
