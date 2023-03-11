@@ -60,8 +60,9 @@ const verifyPermissions = (permissions: ValidPermissions[]) => {
       return;
     }
 
-    const userPermissionsOnPage = pageData.permissions
-      .find((permission: any) => permission.username === username)
+    console.log(pageData.permissions);
+
+    const userPermissionsOnPage = pageData.permissions[username] || undefined;
 
     if (!userPermissionsOnPage) {
       res.statusCode = 403;

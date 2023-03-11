@@ -17,6 +17,7 @@ const EmailShareMenu = (props: ShareMenuProps) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedDropdownOption, setSelectedDropdownOption] = useState(DropdownOptions.FullAccess);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const emailInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -39,19 +40,39 @@ const EmailShareMenu = (props: ShareMenuProps) => {
     [key: number]: {
       title: string,
       description: string,
+      permissions: {
+        admin: boolean,
+        edit: boolean,
+        read: boolean,
+      }
     }
   } = {
     [DropdownOptions.FullAccess]: {
       title: 'Full access',
-      description: 'Can edit, delete, and share'
+      description: 'Can edit, delete, and share',
+      permissions: {
+        admin: true,
+        edit: true,
+        read: true,
+      }
     },
     [DropdownOptions.EditOnly]: {
       title: 'Edit only',
-      description: 'Can edit, but not delete or share'
+      description: 'Can edit, but not delete or share',
+      permissions: {
+        admin: false,
+        edit: true,
+        read: true,
+      },
     },
     [DropdownOptions.ViewOnly]: {
       title: 'View only',
-      description: 'Cannot edit, delete, or share'
+      description: 'Cannot edit, delete, or share',
+      permissions: {
+        admin: false,
+        edit: false,
+        read: true,
+      }
     },
   }
 
@@ -65,6 +86,7 @@ const EmailShareMenu = (props: ShareMenuProps) => {
           placeholder="Add email"
           type="email"
           autoFocus
+          ref={emailInputRef}
         />
         {/* Dropdown */}
         <div
@@ -161,7 +183,24 @@ const EmailShareMenu = (props: ShareMenuProps) => {
           className="px-2 bg-blue-500 border border-blue-600 rounded text-amber-50"
           onClick={() => {
             setIsEditingEmails(false);
-            // TODO: Send email invite
+            const email = emailInputRef.current?.value;
+            if (!email) return;
+
+            (async () => {
+              await fetch(
+                `${process.env.NEXT_PUBLIC_API_URL}/page/update-permissions/${page}`, 
+                {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                    email,
+                    permissions: dropdownInfo[selectedDropdownOption].permissions,
+                  }),
+                }
+              )
+            })();
           }}
         >
           Invite

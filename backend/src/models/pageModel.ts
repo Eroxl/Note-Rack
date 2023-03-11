@@ -3,11 +3,12 @@ import mongoose, { Schema } from 'mongoose';
 export interface IPage {
   user: string;
   permissions: {
-    read: boolean;
-    write: boolean;
-    admin: boolean;
-    username: string;
-  }[];
+    [key: string]: {
+      read: boolean;
+      write: boolean;
+      admin: boolean;
+    };
+  };
   style: {};
   data: {
     blockType: string;
@@ -18,14 +19,7 @@ export interface IPage {
 
 const PageSchema = new Schema<IPage>({
   user: String,
-  permissions: [
-    {
-      read: Boolean,
-      write: Boolean,
-      admin: Boolean,
-      username: String
-    }
-  ],
+  permissions: {},
   style: {},
   data: [
     {

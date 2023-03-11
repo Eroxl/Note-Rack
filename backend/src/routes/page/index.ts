@@ -5,6 +5,7 @@ import modify from './modify';
 import getHomePage from './getHomePage';
 import getPage from './getPage';
 import getPageInfo from './getPageInfo';
+import updatePermissions from './updatePermissions';
 
 const router = express.Router();
 
@@ -30,6 +31,12 @@ router.use(
 router.use(
   '/',
   modify,
+);
+
+// -=- Create Update Permissions API -=-
+router.use(
+  '/',
+  updatePermissions,
 );
 
 // -=- Create Modify Page API -=-
