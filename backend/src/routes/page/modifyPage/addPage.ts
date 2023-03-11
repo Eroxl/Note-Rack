@@ -10,8 +10,7 @@ router.post(
   '/:page/',
   verifyPermissions(['write']),
   async (req: PageRequest, res) => {
-    const pageOwner = req.pageData.user;
-    const pageData = req.pageData;
+    const pageOwner = req.pageData!.user;
 
     const { page } = req.params;
     const {

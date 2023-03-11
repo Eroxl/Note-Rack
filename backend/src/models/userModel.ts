@@ -1,6 +1,11 @@
 import mongoose, { Schema } from 'mongoose';
 
-const UserScheme = new Schema({
+interface IUser {
+  username: string;
+  homePage: string;
+}
+
+const UserScheme = new Schema<IUser>({
   username: {
     type: Schema.Types.String,
     required: true,
@@ -9,6 +14,6 @@ const UserScheme = new Schema({
   homePage: Schema.Types.String,
 });
 
-const UserModel = mongoose.models.user || mongoose.model('user', UserScheme, 'User');
+const UserModel = mongoose.models.user as mongoose.Model<IUser> || mongoose.model<IUser>('user', UserScheme);
 
 export default UserModel;

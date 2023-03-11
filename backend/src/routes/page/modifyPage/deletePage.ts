@@ -11,7 +11,7 @@ router.delete(
   verifyPermissions(['admin']),
   async (req: PageRequest, res) => {
     const { page } = req.params;
-    const pageOwner = req.pageData.user;
+    const pageOwner = req.pageData!.user;
 
     await deletePage(
       page,

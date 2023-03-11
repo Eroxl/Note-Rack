@@ -3,11 +3,13 @@ import { SessionRequest } from 'supertokens-node/framework/express';
 import { verifySession } from 'supertokens-node/recipe/session/framework/express';
 
 import PageModel from '../models/pageModel';
+import type { IPage } from '../models/pageModel';
 
 type ValidPermissions =  'read' | 'write' | 'admin';
 
 export interface PageRequest extends SessionRequest {
-  pageData?: any;
+  pageData?: IPage,
+  permissions?: ValidPermissions[],
 }
 
 const verifyPermissions = (permissions: ValidPermissions[]) => {
@@ -59,7 +61,6 @@ const verifyPermissions = (permissions: ValidPermissions[]) => {
 
     const userPermissionsOnPage = pageData.permissions
       .find((permission: any) => permission.username === username)
-      .permissions as { [key in ValidPermissions]: boolean };
 
     if (!userPermissionsOnPage) {
       res.statusCode = 403;

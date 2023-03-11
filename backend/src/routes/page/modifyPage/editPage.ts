@@ -14,7 +14,7 @@ router.patch(
   async (req: PageRequest, res) => {
     const { style } = req.body;
     const { page } = req.params;
-    const pageData = req.pageData;
+    const pageData = req.pageData!;
 
     const formattedStyleProps = Object.fromEntries(Object.keys(style).map((styleElement) => [`style.${styleElement}`, style[styleElement]]));
 
@@ -52,7 +52,7 @@ router.patch(
 
     const formattedStylePropsForTree = Object.fromEntries(Object.keys(style).map((styleElement) => [`${queryString}.style.${styleElement}`, style[styleElement]]));
 
-    const pageOwner = pageData.username;
+    const pageOwner = pageData.user;
 
     await PageTreeModel.updateOne(
       {
