@@ -54,6 +54,7 @@ const verifyPermissions = (permissions: ValidPermissions[]) => {
     if (pageData.user === username) {
       req.pageData = pageData;
 
+      req.permissions = ['admin', 'write', 'read'];
       next();
 
       return;
@@ -83,6 +84,10 @@ const verifyPermissions = (permissions: ValidPermissions[]) => {
     }
 
     req.pageData = pageData;
+    req.permissions = Object
+      .entries(userPermissionsOnPage)
+      .filter(([_, value]) => value === true)
+      .map(([key, _]) => key as ValidPermissions);
 
     next();
   };

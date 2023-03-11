@@ -10,6 +10,7 @@ router.get(
   verifyPermissions(['read']),
   async (req: PageRequest, res) => {
     const pageData = req.pageData!;
+    const permissions = req.permissions!;
 
     res.statusCode = 200;
     res.json({
@@ -17,6 +18,11 @@ router.get(
       message: {
         style: pageData.style,
         data: pageData.data,
+        ...(
+          permissions.includes('admin')
+            ? { permissions: pageData.permissions }
+            : {}
+        )
       },
     });
   },
