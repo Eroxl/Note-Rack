@@ -4,6 +4,7 @@ import Image from 'next/image';
 import EmailShareMenu from './EmailShareMenu';
 import Globe from '../../public/Globe.svg';
 import type { Permissions, UserPermissions } from '../../lib/types/pageTypes';
+import UserPermission from './UserPermission';
 
 interface ShareMenuProps {
   page: string,
@@ -136,11 +137,13 @@ const ShareMenu = (props: ShareMenuProps) => {
                         <span className="font-bold">Shared with</span>
                         {
                           Object.values(currentPermissions).map((permission) => (
-                            <div
-                              className="p-2 rounded-sm hover:cursor-pointer dark:hover:bg-white/10 hover:bg-black/10"
-                            >
-                              {permission.email}
-                            </div>
+                            <UserPermission
+                              email={permission.email}
+                              permissions={permission as UserPermissions}
+                              pagePermissions={currentPermissions}
+                              setCurrentPermissions={setCurrentPermissions}
+                              key={permission.email}
+                            />
                           ))
                         }
                       </div>
