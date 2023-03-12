@@ -5,7 +5,7 @@ import { useSelectable, SelectionManager } from 'react-virtual-selection';
 
 import { moveBlock } from '../../lib/pages/updatePage';
 import BlockHandle from './BlockHandle';
-import BlockTypes from '../../constants/BlockTypes';
+import BlockTypes from '../../lib/constants/BlockTypes';
 import type { BaseBlockProps } from '../../types/blockTypes';
 
 const BaseBlock = (props: BaseBlockProps) => {

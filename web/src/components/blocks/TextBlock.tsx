@@ -2,7 +2,7 @@ import React from 'react';
 
 import { isCaretAtTop, isCaretAtBottom } from '../../lib/helpers/caretHelpers';
 import { editBlock, addBlockAtIndex, removeBlock } from '../../lib/pages/updatePage';
-import TextStyles from '../../constants/TextStyles';
+import TextStyles from '../../lib/constants/TextStyles';
 import textKeybinds from '../../lib/textKeybinds';
 import type { EditableText } from '../../types/blockTypes';
 import handleKeyDown from '../../lib/blockNavigation/handleKeyDown';
