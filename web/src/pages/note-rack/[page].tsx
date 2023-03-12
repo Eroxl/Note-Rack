@@ -39,14 +39,14 @@ const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {
             )
             : (
               <>
-                <title>{(pageData as PageDataInterface).message.style.name}</title>
+                <title>{(pageData as PageDataInterface).message!.style.name}</title>
                 <link
                   rel="icon"
                   href={`
                     data:image/svg+xml,
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
                       <text y="0.9em" font-size="90">
-                        ${(pageData as PageDataInterface).message.style.icon}
+                        ${(pageData as PageDataInterface).message!.style.icon}
                       </text>
                     </svg>
                   `}
@@ -60,7 +60,10 @@ const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {
         <div className="absolute">
           <div className="relative z-10 flex w-screen h-10 print:h-0 bg-amber-50 no-scrollbar dark:bg-zinc-700 print:dark:bg-white">
             <PagePath />
-            <ShareButton />
+            <ShareButton
+              pagePermissions={(pageData as PageDataInterface).message?.permissions}
+              permissionsOnPage={(pageData as PageDataInterface).message?.userPermissions}
+            />
           </div>
         </div>
         <PageSidebar />

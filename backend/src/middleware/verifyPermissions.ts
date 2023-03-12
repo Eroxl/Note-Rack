@@ -60,9 +60,16 @@ const verifyPermissions = (permissions: ValidPermissions[]) => {
       return;
     }
 
-    console.log(pageData.permissions);
-
     const userPermissionsOnPage = pageData.permissions[username] || undefined;
+
+    // Merge pageData.permissions['*'] with userPermissionsOnPage
+    if (pageData.permissions['*']) {
+      Object.entries(pageData.permissions['*']).forEach(([key, value]) => {
+        if (userPermissionsOnPage && key !== 'email') {
+          userPermissionsOnPage[key as ValidPermissions] = (userPermissionsOnPage[key as ValidPermissions] || value) as boolean;
+        }
+      });
+    }
 
     if (!userPermissionsOnPage) {
       res.statusCode = 403;

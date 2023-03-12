@@ -1,9 +1,16 @@
 import React, { useState, useRef } from 'react';
 import { useRouter } from 'next/router';
 
+import type { Permissions, UserPermissions } from '../../types/pageTypes';
 import ShareMenu from '../menus/ShareMenu';
 
-const ShareButton = () => {
+interface ShareButtonProps {
+  pagePermissions?: Permissions
+  permissionsOnPage?: UserPermissions
+}
+
+const ShareButton = (props: ShareButtonProps) => {
+  const { pagePermissions, permissionsOnPage } = props;
   const { page } = useRouter().query;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const buttonRef = useRef<HTMLDivElement>(null);  
@@ -28,6 +35,8 @@ const ShareButton = () => {
             page={page as string}
             setIsMenuOpen={setIsMenuOpen}
             buttonRef={buttonRef}
+            pagePermissions={pagePermissions}
+            permissionsOnPage={permissionsOnPage}
           />
         )
       }

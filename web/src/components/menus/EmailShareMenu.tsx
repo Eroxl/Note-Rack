@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 interface ShareMenuProps {
   page: string,
   setIsEditingEmails: (isEditingEmails: boolean) => void,
+  addPermissions: (email: string, currentPermissions: any) => void,
 }
 
 enum DropdownOptions {
@@ -12,7 +13,7 @@ enum DropdownOptions {
 }
 
 const EmailShareMenu = (props: ShareMenuProps) => {
-  const { page, setIsEditingEmails } = props;
+  const { page, setIsEditingEmails, addPermissions } = props;
   
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedDropdownOption, setSelectedDropdownOption] = useState(DropdownOptions.FullAccess);
@@ -187,7 +188,7 @@ const EmailShareMenu = (props: ShareMenuProps) => {
             if (!email) return;
 
             (async () => {
-              await fetch(
+              const status = await fetch(
                 `${process.env.NEXT_PUBLIC_API_URL}/page/update-permissions/${page}`, 
                 {
                   method: 'POST',
@@ -200,6 +201,10 @@ const EmailShareMenu = (props: ShareMenuProps) => {
                   }),
                 }
               )
+
+              if (status.ok) {
+                addPermissions(email, dropdownInfo[selectedDropdownOption].permissions);
+              }
             })();
           }}
         >

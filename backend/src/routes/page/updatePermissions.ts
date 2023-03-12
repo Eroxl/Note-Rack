@@ -23,8 +23,10 @@ router.post(
       return;
     }
 
-    // ~ Get the user ID from the email
-    const userId = (await ThirdParty.getUsersByEmail(email)).map((user) => user.id);
+    // ~ Get the user ID from the email (or * if it's a wildcard)
+    const userId = email === '*'
+      ? ['*']
+      : (await ThirdParty.getUsersByEmail(email)).map((user) => user.id)
 
     if (!userId || userId.length === 0) {
       res.statusCode = 404;
@@ -39,7 +41,10 @@ router.post(
       page,
       {
         $set: {
-          [`permissions.${userId[0]}`]: permissions,
+          [`permissions.${userId[0]}`]: {
+            ...permissions,
+            email,
+          },
         },
       },
     );

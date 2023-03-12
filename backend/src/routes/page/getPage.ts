@@ -18,6 +18,11 @@ router.get(
       message: {
         style: pageData.style,
         data: pageData.data,
+        userPermissions: {
+          read: true,
+          write: permissions.includes('write'),
+          admin: permissions.includes('admin'),
+        },
         ...(
           permissions.includes('admin')
             ? { permissions: pageData.permissions }

@@ -7,6 +7,7 @@ export interface IPage {
       read: boolean;
       write: boolean;
       admin: boolean;
+      email: string;
     };
   };
   style: {};

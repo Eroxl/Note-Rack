@@ -33,7 +33,7 @@ const addBlockAtIndex = async (
 
   // ~ Add the block to the page
   const tempPageData = pageData as PageDataInterface;
-  tempPageData.message.data.splice(index, 0, {
+  tempPageData.message!.data.splice(index, 0, {
     _id: objectID,
     blockType: blockType || 'text',
     properties: blockProperties || {
@@ -46,8 +46,10 @@ const addBlockAtIndex = async (
   setPageData({
     status: 'Success',
     message: {
-      style: tempPageData.message.style,
-      data: [...tempPageData.message.data],
+      style: tempPageData.message!.style,
+      data: [...tempPageData.message!.data],
+      userPermissions: tempPageData.message!.userPermissions,
+      permissions: tempPageData.message!.permissions,
     },
   });
 
@@ -75,14 +77,16 @@ const removeBlock = async (
 
   // ~ Remove the block from the page
   const tempPageData = pageData as PageDataInterface;
-  tempPageData.message.data.splice(index, 1);
+  tempPageData.message!.data.splice(index, 1);
 
   // ~ Update the page
   setPageData({
     status: 'Success',
     message: {
-      style: tempPageData.message.style,
-      data: [...tempPageData.message.data],
+      style: tempPageData.message!.style,
+      data: [...tempPageData.message!.data],
+      userPermissions: tempPageData.message!.userPermissions,
+      permissions: tempPageData.message!.permissions,
     },
   });
 
@@ -141,8 +145,8 @@ const moveBlock = async (
       'doc-ids': blockIDs.length > 1 ? blockIDs : undefined,
       'new-block-index': newIndex + offset,
       'new-block-id': blockIDs[blockIDs.length - 1],
-      'new-block-type': pageData.message.data[currentIndex].blockType,
-      'new-block-properties': pageData.message.data[currentIndex].properties,
+      'new-block-type': pageData.message!.data[currentIndex].blockType,
+      'new-block-properties': pageData.message!.data[currentIndex].properties,
     },
     page,
   );
@@ -150,8 +154,8 @@ const moveBlock = async (
   // -=- Update page data -=-
   const pageDataCopy = { ...pageData };
 
-  pageDataCopy.message.data.splice(newIndex + 1, 0, pageData.message.data[currentIndex]);
-  pageDataCopy.message.data.splice(currentIndex + offset, 1);
+  pageDataCopy.message!.data.splice(newIndex + 1, 0, pageData.message!.data[currentIndex]);
+  pageDataCopy.message!.data.splice(currentIndex + offset, 1);
   setPageData(pageDataCopy);
 };
 
