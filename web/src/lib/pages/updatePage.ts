@@ -3,8 +3,8 @@
 import crypto from 'crypto';
 
 import { focusBlockAtIndex } from '../helpers/focusHelpers';
-import type PageDataInterface from '../../types/pageTypes';
-import SaveManager from '../../classes/SaveManager';
+import type PageDataInterface from '../types/pageTypes';
+import SaveManager from '../classes/SaveManager';
 
 const addBlockAtIndex = async (
   index: number,

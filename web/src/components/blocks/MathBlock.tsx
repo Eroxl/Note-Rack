@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
 
-import type { EditableText } from '../../types/blockTypes';
+import type { EditableText } from '../../lib/types/blockTypes';
 import { addBlockAtIndex, editBlock } from '../../lib/pages/updatePage';
 
 const MathBlock = (props: EditableText) => {

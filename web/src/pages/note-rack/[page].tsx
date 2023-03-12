@@ -5,11 +5,11 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
 import PagePath from '../../components/pageInfo/PagePath';
-import type PageDataInterface from '../../types/pageTypes';
+import type PageDataInterface from '../../lib/types/pageTypes';
 import PageSidebar from '../../components/pageInfo/PageSidebar';
 import Editor from '../../components/Editor';
 import LoadingPage from '../../components/LoadingPage';
-import SaveManager from '../../classes/SaveManager';
+import SaveManager from '../../lib/classes/SaveManager';
 import ShareButton from '../../components/pageCustomization/ShareButton';
 
 const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {

@@ -9,7 +9,7 @@ import React, {
 import { useRouter } from 'next/router';
 import { Selectable, useSelectionCollector } from 'react-virtual-selection';
 
-import type PageDataInterface from '../types/pageTypes';
+import type PageDataInterface from '../lib/types/pageTypes';
 import BaseBlock from './blocks/BaseBlock';
 import PageThumbnail from './pageCustomization/PageThumbnail';
 import Title from './blocks/Title';
@@ -91,7 +91,7 @@ const Editor = (props: EditorProps) => {
           className="flex flex-col items-center w-full h-max bg-amber-50 dark:bg-zinc-700 print:dark:bg-white print:bg-white bg-"
         >
           {/* ~ Render the page thumbnail */}
-          <PageThumbnail colour={pageData.message.style.colour} page={page as string} />
+          <PageThumbnail colour={pageData.message!.style.colour} page={page as string} />
           {/* ~ Render the main interactive editor */}
           <div
             className="flex flex-col w-full max-w-4xl gap-3 px-20 pb-56 mx-auto break-words select-none print:p-0 text-zinc-700 dark:text-amber-50 print:dark:text-zinc-700 h-max editor"
@@ -99,7 +99,7 @@ const Editor = (props: EditorProps) => {
             {/* ~ Render the page icon */}
             <Icon
               page={page as string}
-              icon={pageData.message.style.icon}
+              icon={pageData.message!.style.icon}
             />
             {/* ~ Render the title */}
             <Title
@@ -107,11 +107,11 @@ const Editor = (props: EditorProps) => {
               pageData={pageData}
               index={0}
               setPageData={setPageData}
-              title={pageData.message.style.name}
+              title={pageData.message!.style.name}
             />
 
             {/* ~ Render the blocks */}
-            {(pageData as PageDataInterface).message.data.map((block, index) => (
+            {(pageData as PageDataInterface).message!.data.map((block, index) => (
               <BaseBlock
                 blockType={block.blockType}
                 blockID={block._id}

@@ -4,7 +4,7 @@ import { isCaretAtTop, isCaretAtBottom } from '../../lib/helpers/caretHelpers';
 import { editBlock, addBlockAtIndex, removeBlock } from '../../lib/pages/updatePage';
 import TextStyles from '../../lib/constants/TextStyles';
 import textKeybinds from '../../lib/textKeybinds';
-import type { EditableText } from '../../types/blockTypes';
+import type { EditableText } from '../../lib/types/blockTypes';
 import handleKeyDown from '../../lib/blockNavigation/handleKeyDown';
 import handleKeyUp from '../../lib/blockNavigation/handleKeyUp';
 

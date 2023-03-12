@@ -1,4 +1,4 @@
-import type PageDataInterface from '../../types/pageTypes';
+import type PageDataInterface from '../types/pageTypes';
 
 const getFirstLineLength = (node: HTMLElement): number => {
   // ~ Get the first newline character

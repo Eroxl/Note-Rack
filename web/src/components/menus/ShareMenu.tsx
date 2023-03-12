@@ -3,14 +3,14 @@ import Image from 'next/image';
 
 import EmailShareMenu from './EmailShareMenu';
 import Globe from '../../public/Globe.svg';
-import type PageDataInterface from '../../types/pageTypes';
+import type { Permissions, UserPermissions } from '../../lib/types/pageTypes';
 
 interface ShareMenuProps {
   page: string,
   setIsMenuOpen: (isMenuOpen: boolean) => void,
   buttonRef: React.RefObject<HTMLDivElement>,
-  pagePermissions?: PageDataInterface['message']['permissions'],
-  permissionsOnPage?: PageDataInterface['message']['userPermissions'],
+  pagePermissions?: Permissions,
+  permissionsOnPage?: UserPermissions
 }
 
 const ShareMenu = (props: ShareMenuProps) => {

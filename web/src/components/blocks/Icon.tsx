@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import 'emoji-mart/css/emoji-mart.css';
 import { Picker, BaseEmoji } from 'emoji-mart';
 
-import type { PermanentBlock } from '../../types/blockTypes';
+import type { PermanentBlock } from '../../lib/types/blockTypes';
 import editStyle from '../../lib/pages/editStyle';
 
 interface IconProps extends PermanentBlock {
