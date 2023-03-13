@@ -3,6 +3,7 @@ import { UserPermissions, Permissions } from '../../lib/types/pageTypes';
 
 import { DropdownOptions, dropdownInfo } from '../../lib/constants/ShareOptions';
 import ShareOptionsDropdown from './ShareOptionsDropdown';
+import { useRouter } from 'next/router';
 
 interface UserPermissionProps {
   email: string,
@@ -22,6 +23,8 @@ const UserPermission = (props: UserPermissionProps) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedDropdownOption, setSelectedDropdownOption] = useState<DropdownOptions>(DropdownOptions.ViewOnly);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const page = useRouter().query.page as string;
 
   useEffect(() => {
     const defaultDropdownOption = Object.keys(dropdownInfo).find((key) => {
@@ -66,7 +69,13 @@ const UserPermission = (props: UserPermissionProps) => {
 
   return (
     <div
-      className="relative flex w-full gap-2 p-2 px-2 rounded-sm hover:cursor-pointer dark:hover:bg-white/10 hover:bg-black/10"
+      className={`
+        relative flex w-full gap-2 p-2 px-2 rounded-sm hover:cursor-pointer
+        ${isDropdownOpen
+          ? 'bg-black/10 dark:bg-white/10'
+          : 'dark:hover:bg-white/10 hover:bg-black/10'
+        }
+      `}
       onClick={() => {
         setIsDropdownOpen(!isDropdownOpen);
       }}
@@ -104,6 +113,26 @@ const UserPermission = (props: UserPermissionProps) => {
                   setCurrentPermissions({
                     ...Object.fromEntries(Object.entries(pagePermissions).filter(([_, value]) => value.email !== email))
                   } as Permissions);
+
+                  (async () => {
+                    await fetch(
+                      `${process.env.NEXT_PUBLIC_API_URL}/page/update-permissions/${page}`, 
+                      {
+                        method: 'POST',
+                        headers: {
+                          'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                          email,
+                          permissions: {
+                            read: false,
+                            write: false,
+                            admin: false,
+                          }
+                        }),
+                      }
+                    );
+                  })();
                 }}
                 className="flex flex-row items-center justify-between w-full p-2 px-2 py-1 font-bold text-center text-red-400 rounded cursor-pointer hover:bg-black/5 hover:dark:bg-white/5"
               >
