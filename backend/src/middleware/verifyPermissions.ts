@@ -60,7 +60,9 @@ const verifyPermissions = (permissions: ValidPermissions[]) => {
       return;
     }
 
-    const userPermissionsOnPage = pageData.permissions[username] || undefined;
+    console.log(pageData.permissions);
+
+    const userPermissionsOnPage = pageData.permissions[username] || {};
 
     // Merge pageData.permissions['*'] with userPermissionsOnPage
     if (pageData.permissions['*']) {
