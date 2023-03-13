@@ -37,17 +37,28 @@ router.post(
       return;
     }
 
-    await PageModel.findByIdAndUpdate(
-      page,
-      {
-        $set: {
-          [`permissions.${userId[0]}`]: {
-            ...permissions,
-            email,
+    if (Object.values(permissions).some((value) => value === true)) {
+      await PageModel.findByIdAndUpdate(
+        page,
+        {
+          $set: {
+            [`permissions.${userId[0]}`]: {
+              ...permissions,
+              email,
+            },
           },
         },
-      },
-    );
+      );
+    } else {
+      await PageModel.findByIdAndUpdate(
+        page,
+        {
+          $unset: {
+            [`permissions.${userId[0]}`]: '',
+          },
+        },
+      );
+    }
 
     res.statusCode = 200;
     res.json({
