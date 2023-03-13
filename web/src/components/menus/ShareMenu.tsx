@@ -167,7 +167,7 @@ const ShareMenu = (props: ShareMenuProps) => {
                         <span className="block text-sm text-zinc-700 dark:text-amber-50">
                           {isPagePublic
                             ? 'Anyone with the link can view this page.'
-                            : 'Only people you share the link with can view this page.'}
+                            : 'Only people you invite can view this page.'}
                         </span>
                       </div>
                       <input
