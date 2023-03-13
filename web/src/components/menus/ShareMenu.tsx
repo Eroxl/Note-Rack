@@ -154,6 +154,26 @@ const ShareMenu = (props: ShareMenuProps) => {
                       className="flex flex-row w-full gap-5 p-2 text-left rounded-sm cursor-pointer select-none dark:hover:bg-white/10 hover:bg-black/10"
                       onClick={() => {
                         setIsPagePublic(!isPagePublic);
+                        
+                        (async () => {
+                          await fetch(
+                            `${process.env.NEXT_PUBLIC_API_URL}/page/update-permissions/${page}`, 
+                            {
+                              method: 'POST',
+                              headers: {
+                                'Content-Type': 'application/json',
+                              },
+                              body: JSON.stringify({
+                                email: '*',
+                                permissions: {
+                                  read: !isPagePublic,
+                                  write: false,
+                                  admin: false,
+                                }
+                              }),
+                            }
+                          );
+                        })();
                       }}
                     >
                       <Image
