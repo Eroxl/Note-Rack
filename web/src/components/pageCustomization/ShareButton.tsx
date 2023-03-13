@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/router';
 
 import type { Permissions, UserPermissions } from '../../lib/types/pageTypes';
@@ -14,6 +14,13 @@ const ShareButton = (props: ShareButtonProps) => {
   const { page } = useRouter().query;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const buttonRef = useRef<HTMLDivElement>(null);  
+  const [isPagePublic, setIsPagePublic] = useState(false);
+
+  useEffect(() => {
+    if (pagePermissions && pagePermissions['*']?.read) {
+      setIsPagePublic(true);
+    }
+  }, [pagePermissions]);
 
   return (
     <div
@@ -37,6 +44,8 @@ const ShareButton = (props: ShareButtonProps) => {
             buttonRef={buttonRef}
             pagePermissions={pagePermissions}
             permissionsOnPage={permissionsOnPage}
+            isPagePublic={isPagePublic}
+            setIsPagePublic={setIsPagePublic}
           />
         )
       }

@@ -10,8 +10,10 @@ interface ShareMenuProps {
   page: string,
   setIsMenuOpen: (isMenuOpen: boolean) => void,
   buttonRef: React.RefObject<HTMLDivElement>,
+  isPagePublic: boolean,
+  setIsPagePublic: (isPagePublic: boolean) => void,
   pagePermissions?: Permissions,
-  permissionsOnPage?: UserPermissions
+  permissionsOnPage?: UserPermissions,
 }
 
 const ShareMenu = (props: ShareMenuProps) => {
@@ -21,8 +23,9 @@ const ShareMenu = (props: ShareMenuProps) => {
     buttonRef,
     pagePermissions,
     permissionsOnPage,
+    isPagePublic,
+    setIsPagePublic,
   } = props;
-  const [isPagePublic, setIsPagePublic] = useState(false);
   const [isEditingEmails, setIsEditingEmails] = useState(false);
   const [currentPermissions, setCurrentPermissions] = useState<typeof pagePermissions>({});
 
@@ -31,12 +34,6 @@ const ShareMenu = (props: ShareMenuProps) => {
       setCurrentPermissions(pagePermissions);
     }
   }, [pagePermissions]);
-
-  useEffect(() => {
-    if (currentPermissions && currentPermissions['*']?.read) {
-      setIsPagePublic(true);
-    }
-  }, [currentPermissions, isPagePublic]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -137,7 +134,7 @@ const ShareMenu = (props: ShareMenuProps) => {
                         <span className="font-bold">Shared with</span>
                         {
                           Object.values(currentPermissions).map((permission) => (
-                            <UserPermission
+                            permission.email !== '*' && <UserPermission
                               email={permission.email}
                               permissions={permission as UserPermissions}
                               pagePermissions={currentPermissions}

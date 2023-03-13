@@ -52,7 +52,7 @@ const ShareOptionsDropdown = (props: ShareOptionsDropdownProps) => {
                 </div>
               </div>
               {
-                selectedDropdownOption === option && (
+                +selectedDropdownOption.toString() === option && (
                   <svg
                     className="w-4 h-4"
                     viewBox="0 0 20 20"
