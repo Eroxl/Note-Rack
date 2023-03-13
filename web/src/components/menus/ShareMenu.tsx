@@ -129,7 +129,11 @@ const ShareMenu = (props: ShareMenuProps) => {
               permissionsOnPage?.admin && (
                 <>
                   {
-                    (currentPermissions && !isPagePublic) && (
+                    (
+                      currentPermissions
+                      && Object.keys(currentPermissions).length > 0
+                      && !isPagePublic
+                    ) && (
                       <div>
                         <span className="font-bold">Shared with</span>
                         {
