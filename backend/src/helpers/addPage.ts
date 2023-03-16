@@ -83,7 +83,7 @@ const addPage = async (
       icon: '📝',
       name: newPageName || 'New Notebook',
     },
-    permissions: pagePermissions || [],
+    permissions: pagePermissions || {},
     data: [],
   });
 };
