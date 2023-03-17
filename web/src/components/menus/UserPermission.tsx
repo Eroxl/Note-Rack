@@ -1,24 +1,17 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { UserPermissions, Permissions } from '../../lib/types/pageTypes';
 
 import { DropdownOptions, dropdownInfo } from '../../lib/constants/ShareOptions';
 import ShareOptionsDropdown from './ShareOptionsDropdown';
 import { useRouter } from 'next/router';
+import PagePermissionsContext from '../../contexts/PagePermissionsContext';
 
 interface UserPermissionProps {
   email: string,
-  permissions: UserPermissions,
-  pagePermissions: Permissions,
-  setCurrentPermissions: React.Dispatch<React.SetStateAction<Permissions | undefined>>,
 }
 
 const UserPermission = (props: UserPermissionProps) => {
-  const { 
-    email, 
-    permissions, 
-    setCurrentPermissions,
-    pagePermissions
-  } = props;
+  const { email } = props;
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedDropdownOption, setSelectedDropdownOption] = useState<DropdownOptions>(DropdownOptions.ViewOnly);
@@ -26,8 +19,18 @@ const UserPermission = (props: UserPermissionProps) => {
 
   const page = useRouter().query.page as string;
 
+  const {
+    pagePermissions,
+    permissionsOnPage: permissions,
+    setCurrentPermissions,
+  } = useContext(PagePermissionsContext);
+
   useEffect(() => {
     const defaultDropdownOption = Object.keys(dropdownInfo).find((key) => {
+      if (!permissions) {
+        return false;
+      }
+
       let keyPermissions = dropdownInfo[+key].permissions;
   
       return Object.entries(keyPermissions).every(([key, value]) => {
@@ -56,7 +59,7 @@ const UserPermission = (props: UserPermissionProps) => {
   });
 
   const setSelectDropdownOption = (option: DropdownOptions) => {
-    let key = Object.keys(pagePermissions).find((key) => pagePermissions[key].email === email) || email;
+    let key = Object.keys(pagePermissions!).find((key) => pagePermissions![key].email === email) || email;
 
     setCurrentPermissions({
       ...pagePermissions,
@@ -111,7 +114,7 @@ const UserPermission = (props: UserPermissionProps) => {
               <p
                 onClick={() => {
                   setCurrentPermissions({
-                    ...Object.fromEntries(Object.entries(pagePermissions).filter(([_, value]) => value.email !== email))
+                    ...Object.fromEntries(Object.entries(pagePermissions!).filter(([_, value]) => value.email !== email))
                   } as Permissions);
 
                   (async () => {

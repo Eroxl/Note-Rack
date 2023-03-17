@@ -1,39 +1,28 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import Image from 'next/image';
 
 import EmailShareMenu from './EmailShareMenu';
 import Globe from '../../public/Globe.svg';
-import type { Permissions, UserPermissions } from '../../lib/types/pageTypes';
+import type { Permissions } from '../../lib/types/pageTypes';
 import UserPermission from './UserPermission';
+import PagePermissionsContext from '../../contexts/PagePermissionsContext';
 
 interface ShareMenuProps {
   page: string,
-  setIsMenuOpen: (isMenuOpen: boolean) => void,
   buttonRef: React.RefObject<HTMLDivElement>,
-  isPagePublic: boolean,
-  setIsPagePublic: (isPagePublic: boolean) => void,
-  pagePermissions?: Permissions,
-  permissionsOnPage?: UserPermissions,
 }
 
 const ShareMenu = (props: ShareMenuProps) => {
+  const { page, buttonRef } = props;
+  const [isEditingEmails, setIsEditingEmails] = useState(false);
+
   const {
-    page,
-    setIsMenuOpen,
-    buttonRef,
-    pagePermissions,
     permissionsOnPage,
+    setIsMenuOpen,
     isPagePublic,
     setIsPagePublic,
-  } = props;
-  const [isEditingEmails, setIsEditingEmails] = useState(false);
-  const [currentPermissions, setCurrentPermissions] = useState<typeof pagePermissions>({});
-
-  useEffect(() => {
-    if (pagePermissions) {
-      setCurrentPermissions(pagePermissions);
-    }
-  }, [pagePermissions]);
+    currentPermissions,
+  } = useContext(PagePermissionsContext);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -52,27 +41,6 @@ const ShareMenu = (props: ShareMenuProps) => {
     }
   });
 
-  const addPermissions = (email: string, newPermissions: any) => {
-    if (!currentPermissions) {
-      setCurrentPermissions({
-        [email]: {
-          ...newPermissions,
-        },
-      });
-      return;
-    }
-
-    const key = Object.entries(currentPermissions).find(([, value]) => value.email === email)?.[0] || email;
-
-    setCurrentPermissions({
-      ...currentPermissions,
-      [key]: {
-        ...newPermissions,
-        email,
-      },
-    });
-  }
-
   return (
     <div
       className={`
@@ -88,7 +56,6 @@ const ShareMenu = (props: ShareMenuProps) => {
           <EmailShareMenu
             page={page}
             setIsEditingEmails={setIsEditingEmails}
-            addPermissions={addPermissions}
           />
         )
         : (
@@ -131,7 +98,7 @@ const ShareMenu = (props: ShareMenuProps) => {
                   {
                     (
                       currentPermissions
-                      && Object.keys(currentPermissions).length > 0
+                      && Object.keys(currentPermissions).filter((key) => key !== '*').length > 0
                       && !isPagePublic
                     ) && (
                       <div>
@@ -140,9 +107,6 @@ const ShareMenu = (props: ShareMenuProps) => {
                           Object.values(currentPermissions).map((permission) => (
                             permission.email !== '*' && <UserPermission
                               email={permission.email}
-                              permissions={permission as UserPermissions}
-                              pagePermissions={currentPermissions}
-                              setCurrentPermissions={setCurrentPermissions}
                               key={permission.email}
                             />
                           ))

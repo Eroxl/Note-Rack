@@ -1,16 +1,21 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
 
 import { DropdownOptions, dropdownInfo } from '../../lib/constants/ShareOptions';
 import ShareOptionsDropdown from './ShareOptionsDropdown';
+import PagePermissionContext from '../../contexts/PagePermissionsContext';
 
 interface ShareMenuProps {
   page: string,
   setIsEditingEmails: (isEditingEmails: boolean) => void,
-  addPermissions: (email: string, currentPermissions: any) => void,
 }
 
 const EmailShareMenu = (props: ShareMenuProps) => {
-  const { page, setIsEditingEmails, addPermissions } = props;
+  const { page, setIsEditingEmails } = props;
+
+  const {
+    currentPermissions,
+    setCurrentPermissions,
+  } = useContext(PagePermissionContext);
   
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedDropdownOption, setSelectedDropdownOption] = useState(DropdownOptions.FullAccess);
@@ -33,6 +38,27 @@ const EmailShareMenu = (props: ShareMenuProps) => {
       document.removeEventListener('mousedown', handleClickOutside);
     }
   });
+
+  const addPermissions = (email: string, newPermissions: any) => {
+    if (!currentPermissions) {
+      setCurrentPermissions({
+        [email]: {
+          ...newPermissions,
+        },
+      });
+      return;
+    }
+
+    const key = Object.entries(currentPermissions).find(([, value]) => value.email === email)?.[0] || email;
+
+    setCurrentPermissions({
+      ...currentPermissions,
+      [key]: {
+        ...newPermissions,
+        email,
+      },
+    });
+  }
 
   return (
     <>
