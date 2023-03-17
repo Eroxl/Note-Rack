@@ -1,4 +1,4 @@
-import type PageDataInterface from '../../types/pageTypes';
+import type PageDataInterface from '../types/pageTypes';
 
 const getFirstLineLength = (node: HTMLElement): number => {
   // ~ Get the first newline character
@@ -59,7 +59,7 @@ const getNextEditableBlock = (
     while (index > 0) {
       index -= 1;
 
-      const block = document.getElementById(pageData.message.data[index]._id)
+      const block = document.getElementById(pageData.message!.data[index]._id)
       if (block?.getAttribute('contenteditable') === 'true') {
         return block;
       }
@@ -73,10 +73,10 @@ const getNextEditableBlock = (
   }
 
   // ~ Find the next editable block
-  while (index < pageData.message.data.length - 1) {
+  while (index < pageData.message!.data.length - 1) {
     index += 1;
 
-    const block = document.getElementById(pageData.message.data[index]._id)
+    const block = document.getElementById(pageData.message!.data[index]._id)
     if (block?.getAttribute('contenteditable') === 'true') {
       return block;
     }

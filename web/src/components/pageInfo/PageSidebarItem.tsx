@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 import type { PagePath } from './PagePath';
-import type { PageSidebarItemProps } from './PageSidebarItemProps';
+import type { PageSidebarItemProps } from './PageSidebar';
 import editPageTree from '../../lib/pageTrees/editPageTree';
 
 const PageSidebarItem = (props: PageSidebarItemProps & { pagePath: PagePath[] }) => {

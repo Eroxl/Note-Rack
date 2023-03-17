@@ -5,11 +5,12 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
 import PagePath from '../../components/pageInfo/PagePath';
-import type PageDataInterface from '../../types/pageTypes';
+import type PageDataInterface from '../../lib/types/pageTypes';
 import PageSidebar from '../../components/pageInfo/PageSidebar';
 import Editor from '../../components/Editor';
 import LoadingPage from '../../components/LoadingPage';
-import SaveManager from '../../classes/SaveManager';
+import SaveManager from '../../lib/classes/SaveManager';
+import ShareButton from '../../components/pageCustomization/ShareButton';
 
 const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {
   const [pageData, setPageData] = useState<PageDataInterface | Record<string, unknown>>({});
@@ -38,14 +39,14 @@ const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {
             )
             : (
               <>
-                <title>{(pageData as PageDataInterface).message.style.name}</title>
+                <title>{(pageData as PageDataInterface).message!.style.name}</title>
                 <link
                   rel="icon"
                   href={`
                     data:image/svg+xml,
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
                       <text y="0.9em" font-size="90">
-                        ${(pageData as PageDataInterface).message.style.icon}
+                        ${(pageData as PageDataInterface).message!.style.icon}
                       </text>
                     </svg>
                   `}
@@ -56,8 +57,14 @@ const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {
         }
       </Head>
       <div className="w-full h-full overflow-hidden print:h-max print:overflow-visible bg-amber-50 no-scrollbar dark:bg-zinc-700 print:dark:bg-white">
-        <div className="absolute z-10 w-screen h-10 print:h-0 bg-amber-50 no-scrollbar dark:bg-zinc-700 print:dark:bg-white">
-          <PagePath />
+        <div className="absolute">
+          <div className="relative z-10 flex w-screen h-10 print:h-0 bg-amber-50 no-scrollbar dark:bg-zinc-700 print:dark:bg-white">
+            <PagePath />
+            <ShareButton
+              pagePermissions={(pageData as PageDataInterface).message?.permissions}
+              permissionsOnPage={(pageData as PageDataInterface).message?.userPermissions}
+            />
+          </div>
         </div>
         <PageSidebar />
         <DndProvider backend={HTML5Backend}>

@@ -1,7 +1,26 @@
 import mongoose, { Schema } from 'mongoose';
 
-const PageSchema = new Schema({
+export interface IPage {
+  user: string;
+  permissions: {
+    [key: string]: {
+      read: boolean;
+      write: boolean;
+      admin: boolean;
+      email: string;
+    };
+  };
+  style: {};
+  data: {
+    blockType: string;
+    properties: {};
+    children: [];
+  }[];
+}
+
+const PageSchema = new Schema<IPage>({
   user: String,
+  permissions: {},
   style: {},
   data: [
     {
@@ -12,6 +31,6 @@ const PageSchema = new Schema({
   ],
 });
 
-const PageModel = mongoose.models.page || mongoose.model('page', PageSchema, 'Page');
+const PageModel = mongoose.models.page as mongoose.Model<IPage> || mongoose.model<IPage>('page', PageSchema);
 
 export default PageModel;

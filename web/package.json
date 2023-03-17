@@ -5,8 +5,7 @@
     "dev": "next dev ./src/",
     "build": "next build ./src/",
     "start": "next start ./src/",
-    "lint": "next lint ./src/",
-    "test": "jest"
+    "lint": "next lint ./src/"
   },
   "dependencies": {
     "dotenv": "^14.2.0",

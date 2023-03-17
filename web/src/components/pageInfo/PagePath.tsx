@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 
-interface PagePath {
+export interface PagePath {
   name: string;
   icon: string;
   pageID: string;
@@ -71,7 +71,5 @@ const PagePath = () => {
     </div>
   );
 };
-
-export type { PagePath };
 
 export default PagePath;

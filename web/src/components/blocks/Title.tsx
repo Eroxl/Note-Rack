@@ -4,7 +4,7 @@ import { useDrop } from 'react-dnd';
 
 import TitleBreaker from './TitleBreaker';
 import { addBlockAtIndex, moveBlock } from '../../lib/pages/updatePage';
-import type { PermanentEditableText } from '../../types/blockTypes';
+import type { PermanentEditableText } from '../../lib/types/blockTypes';
 import editStyle from '../../lib/pages/editStyle';
 import { isCaretAtBottom, isCaretAtTop } from '../../lib/helpers/caretHelpers';
 import handleKeyDown from '../../lib/blockNavigation/handleKeyDown';

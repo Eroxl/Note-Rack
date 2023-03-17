@@ -7,8 +7,19 @@ const addPage = async (
   username: string,
   newPageId?: string,
   newPageName?: string,
+  pagePermissions?: { 
+    read: boolean,
+    write: boolean,
+    admin: boolean,
+    username: string,
+  }[],
 ) => {
   const pageMap = await PageMapModel.findById(page).lean();
+
+  if (!pageMap) {
+    // NOTE:EROXL: Should never happen
+    throw new Error('Page not found');
+  }
 
   const arrayFilters: Record<string, unknown>[] = [];
   let queryString = 'subPages';
@@ -72,6 +83,7 @@ const addPage = async (
       icon: '📝',
       name: newPageName || 'New Notebook',
     },
+    permissions: pagePermissions || {},
     data: [],
   });
 };

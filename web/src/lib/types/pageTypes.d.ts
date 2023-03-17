@@ -5,9 +5,24 @@ interface Block {
   children: Block[]
 }
 
+export interface UserPermissions {
+  read: boolean,
+  write: boolean,
+  admin: boolean,
+}
+
+export interface Permissions {
+  [key: string]: {
+    read: boolean,
+    write: boolean,
+    admin: boolean,
+    email: string,
+  }
+}
+
 interface PageDataInterface {
   status: string,
-  message: {
+  message?: {
     style: {
       colour: {
         r: number,
@@ -17,7 +32,9 @@ interface PageDataInterface {
       name: string,
       icon: string,
     },
-    data: Block[]
+    data: Block[],
+    userPermissions: UserPermissions,
+    permissions?: Permissions,
   },
 }
 

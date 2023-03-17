@@ -5,7 +5,7 @@ import SuperTokensReact, { SuperTokensWrapper } from 'supertokens-auth-react';
 
 import '../styles/globals.css';
 import '../styles/emojiPicker.css';
-import superTokensConfig from '../config/superTokensConfig';
+import superTokensConfig from '../lib/config/superTokensConfig';
 
 // -=- Initialization -=-
 // ~ If we're in the browser, initialize SuperTokens
