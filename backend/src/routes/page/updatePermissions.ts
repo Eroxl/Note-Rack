@@ -26,6 +26,17 @@ router.post(
       return;
     }
 
+    const updaterEmail = (await ThirdParty.getUserById(req.session!.getUserId()))?.email;
+
+    if (updaterEmail === email) {
+      res.statusCode = 400;
+      res.json({
+        status: 'error',
+        message: 'You cannot update your own permissions...',
+      });
+      return;
+    }
+
     // ~ Get the user ID from the email (or * if it's a wildcard)
     const userId = email === '*'
       ? ['*']
@@ -77,8 +88,6 @@ router.post(
       traverse(startingPageTree);
       return subPages;
     })();
-
-    console.log(subPages);
 
     await PageModel.updateMany(
       {
