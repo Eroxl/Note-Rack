@@ -26,6 +26,15 @@ router.post(
       return;
     }
 
+    if (permissions.admin && username !== req.session!.getUserId()) {
+      res.statusCode = 400;
+      res.json({
+        status: 'error',
+        message: 'You cannot edit admin permissions...',
+      });
+      return;
+    }
+
     const updaterEmail = (await ThirdParty.getUserById(req.session!.getUserId()))?.email;
 
     if (updaterEmail === email) {
