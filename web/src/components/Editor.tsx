@@ -7,6 +7,7 @@ import React, {
 } from 'react';
 import { useRouter } from 'next/router';
 import { Selectable, useSelectionCollector } from 'react-virtual-selection';
+import { useSessionContext } from 'supertokens-auth-react/recipe/session';
 
 import BaseBlock from './blocks/BaseBlock';
 import PageThumbnail from './pageCustomization/PageThumbnail';
@@ -21,6 +22,9 @@ const Editor = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const isAllowedToEdit = pageData?.userPermissions.write;
+  const session = useSessionContext();
+
+  const isLoggedIn = session?.loading === false && session?.doesSessionExist === true;
 
   // -=- Setup Page Data -=-
   // ~ Get the page ID
@@ -73,7 +77,7 @@ const Editor = () => {
       accepts={isAllowedToEdit ? "blocks" : ""}
       selectionClassName="bg-sky-300 opacity-20"
     >
-      <div className="w-full h-full mt-10 overflow-y-auto print:m-0 pl-52 print:p-0 overflow-x-clip no-scrollbar" id="main-editor">
+      <div className={`w-full h-full mt-10 overflow-y-auto print:m-0 ${isLoggedIn && 'pl-52'} print:p-0 overflow-x-clip no-scrollbar`} id="main-editor">
         <div
           className="flex flex-col items-center w-full h-max bg-amber-50 dark:bg-zinc-700 print:dark:bg-white print:bg-white bg-"
         >

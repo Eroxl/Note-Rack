@@ -3,6 +3,7 @@ import { GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { useSessionContext } from 'supertokens-auth-react/recipe/session'; 
 
 import PagePath from '../../components/pageInfo/PagePath';
 import type PageDataInterface from '../../lib/types/pageTypes';
@@ -16,6 +17,10 @@ import PageContext from '../../contexts/PageContext';
 const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {
   const [pageData, setPageData] = useState<PageDataInterface['message']>();
   const { pageDataReq } = props;
+
+  const session = useSessionContext();
+
+  const isLoggedIn = session?.loading === false && session?.doesSessionExist === true;
 
   // TODO:EROXL: Add error handling here...
   useEffect(() => {
@@ -66,11 +71,17 @@ const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {
         <div className="w-full h-full overflow-hidden print:h-max print:overflow-visible bg-amber-50 no-scrollbar dark:bg-zinc-700 print:dark:bg-white">
           <div className="absolute">
             <div className="relative z-10 flex w-screen h-10 print:h-0 bg-amber-50 no-scrollbar dark:bg-zinc-700 print:dark:bg-white">
-              <PagePath />
-              <ShareButton />
+              {isLoggedIn && (
+                <>
+                  <PagePath />
+                  <ShareButton />
+                </>
+              )}
             </div>
           </div>
-          <PageSidebar />
+          {isLoggedIn && (
+            <PageSidebar />
+          )}
           <DndProvider backend={HTML5Backend}>
             {
               !pageData
