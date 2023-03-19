@@ -20,7 +20,7 @@ const PageThumbnail = (props: PageThumbnailProps) => {
 
   const { pageData } = useContext(PageContext);
 
-  const isAllowedToEdit = pageData?.userPermissions.write;
+  const isAllowedToEdit = pageData?.userPermissions.admin;
 
   useEffect(() => {
     setActiveColour({
