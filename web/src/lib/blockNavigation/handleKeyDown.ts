@@ -1,10 +1,10 @@
 import { focusBlockAtIndexRelativeToTop, getLengthExcludingLastLine } from '../helpers/focusHelpers';
-import type PageDataInterface from '../../types/pageTypes';
+import type PageDataInterface from '../types/pageTypes';
 
 const handleKeyDown = (
   e: React.KeyboardEvent<HTMLSpanElement>,
   index: number,
-  pageData: PageDataInterface,
+  pageData: PageDataInterface['message'],
 ) => {
   e.preventDefault();
 

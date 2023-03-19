@@ -10,7 +10,7 @@ router.post(
   '/get-home-page',
   verifySession(),
   async (req: SessionRequest, res) => {
-    const username = req.session!.getUserId();
+    const username = req.session?.getUserId();
 
     if (!username) {
       res.statusCode = 401;

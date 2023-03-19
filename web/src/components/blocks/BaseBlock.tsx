@@ -1,28 +1,30 @@
 /* eslint-disable react/no-children-prop */
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import { useSelectable, SelectionManager } from 'react-virtual-selection';
 
 import { moveBlock } from '../../lib/pages/updatePage';
 import BlockHandle from './BlockHandle';
-import BlockTypes from '../../constants/BlockTypes';
-import type { BaseBlockProps } from '../../types/blockTypes';
+import BlockTypes from '../../lib/constants/BlockTypes';
+import type { BaseBlockProps } from '../../lib/types/blockTypes';
+import PageContext from '../../contexts/PageContext';
 
 const BaseBlock = (props: BaseBlockProps) => {
   const {
     page,
     index,
     blockID,
-    pageData,
     children,
     blockType,
     properties,
-    setPageData,
     isMenuOpen,
     setIsMenuOpen,
   } = props;
 
   const [currentBlockType, setCurrentBlockType] = useState(blockType);
+  const { pageData, setPageData } = useContext(PageContext);
+
+  const isAllowedToEdit = pageData?.userPermissions.write;
 
   // -=- Setup Selection -=-
   const [selected, selectableRef] = useSelectable(
@@ -84,11 +86,15 @@ const BaseBlock = (props: BaseBlockProps) => {
         }, 'blocks');
       }}
     >
-      <BlockHandle
-        draggableRef={drag}
-        isGlobalMenuOpen={isMenuOpen}
-        setIsGlobalMenuOpen={setIsMenuOpen}
-      />
+      {
+        isAllowedToEdit && (
+          <BlockHandle
+            draggableRef={drag}
+            isGlobalMenuOpen={isMenuOpen}
+            setIsGlobalMenuOpen={setIsMenuOpen}
+          />
+        )
+      }
       {
         React.createElement(
           BlockTypes[currentBlockType] ?? BlockTypes.text,

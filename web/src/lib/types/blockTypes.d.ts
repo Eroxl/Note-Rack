@@ -10,8 +10,6 @@ interface BaseBlockProps {
   children: unknown[]
   page: string,
   index: number,
-  pageData: PageDataInterface,
-  setPageData: Dispatch<SetStateAction<PageDataInterface | Record<string, unknown>>>,
   isMenuOpen: boolean,
   setIsMenuOpen: Dispatch<SetStateAction<boolean>>,
 }
@@ -24,8 +22,6 @@ interface PermanentBlock {
 // -=- Used for for blocks that can't be deleted but can be edited -=-
 interface PermanentEditableText extends PermanentBlock {
   index: number,
-  pageData: PageDataInterface,
-  setPageData: Dispatch<SetStateAction<PageDataInterface | Record<string, unknown>>>,
 }
 
 // -=- Used for p through h1 -=-

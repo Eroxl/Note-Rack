@@ -3,14 +3,14 @@
 import crypto from 'crypto';
 
 import { focusBlockAtIndex } from '../helpers/focusHelpers';
-import type PageDataInterface from '../../types/pageTypes';
-import SaveManager from '../../classes/SaveManager';
+import type PageDataInterface from '../types/pageTypes';
+import SaveManager from '../classes/SaveManager';
 
 const addBlockAtIndex = async (
   index: number,
   page: string,
-  pageData: PageDataInterface,
-  setPageData: (value: Record<string, unknown>) => void,
+  pageData: PageDataInterface['message'],
+  setPageData: React.Dispatch<React.SetStateAction<PageDataInterface['message']>>,
   blockIDs?: string[],
   blockType?: string,
   blockProperties?: Record<string, unknown>,
@@ -32,8 +32,9 @@ const addBlockAtIndex = async (
   );
 
   // ~ Add the block to the page
-  const tempPageData = pageData as PageDataInterface;
-  tempPageData.message.data.splice(index, 0, {
+  const tempPageData = pageData;
+
+  tempPageData!.data.splice(index, 0, {
     _id: objectID,
     blockType: blockType || 'text',
     properties: blockProperties || {
@@ -44,11 +45,10 @@ const addBlockAtIndex = async (
 
   // ~ Update the page
   setPageData({
-    status: 'Success',
-    message: {
-      style: tempPageData.message.style,
-      data: [...tempPageData.message.data],
-    },
+    style: tempPageData!.style,
+    data: [...tempPageData!.data],
+    userPermissions: tempPageData!.userPermissions,
+    permissions: tempPageData!.permissions,
   });
 
   // ~ Wait for page to update before adding the block
@@ -60,8 +60,8 @@ const removeBlock = async (
   index: number,
   blockIDs: string[],
   page: string,
-  pageData: PageDataInterface,
-  setPageData: (value: Record<string, unknown>) => void,
+  pageData: PageDataInterface['message'],
+  setPageData: React.Dispatch<React.SetStateAction<PageDataInterface['message']>>,
   moveFocusToPreviousBlock = false,
 ) => {
   // ~ Save the change to the server
@@ -74,16 +74,15 @@ const removeBlock = async (
   );
 
   // ~ Remove the block from the page
-  const tempPageData = pageData as PageDataInterface;
-  tempPageData.message.data.splice(index, 1);
+  const tempPageData = pageData;
+  tempPageData!.data.splice(index, 1);
 
   // ~ Update the page
   setPageData({
-    status: 'Success',
-    message: {
-      style: tempPageData.message.style,
-      data: [...tempPageData.message.data],
-    },
+    style: tempPageData!.style,
+    data: [...tempPageData!.data],
+    userPermissions: tempPageData!.userPermissions,
+    permissions: tempPageData!.permissions,
   });
 
   if (!moveFocusToPreviousBlock) return;
@@ -118,8 +117,8 @@ const moveBlock = async (
   currentIndex: number,
   newIndex: number,
   page: string,
-  pageData: PageDataInterface,
-  setPageData: (value: Record<string, unknown>) => void,
+  pageData: PageDataInterface['message'],
+  setPageData: React.Dispatch<React.SetStateAction<PageDataInterface['message']>>,
 ) => {
   // ~ Figure out if the block is being moved up or down
   const offset = currentIndex > newIndex ? 1 : 0;
@@ -141,17 +140,17 @@ const moveBlock = async (
       'doc-ids': blockIDs.length > 1 ? blockIDs : undefined,
       'new-block-index': newIndex + offset,
       'new-block-id': blockIDs[blockIDs.length - 1],
-      'new-block-type': pageData.message.data[currentIndex].blockType,
-      'new-block-properties': pageData.message.data[currentIndex].properties,
+      'new-block-type': pageData!.data[currentIndex].blockType,
+      'new-block-properties': pageData!.data[currentIndex].properties,
     },
     page,
   );
 
   // -=- Update page data -=-
-  const pageDataCopy = { ...pageData };
+  const pageDataCopy = { ...pageData! };
 
-  pageDataCopy.message.data.splice(newIndex + 1, 0, pageData.message.data[currentIndex]);
-  pageDataCopy.message.data.splice(currentIndex + offset, 1);
+  pageDataCopy.data.splice(newIndex + 1, 0, pageData!.data[currentIndex]);
+  pageDataCopy.data.splice(currentIndex + offset, 1);
   setPageData(pageDataCopy);
 };
 

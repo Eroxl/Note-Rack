@@ -97,6 +97,7 @@ const setupAuth = () => {
                     icon: '📝',
                     name: 'New Notebook',
                   },
+                  permissions: {},
                   data: [],
                 },
               );

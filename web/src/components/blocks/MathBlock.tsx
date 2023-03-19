@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
 
-import type { EditableText } from '../../types/blockTypes';
+import type { EditableText } from '../../lib/types/blockTypes';
 import { addBlockAtIndex, editBlock } from '../../lib/pages/updatePage';
+import PageContext from '../../contexts/PageContext';
 
 const MathBlock = (props: EditableText) => {
   const {
@@ -11,11 +12,13 @@ const MathBlock = (props: EditableText) => {
     properties,
     page,
     index,
-    pageData,
-    setPageData,
     setCurrentBlockType,
   } = props;
   const { value } = properties;
+
+  const { pageData, setPageData } = useContext(PageContext);
+
+  const isAllowedToEdit = pageData!.userPermissions.write;
 
   const [currentValue, setCurrentValue] = useState(value || '');
   const [isEditing, setIsEditing] = useState(false);
@@ -25,6 +28,8 @@ const MathBlock = (props: EditableText) => {
   }, [value]);
 
   const switchToEditing = () => {
+    if (!isAllowedToEdit) return;
+
     setIsEditing(true);
 
     setTimeout(() => {
@@ -50,7 +55,7 @@ const MathBlock = (props: EditableText) => {
       className="min-h-[1.2em] w-full h-full flex items-center justify-center"
       onClick={(isEditing || !currentValue) ? undefined : switchToEditing}
       id={`${blockID}-container`}
-      role={(isEditing || !currentValue) ? 'textbox' : 'button'}
+      role={(isEditing || !currentValue || !isAllowedToEdit) ? 'textbox' : 'button'}
       tabIndex={0}
     >
       {isEditing
@@ -65,6 +70,8 @@ const MathBlock = (props: EditableText) => {
             key={blockID}
             onBlur={
               (e) => {
+                if (!isAllowedToEdit) return;
+
                 setCurrentValue(e.currentTarget.innerText);
                 editBlock([blockID], undefined, { value: e.currentTarget.innerText }, page);
                 setIsEditing(false);

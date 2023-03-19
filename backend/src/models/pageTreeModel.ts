@@ -1,6 +1,13 @@
 import mongoose, { Schema } from 'mongoose';
 
-const PageTreeSchema = new Schema({});
+interface IPageTree {
+  _id: string;
+  expanded: boolean;
+  style: {};
+  subPages: IPageTree[];
+}
+
+const PageTreeSchema = new Schema<IPageTree>({});
 
 PageTreeSchema.add({
   _id: Schema.Types.String,
@@ -9,6 +16,6 @@ PageTreeSchema.add({
   subPages: [PageTreeSchema],
 });
 
-const PageTreeModel = mongoose.models.pageTree || mongoose.model('pageTree', PageTreeSchema, 'PageTree');
+const PageTreeModel = mongoose.models.pageTree as mongoose.Model<IPageTree> || mongoose.model<IPageTree>('pageTree', PageTreeSchema);
 
 export default PageTreeModel;

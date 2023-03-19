@@ -1,30 +1,30 @@
 /* eslint-disable react/no-children-prop */
 /* eslint-disable no-underscore-dangle */
 import React, {
-  Dispatch,
-  SetStateAction,
   useState,
   useEffect,
+  useContext,
 } from 'react';
 import { useRouter } from 'next/router';
 import { Selectable, useSelectionCollector } from 'react-virtual-selection';
+import { useSessionContext } from 'supertokens-auth-react/recipe/session';
 
-import type PageDataInterface from '../types/pageTypes';
 import BaseBlock from './blocks/BaseBlock';
 import PageThumbnail from './pageCustomization/PageThumbnail';
 import Title from './blocks/Title';
 import Icon from './blocks/Icon';
 import { removeBlock } from '../lib/pages/updatePage';
 import deletePage from '../lib/deletePage';
+import PageContext from '../contexts/PageContext';
 
-interface EditorProps {
-  pageData: PageDataInterface,
-  setPageData: Dispatch<SetStateAction<PageDataInterface | Record<string, unknown>>>
-}
-
-const Editor = (props: EditorProps) => {
-  const { pageData, setPageData } = props;
+const Editor = () => {
+  const { pageData, setPageData } = useContext(PageContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const isAllowedToEdit = pageData?.userPermissions.write;
+  const session = useSessionContext();
+
+  const isLoggedIn = session?.loading === false && session?.doesSessionExist === true;
 
   // -=- Setup Page Data -=-
   // ~ Get the page ID
@@ -32,6 +32,7 @@ const Editor = (props: EditorProps) => {
 
   // -=- Setup Selection -=-
   const selectionData = useSelectionCollector('blocks');
+  
 
   useEffect(() => {
     const handleSelectionEvents = (event: KeyboardEvent) => {
@@ -68,18 +69,20 @@ const Editor = (props: EditorProps) => {
     };
   }, [selectionData]);
 
+  if (!pageData) return null;
+
   // -=- Render -=-
   return (
     <Selectable
-      accepts="blocks"
+      accepts={isAllowedToEdit ? "blocks" : ""}
       selectionClassName="bg-sky-300 opacity-20"
     >
-      <div className="w-full h-full mt-10 overflow-y-auto print:m-0 pl-52 print:p-0 overflow-x-clip no-scrollbar" id="main-editor">
+      <div className={`w-full h-full mt-10 overflow-y-auto print:m-0 ${isLoggedIn && 'pl-52'} print:p-0 overflow-x-clip no-scrollbar`} id="main-editor">
         <div
           className="flex flex-col items-center w-full h-max bg-amber-50 dark:bg-zinc-700 print:dark:bg-white print:bg-white bg-"
         >
           {/* ~ Render the page thumbnail */}
-          <PageThumbnail colour={pageData.message.style.colour} page={page as string} />
+          <PageThumbnail colour={pageData.style.colour} page={page as string} />
           {/* ~ Render the main interactive editor */}
           <div
             className="flex flex-col w-full max-w-4xl gap-3 px-20 pb-56 mx-auto break-words select-none print:p-0 text-zinc-700 dark:text-amber-50 print:dark:text-zinc-700 h-max editor"
@@ -87,19 +90,17 @@ const Editor = (props: EditorProps) => {
             {/* ~ Render the page icon */}
             <Icon
               page={page as string}
-              icon={pageData.message.style.icon}
+              icon={pageData!.style.icon}
             />
             {/* ~ Render the title */}
             <Title
               page={page as string}
-              pageData={pageData}
               index={0}
-              setPageData={setPageData}
-              title={pageData.message.style.name}
+              title={pageData!.style.name}
             />
 
             {/* ~ Render the blocks */}
-            {(pageData as PageDataInterface).message.data.map((block, index) => (
+            {pageData.data.map((block, index) => (
               <BaseBlock
                 blockType={block.blockType}
                 blockID={block._id}
@@ -108,8 +109,6 @@ const Editor = (props: EditorProps) => {
                 page={page as string}
                 properties={block.properties}
                 children={block.children}
-                pageData={pageData}
-                setPageData={setPageData}
                 isMenuOpen={isMenuOpen}
                 setIsMenuOpen={setIsMenuOpen}
               />

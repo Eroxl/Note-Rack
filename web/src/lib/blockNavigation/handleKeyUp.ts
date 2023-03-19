@@ -1,10 +1,10 @@
-import PageDataInterface from '../../types/pageTypes';
+import PageDataInterface from '../types/pageTypes';
 import { focusBlockAtIndexRelativeToBottom } from '../helpers/focusHelpers';
 
 const handleKeyUp = (
   e: React.KeyboardEvent<HTMLSpanElement>,
   index: number,
-  pageData: PageDataInterface,
+  pageData: PageDataInterface['message'],
 ) => {
   e.preventDefault();
 

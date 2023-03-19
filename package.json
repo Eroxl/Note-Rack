@@ -27,6 +27,6 @@
   "bugs": {
     "url": "https://github.com/Eroxl/Note-Rack/issues"
   },
-  "homepage": "https://github.com/Eroxl/Note-Rack#readme"
+  "homepage": "https://github.com/Eroxl/Note-Rack#readme",
+  "dependencies": {}
 }
- 
