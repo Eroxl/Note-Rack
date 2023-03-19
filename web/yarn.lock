@@ -4436,10 +4436,10 @@ react-use@^15.3.3:
     ts-easing "^0.2.0"
     tslib "^2.0.0"
 
-react-virtual-selection@^1.0.17:
-  version "1.0.21"
-  resolved "https://registry.yarnpkg.com/react-virtual-selection/-/react-virtual-selection-1.0.21.tgz#99ac69120778555dca8594267a332e3c5e6ca0e7"
-  integrity sha512-m4HMmaqt7isrO8I4OROOclJD8Tgl3ECTt/+qRNcjUaiJrcpAFSftXCcrMvEAdyJ18bCtdqzNeKIb9I2CXOnNsQ==
+react-virtual-selection@^1.0.25:
+  version "1.0.25"
+  resolved "https://registry.yarnpkg.com/react-virtual-selection/-/react-virtual-selection-1.0.25.tgz#50882f493151ad74385780eb7611a88c3aba2efb"
+  integrity sha512-OKQ1gtxy2pQRCcBqg7oEDhVPTlMjHvFNswhqAJ4+O4FhGtEdie8aLRJspCLk4o9bdCV7jZoNFT0VWcVTzvTmRA==
 
 react@17.0.2:
   version "17.0.2"
