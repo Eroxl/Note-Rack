@@ -24,6 +24,8 @@ const BaseBlock = (props: BaseBlockProps) => {
   const [currentBlockType, setCurrentBlockType] = useState(blockType);
   const { pageData, setPageData } = useContext(PageContext);
 
+  const isAllowedToEdit = pageData?.userPermissions.write;
+
   // -=- Setup Selection -=-
   const [selected, selectableRef] = useSelectable(
     'blocks',
@@ -84,11 +86,15 @@ const BaseBlock = (props: BaseBlockProps) => {
         }, 'blocks');
       }}
     >
-      <BlockHandle
-        draggableRef={drag}
-        isGlobalMenuOpen={isMenuOpen}
-        setIsGlobalMenuOpen={setIsMenuOpen}
-      />
+      {
+        isAllowedToEdit && (
+          <BlockHandle
+            draggableRef={drag}
+            isGlobalMenuOpen={isMenuOpen}
+            setIsGlobalMenuOpen={setIsMenuOpen}
+          />
+        )
+      }
       {
         React.createElement(
           BlockTypes[currentBlockType] ?? BlockTypes.text,

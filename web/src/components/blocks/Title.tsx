@@ -23,7 +23,11 @@ const Title = (props: TitleProps) => {
 
   const { pageData, setPageData } = useContext(PageContext);
 
+  const isAllowedToEdit = pageData?.userPermissions.write; 
+
   const onTitleChanged = (text: string) => {
+    if (!isAllowedToEdit) return;
+
     editStyle({ name: text }, page);
   };
 
@@ -55,7 +59,7 @@ const Title = (props: TitleProps) => {
     <div className="relative flex flex-col" id="page-title">
       <span
         className="text-5xl font-bold outline-none empty:before:content-['Untitled'] empty:before:opacity-30 pb-3"
-        contentEditable
+        contentEditable={isAllowedToEdit}
         role="textbox"
         tabIndex={0}
         ref={drop}

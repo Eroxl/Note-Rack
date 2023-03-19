@@ -22,6 +22,8 @@ const TextBlock = (props: EditableText) => {
 
   const { pageData, setPageData } = useContext(PageContext);
 
+  const isAllowedToEdit = pageData!.userPermissions.write;
+
   const handlePotentialTypeChange = async (element: HTMLSpanElement) => {
     textKeybinds.forEach(async (bind) => {
       const regexSearch = bind.keybind.exec(element.textContent || '');
@@ -54,7 +56,7 @@ const TextBlock = (props: EditableText) => {
       className={`min-h-[1.2em] outline-none whitespace-pre-wrap w-full ${TextStyles[type]}`}
       role="textbox"
       tabIndex={0}
-      contentEditable
+      contentEditable={isAllowedToEdit}
       suppressContentEditableWarning
       id={blockID}
       onInput={(e) => {
@@ -62,6 +64,8 @@ const TextBlock = (props: EditableText) => {
       }}
       onBlur={
         (e) => {
+          if (!isAllowedToEdit) return;
+
           editBlock([blockID], undefined, { value: e.currentTarget.innerText }, page);
         }
       }

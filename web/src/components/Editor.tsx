@@ -20,12 +20,15 @@ const Editor = () => {
   const { pageData, setPageData } = useContext(PageContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+  const isAllowedToEdit = pageData?.userPermissions.write;
+
   // -=- Setup Page Data -=-
   // ~ Get the page ID
   const { page } = useRouter().query;
 
   // -=- Setup Selection -=-
   const selectionData = useSelectionCollector('blocks');
+  
 
   useEffect(() => {
     const handleSelectionEvents = (event: KeyboardEvent) => {
@@ -67,7 +70,7 @@ const Editor = () => {
   // -=- Render -=-
   return (
     <Selectable
-      accepts="blocks"
+      accepts={isAllowedToEdit ? "blocks" : ""}
       selectionClassName="bg-sky-300 opacity-20"
     >
       <div className="w-full h-full mt-10 overflow-y-auto print:m-0 pl-52 print:p-0 overflow-x-clip no-scrollbar" id="main-editor">
