@@ -15,10 +15,6 @@ export interface PageRequest extends SessionRequest {
 const verifyPermissions = (permissions: ValidPermissions[]) => {
   const verifyPermissionsMiddleware = async (req: PageRequest, res: Response, next: NextFunction) => {
     const { page } = req.params;
-    
-    if (!req.session) {
-      throw new Error('No session provided to middleware!');
-    }
 
     if (!page) {
       res.statusCode = 400;
@@ -29,16 +25,7 @@ const verifyPermissions = (permissions: ValidPermissions[]) => {
       return;
     }
 
-    const username = req.session.getUserId();
-    
-    if (!username) {
-      res.statusCode = 401;
-      res.json({
-        status: 'error',
-        message: 'Please login to modify this page!',
-      });
-      return;
-    }
+    const username = req.session?.getUserId() || '';
 
     const pageData = await PageModel.findOne({ _id: page }).lean();
 
@@ -101,7 +88,9 @@ const verifyPermissions = (permissions: ValidPermissions[]) => {
   };
 
   const middleware = async (req: SessionRequest, res: Response, next: NextFunction) => {
-    verifySession()(
+    verifySession({
+      sessionRequired: false,
+    })(
       req,
       res,
       () => verifyPermissionsMiddleware(req, res, next),

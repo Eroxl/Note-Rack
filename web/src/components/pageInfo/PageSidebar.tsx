@@ -29,12 +29,23 @@ const PageSidebar = () => {
 
       // -=- Setting -=-
       // ~ Set the page tree, if it exists
-      setPageTree(pageTreeObject.message.subPages);
+      setPageTree(pageTreeObject.message.subPages || []);
 
       // ~ Set the loading state to false
       setIsLoading(false);
     })();
   }, []);
+
+  
+  if (!pageTree?.length) {
+    return (
+      <div className="absolute h-screen p-3 pt-12 select-none print:h-max w-52 print:w-0 bg-amber-400/10 no-scrollbar dark:bg-white/10">
+        <p className="text-white">
+          Log in to see your pages
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="absolute h-screen pt-12 pr-3 select-none print:h-max w-52 print:w-0 bg-amber-400/10 no-scrollbar dark:bg-white/10">
