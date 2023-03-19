@@ -97,18 +97,27 @@ const ShareMenu = (props: ShareMenuProps) => {
                   {
                     (
                       currentPermissions
-                      && Object.keys(currentPermissions).filter((key) => key !== '*').length > 0
+                      && Object.values(currentPermissions).filter(
+                        (permission) => {
+                          const hasAnyPermissions = permission.read || permission.write || permission.admin;
+                          return permission.email !== '*' && hasAnyPermissions; 
+                        }
+                      ).length > 0
                       && !isPagePublic
                     ) && (
                       <div>
                         <span className="font-bold">Shared with</span>
                         {
-                          Object.values(currentPermissions).map((permission) => (
-                            permission.email !== '*' && <UserPermission
-                              email={permission.email}
-                              key={permission.email}
-                            />
-                          ))
+                          Object.values(currentPermissions)
+                            .filter((permission) => permission.read || permission.write || permission.admin)
+                            .map((permission) => (
+                              permission.email !== '*' && (
+                                <UserPermission
+                                  email={permission.email}
+                                  key={permission.email}
+                                />
+                              )
+                            ))
                         }
                       </div>
                     )
