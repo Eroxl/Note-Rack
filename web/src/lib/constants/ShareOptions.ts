@@ -10,7 +10,7 @@ const dropdownInfo: {
     description: string,
     permissions: {
       admin: boolean,
-      edit: boolean,
+      write: boolean,
       read: boolean,
     }
   }
@@ -20,7 +20,7 @@ const dropdownInfo: {
     description: 'Can edit, delete, and share',
     permissions: {
       admin: true,
-      edit: true,
+      write: true,
       read: true,
     }
   },
@@ -29,7 +29,7 @@ const dropdownInfo: {
     description: 'Can edit, but not delete or share',
     permissions: {
       admin: false,
-      edit: true,
+      write: true,
       read: true,
     },
   },
@@ -38,7 +38,7 @@ const dropdownInfo: {
     description: 'Cannot edit, delete, or share',
     permissions: {
       admin: false,
-      edit: false,
+      write: false,
       read: true,
     }
   },
