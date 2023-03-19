@@ -3,7 +3,6 @@ import Image from 'next/image';
 
 import EmailShareMenu from './EmailShareMenu';
 import Globe from '../../public/Globe.svg';
-import type { Permissions } from '../../lib/types/pageTypes';
 import UserPermission from './UserPermission';
 import PagePermissionsContext from '../../contexts/PagePermissionsContext';
 

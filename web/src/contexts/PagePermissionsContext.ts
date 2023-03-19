@@ -3,7 +3,6 @@ import { createContext } from 'react';
 import type { UserPermissions, Permissions } from '../lib/types/pageTypes';
 
 interface PagePermissionsContextProps {
-  pagePermissions?: Permissions,
   permissionsOnPage?: UserPermissions,
   isMenuOpen: boolean,
   setIsMenuOpen: (isMenuOpen: boolean) => void,

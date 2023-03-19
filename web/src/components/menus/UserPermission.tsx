@@ -20,26 +20,25 @@ const UserPermission = (props: UserPermissionProps) => {
   const page = useRouter().query.page as string;
 
   const {
-    pagePermissions,
-    permissionsOnPage: permissions,
+    currentPermissions,
     setCurrentPermissions,
   } = useContext(PagePermissionsContext);
 
   useEffect(() => {
-    const defaultDropdownOption = Object.keys(dropdownInfo).find((key) => {
-      if (!permissions) {
-        return false;
-      }
+    const permissions = Object.entries(currentPermissions).find(([, value]) => value.email === email)?.[1];
 
-      let keyPermissions = dropdownInfo[+key].permissions;
+    const defaultDropdownOption = Object.keys(dropdownInfo).find((uuid) => {
+      let keyPermissions = dropdownInfo[+uuid].permissions;
   
       return Object.entries(keyPermissions).every(([key, value]) => {
+        if (!permissions) return false;
+
         return permissions[key as keyof UserPermissions] === value;
       });
     }) as (DropdownOptions | undefined) || DropdownOptions.ViewOnly;
 
     setSelectedDropdownOption(defaultDropdownOption);
-  }, [permissions]);
+  }, [currentPermissions]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -59,15 +58,33 @@ const UserPermission = (props: UserPermissionProps) => {
   });
 
   const setSelectDropdownOption = (option: DropdownOptions) => {
-    let key = Object.keys(pagePermissions!).find((key) => pagePermissions![key].email === email) || email;
+    let key = Object.keys(currentPermissions).find((key) => currentPermissions[key].email === email) || email;
 
     setCurrentPermissions({
-      ...pagePermissions,
+      ...currentPermissions,
       [key]: {
         ...dropdownInfo[option].permissions,
         email: email,
       }
-    } as Permissions)
+    } as Permissions);
+
+    (async () => {
+      await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/page/update-permissions/${page}`, 
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email,
+            permissions: dropdownInfo[option].permissions
+          }),
+        }
+      );
+    })();
+
+    setSelectedDropdownOption(option);
   }
 
   return (
@@ -114,7 +131,7 @@ const UserPermission = (props: UserPermissionProps) => {
               <p
                 onClick={() => {
                   setCurrentPermissions({
-                    ...Object.fromEntries(Object.entries(pagePermissions!).filter(([_, value]) => value.email !== email))
+                    ...Object.fromEntries(Object.entries(currentPermissions).filter(([_, value]) => value.email !== email))
                   } as Permissions);
 
                   (async () => {

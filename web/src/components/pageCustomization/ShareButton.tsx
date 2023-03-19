@@ -35,7 +35,6 @@ const ShareButton = () => {
     <PagePermissionsContext.Provider
       value={
         {
-          pagePermissions,
           permissionsOnPage,
           isMenuOpen,
           setIsMenuOpen,
