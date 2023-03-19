@@ -23,7 +23,7 @@ const Title = (props: TitleProps) => {
 
   const { pageData, setPageData } = useContext(PageContext);
 
-  const isAllowedToEdit = pageData?.userPermissions.write; 
+  const isAllowedToEdit = pageData?.userPermissions.admin; 
 
   const onTitleChanged = (text: string) => {
     if (!isAllowedToEdit) return;

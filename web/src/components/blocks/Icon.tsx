@@ -17,7 +17,7 @@ const Icon = (props: IconProps) => {
   const [isEmojiSelectorActive, setIsEmojiSelectorActive] = useState(false);
   const { pageData } = useContext(PageContext);
 
-  const isAllowedToEdit = pageData?.userPermissions.write;
+  const isAllowedToEdit = pageData?.userPermissions.admin;
 
   const emojiPickerMenuRef = useRef<HTMLDivElement>(null);
 
