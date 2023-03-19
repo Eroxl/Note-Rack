@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
 
 import type { EditableText } from '../../lib/types/blockTypes';
 import { addBlockAtIndex, editBlock } from '../../lib/pages/updatePage';
+import PageContext from '../../contexts/PageContext';
 
 const MathBlock = (props: EditableText) => {
   const {
@@ -11,11 +12,11 @@ const MathBlock = (props: EditableText) => {
     properties,
     page,
     index,
-    pageData,
-    setPageData,
     setCurrentBlockType,
   } = props;
   const { value } = properties;
+
+  const { pageData, setPageData } = useContext(PageContext);
 
   const [currentValue, setCurrentValue] = useState(value || '');
   const [isEditing, setIsEditing] = useState(false);

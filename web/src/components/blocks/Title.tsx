@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-to-interactive-role */
-import React from 'react';
+import React, { useContext } from 'react';
 import { useDrop } from 'react-dnd';
 
 import TitleBreaker from './TitleBreaker';
@@ -8,6 +8,7 @@ import type { PermanentEditableText } from '../../lib/types/blockTypes';
 import editStyle from '../../lib/pages/editStyle';
 import { isCaretAtBottom, isCaretAtTop } from '../../lib/helpers/caretHelpers';
 import handleKeyDown from '../../lib/blockNavigation/handleKeyDown';
+import PageContext from '../../contexts/PageContext';
 
 interface TitleProps extends PermanentEditableText {
   title: string,
@@ -18,9 +19,9 @@ const Title = (props: TitleProps) => {
     page,
     index,
     title,
-    pageData,
-    setPageData,
   } = props;
+
+  const { pageData, setPageData } = useContext(PageContext);
 
   const onTitleChanged = (text: string) => {
     editStyle({ name: text }, page);

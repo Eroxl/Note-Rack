@@ -11,9 +11,10 @@ import Editor from '../../components/Editor';
 import LoadingPage from '../../components/LoadingPage';
 import SaveManager from '../../lib/classes/SaveManager';
 import ShareButton from '../../components/pageCustomization/ShareButton';
+import PageContext from '../../contexts/PageContext';
 
 const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {
-  const [pageData, setPageData] = useState<PageDataInterface | Record<string, unknown>>({});
+  const [pageData, setPageData] = useState<PageDataInterface['message']>();
   const { pageDataReq } = props;
 
   // TODO:EROXL: Add error handling here...
@@ -21,7 +22,7 @@ const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {
     // -=- Setup Page Data -=-
     // ~ Get the page data
     (async () => {
-      setPageData(await pageDataReq);
+      setPageData((await pageDataReq).message);
     })();
 
     // -=- Setup Auto Saving -=-
@@ -33,20 +34,20 @@ const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {
     <>
       <Head>
         {
-          !pageData.message
+          !pageData
             ? (
               <title>Loading...</title>
             )
             : (
               <>
-                <title>{(pageData as PageDataInterface).message!.style.name}</title>
+                <title>{pageData.style.name}</title>
                 <link
                   rel="icon"
                   href={`
                     data:image/svg+xml,
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
                       <text y="0.9em" font-size="90">
-                        ${(pageData as PageDataInterface).message!.style.icon}
+                        ${pageData.style.icon}
                       </text>
                     </svg>
                   `}
@@ -56,25 +57,29 @@ const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {
             )
         }
       </Head>
-      <div className="w-full h-full overflow-hidden print:h-max print:overflow-visible bg-amber-50 no-scrollbar dark:bg-zinc-700 print:dark:bg-white">
-        <div className="absolute">
-          <div className="relative z-10 flex w-screen h-10 print:h-0 bg-amber-50 no-scrollbar dark:bg-zinc-700 print:dark:bg-white">
-            <PagePath />
-            <ShareButton
-              pagePermissions={(pageData as PageDataInterface).message?.permissions}
-              permissionsOnPage={(pageData as PageDataInterface).message?.userPermissions}
-            />
+      <PageContext.Provider
+        value={{
+          pageData,
+          setPageData,
+        }}
+      >
+        <div className="w-full h-full overflow-hidden print:h-max print:overflow-visible bg-amber-50 no-scrollbar dark:bg-zinc-700 print:dark:bg-white">
+          <div className="absolute">
+            <div className="relative z-10 flex w-screen h-10 print:h-0 bg-amber-50 no-scrollbar dark:bg-zinc-700 print:dark:bg-white">
+              <PagePath />
+              <ShareButton />
+            </div>
           </div>
+          <PageSidebar />
+          <DndProvider backend={HTML5Backend}>
+            {
+              !pageData
+                ? <LoadingPage />
+                : <Editor />
+            }
+          </DndProvider>
         </div>
-        <PageSidebar />
-        <DndProvider backend={HTML5Backend}>
-          {
-            !pageData.message
-              ? <LoadingPage />
-              : <Editor pageData={pageData as PageDataInterface} setPageData={setPageData} />
-          }
-        </DndProvider>
-      </div>
+      </PageContext.Provider>
     </>
   );
 };

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
 import { isCaretAtTop, isCaretAtBottom } from '../../lib/helpers/caretHelpers';
 import { editBlock, addBlockAtIndex, removeBlock } from '../../lib/pages/updatePage';
@@ -7,6 +7,7 @@ import textKeybinds from '../../lib/textKeybinds';
 import type { EditableText } from '../../lib/types/blockTypes';
 import handleKeyDown from '../../lib/blockNavigation/handleKeyDown';
 import handleKeyUp from '../../lib/blockNavigation/handleKeyUp';
+import PageContext from '../../contexts/PageContext';
 
 const TextBlock = (props: EditableText) => {
   const {
@@ -15,11 +16,11 @@ const TextBlock = (props: EditableText) => {
     type,
     index,
     blockID,
-    pageData,
-    setPageData,
     setCurrentBlockType,
   } = props;
   const { value } = properties;
+
+  const { pageData, setPageData } = useContext(PageContext);
 
   const handlePotentialTypeChange = async (element: HTMLSpanElement) => {
     textKeybinds.forEach(async (bind) => {
