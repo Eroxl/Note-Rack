@@ -57,6 +57,8 @@ const Editor = () => {
 
         // ~ Remove the block from the page
         removeBlock(index - i, [blockID], page as string, pageData, setPageData);
+
+        document.removeEventListener('keydown', handleSelectionEvents);
       }
     };
 
