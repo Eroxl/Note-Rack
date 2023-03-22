@@ -103,7 +103,6 @@ const ShareMenu = (props: ShareMenuProps) => {
                           return permission.email !== '*' && hasAnyPermissions; 
                         }
                       ).length > 0
-                      && !isPagePublic
                     ) && (
                       <div>
                         <span className="font-bold">Shared with</span>
