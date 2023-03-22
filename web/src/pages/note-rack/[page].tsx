@@ -4,6 +4,7 @@ import Head from 'next/head';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { useSessionContext } from 'supertokens-auth-react/recipe/session'; 
+import Link from 'next/link';
 
 import PagePath from '../../components/pageInfo/PagePath';
 import type PageDataInterface from '../../lib/types/pageTypes';
@@ -71,12 +72,22 @@ const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {
         <div className="w-full h-full overflow-hidden print:h-max print:overflow-visible bg-amber-50 no-scrollbar dark:bg-zinc-700 print:dark:bg-white">
           <div className="absolute">
             <div className="relative z-10 flex w-screen h-10 print:h-0 bg-amber-50 no-scrollbar dark:bg-zinc-700 print:dark:bg-white">
-              {isLoggedIn && (
-                <>
-                  <PagePath />
-                  <ShareButton />
-                </>
-              )}
+              {isLoggedIn 
+                ? (
+                  <>
+                    <PagePath />
+                    <ShareButton />
+                  </>
+                )
+                : (
+                  <Link href="/auth#">
+                    <a
+                      href="/auth#"
+                      className="px-2 my-auto ml-auto text-center rounded cursor-pointer text-zinc-700 dark:text-amber-50"
+                    >Login</a>
+                  </Link>
+                )
+              }
             </div>
           </div>
           {isLoggedIn && (
