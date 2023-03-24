@@ -1,11 +1,52 @@
 version: '3.8'
 
 services:
+  web:
+    build: ./web
+    ports:
+      - 3000:3000
+    expose:
+      - 3000
+    restart: unless-stopped
+    networks:
+      - web-backend
+    volumes:
+      - ./web:/usr/src/
+    command: yarn run dev
+    depends_on:
+      - backend
+      - supertokens
+  
+  backend:
+    build: ./backend
+    ports:
+      - 8000:8000
+    expose:
+      - 8000
+    restart: unless-stopped
+    networks:
+      - web-backend
+      - backend-mongo
+      - backend-supertokens
+    depends_on:
+      - mongo
+      - supertokens
+    volumes:
+      - ./backend:/usr/src/
+    command: yarn run dev
+    environment:
+      MONGO_URL: "mongodb://mongo:27017"
+      SUPERTOKENS_URL: "http://supertokens:3567"
+      WEBSITE_DOMAIN: "http://127.0.0.1:3000"
+      API_DOMAIN: "http://127.0.0.1:8000"
+  
   mongo:
     image: mongo:4.0-xenial
     restart: unless-stopped
-    ports:
-      - 27017:27017
+    networks:
+      - backend-mongo
+    expose:
+      - 27017
     volumes:
       - mongo-data:/data/db
     logging:
@@ -15,12 +56,13 @@ services:
     image: registry.supertokens.io/supertokens/supertokens-mysql:4.2
     depends_on:
       - sql
-    ports:
-      - 3567:3567
+    expose:
+      - 3567
     environment:
       MYSQL_CONNECTION_URI: mysql://supertokens_user:somePassword@sql:3306/supertokens
     networks:
       - supertokens-sql
+      - backend-supertokens
     restart:
       unless-stopped
     healthcheck:
@@ -59,4 +101,7 @@ volumes:
   sql-data:
 
 networks:
+  web-backend:
+  backend-mongo:
+  backend-supertokens:
   supertokens-sql:

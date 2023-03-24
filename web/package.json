@@ -7,6 +7,10 @@
     "start": "next start ./src/",
     "lint": "next lint ./src/"
   },
+  "resolutions": {
+    "@types/react": "17.0.2",
+    "@types/react-dom": "17.0.2"
+  },
   "dependencies": {
     "dotenv": "^14.2.0",
     "emoji-mart": "^3.0.1",

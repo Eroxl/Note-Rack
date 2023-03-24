@@ -150,7 +150,7 @@ const selectEnd = (element: HTMLElement, position: number) => {
   if (position === -1) {
     range.setStart(textNodes.slice(-1)[0], element.textContent?.length || 0);
   } else {
-    const lastTextNode = textNodes.findLast((node) => node.nodeName === '#text');
+    const lastTextNode = textNodes.reverse().find((node) => node.nodeName === '#text');
 
     textNodes.forEach((node) => {
       if (position < 0) return;
