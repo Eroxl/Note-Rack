@@ -9,6 +9,9 @@ module.exports = {
           raw: 'print',
         },
       },
+      boxShadow: {
+        'under': '0.15rem 0.15rem 0px',
+      },
     },
   },
   variants: {
