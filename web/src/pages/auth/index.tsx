@@ -9,7 +9,7 @@ const Auth = () => {
   const { error } = router.query;
 
   return (
-    <div className="relative flex flex-col items-center w-screen h-screen bg-amber-50">
+    <div className="relative flex flex-col items-center w-screen h-screen px-4 mx-auto bg-white max-w-7xl">
       <div className="z-10 w-full max-w-7xl">
         <AuthNavBar />
       </div>

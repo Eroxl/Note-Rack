@@ -38,7 +38,7 @@ const Callback = () => {
   }, [provider]);
 
   return (
-    <div className="relative flex flex-col items-center w-screen h-screen bg-amber-50">
+    <div className="relative flex flex-col items-center w-screen h-screen bg-white">
       <div className="z-10 w-full max-w-7xl">
         <AuthNavBar />
       </div>
