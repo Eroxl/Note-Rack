@@ -28,7 +28,7 @@ const Intro = () => (
       hub for all your notes and tasks.
     </p>
 
-    <div className="flex flex-col items-center justify-center m-8">
+    <div className="flex flex-col items-center justify-center m-8 transition-all duration-75">
       <Link href="/auth#">
         <a
           href="/auth#"

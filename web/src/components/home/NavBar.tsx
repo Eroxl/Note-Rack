@@ -15,7 +15,7 @@ const NavBar = () => (
       <Link href="/auth#">
         <a
           href="/auth#"
-          className="px-5 py-2 my-auto text-xl font-semibold bg-red-400 rounded shadow-under text-amber-50 shadow-slate-300 active:shadow-none active:translate-x-[0.15rem] active:translate-y-[0.15rem]"
+          className="px-5 py-2 my-auto text-xl font-semibold bg-red-400 rounded transition-all duration-75 shadow-under text-amber-50 shadow-slate-300 active:shadow-none active:translate-x-[0.15rem] active:translate-y-[0.15rem]"
         >
           Login
         </a>
