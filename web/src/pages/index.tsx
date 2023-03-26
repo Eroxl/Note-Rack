@@ -5,6 +5,7 @@ import Session from 'supertokens-auth-react/recipe/session';
 
 import NavBar from '../components/home/NavBar';
 import Intro from '../components/home/Intro';
+import Info from '../components/home/Info';
 
 const Home: NextPage = () => {
   // TODO:EROXL: (2023-01-24) This should be done server side when the request is made
@@ -29,6 +30,8 @@ const Home: NextPage = () => {
       <NavBar />
 
       <Intro />
+
+      <Info />
     </div>
   );
 };
