@@ -41,6 +41,7 @@ const Info = () => (
             <LaptopScreen>
               <Image
                 src={ShareExample}
+                className="rounded-md"
                 width={177}
                 height={137}
               />
