@@ -3,6 +3,7 @@ import PageMapModel from '../models/pageMap';
 import PageModel from '../models/pageModel';
 import PageTreeModel from '../models/pageTreeModel';
 import mongoose from 'mongoose';
+import ElasticSearchClient from './search/ElasticSearchClient';
 
 interface pageTreeType {
   _id: string,
@@ -43,8 +44,8 @@ const deletePage = async (
     return subPages;
   };
 
-  const pagesToDelete = getSubPages(pageTree, pageMap.pathToPage, pageID)
-    .map((id) => new mongoose.Types.ObjectId(id));
+  const pagesToDelete = getSubPages(pageTree, pageMap.pathToPage, pageID);
+  const objectIDsToDelete = pagesToDelete.map((id) => new mongoose.Types.ObjectId(id));
 
   // -=- Delete Sub Pages -=-
   // ~ Delete the top level page from the page tree
@@ -90,16 +91,25 @@ const deletePage = async (
   // ~ Delete the sub pages maps
   await PageMapModel.deleteMany({
     _id: {
-      $in: pagesToDelete,
+      $in: objectIDsToDelete,
     },
   });
 
   // ~ Delete the sub pages
   await PageModel.deleteMany({
     _id: {
-      $in: pagesToDelete,
+      $in: objectIDsToDelete,
     },
   });
+
+  await ElasticSearchClient.bulk({
+    operations: pagesToDelete.map((pageID) => ({
+      delete: {
+        _index: 'blocks',
+        _id: `${pageID}.*`,
+      }
+    }))
+  })
 };
 
 export default deletePage;

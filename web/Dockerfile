@@ -13,8 +13,5 @@ COPY . .
 # -=- Expose The Port -=-
 EXPOSE 3000
 
-# -=- Build the server code -=-
-RUN yarn run build
-
 # -=- Build / Run The Code -=-
 CMD [ "yarn", "run", "start" ]

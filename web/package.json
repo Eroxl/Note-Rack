@@ -3,8 +3,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev ./src/",
-    "build": "next build ./src/",
-    "start": "next start ./src/",
+    "start": "next build ./src/ && next start ./src/",
     "lint": "next lint ./src/"
   },
   "resolutions": {
