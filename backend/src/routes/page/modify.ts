@@ -13,6 +13,7 @@ router.post(
   verifyPermissions(['write']),
   async (req: PageRequest, res) => {
     const { page } = req.params;
+    const pageOwner = req.pageData!.user;
 
     // -=- If the user has permissions start updating the page -=-
     const { operations } = req.body;
@@ -61,6 +62,7 @@ router.post(
             }
           },
           {
+            userID: pageOwner,
             blockId: blockId,
             pageId: page,
             content: data['new-block-properties']?.value || '',
