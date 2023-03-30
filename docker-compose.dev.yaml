@@ -115,6 +115,11 @@ services:
       - ELASTIC_USERNAME=elastic
     volumes:
       - elasticsearch-data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: curl -s http://elasticsearch:9200 >/dev/null || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 5
     logging:
       driver: none
 

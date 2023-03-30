@@ -102,14 +102,24 @@ const deletePage = async (
     },
   });
 
-  await ElasticSearchClient.bulk({
-    operations: pagesToDelete.map((pageID) => ({
-      delete: {
-        _index: 'blocks',
-        _id: `${pageID}.*`,
-      }
-    }))
-  })
+
+  // ~ Delete the sub pages from ElasticSearch
+  await ElasticSearchClient.deleteByQuery({
+    index: 'blocks',
+    body: {
+      query: {
+        bool: {
+          filter: [
+            {
+              terms: {
+                pageId: pagesToDelete,
+              },
+            },
+          ],
+        },
+      },
+    },
+  });
 };
 
 export default deletePage;
