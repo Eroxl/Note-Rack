@@ -103,9 +103,9 @@ services:
       - backend-elasticsearch
     environment:
       - discovery.type=single-node
-      - action.destructive_requires_name=false
-      - ELASTICSEARCH_PASSWORD: "changeme"
-      - ELASTICSEARCH_USERNAME: "elastic"
+      - cluster.name=docker-cluster
+      - ELASTICSEARCH_PASSWORD=changeme
+      - ELASTICSEARCH_USERNAME=elastic
     logging:
       driver: none
     volumes:

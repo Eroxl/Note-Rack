@@ -37,13 +37,13 @@ services:
       - ./backend:/usr/src/
     command: yarn run dev
     environment:
-      MONGO_URL: "mongodb://mongo:27017"
-      SUPERTOKENS_URL: "http://supertokens:3567"
-      WEBSITE_DOMAIN: "http://127.0.0.1:3000"
-      API_DOMAIN: "http://127.0.0.1:8000"
-      ELASTICSEARCH_URL: "http://elasticsearch:9200"
-      ELASTICSEARCH_PASSWORD: "changeme"
-      ELASTICSEARCH_USERNAME: "elastic"
+      MONGO_URL: mongodb://mongo:27017
+      SUPERTOKENS_URL: http://supertokens:3567
+      WEBSITE_DOMAIN: http://127.0.0.1:3000
+      API_DOMAIN: http://127.0.0.1:8000
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      ELASTICSEARCH_PASSWORD: changeme
+      ELASTICSEARCH_USERNAME: elastic
   
   mongo:
     image: mongo:4.0-xenial
@@ -110,7 +110,8 @@ services:
       - backend-elasticsearch
     environment:
       - discovery.type=single-node
-      - action.destructive_requires_name=false
+      - cluster.name=docker-cluster
+      - xpack.security.enabled=false
       - ELASTIC_PASSWORD=changeme
       - ELASTIC_USERNAME=elastic
     volumes:
@@ -120,8 +121,8 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
-    logging:
-      driver: none
+    # logging:
+    #   driver: none
 
 volumes:
   mongo-data:

@@ -74,5 +74,7 @@ app.use(
 // -=- Setup Super Tokens Error Handling -=-
 app.use(errorHandler());
 
+console.log(`Server running on port ${port}`);
+
 // -=- Start The Express Server -=-
 app.listen(port);
