@@ -48,6 +48,7 @@ const ShareMenu = (props: ShareMenuProps) => {
         translate-y-full
         border border-black rounded-md opacity-100 h-max
         text-zinc-700 dark:text-amber-50 bg-stone-100 dark:bg-neutral-600 border-opacity-5
+        print:hidden
       `}
     >
       {isEditingEmails
