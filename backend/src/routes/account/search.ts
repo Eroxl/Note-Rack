@@ -45,32 +45,36 @@ router.get(
     //   2,
     // ))
 
-    console.log(
-      (
-        await ElasticSearchClient.search({
-          index: 'blocks',
-          query: {
-            bool: {
-              must: {
-                match: {
-                  content: filter,
-                },
-              },
-              filter: {
-                term: {
-                  userID: username,
-                },
-              },
-            }
+    const results = await ElasticSearchClient.search({
+      index: 'blocks',
+      query: {
+        bool: {
+          must: {
+            match: {
+              content: filter,
+            },
           },
-        })
-      ).hits.hits
-    );
+          filter: {
+            term: {
+              userID: username,
+            },
+          },
+        }
+      },
+    });
 
     res.statusCode = 200;
     res.json({
       status: 'success',
-      // message: results.hits.hits,
+      message: results.hits.hits.map((hit) => {
+        const sources = (hit?._source as Record<string, unknown>) ?? {};
+
+        return ({
+          content: sources?.content || '',
+          blockID: sources?.blockId || '',
+          pageID: sources?.pageId || '',
+        })
+      })
     });
   },
 );
