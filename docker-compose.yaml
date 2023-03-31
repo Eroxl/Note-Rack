@@ -95,7 +95,7 @@ services:
       driver: none
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.6.0
     restart: unless-stopped
     expose:
       - 9200
@@ -104,12 +104,18 @@ services:
     environment:
       - discovery.type=single-node
       - cluster.name=docker-cluster
-      - ELASTICSEARCH_PASSWORD=changeme
-      - ELASTICSEARCH_USERNAME=elastic
-    logging:
-      driver: none
+      - xpack.security.enabled=false
+      - ELASTIC_PASSWORD=changeme
+      - ELASTIC_USERNAME=elastic
     volumes:
       - elasticsearch-data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: curl -s http://elasticsearch:9200 >/dev/null || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    logging:
+      driver: none
 
 volumes:
   mongo-data:
