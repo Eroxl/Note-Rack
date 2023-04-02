@@ -1,6 +1,12 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Schema, Document } from 'mongoose';
 
-export interface IPage {
+interface Block {
+  blockType: string;
+  properties: {};
+  children: Block[];
+}
+
+export interface IPage extends Document {
   user: string;
   permissions: {
     [key: string]: {
@@ -11,11 +17,7 @@ export interface IPage {
     };
   };
   style: {};
-  data: {
-    blockType: string;
-    properties: {};
-    children: [];
-  }[];
+  data: Block[];
 }
 
 const PageSchema = new Schema<IPage>({
@@ -31,6 +33,6 @@ const PageSchema = new Schema<IPage>({
   ],
 });
 
-const PageModel = mongoose.models.page as mongoose.Model<IPage> || mongoose.model<IPage>('page', PageSchema);
+const PageModel = mongoose.models.page as mongoose.Model<IPage> || mongoose.model('page', PageSchema);
 
 export default PageModel;

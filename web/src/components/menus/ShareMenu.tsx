@@ -48,6 +48,7 @@ const ShareMenu = (props: ShareMenuProps) => {
         translate-y-full
         border border-black rounded-md opacity-100 h-max
         text-zinc-700 dark:text-amber-50 bg-stone-100 dark:bg-neutral-600 border-opacity-5
+        print:hidden
       `}
     >
       {isEditingEmails
@@ -167,7 +168,6 @@ const ShareMenu = (props: ShareMenuProps) => {
                         role="switch"
                         className={`
                         relative w-10 h-5 rounded-full
-                        bg-zinc-200 dark:bg-slate-400
                         outline-none appearance-none
                         cursor-pointer transition-colors
                         before:content-[attr(data-content)]
@@ -180,7 +180,7 @@ const ShareMenu = (props: ShareMenuProps) => {
                         my-auto border
                         ${isPagePublic
                             ? 'bg-zinc-500 dark:bg-blue-500 border-blue-600 before:right-0 before:-translate-x-1/4'
-                            : 'before:left-0 before:translate-x-1/4 border-zinc-400 dark:border-slate-500'}
+                            : 'bg-zinc-200 dark:bg-slate-400 before:left-0 before:translate-x-1/4 border-zinc-400 dark:border-slate-500'}
                       `} />
                     </div>
                   </div>

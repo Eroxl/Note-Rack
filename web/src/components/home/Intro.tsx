@@ -17,7 +17,7 @@ const Intro = () => (
           className="w-full"
           width="406" height="15" viewBox="0 0 406 15" fill="none" xmlns="http://www.w3.org/2000/svg"
         >
-          <path d="M2 2C141.997 6.41791 277.923 17.7194 403.975 10.9783ZM2 2C141.795 6.08602 278.504 16.0584 403.975 10.9783ZM2.369 6.8907C132.115 2.00313 261.241 7.51535 404.134 5.09504ZM2.369 6.8907C131.488 4.11346 262.21 8.11807 404.134 5.09504Z" stroke="#E77A75" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M2 2C141.997 6.41791 277.923 17.7194 403.975 10.9783ZM2 2C141.795 6.08602 278.504 16.0584 403.975 10.9783ZM2.369 6.8907C132.115 2.00313 261.241 7.51535 404.134 5.09504ZM2.369 6.8907C131.488 4.11346 262.21 8.11807 404.134 5.09504Z" stroke="#E77A75" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       </p>
     </p>

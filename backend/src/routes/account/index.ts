@@ -2,6 +2,7 @@ import express from 'express';
 
 import editPageTreeExpansion from './editPageTreeExpansion';
 import getPageTree from './getPageTree';
+import search from './search';
 
 const router = express.Router();
 
@@ -15,6 +16,12 @@ router.use(
 router.use(
   '/',
   editPageTreeExpansion,
+);
+
+// -=- Create Search API -=-
+router.use(
+  '/',
+  search,
 );
 
 export default router;

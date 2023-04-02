@@ -27,7 +27,7 @@ const verifyPermissions = (permissions: ValidPermissions[]) => {
 
     const username = req.session?.getUserId() || '';
 
-    const pageData = await PageModel.findOne({ _id: page }).lean();
+    const pageData = await PageModel.findOne({ _id: page });
 
     if (!pageData) {
       res.statusCode = 404;

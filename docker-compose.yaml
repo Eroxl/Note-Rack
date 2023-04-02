@@ -25,14 +25,19 @@ services:
       - web-backend
       - backend-mongo
       - backend-supertokens
+      - backend-elasticsearch
     depends_on:
       - mongo
       - supertokens
+      - elasticsearch
     environment:
       MONGO_URL: "mongodb://mongo:27017"
       SUPERTOKENS_URL: "http://supertokens:3567"
       WEBSITE_DOMAIN: "http://127.0.0.1:3000"
       API_DOMAIN: "http://127.0.0.1:8000"
+      ELASTICSEARCH_URL: "http://elasticsearch:9200"
+      ELASTICSEARCH_PASSWORD: "changeme"
+      ELASTICSEARCH_USERNAME: "elastic"
   
   mongo:
     image: mongo:4.0-xenial
@@ -81,8 +86,7 @@ services:
       - supertokens-sql
     volumes:
       - sql-data:/var/lib/mysql
-    restart:
-      unless-stopped
+    restart: unless-stopped
     healthcheck:
       test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
       timeout: 20s
@@ -90,12 +94,37 @@ services:
     logging:
       driver: none
 
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.6.0
+    restart: unless-stopped
+    expose:
+      - 9200
+    networks:
+      - backend-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - cluster.name=docker-cluster
+      - xpack.security.enabled=false
+      - ELASTIC_PASSWORD=changeme
+      - ELASTIC_USERNAME=elastic
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: curl -s http://elasticsearch:9200 >/dev/null || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    logging:
+      driver: none
+
 volumes:
   mongo-data:
   sql-data:
+  elasticsearch-data:
 
 networks:
   web-backend:
   backend-mongo:
   backend-supertokens:
   supertokens-sql:
+  backend-elasticsearch:

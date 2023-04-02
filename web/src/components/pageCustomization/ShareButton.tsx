@@ -48,7 +48,7 @@ const ShareButton = () => {
       <div
         ref={buttonRef}
       >
-        <div className="flex flex-row h-full gap-1 p-2 select-none w-max">
+        <div className="flex flex-row h-full gap-1 p-2 select-none w-max print:hidden">
           <div
             className="w-full h-full text-center rounded cursor-pointer text-zinc-700 dark:text-amber-50"
             onClick={() => {

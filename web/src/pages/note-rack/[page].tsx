@@ -14,6 +14,7 @@ import LoadingPage from '../../components/LoadingPage';
 import SaveManager from '../../lib/classes/SaveManager';
 import ShareButton from '../../components/pageCustomization/ShareButton';
 import PageContext from '../../contexts/PageContext';
+import SearchModal from '../../components/modals/SearchModal';
 
 const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {
   const [pageData, setPageData] = useState<PageDataInterface['message']>();
@@ -35,6 +36,22 @@ const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {
     // ~ Every 2.5 seconds, send the page changes to the server
     setInterval(() => { SaveManager.sendToServer(); }, 2500);
   }, [pageDataReq]);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'f' && (event.ctrlKey || event.metaKey)) {
+        event.preventDefault();
+
+        document.dispatchEvent(new Event('openSearchModal'));
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    }
+  }, []);
 
   return (
     <>
@@ -100,6 +117,7 @@ const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {
                 : <Editor />
             }
           </DndProvider>
+          <SearchModal />
         </div>
       </PageContext.Provider>
     </>

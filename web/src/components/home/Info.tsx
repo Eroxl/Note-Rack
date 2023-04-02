@@ -4,6 +4,8 @@ import Image from 'next/image';
 
 import LabReport from '../../public/promo/Lab-Report-Example.png';
 import ShareExample from '../../public/promo/Share-Example.png';
+import MathExample from '../../public/promo/Math-Example.png';
+import SearchExample from '../../public/promo/Search-Example.png';
 
 const Info = () => (
   <div className="max-w-4xl mx-auto">
@@ -23,8 +25,8 @@ const Info = () => (
         </p>
         <p className="my-2 text-lg font-bold">
           Share your notes with ease using Note Rack
-          <br/>
           and collaborate seamlessly with your classmates.
+          No more emailing or printing notes for group projects.
         </p>
       </div>
       <div className="flex items-center justify-center w-1/2 h-full">
@@ -48,6 +50,40 @@ const Info = () => (
             </LaptopScreen>
           </div>
         </div>
+      </div>
+    </div>
+
+    <div className="flex w-full mx-8 my-24">
+      <div className="flex items-center justify-center w-1/2 h-full">
+        <div className="relative flex">
+          <LaptopScreen>
+            <Image
+              src={MathExample}
+              className="rounded-md"
+              height={300}
+              width={365}
+            />
+          </LaptopScreen>
+          <div className="absolute bottom-0 left-0 -translate-x-[20%] translate-y-[20%]">
+            <LaptopScreen>
+              <Image
+                src={SearchExample}
+                className="rounded-md"
+                width={300}
+                height={93}
+              />
+            </LaptopScreen>
+          </div>
+        </div>
+      </div>
+      <div className="w-1/2">
+        <p className="text-4xl font-bold">
+          Search
+        </p>
+        <p className="my-2 text-lg font-bold">
+          Easily find the notes you need with Note Rack's powerful
+          search function. Spend less time searching and more time studying.
+        </p>
       </div>
     </div>
   </div>

@@ -38,6 +38,9 @@ const Editor = () => {
     const handleSelectionEvents = (event: KeyboardEvent) => {
       // ~ If the user is not pressing the backspace key, return
       if (event.key !== 'Backspace') return;
+
+      // ~ Check if there is an element selected
+      if (document.activeElement?.tagName === 'INPUT') return;
       
       // ~ Iterate over all the selected blocks
       for (let i = 0; i < selectionData.length; i += 1) {
