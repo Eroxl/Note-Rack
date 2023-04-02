@@ -46,7 +46,7 @@ const BaseModal = (props: BaseModalProps) => {
   return (
     <>
       <div
-        className={`${className} absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 ${isOpen ? 'flex justify-center items-center print:hidden' : 'hidden'}`}
+        className={`${className} absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 ${isOpen ? 'flex print:hidden' : 'hidden'}`}
         ref={modalRef}
       >
         {children}

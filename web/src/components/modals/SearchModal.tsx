@@ -166,9 +166,9 @@ const SearchModal = () => {
     <BaseModal
       isOpen={isOpen}
       setIsOpen={setIsOpen}
-      className="top-24 -translate-y-[0%]"
+      className="top-24 translate-y-[0%] max-h-[calc(100vh-12rem)] rounded-md  h-min overflow-scroll justify-start items-start"
     >
-      <div className="flex flex-col w-screen max-w-2xl gap-2 p-2 rounded-lg bg-zinc-700">
+      <div className="flex flex-col w-screen max-w-2xl gap-2 p-2 rounded-lg h-max bg-zinc-700">
         <div
           className={`
             flex flex-col justify-center h-12 max-w-2xl
