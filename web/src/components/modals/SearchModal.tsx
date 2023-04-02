@@ -87,7 +87,7 @@ const SearchModal = () => {
                 <a
                   className={`
                     flex flex-col justify-center p-2
-                    rounded bg-zinc-600 text-xl text-white
+                    rounded text-xl text-white hover:bg-zinc-600 
                   `}
                   onClick={() => {
                     setIsOpen(false)
