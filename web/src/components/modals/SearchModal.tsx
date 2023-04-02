@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 import BaseModal from './BaseModal';
 
@@ -9,11 +10,47 @@ interface SearchResult {
   pageID: string,
 }
 
+interface PageStylingMapEvent extends CustomEvent {
+  detail: { 
+    pageTree: {
+      _id: string,
+      style: {
+        name: string,
+        icon: string,
+      },
+      subPages: PageStylingMapEvent['detail']['pageTree'],
+    }[]
+  },
+}
+
+interface NewPageEvent extends CustomEvent {
+  detail: {
+    newPageID: string,
+    newPageStyle: PageStylingMapEvent['detail']['pageTree'][0]['style'],
+  },
+}
+
+interface DeletePageEvent extends CustomEvent {
+  detail: {
+    deletedPageID: string,
+  },
+}
+
+interface ChangePageEvent extends CustomEvent {
+  detail: {
+    newTitle: string,
+    newIcon: string,
+  },
+}
+
 const SearchModal = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const [pageStylingMap, setPageStylingMap] = useState<{ [key: string]: { name: string, icon: string } }>({});
   const inputRef = useRef<HTMLInputElement>(null);
   let searchTimeout: NodeJS.Timeout;
+
+  const { page } = useRouter().query;
 
   const updateSearchResults = async (searchTerm: string) => {
     const searchURL = `${process.env.NEXT_PUBLIC_API_URL}/account/search?filter=${searchTerm}`;
@@ -44,6 +81,86 @@ const SearchModal = () => {
       document.removeEventListener('openSearchModal', handleOpenSearchModal);
     };
   }, [isOpen]);
+
+  // NOTE:EROXL: (2023-4-1) Don't want to make a second request so this is piggybacking on the PageSidebar logic
+  useEffect(() => {    
+    const addPage = (event: NewPageEvent) => {
+      const { newPageID, newPageStyle } = event.detail;
+
+      pageStylingMap[newPageID] = {
+        name: newPageStyle.name,
+        icon: newPageStyle.icon,
+      };
+
+      setPageStylingMap(pageStylingMap);
+    }
+
+    const deletePage = (event: DeletePageEvent) => {
+      const { deletedPageID } = event.detail;
+
+      try {
+        delete pageStylingMap[deletedPageID];
+      } catch (error) {
+        if (error instanceof TypeError) {
+          console.error('Page not found in pageStylingMap');
+          return;
+        }
+      }
+
+      setPageStylingMap(pageStylingMap);
+    }
+
+    const handlePageStylingMap = (event: PageStylingMapEvent) => {
+      const parsePageTree = (pageTree: PageStylingMapEvent['detail']['pageTree']) => {
+        pageTree.forEach((page) => {
+          pageStylingMap[page._id] = {
+            name: page.style.name,
+            icon: page.style.icon,
+          };
+
+          if (page.subPages.length > 0) {
+            parsePageTree(page.subPages);
+          }
+        });
+      }
+
+      parsePageTree(event.detail.pageTree);
+
+      setPageStylingMap(pageStylingMap);
+    }
+
+    document.addEventListener('pageTreeLoaded', handlePageStylingMap as EventListener);
+    document.addEventListener('addPage', addPage as EventListener);
+    document.addEventListener('deletePage', deletePage as EventListener);
+
+    return () => {
+      document.removeEventListener('pageTreeLoaded', handlePageStylingMap as EventListener);
+      document.removeEventListener('addPage', addPage as EventListener);
+      document.removeEventListener('deletePage', deletePage as EventListener);
+    };
+  }, []);
+
+  useEffect(() => {
+    const changePage = (event: ChangePageEvent) => {
+      const { newTitle, newIcon } = event.detail;
+
+      if (typeof page !== 'string') return;
+
+      pageStylingMap[page] = {
+        name: newTitle || pageStylingMap[page].name,
+        icon: newIcon || pageStylingMap[page].icon,
+      };
+
+      setPageStylingMap(pageStylingMap);
+    }
+
+    document.addEventListener('changePageTitle', changePage as EventListener);
+
+    return () => {
+      document.removeEventListener('changePageTitle', changePage as EventListener);
+    };
+  }, [page]);
+
 
   return (
     <BaseModal
@@ -99,8 +216,15 @@ const SearchModal = () => {
                   }}
                   href={`/note-rack/${result.pageID}#${result.blockID}`}
                 >
-                  {result.content.substring(0, 100)}
-                  {result.content.length > 100 && '...'}
+                  <span>
+                    {pageStylingMap[result.pageID].icon}
+                    {' '}
+                    {pageStylingMap[result.pageID].name}
+                  </span>
+                  <span className="pl-2 text-sm text-zinc-300">
+                    {result.content.substring(0, 100)}
+                    {result.content.length > 100 && '...'}
+                  </span>
                 </a>
               </Link>
             ))}

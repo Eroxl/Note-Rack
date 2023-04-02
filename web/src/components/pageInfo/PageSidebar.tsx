@@ -31,6 +31,12 @@ const PageSidebar = () => {
       // ~ Set the page tree, if it exists
       setPageTree(pageTreeObject.message.subPages || []);
 
+      document.dispatchEvent(new CustomEvent('pageTreeLoaded', {
+        detail: {
+          pageTree: pageTreeObject.message.subPages,
+        },
+      }));
+
       // ~ Set the loading state to false
       setIsLoading(false);
     })();

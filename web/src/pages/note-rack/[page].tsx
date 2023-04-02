@@ -42,7 +42,6 @@ const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {
       if (event.key === 'f' && (event.ctrlKey || event.metaKey)) {
         event.preventDefault();
 
-        console.log('Open search modal');
         document.dispatchEvent(new Event('openSearchModal'));
       }
     };
