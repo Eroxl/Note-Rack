@@ -59,8 +59,14 @@ router.get(
               userID: username,
             },
           },
-        }
+        },
       },
+      highlight: {
+        fields: {
+          content: {},
+        },
+        number_of_fragments: 1,
+      }
     });
 
     res.statusCode = 200;
@@ -70,7 +76,7 @@ router.get(
         const sources = (hit?._source as Record<string, unknown>) ?? {};
 
         return ({
-          content: sources?.content || '',
+          content: (hit?.highlight?.content || [''])[0],
           blockID: sources?.blockId || '',
           pageID: sources?.pageId || '',
         })

@@ -66,6 +66,78 @@ const SearchModal = () => {
     setSearchResults(searchResultsJSON.message);
   }
 
+  const parseSearchResults = (results: SearchResult[]) => {
+    const parsedResults = results.map((result) => {
+      const { content, blockID, pageID } = result;
+
+      // ~ Replace <em> tags with styled span elements
+      const replaceHighlights = (content: string) => {
+        const contentArray = content.split(/(<em>|<\/em>)/);
+
+        let isNextHighlighted = false;
+
+        const parsedContent = contentArray.map((contentPart) => {
+          if (contentPart === '<em>') {
+            isNextHighlighted = true;
+            return;
+          }
+
+          if (contentPart === '</em>') {
+            isNextHighlighted = false;
+            return;
+          }
+
+          if (isNextHighlighted) {
+            return (
+              <span className="font-bold text-zinc-100">
+                {contentPart}
+              </span>
+            );
+          }
+
+          return contentPart;
+        });
+
+        return parsedContent;
+      }
+
+      return (
+        <Link
+          href={`/note-rack/${result.pageID}#${result.blockID}`}
+        >
+          <a
+            className={`
+              flex flex-col justify-center p-2
+              rounded text-xl text-white hover:bg-zinc-600 
+            `}
+            onClick={() => {
+              setIsOpen(false)
+              setSearchResults([]);
+
+              if (inputRef.current) {
+                inputRef.current.value = '';
+              }
+            }}
+            href={`/note-rack/${pageID}#${blockID}`}
+          >
+            <span>
+              {pageStylingMap[result.pageID].icon}
+              {' '}
+              {pageStylingMap[result.pageID].name}
+            </span>
+            <span className="pl-2 text-sm text-zinc-300">
+              {replaceHighlights(
+                `${content}${content.length >= 100 ? '...' : ''}`
+              )}
+            </span>
+          </a>
+        </Link>
+      )
+    });
+
+    return parsedResults;
+  }
+
   useEffect(() => {
     const handleOpenSearchModal = () => {
       setIsOpen(!isOpen);
@@ -197,37 +269,7 @@ const SearchModal = () => {
         </div>
         {searchResults.length > 0 && (
           <div className="flex flex-col gap-2">
-            {searchResults.map((result) => (
-              <Link
-                href={`/note-rack/${result.pageID}#${result.blockID}`}
-              >
-                <a
-                  className={`
-                    flex flex-col justify-center p-2
-                    rounded text-xl text-white hover:bg-zinc-600 
-                  `}
-                  onClick={() => {
-                    setIsOpen(false)
-                    setSearchResults([]);
-
-                    if (inputRef.current) {
-                      inputRef.current.value = '';
-                    }
-                  }}
-                  href={`/note-rack/${result.pageID}#${result.blockID}`}
-                >
-                  <span>
-                    {pageStylingMap[result.pageID].icon}
-                    {' '}
-                    {pageStylingMap[result.pageID].name}
-                  </span>
-                  <span className="pl-2 text-sm text-zinc-300">
-                    {result.content.substring(0, 100)}
-                    {result.content.length > 100 && '...'}
-                  </span>
-                </a>
-              </Link>
-            ))}
+            {parseSearchResults(searchResults)}
           </div>
         )}
       </div>
