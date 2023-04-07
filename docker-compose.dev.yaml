@@ -124,6 +124,21 @@ services:
     logging:
       driver: none
 
+  redis:
+    image: redis:7.2-rc1
+    restart: unless-stopped
+    expose:
+      - 6379
+    networks:
+      - backend-redis
+    healthcheck:
+      test: redis-cli -h
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    logging:
+      driver: none
+
 volumes:
   mongo-data:
   sql-data:
@@ -135,3 +150,4 @@ networks:
   backend-supertokens:
   supertokens-sql:
   backend-elasticsearch:
+  backend-redis:
