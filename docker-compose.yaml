@@ -38,6 +38,7 @@ services:
       ELASTICSEARCH_URL: "http://elasticsearch:9200"
       ELASTICSEARCH_PASSWORD: "changeme"
       ELASTICSEARCH_USERNAME: "elastic"
+      REDIS_URL: redis://redis:6379
   
   mongo:
     image: mongo:4.0-xenial

@@ -3,7 +3,7 @@ import PageMapModel from '../models/pageMap';
 import PageModel from '../models/pageModel';
 import PageTreeModel from '../models/pageTreeModel';
 import mongoose from 'mongoose';
-import ElasticSearchClient from './search/ElasticSearchClient';
+import ElasticSearchClient from './clients/ElasticSearchClient';
 
 interface pageTreeType {
   _id: string,

@@ -29,6 +29,7 @@ services:
       - backend-mongo
       - backend-supertokens
       - backend-elasticsearch
+      - backend-redis
     depends_on:
       - mongo
       - supertokens
@@ -44,6 +45,7 @@ services:
       ELASTICSEARCH_URL: http://elasticsearch:9200
       ELASTICSEARCH_PASSWORD: changeme
       ELASTICSEARCH_USERNAME: elastic
+      REDIS_URL: redis://redis:6379
   
   mongo:
     image: mongo:4.0-xenial
@@ -136,8 +138,8 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
-    logging:
-      driver: none
+    # logging:
+    #   driver: none
 
 volumes:
   mongo-data:

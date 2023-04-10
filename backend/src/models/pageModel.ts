@@ -2,7 +2,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 
 interface Block {
   blockType: string;
-  properties: {};
+  properties: Record<string, unknown>;
   children: Block[];
 }
 

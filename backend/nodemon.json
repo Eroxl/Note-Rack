@@ -1,6 +1,0 @@
-{
-  "ignore": [ "node_modules"],
-  "watch": ["src", "documentation"],
-  "exec": "yarn build",
-  "ext": "ts,yaml"
-}

@@ -1,10 +1,12 @@
 import express from 'express';
 
-import verifyPermissions from '../../middleware/verifyPermissions';
 import type { PageRequest } from '../../middleware/verifyPermissions';
+import verifyPermissions from '../../middleware/verifyPermissions';
 import queryAggregator from '../../helpers/operations/queryAggregator';
 import queryGenerator from '../../helpers/operations/queryGenerators';
-import ElasticSearchClient from '../../helpers/search/ElasticSearchClient';
+import ElasticSearchClient from '../../helpers/clients/ElasticSearchClient';
+import RedisClient from '../../helpers/clients/RedisClient';
+import refreshEmbeds from '../../helpers/refreshEmbeds';
 
 const router = express.Router();
 
@@ -38,6 +40,28 @@ router.post(
       queryGenerator(operations),
       page,
     );
+
+    const updateInfo = await RedisClient.get(`page:${page}`);
+
+    const previousOperations = JSON.parse(updateInfo || '[]') as Record<string, unknown>[];
+
+    const newOperations = [
+      ...previousOperations,
+      ...operations
+        .map(
+          (operation: any) => (
+            operation.data['new-block-id']
+            || operation.data['doc-ids'].pop()
+          )
+        )
+        .filter((blockID: string | undefined) => blockID),
+    ];
+
+    await RedisClient.set(`page:${page}`, JSON.stringify(newOperations));
+
+    if (newOperations.length > +(process.env.EMBED_REFRESH_THRESHOLD || 25)) {
+      await refreshEmbeds(page, req.pageData!);
+    }
 
     // -=- Update ElasticSearch -=-
     // NOTE:EROXL:(2022-03-29) - I swear I'll come back and refactor all of this later

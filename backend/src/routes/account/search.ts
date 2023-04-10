@@ -1,7 +1,7 @@
 import express from 'express';
 import { SessionRequest } from 'supertokens-node/framework/express';
 import { verifySession } from 'supertokens-node/recipe/session/framework/express';
-import ElasticSearchClient from '../../helpers/search/ElasticSearchClient';
+import ElasticSearchClient from '../../helpers/clients/ElasticSearchClient';
 
 const router = express.Router();
 
@@ -20,30 +20,6 @@ router.get(
       });
       return;
     }
-
-    // const results = await ElasticSearchClient.search({
-    //   index: 'blocks',
-    //   query: {
-    //     bool: {
-    //       must: {
-    //         match: {
-    //           content: filter,
-    //         }
-    //       },
-    //       filter: {
-    //         term: {
-    //           userID: username,
-    //         }
-    //       }
-    //     }
-    //   },
-    // });
-
-    // console.log(JSON.stringify(
-    //   results,
-    //   null,
-    //   2,
-    // ))
 
     const results = await ElasticSearchClient.search({
       index: 'blocks',
