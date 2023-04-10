@@ -1,10 +1,13 @@
 import RedisClient from './clients/RedisClient';
 import type { IPage } from '../models/pageModel';
 
-interface ParsedBlock {
-  _id: string;
+import OpenAIClient from './clients/OpenAIClient';
+
+interface Chunk {
   text: string;
-};
+  startIndex: number;
+  endIndex: number;
+}
 
 type BlockUpdateInfo = Record<string, boolean>;
 
@@ -44,10 +47,10 @@ const getBlockUpdateInfo = async (page: string) => {
  */
 const chunkBlocks = (pageData: IPage['data'], maxTokenCount: number, updateInfo: BlockUpdateInfo) => {
   // = Initialize an empty array to hold the chunks of blocks.
-  const chunks: ParsedBlock[][] = [];
+  const chunks: Chunk[] = [];
 
   // = Initialize an empty array to hold the current chunk of blocks.
-  let chunk: ParsedBlock[] = [];
+  let chunk = '';
 
   // = Initialize a counter for the total number of tokens in the current chunk.
   let tokenCount = 0;
@@ -55,13 +58,20 @@ const chunkBlocks = (pageData: IPage['data'], maxTokenCount: number, updateInfo:
   // = Initialize a flag to indicate whether the current chunk needs to be updated.
   let doesNeedToUpdate = false;
 
+  // = Initialize the start and end indices for the current chunk.
+  let startIndex = 0;
+  let endIndex = 0;
+
   // ~ Loop over each block on the page.
-  for (let i = 0; i < pageData.length; i += 1) {
+  while (endIndex < pageData.length) {
+    // ~ Increment the end index.
+    endIndex += 1;
+
     // ~ Get the current block.
-    const block = pageData[i];
+    const block = pageData[endIndex];
 
     // ~ Get the text content of the block.
-    const text = block.properties.value as string | undefined;
+    const text = block?.properties?.value as string | undefined;
 
     // ~ If the block has no text content, skip it.
     if (!text) {
@@ -74,32 +84,38 @@ const chunkBlocks = (pageData: IPage['data'], maxTokenCount: number, updateInfo:
     // ~ If the current chunk has more tokens than the maximum token count,
     //   push the current chunk to the chunks array and reset the chunk.
     if (tokenCount + tokens.length > maxTokenCount) {
-      if (chunk.length > 0 && doesNeedToUpdate) {
-        chunks.push(chunk);
+      if (chunk && doesNeedToUpdate) {
+        chunks.push({
+          startIndex,
+          endIndex,
+          text: chunk,
+        });
       }
 
       // ~ Reset the chunk and token count.
       doesNeedToUpdate = false;
-      chunk = [];
+      chunk = '';
       tokenCount = 0;
+      startIndex = endIndex;
     }
 
     // ~ If the current block has been updated, set the flag to `true`.
     doesNeedToUpdate = doesNeedToUpdate || updateInfo[(block as typeof block & { _id: string })._id];
 
     // ~ Push the current block to the current chunk.
-    chunk.push({
-      _id: (block as typeof block & { _id: string })._id,
-      text,
-    });
+    chunk += text;
 
     // ~ Increment the token count by the number of tokens in the current block.
     tokenCount += tokens.length;
   };
 
   // ~ Push the last chunk to the chunks array.
-  if (chunk.length > 0 && doesNeedToUpdate) {
-    chunks.push(chunk);
+  if (chunk && doesNeedToUpdate) {
+    chunks.push({
+      startIndex,
+      endIndex,
+      text: chunk,
+    });
   }
 
   return chunks;
@@ -130,8 +146,25 @@ const refreshEmbeds = async (page: string, pageData: IPage) => {
     return;
   }
 
-  console.log('Updating embeds...');
-  console.log(JSON.stringify(chunks, null, 2));
+  // ~ Get the embeddings for the chunks.
+  const embedings = await OpenAIClient.createEmbedding(
+    {
+      input: chunks.map((chunk) => chunk.text),
+      model: 'text-embedding-ada-002',
+    },
+  );
+
+  // ~ Combine the embeddings with the blockIDs.
+  const parsedEmbeddings = embedings.data.data.map((embedding, index) => {
+    const chunk = chunks[index];
+    return {
+      embedding: embedding.embedding,
+      startIndex: chunk.startIndex,
+      endIndex: chunk.endIndex,
+    };
+  });
+
+  console.log(parsedEmbeddings);
 };
 
 export default refreshEmbeds;

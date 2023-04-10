@@ -47,6 +47,7 @@
     "ioredis": "^4.28.5",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.1.7",
+    "openai": "^3.2.1",
     "rate-limiter-flexible": "^2.3.6",
     "redis": "^4.6.5",
     "supertokens-node": "^12.1.3",
