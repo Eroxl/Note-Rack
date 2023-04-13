@@ -153,6 +153,7 @@ services:
       - chroma-clickhouse
     volumes:
       - clickhouse-data:/bitnami/clickhouse
+      - ./config/chroma_users.xml:/etc/clickhouse-server/users.d/chroma.xml
 
 volumes:
   mongo-data:

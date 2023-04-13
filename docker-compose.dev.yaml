@@ -129,7 +129,7 @@ services:
 
   chroma:
     build:
-      context: https://github.com/chroma-core/chroma.git#0.3.14
+      context: https://github.com/chroma-core/chroma.git#main
     restart: unless-stopped
     expose:
       - 8000
@@ -160,6 +160,7 @@ services:
       - chroma-clickhouse
     volumes:
       - clickhouse-data:/bitnami/clickhouse
+      - ./config/chroma_users.xml:/etc/clickhouse-server/users.d/chroma.xml
 
 volumes:
   mongo-data:

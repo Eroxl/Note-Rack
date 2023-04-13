@@ -30,6 +30,7 @@ const refreshEmbeds = async (updates: EmbedOperation[], page: string, pageOwner:
   await blockCollection.add(
     updateOperations.map((operation) => operation.id),
     embeddings.data.data.map((embedding) => embedding.embedding),
+    updateOperations.map((operation) => operation.value),
   );
 };
 

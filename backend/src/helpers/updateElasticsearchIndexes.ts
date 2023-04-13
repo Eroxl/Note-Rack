@@ -39,7 +39,7 @@ const updateElasticsearchIndexes = async (operations: any, page: string, pageOwn
         },
       }
 
-      const blockId = data['doc-ids'].pop();
+      const blockId = data['doc-ids'][data['doc-ids'].length - 1];
 
       if (!data['block-properties']?.value) return [];
 
@@ -63,7 +63,7 @@ const updateElasticsearchIndexes = async (operations: any, page: string, pageOwn
         },
       }
 
-      const blockId = data['doc-ids'].pop();
+      const blockId = data['doc-ids'][data['doc-ids'].length - 1];
       
       return [
         {

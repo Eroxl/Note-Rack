@@ -55,6 +55,8 @@ router.post(
     // -=- Update ElasticSearch -=-
     await updateElasticsearchIndexes(operations, page, pageOwner);
 
+    console.log('Operations:', operations);
+``
     // -=- Refresh Embeds -=-
     const embedChanges = operations
       .map((operation) => {
@@ -74,9 +76,10 @@ router.post(
           if (!data['block-properties']?.value) return;
           
           const findBlock = (blockIDs: string[], blocks: (IPage['data'][0] & { _id: string })[]): IPage['data'][0] | undefined => {
-            if (blockIDs.length === 1) return blocks.find((block) => block._id === blockIDs[0]);
+            if (blockIDs.length === 1) return blocks.find((block) => block._id.toString() === blockIDs[0]);
 
-            const block = blocks.find((block) => block._id === blockIDs[0]);
+            
+            const block = blocks.find((block) => block._id.toString() === blockIDs[0]);
 
             if (!block) return;
 
@@ -84,7 +87,7 @@ router.post(
           };
 
           const block = findBlock(data['doc-ids'], req.pageData!.data as unknown as (IPage['data'][0] & { _id: string })[]);
-
+          
           const oldText = block?.properties?.value as string || ''
           const newText = data['block-properties']?.value as string;
 
@@ -96,7 +99,7 @@ router.post(
 
           return {
             type: 'update',
-            id: data['doc-ids'].pop() as string,
+            id: data['doc-ids'][data['doc-ids'].length - 1],
             value: newText,
           }
         } else {
@@ -104,7 +107,7 @@ router.post(
 
           return {
             type: 'delete',
-            id: data['doc-ids'].pop() as string,
+            id: data['doc-ids'][data['doc-ids'].length - 1],
           }
         }
       })
