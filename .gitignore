@@ -13,3 +13,6 @@
 # -=- Cypress -=-
 **/cypress/screenshots
 **/cypress/videos
+
+# -=- Security -=-
+/config/.env

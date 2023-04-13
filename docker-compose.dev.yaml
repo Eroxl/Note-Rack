@@ -11,7 +11,8 @@ services:
     networks:
       - web-backend
     volumes:
-      - ./web:/usr/src/
+      - ./web:/usr/src/:rw
+      - ./config/client.env:/usr/src/src/.env.local
     command: yarn run dev
     depends_on:
       - backend
@@ -39,14 +40,19 @@ services:
       - ./backend:/usr/src/
     command: yarn run dev
     environment:
-      MONGO_URL: mongodb://mongo:27017
-      SUPERTOKENS_URL: http://supertokens:3567
-      WEBSITE_DOMAIN: http://127.0.0.1:3000
-      API_DOMAIN: http://127.0.0.1:8000
-      ELASTICSEARCH_URL: http://elasticsearch:9200
-      ELASTICSEARCH_PASSWORD: changeme
-      ELASTICSEARCH_USERNAME: elastic
-      CHROMA_URL: http://chroma:8000
+      MONGO_URL: ${MONGO_URL}
+      SUPERTOKENS_URL: ${SUPERTOKENS_URL}
+      WEBSITE_DOMAIN: ${WEBSITE_DOMAIN}
+      API_DOMAIN: ${API_DOMAIN}
+      ELASTICSEARCH_URL: ${ELASTICSEARCH_URL}
+      ELASTICSEARCH_PASSWORD: ${ELASTICSEARCH_PASSWORD}
+      ELASTICSEARCH_USERNAME: ${ELASTICSEARCH_USERNAME}
+      CHROMA_URL: ${CHROMA_URL}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID}
+      GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
   
   mongo:
     image: mongo:4.0-xenial
@@ -67,7 +73,7 @@ services:
     expose:
       - 3567
     environment:
-      MYSQL_CONNECTION_URI: mysql://supertokens_user:somePassword@sql:3306/supertokens
+      MYSQL_CONNECTION_URI: "mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@${MYSQL_HOST}:3306/${MYSQL_DATABASE}"
     networks:
       - supertokens-sql
       - backend-supertokens
@@ -85,10 +91,10 @@ services:
   sql:
     image: mysql:latest
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_USER: supertokens_user
-      MYSQL_PASSWORD: somePassword 
-      MYSQL_DATABASE: supertokens
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
     expose:
       - 3306
     networks:
@@ -115,8 +121,8 @@ services:
       - discovery.type=single-node
       - cluster.name=docker-cluster
       - xpack.security.enabled=false
-      - ELASTIC_PASSWORD=changeme
-      - ELASTIC_USERNAME=elastic
+      - ELASTIC_PASSWORD=${ELASTICSEARCH_PASSWORD}
+      - ELASTIC_USERNAME=${ELASTICSEARCH_USERNAME}
     volumes:
       - elasticsearch-data:/usr/share/elasticsearch/data
     healthcheck:
@@ -134,9 +140,9 @@ services:
     expose:
       - 8000
     environment:
-      - CHROMA_DB_IMPL=clickhouse
-      - CLICKHOUSE_HOST=clickhouse
-      - CLICKHOUSE_PORT=8123
+      - CHROMA_DB_IMPL=${CHROMA_DB_IMPL}
+      - CLICKHOUSE_HOST=${CLICKHOUSE_HOST}
+      - CLICKHOUSE_PORT=${CLICKHOUSE_PORT}
     depends_on:
       - clickhouse
     networks:
@@ -150,12 +156,12 @@ services:
     image: clickhouse/clickhouse-server:22.9-alpine
     restart: unless-stopped
     expose:
-      - 8123
+      - ${CLICKHOUSE_PORT}
       - 9000
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
       - CLICKHOUSE_TCP_PORT=9000
-      - CLICKHOUSE_HTTP_PORT=8123
+      - CLICKHOUSE_HTTP_PORT=${CLICKHOUSE_PORT}
     networks:
       - chroma-clickhouse
     volumes:
