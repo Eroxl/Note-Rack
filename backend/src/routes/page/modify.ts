@@ -1,14 +1,25 @@
 import express from 'express';
+import { distance } from 'fastest-levenshtein';
 
+import type { IPage } from '../../models/pageModel';
 import type { PageRequest } from '../../middleware/verifyPermissions';
+import type { addBlockQueryProps } from '../../helpers/operations/queryGenerators/blocks/addBlockQuery';
+import type { editBlockQueryProps } from '../../helpers/operations/queryGenerators/blocks/editBlockQuery';
+import type { deleteBlockQueryProps } from '../../helpers/operations/queryGenerators/blocks/deleteBlockQuery';
+import type { EmbedOperation } from '../../helpers/refreshEmbeds';
+
 import verifyPermissions from '../../middleware/verifyPermissions';
 import queryAggregator from '../../helpers/operations/queryAggregator';
 import queryGenerator from '../../helpers/operations/queryGenerators';
-import ElasticSearchClient from '../../helpers/clients/ElasticSearchClient';
-import RedisClient from '../../helpers/clients/RedisClient';
+import updateElasticsearchIndexes from '../../helpers/updateElasticsearchIndexes';
 import refreshEmbeds from '../../helpers/refreshEmbeds';
 
 const router = express.Router();
+
+interface IOperation {
+  type: 'addBlock' | 'editBlock' | 'deleteBlock';
+  data: addBlockQueryProps | editBlockQueryProps | deleteBlockQueryProps;
+}
 
 router.post(
   '/modify/:page',
@@ -18,7 +29,7 @@ router.post(
     const pageOwner = req.pageData!.user;
 
     // -=- If the user has permissions start updating the page -=-
-    const { operations } = req.body;
+    const { operations } = req.body as { operations: IOperation[] };
 
     if (!operations) {
       res.statusCode = 400;
@@ -37,116 +48,72 @@ router.post(
 
     // -=- Update the page -=-
     await queryAggregator(
-      queryGenerator(operations),
+      queryGenerator(operations as any),
       page,
     );
-
-    const updateInfo = await RedisClient.get(`page:${page}`);
-
-    const previousOperations = JSON.parse(updateInfo || '[]') as Record<string, unknown>[];
-
-    const newOperations = [
-      ...previousOperations,
-      ...operations
-        .map(
-          (operation: any) => (
-            operation.data['new-block-id']
-            || operation.data['doc-ids'].pop()
-          )
-        )
-        .filter((blockID: string | undefined) => blockID),
-    ];
-
-    await RedisClient.set(`page:${page}`, JSON.stringify(newOperations));
-
-    if (newOperations.length > +(process.env.EMBED_REFRESH_THRESHOLD || 25)) {
-      await refreshEmbeds(page, req.pageData!);
-    }
-
+    
     // -=- Update ElasticSearch -=-
-    // NOTE:EROXL:(2022-03-29) - I swear I'll come back and refactor all of this later
-    const elasticSearchOps = operations.flatMap((operation: Record<string, any>) => {
-      if (operation.type === 'addBlock') {
-        const { data } = operation as {
-          data: {
-            'new-block-id': string,
-            'new-block-properties': {
-              value: string,
-            },
-          },
-        }
+    await updateElasticsearchIndexes(operations, page, pageOwner);
 
-        const blockId = data['new-block-id'];
+    // -=- Refresh Embeds -=-
+    const embedChanges = operations
+      .map((operation) => {
+        if (operation.type == 'addBlock') {
+          const data = operation.data as addBlockQueryProps;
+          
+          if (!data['new-block-properties']?.value) return;
 
-        return [
-          {
-            create: {
-              _index: 'blocks',
-              _id: `${page}.${blockId}`,
-            }
-          },
-          {
-            userID: pageOwner,
-            blockId: blockId,
-            pageId: page,
-            content: data['new-block-properties']?.value || '',
+          return {
+            type: 'update',
+            id: data['new-block-properties']?.value as string,
+            value: data['new-block-properties']?.value as string,
           }
-        ]
-      } else if (operation.type === 'editBlock') {
-        const { data } = operation as {
-          data: {
-            'doc-ids': string[],
-            'block-properties': {
-              value?: string,
-            },
-          },
-        }
+        } else if (operation.type === 'editBlock') {
+          const data = operation.data as editBlockQueryProps;
 
-        const blockId = data['doc-ids'].pop();
+          if (!data['block-properties']?.value) return;
+          
+          const findBlock = (blockIDs: string[], blocks: (IPage['data'][0] & { _id: string })[]): IPage['data'][0] | undefined => {
+            if (blockIDs.length === 1) return blocks.find((block) => block._id === blockIDs[0]);
 
-        if (!data['block-properties']?.value) return [];
+            const block = blocks.find((block) => block._id === blockIDs[0]);
 
-        return [
-          {
-            update: {
-              _index: 'blocks',
-              _id: `${page}.${blockId}`,
-            }
-          },
-          {
-            doc: {
-              content: data['block-properties']?.value,
-            }
+            if (!block) return;
+
+            return findBlock(blockIDs.slice(1), block.children as unknown as (IPage['data'][0] & { _id: string })[]);
+          };
+
+          const block = findBlock(data['doc-ids'], req.pageData!.data as unknown as (IPage['data'][0] & { _id: string })[]);
+
+          const oldText = block?.properties?.value as string || ''
+          const newText = data['block-properties']?.value as string;
+
+          if (oldText === newText || !newText || !oldText) return;
+
+          const updateDistance = distance(oldText, newText);
+
+          if (updateDistance <= 10) return;
+
+          return {
+            type: 'update',
+            id: data['doc-ids'].pop() as string,
+            value: newText,
           }
-        ];
-      } else if (operation.type === 'deleteBlock') {
-        const { data } = operation as {
-          data: {
-            'doc-ids': string[],
-          },
-        }
+        } else {
+          const data = operation.data as deleteBlockQueryProps;
 
-        const blockId = data['doc-ids'].pop();
-        
-        return [
-          {
-            delete: {
-              _index: 'blocks',
-              _id: `${page}.${blockId}`,
-            }
+          return {
+            type: 'delete',
+            id: data['doc-ids'].pop() as string,
           }
-        ];
-      }
-    });
+        }
+      })
+      .filter((operation) => operation) as EmbedOperation[];
 
-    try {
-      await ElasticSearchClient.bulk({
-        operations: elasticSearchOps,
-      });
-    } catch (err) {
-      console.error(err);
+    if (embedChanges.length > 0) {
+      await refreshEmbeds(embedChanges, page, pageOwner);
     }
-  },
+  }
 );
 
 export default router;

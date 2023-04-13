@@ -26,10 +26,12 @@ services:
       - backend-mongo
       - backend-supertokens
       - backend-elasticsearch
+      - backend-chroma
     depends_on:
       - mongo
       - supertokens
       - elasticsearch
+      - chroma
     environment:
       MONGO_URL: "mongodb://mongo:27017"
       SUPERTOKENS_URL: "http://supertokens:3567"
@@ -38,7 +40,7 @@ services:
       ELASTICSEARCH_URL: "http://elasticsearch:9200"
       ELASTICSEARCH_PASSWORD: "changeme"
       ELASTICSEARCH_USERNAME: "elastic"
-      REDIS_URL: redis://redis:6379
+      CHROMA_URL: http://chroma:8000
   
   mongo:
     image: mongo:4.0-xenial
@@ -118,30 +120,53 @@ services:
     logging:
       driver: none
 
-  redis:
-    image: redis:7.2-rc1
+  chroma:
+    build:
+      context: https://github.com/chroma-core/chroma.git#0.3.14
     restart: unless-stopped
     expose:
-      - 6379
+      - 8000
+    environment:
+      - CHROMA_DB_IMPL=clickhouse
+      - CLICKHOUSE_HOST=clickhouse
+      - CLICKHOUSE_PORT=8123
+    depends_on:
+      - clickhouse
     networks:
-      - backend-redis
-    healthcheck:
-      test: redis-cli -h
-      interval: 30s
-      timeout: 10s
-      retries: 5
-    logging:
-      driver: none
+      - backend-chroma
+      - chroma-clickhouse
+    command: uvicorn chromadb.app:app --reload --workers 1 --host 0.0.0.0 --port 8000
+    volumes:
+      - chroma-data:/index_data
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:22.9-alpine
+    restart: unless-stopped
+    expose:
+      - 8123
+      - 9000
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - CLICKHOUSE_TCP_PORT=9000
+      - CLICKHOUSE_HTTP_PORT=8123
+    networks:
+      - chroma-clickhouse
+    volumes:
+      - clickhouse-data:/bitnami/clickhouse
 
 volumes:
   mongo-data:
   sql-data:
   elasticsearch-data:
+  chroma-data:
+  clickhouse-data:
 
 networks:
   web-backend:
   backend-mongo:
   backend-supertokens:
-  supertokens-sql:
   backend-elasticsearch:
   backend-redis:
+  supertokens-sql:
+  backend-chroma:
+  chroma-clickhouse:
