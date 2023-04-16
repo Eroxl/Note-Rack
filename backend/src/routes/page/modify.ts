@@ -97,16 +97,16 @@ router.post(
 
           const [block, index] = findBlock(data['doc-ids'], req.pageData!.data as unknown as (IPage['data'][0] & { _id: string })[]) || [undefined, undefined]
           
-          const oldText = block?.properties?.value as string || ''
+          const oldText = block?.properties?.value as string;
           const newText = data['block-properties']?.value as string;
 
           if (index === undefined || !block) return;
 
-          // if (oldText === newText || !newText || !oldText) return;
+          if (oldText === newText || newText === undefined || oldText === undefined) return;
 
-          // const updateDistance = distance(oldText, newText);
+          const updateDistance = distance(oldText, newText);
 
-          // if (updateDistance <= 0) return;
+          if (updateDistance <= 0) return;
 
           return {
             type: 'update',

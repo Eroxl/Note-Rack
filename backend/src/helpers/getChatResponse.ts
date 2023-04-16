@@ -1,7 +1,16 @@
 import OpenAIClient from './clients/OpenAIClient';
 import ChromaClient from './clients/ChromaClient';
 
-import type { ChatMessage } from '../routes/account/chat';
+import type { ChatCompletionRequestMessage } from 'openai';
+
+const CONTEXT_PROMPT_TEMPLATE = '### Context: ';
+
+const QUESTION_PROMPT_TEMPLATE = '### Question: ';
+
+const PRE_PROMPT = `You are a helpful AI assistant. Use the following pieces of context to answer the question at the end.
+If you don't know the answer, just say you don't know. DO NOT try to make up an answer.
+If the question is not related to the context, politely respond that you are tuned to only answer questions that are related to the context.
+Try to keep your answers helpful, short and to the point using markdown formatting.`;
 
 interface QueryResponse {
   ids: string[][];
@@ -21,22 +30,22 @@ interface GetQueryResponse {
   }[];
 }
 
-const getChatResponse = async (messages: ChatMessage[], user: string): Promise<string> => {
-  const latestMessage = messages[messages.length - 1];
-
-  if (latestMessage.type === 'bot') {
-    return latestMessage.message;
-  }
-
+const getChatResponse = async (
+  messages: ChatCompletionRequestMessage[],
+  question: string,
+  user: string
+): Promise<string> => {
   const blockCollection = await ChromaClient.getCollection('blocks');
 
+  // ~ Create an embedding for the latest message
   const embeddings = await OpenAIClient.createEmbedding({
-    input: latestMessage.message,
+    input: question,
     model: 'text-embedding-ada-002',
   });
 
   try {
-    const query = await blockCollection.query(
+    // ~ Query the database for the most similar message
+    const similarMessages = await blockCollection.query(
       embeddings.data.data[0].embedding,
       1,
       {
@@ -44,14 +53,22 @@ const getChatResponse = async (messages: ChatMessage[], user: string): Promise<s
       },
     ) as QueryResponse;
 
-    if (!query.documents) {
+    // ~ If there are no similar messages, return a default message
+    if (!similarMessages.documents) {
       return 'I don\'t know what to say.';
     }
 
-    const context = Array.from(new Set(query.metadatas[0].flatMap((metadata) => metadata.context)));
+    // ~ Get the context messages
+    const contextIDs = Array.from(
+      new Set(
+        similarMessages.metadatas
+          .flat()
+          .flatMap((metadata) => metadata.context)
+      )
+    )
 
     const contextMessages = await blockCollection.get(
-      context,
+      contextIDs,
       {
         userID: user,
       }
@@ -63,13 +80,41 @@ const getChatResponse = async (messages: ChatMessage[], user: string): Promise<s
       contextMessagesMap[contextMessages.ids[index]] =  document;
     });
 
-    return query.metadatas
+    const context = similarMessages.metadatas
       .flat(2)
       .flatMap((metadata) => metadata.context)
       .map((id) => contextMessagesMap[id])
       .filter((message) => message)
       .map((message) => message.trim())
       .join('\n')
+
+    
+    const response = await OpenAIClient.createChatCompletion({
+      messages: [
+        {
+          role: 'system',
+          content: PRE_PROMPT
+        },
+        ...messages,
+        {
+          role: 'system',
+          content: `${CONTEXT_PROMPT_TEMPLATE}${context}`
+        },
+        {
+          role: 'user',
+          content: `${QUESTION_PROMPT_TEMPLATE}${question}`
+        }
+      ],
+      model: 'gpt-3.5-turbo'
+    })
+
+    const answer = response.data.choices[0].message?.content;
+
+    if (!answer) {
+      return 'I don\'t know what to say.';
+    }
+
+    return answer;
   } catch (error) {
     console.log(error);
 

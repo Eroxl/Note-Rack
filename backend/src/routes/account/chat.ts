@@ -2,14 +2,11 @@ import express from 'express';
 import type { SessionRequest } from 'supertokens-node/framework/express';
 import { verifySession } from 'supertokens-node/recipe/session/framework/express';
 
+import type { ChatCompletionRequestMessage } from 'openai';
+
 import getChatResponse from '../../helpers/getChatResponse';
 
 const router = express.Router();
-
-export interface ChatMessage {
-  type: 'bot' | 'user' | 'context',
-  message: string,
-}
 
 router.get(
   '/chat',
@@ -35,11 +32,11 @@ router.get(
       return;
     }
 
-    let messages: ChatMessage[] = [];
+    let messages: ChatCompletionRequestMessage[] = [];
 
     if (previousMessages) {
       try {
-        const parsedPreviousMessages = JSON.parse(previousMessages) as ChatMessage[];
+        const parsedPreviousMessages = JSON.parse(previousMessages) as ChatCompletionRequestMessage[];
 
         if (!Array.isArray(parsedPreviousMessages)) throw new Error('previousMessages is not an array');
 
@@ -54,21 +51,22 @@ router.get(
       }
     }
 
-    messages.push({
-      type: 'user',
-      message,
-    });
-
     if (messages.length > 10) {
       messages = messages.slice(-10);
     }
 
-    const response = await getChatResponse(messages, req.session!.getUserId());
+    const response = await getChatResponse(messages, message, req.session!.getUserId());
 
-    messages.push({
-      type: 'bot',
-      message: response,
-    });
+    messages.push(
+      {
+        role: 'user',
+        content: message,
+      },
+      {
+        role: 'assistant',
+        content: response,
+      },
+    );
 
     res.statusCode = 200;
     res.json({
