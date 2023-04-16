@@ -3,6 +3,8 @@ import ChromaClient from './clients/ChromaClient';
 
 import type { ChatCompletionRequestMessage } from 'openai';
 
+const RELATIVE_TEXT_COUNT = 3;
+
 const CONTEXT_PROMPT_TEMPLATE = '### Context: ';
 
 const QUESTION_PROMPT_TEMPLATE = '### Question: ';
@@ -47,7 +49,7 @@ const getChatResponse = async (
     // ~ Query the database for the most similar message
     const similarMessages = await blockCollection.query(
       embeddings.data.data[0].embedding,
-      1,
+      RELATIVE_TEXT_COUNT,
       {
         userID: user,
       },
@@ -89,6 +91,9 @@ const getChatResponse = async (
       .join('\n')
 
     
+    // ~ TODO: Start adding support for streaming the response
+    //         https://www.reddit.com/r/ChatGPT/comments/11m3jdw/chatgpt_api_streaming/
+    //         https://gist.github.com/montanaflynn/6a438f0be606daede899
     const response = await OpenAIClient.createChatCompletion({
       messages: [
         {

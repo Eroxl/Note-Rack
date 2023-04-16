@@ -2,7 +2,8 @@
 **/.DS_Store
 
 # -=- Eroxl's Device Specific Ignores -=-
-**/Icon?
+Icon?
+!icons
 
 # -=- Node Modules -=-
 **/node_modules/**
