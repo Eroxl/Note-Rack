@@ -63,7 +63,7 @@ router.get(
       messages = messages.slice(-10);
     }
 
-    const response = await getChatResponse(messages);
+    const response = await getChatResponse(messages, req.session!.getUserId());
 
     messages.push({
       type: 'bot',

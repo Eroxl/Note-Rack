@@ -55,8 +55,6 @@ router.post(
     // -=- Update ElasticSearch -=-
     await updateElasticsearchIndexes(operations, page, pageOwner);
 
-    console.log('Operations:', operations);
-``
     // -=- Refresh Embeds -=-
     const embedChanges = operations
       .map((operation) => {
@@ -65,9 +63,14 @@ router.post(
           
           if (!data['new-block-properties']?.value) return;
 
+          const index = data['new-block-index']
+
           return {
             type: 'update',
-            id: data['new-block-properties']?.value as string,
+            id: `${page}-${data['new-block-properties']?.value as string}`,
+            context: (req.pageData!.data as (IPage['data'][0] & { _id: string })[])
+              .slice(Math.max(0, index - 5), Math.min(req.pageData!.data.length, index + 5))
+              .map((block) => block._id as string),
             value: data['new-block-properties']?.value as string,
           }
         } else if (operation.type === 'editBlock') {
@@ -75,8 +78,14 @@ router.post(
 
           if (!data['block-properties']?.value) return;
           
-          const findBlock = (blockIDs: string[], blocks: (IPage['data'][0] & { _id: string })[]): IPage['data'][0] | undefined => {
-            if (blockIDs.length === 1) return blocks.find((block) => block._id.toString() === blockIDs[0]);
+          const findBlock = (blockIDs: string[], blocks: (IPage['data'][0] & { _id: string })[]): [IPage['data'][0]  & { _id: string }, number] | undefined => {
+            if (blockIDs.length === 1) {
+              const index = blocks.findIndex((block) => block._id.toString() === blockIDs[0]);
+
+              if (index === -1) return;
+
+              return [blocks[index], index];
+            }
 
             
             const block = blocks.find((block) => block._id.toString() === blockIDs[0]);
@@ -86,20 +95,25 @@ router.post(
             return findBlock(blockIDs.slice(1), block.children as unknown as (IPage['data'][0] & { _id: string })[]);
           };
 
-          const block = findBlock(data['doc-ids'], req.pageData!.data as unknown as (IPage['data'][0] & { _id: string })[]);
+          const [block, index] = findBlock(data['doc-ids'], req.pageData!.data as unknown as (IPage['data'][0] & { _id: string })[]) || [undefined, undefined]
           
           const oldText = block?.properties?.value as string || ''
           const newText = data['block-properties']?.value as string;
 
-          if (oldText === newText || !newText || !oldText) return;
+          if (index === undefined || !block) return;
 
-          const updateDistance = distance(oldText, newText);
+          // if (oldText === newText || !newText || !oldText) return;
 
-          if (updateDistance <= 10) return;
+          // const updateDistance = distance(oldText, newText);
+
+          // if (updateDistance <= 0) return;
 
           return {
             type: 'update',
-            id: data['doc-ids'][data['doc-ids'].length - 1],
+            id: `${page}-${data['doc-ids'][data['doc-ids'].length - 1]}`,
+            context: (req.pageData!.data as (IPage['data'][0] & { _id: string })[])
+              .slice(Math.max(0, index - 5), Math.min(req.pageData!.data.length, index + 5))
+              .map((block) => block._id as string),
             value: newText,
           }
         } else {
@@ -107,7 +121,7 @@ router.post(
 
           return {
             type: 'delete',
-            id: data['doc-ids'][data['doc-ids'].length - 1],
+            id: `${page}-${data['doc-ids'][data['doc-ids'].length - 1]}`,
           }
         }
       })

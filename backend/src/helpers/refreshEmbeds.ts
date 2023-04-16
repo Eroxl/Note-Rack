@@ -4,6 +4,7 @@ import OpenAIClient from './clients/OpenAIClient';
 export interface EmbedOperation {
   type: 'update' | 'delete';
   id: string;
+  context: string[];
   value?: string;
 }
 
@@ -18,6 +19,9 @@ const refreshEmbeds = async (updates: EmbedOperation[], page: string, pageOwner:
 
   await blockCollection.delete(
     updates.map((operation) => `${page}.${operation.id}`),
+    {
+      userID: pageOwner,
+    }
   );
 
   const updateOperations = updates.filter((update) => update.type === 'update');
@@ -27,10 +31,18 @@ const refreshEmbeds = async (updates: EmbedOperation[], page: string, pageOwner:
     model: 'text-embedding-ada-002',
   });
 
+  const metaData = new Array(updateOperations.length)
+    .fill(undefined)
+    .map((_, index) => ({
+      userID: pageOwner,
+      context: updateOperations[index].context.map((context) => `${page}-${context}`),
+    }));
+
   await blockCollection.add(
     updateOperations.map((operation) => operation.id),
     embeddings.data.data.map((embedding) => embedding.embedding),
-    updateOperations.map((operation) => operation.value),
+    metaData,
+    updateOperations.map((operation) => operation?.value || ''),
   );
 };
 

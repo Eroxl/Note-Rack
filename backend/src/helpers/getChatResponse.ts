@@ -5,10 +5,23 @@ import type { ChatMessage } from '../routes/account/chat';
 
 interface QueryResponse {
   ids: string[][];
-  metadatas: string[][];
+  documents: string[][];
+  metadatas: {
+    userID: string;
+    context: string[];
+  }[][];
 }
 
-const getChatResponse = async (messages: ChatMessage[]): Promise<string> => {
+interface GetQueryResponse {
+  ids: string[];
+  documents: string[];
+  metadatas: {
+    userID: string;
+    context: string[];
+  }[];
+}
+
+const getChatResponse = async (messages: ChatMessage[], user: string): Promise<string> => {
   const latestMessage = messages[messages.length - 1];
 
   if (latestMessage.type === 'bot') {
@@ -22,12 +35,46 @@ const getChatResponse = async (messages: ChatMessage[]): Promise<string> => {
     model: 'text-embedding-ada-002',
   });
 
-  const query = await blockCollection.query(
-    embeddings.data.data[0].embedding,
-    1,
-  ) as QueryResponse;
+  try {
+    const query = await blockCollection.query(
+      embeddings.data.data[0].embedding,
+      1,
+      {
+        userID: user,
+      },
+    ) as QueryResponse;
 
-  return query.metadatas.map((metadata) => metadata[0]).join('\n\n');
+    if (!query.documents) {
+      return 'I don\'t know what to say.';
+    }
+
+    const context = Array.from(new Set(query.metadatas[0].flatMap((metadata) => metadata.context)));
+
+    const contextMessages = await blockCollection.get(
+      context,
+      {
+        userID: user,
+      }
+    ) as GetQueryResponse;
+
+    const contextMessagesMap: Record<string, string> = {};
+
+    contextMessages.documents.forEach((document, index) => {
+      contextMessagesMap[contextMessages.ids[index]] =  document;
+    });
+
+    return query.metadatas
+      .flat(2)
+      .flatMap((metadata) => metadata.context)
+      .map((id) => contextMessagesMap[id])
+      .filter((message) => message)
+      .map((message) => message.trim())
+      .join('\n')
+  } catch (error) {
+    console.log(error);
+
+    return 'I don\'t know what to say.';
+  }
 }
 
 export default getChatResponse;
