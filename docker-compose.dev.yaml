@@ -165,7 +165,7 @@ services:
     networks:
       - chroma-clickhouse
     volumes:
-      - clickhouse-data:/bitnami/clickhouse
+      - clickhouse-data:/var/lib/clickhouse/
       - ./config/chroma_users.xml:/etc/clickhouse-server/users.d/chroma.xml
 
 volumes:

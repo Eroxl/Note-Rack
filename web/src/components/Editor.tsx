@@ -84,7 +84,7 @@ const Editor = () => {
     >
       <div className={`w-full h-full mt-10 overflow-y-auto print:m-0 ${isLoggedIn && 'pl-52'} print:p-0 overflow-x-clip no-scrollbar`} id="main-editor">
         <div
-          className="flex flex-col items-center w-full h-max bg-amber-50 dark:bg-zinc-700 print:dark:bg-white print:bg-white bg-"
+          className="flex flex-col items-center w-full h-max bg-amber-50 dark:bg-zinc-700 print:dark:bg-white print:bg-white"
         >
           {/* ~ Render the page thumbnail */}
           <PageThumbnail colour={pageData.style.colour} page={page as string} />

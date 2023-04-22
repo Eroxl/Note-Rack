@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import Image from 'next/image';
 
 import PageSidebarItem from './PageSidebarItem';
 import Brain from '../../public/icons/Brain.svg';
 import Search from '../../public/icons/Search.svg';
+import Link from 'next/link';
 
 export interface PageSidebarItemProps {
   _id: string,
@@ -73,20 +75,22 @@ const PageSidebar = () => {
           />
           Search
         </button>
-        <button
-          className="flex flex-row gap-1 p-2 py-1 text-left text-white rounded hover:bg-white/20"
-          onClick={() => {
-            document.dispatchEvent(new CustomEvent('openChatPage'));
-          }}
+        <Link
+          href="/note-rack/chat"
         >
-          <Image
-            src={Brain}
-            alt="Chat"
-            width={24}
-            height={24}
-          />
-          Chat
-        </button>
+          <a
+            className="flex flex-row gap-1 p-2 py-1 text-left text-white rounded hover:bg-white/20"
+            href="/note-rack/chat"
+          >
+            <Image
+              src={Brain}
+              alt="Chat"
+              width={24}
+              height={24}
+            />
+            Chat
+          </a>
+        </Link>
       </div>
       {/* ~ Render the page tree after it has been loaded */}
       {!isLoading && (
