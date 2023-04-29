@@ -15,6 +15,7 @@ import Chat from '../../components/Chat';
 
 const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {
   const [pageData, setPageData] = useState<PageDataInterface['message']>();
+  const [isChatOpen, setIsChatOpen] = useState(false);
   const { pageDataReq } = props;
 
   const session = useSessionContext();
@@ -49,6 +50,18 @@ const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {
       document.removeEventListener('keydown', handleKeyDown);
     }
   }, []);
+
+  useEffect(() => {
+    const handleChatToggle = () => {
+      setIsChatOpen(!isChatOpen);
+    };
+
+    document.addEventListener('openChatPanel', handleChatToggle);
+
+    return () => {
+      document.removeEventListener('openChatPanel', handleChatToggle);
+    }
+  }, [isChatOpen]);
 
   return (
     <>
@@ -85,7 +98,7 @@ const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {
       >
         <MenuBar>
           <div className={`flex ${isLoggedIn && 'pl-52'} print:pl-0 h-screen`}>
-            <div className="w-1/2">
+            <div className={`${isChatOpen ? 'w-1/2' : 'w-full'}`}>
               <DndProvider backend={HTML5Backend}>
                 {
                   !pageData
@@ -94,10 +107,16 @@ const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {
                 }
               </DndProvider>
             </div>
-            <div className="w-1 bg-black/10" />
-            <div className="w-1/2">
-              <Chat />
-            </div>
+            {
+              isChatOpen && (
+                <>
+                  <div className="w-1 bg-black/10" />
+                  <div className="w-1/2">
+                    <Chat />
+                  </div>
+                </>
+              )
+            }
           </div>
         </MenuBar>
       </PageContext.Provider>
