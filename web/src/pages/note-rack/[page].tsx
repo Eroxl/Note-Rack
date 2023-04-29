@@ -3,7 +3,7 @@ import { GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { useRouter } from 'next/router';
+import { useSessionContext } from 'supertokens-auth-react/recipe/session';
 
 import type PageDataInterface from '../../lib/types/pageTypes';
 import Editor from '../../components/Editor';
@@ -17,8 +17,9 @@ const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {
   const [pageData, setPageData] = useState<PageDataInterface['message']>();
   const { pageDataReq } = props;
 
-  const router = useRouter();
-  const { page } = router.query;
+  const session = useSessionContext();
+  const isLoggedIn = session?.loading === false && session?.doesSessionExist === true;
+
 
   // TODO:EROXL: Add error handling here...
   useEffect(() => {
@@ -83,20 +84,22 @@ const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {
         }}
       >
         <MenuBar>
-          {
-            page === 'chat'
-              ? <Chat />
-              : (
-                <DndProvider backend={HTML5Backend}>
-                  {
-                    !pageData
-                      ? <LoadingPage />
-                      : <Editor />
-                  }
-                </DndProvider>
-              )
-            }
-          </MenuBar>
+          <div className={`flex ${isLoggedIn && 'pl-52'} print:pl-0 h-screen`}>
+            <div className="w-1/2">
+              <DndProvider backend={HTML5Backend}>
+                {
+                  !pageData
+                    ? <LoadingPage />
+                    : <Editor />
+                }
+              </DndProvider>
+            </div>
+            <div className="w-1 bg-black/10" />
+            <div className="w-1/2">
+              <Chat />
+            </div>
+          </div>
+        </MenuBar>
       </PageContext.Provider>
     </>
   );

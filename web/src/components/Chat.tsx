@@ -31,25 +31,6 @@ const Chat = () => {
   }
 
   useEffect(() => {
-    if (!isLoggedIn) return;
-
-    const pagePaths: PagePath[] = [{
-      icon: '🧠',
-      name: 'Chat',
-      pageID: 'chat',
-    }]
-
-    document.dispatchEvent(
-      new CustomEvent(
-        'pagePath',
-        {
-          detail: pagePaths,
-        },
-      ),
-    )
-  }, [isLoggedIn])
-
-  useEffect(() => {
     if (chatRef.current) {
       chatRef.current.scrollTop = chatRef.current.scrollHeight;
     }
@@ -65,10 +46,10 @@ const Chat = () => {
   }, []);
 
   return (
-    <div className="w-full h-full mt-10 overflow-y-auto pl-52 overflow-x-clip">
-      <div className="relative w-full h-screen max-w-4xl px-20 mx-auto">
+    <div className="w-full h-full mt-10 overflow-y-auto overflow-x-clip">
+      <div className="relative w-full h-screen max-w-4xl mx-auto">
         <div
-          className="flex flex-col w-full h-[calc(100%-8rem)] mx-auto overflow-scroll no-scrollbar"
+          className="flex flex-col w-full h-[calc(100%-8rem)] mx-auto overflow-scroll no-scrollbar px-20"
           ref={chatRef}
         >
           {
