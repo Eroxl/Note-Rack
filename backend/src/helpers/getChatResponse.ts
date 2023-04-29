@@ -1,7 +1,9 @@
-import OpenAIClient from './clients/OpenAIClient';
-import ChromaClient from './clients/ChromaClient';
-
+import { DataType } from '@zilliz/milvus2-sdk-node/dist/milvus';
 import type { ChatCompletionRequestMessage } from 'openai';
+
+import OpenAIClient from './clients/OpenAIClient';
+import MilvusClient from './clients/MilvusClient';
+
 
 const RELATIVE_TEXT_COUNT = 3;
 
@@ -13,30 +15,15 @@ const PRE_PROMPT = `You are a helpful AI assistant. Use the following pieces of 
 If you don't know the answer, just say you don't know. DO NOT try to make up an answer.
 Try to keep your answers helpful, short and to the point using markdown formatting.`;
 
-interface QueryResponse {
-  ids: string[][];
-  documents: string[][];
-  metadatas: {
-    userID: string;
-    context: string[];
-  }[][];
-}
-
-interface GetQueryResponse {
-  ids: string[];
-  documents: string[];
-  metadatas: {
-    userID: string;
-    context: string[];
-  }[];
-}
-
 const getChatResponse = async (
   messages: ChatCompletionRequestMessage[],
   question: string,
-  user: string
+  page: string
 ): Promise<string> => {
-  const blockCollection = await ChromaClient.getCollection('blocks');
+  // ~ Load the block collection
+  await MilvusClient.loadCollection({
+    collection_name: 'blocks',
+  });
 
   // ~ Create an embedding for the latest message
   const embeddings = await OpenAIClient.createEmbedding({
@@ -45,45 +32,54 @@ const getChatResponse = async (
   });
 
   try {
-    // ~ Query the database for the most similar message
-    const similarMessages = await blockCollection.query(
-      embeddings.data.data[0].embedding,
-      RELATIVE_TEXT_COUNT,
-      {
-        userID: user,
+    const similarMessages = await MilvusClient.search({
+      collection_name: 'blocks',
+      limit: RELATIVE_TEXT_COUNT,
+      vector_type: DataType.FloatVector,
+      params: {
+        anns_field: 'block_id',
+        topk: `${RELATIVE_TEXT_COUNT}`,
+        metric_type: "L2",
+        params: JSON.stringify({ nprobe: 10 }),
       },
-    ) as QueryResponse;
+      vector: embeddings.data.data[0].embedding,
+      expr: `page_id == ${page}`,
+      output_fields: ['content', 'context']
+    })
 
     // ~ If there are no similar messages, return a default message
-    if (!similarMessages.documents) {
+    if (!similarMessages.results) {
       return 'I don\'t know what to say.';
     }
+
+    console.log(JSON.stringify(
+      similarMessages
+    ))
 
     // ~ Get the context messages
     const contextIDs = Array.from(
       new Set(
-        similarMessages.metadatas
+        similarMessages.results
           .flat()
-          .flatMap((metadata) => metadata.context)
+          .flatMap((metadata) => JSON.parse(metadata.context) as string[])
       )
-    )
+    );
 
-    const contextMessages = await blockCollection.get(
-      contextIDs,
-      {
-        userID: user,
-      }
-    ) as GetQueryResponse;
+    const contextMessages = await MilvusClient.query({
+      collection_name: 'blocks',
+      expr: `block_id in [${contextIDs.join(', ')}]`,
+      output_fields: ['content', 'block_id'],
+    })
 
     const contextMessagesMap: Record<string, string> = {};
 
-    contextMessages.documents.forEach((document, index) => {
-      contextMessagesMap[contextMessages.ids[index]] =  document;
+    contextMessages.data.forEach((result) => {
+      contextMessagesMap[result.block_id] =  result.content;
     });
 
-    const context = similarMessages.metadatas
-      .flat(2)
-      .flatMap((metadata) => metadata.context)
+    const context = similarMessages.results
+      .map((result) => result.context)
+      .flat()
       .map((id) => contextMessagesMap[id])
       .filter((message) => message)
       .map((message) => message.trim())

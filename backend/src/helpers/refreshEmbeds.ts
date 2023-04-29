@@ -1,4 +1,4 @@
-import ChromaClient from './clients/ChromaClient';
+import MilvusClient from './clients/MilvusClient';
 import OpenAIClient from './clients/OpenAIClient';
 
 export interface EmbedOperation {
@@ -14,15 +14,10 @@ export interface EmbedOperation {
  * @param page The page to update the embeds for.
  * @param pageData The page data of the page that is being updated.
  */
-const refreshEmbeds = async (updates: EmbedOperation[], page: string, pageOwner: string) => {
-  const blockCollection = await ChromaClient.getCollection('blocks');
-
-  await blockCollection.delete(
-    updates.map((operation) => `${page}.${operation.id}`),
-    {
-      userID: pageOwner,
-    }
-  );
+const refreshEmbeds = async (updates: EmbedOperation[], page: string) => {
+  await MilvusClient.loadCollection({
+    collection_name: 'blocks'
+  });
 
   const updateOperations = updates.filter((update) => update.type === 'update');
 
@@ -31,19 +26,32 @@ const refreshEmbeds = async (updates: EmbedOperation[], page: string, pageOwner:
     model: 'text-embedding-ada-002',
   });
 
-  const metaData = new Array(updateOperations.length)
+  const fieldsData = new Array(updateOperations.length)
     .fill(undefined)
     .map((_, index) => ({
-      userID: pageOwner,
-      context: updateOperations[index].context.map((context) => `${page}-${context}`),
+      block_id: updateOperations[index].id,
+      page_id: page,
+      embedding: embeddings.data.data[index].embedding,
+      content: updateOperations[index].value,
+      context: JSON.stringify(updateOperations[index].context),
     }));
 
-  await blockCollection.add(
-    updateOperations.map((operation) => operation.id),
-    embeddings.data.data.map((embedding) => embedding.embedding),
-    metaData,
-    updateOperations.map((operation) => operation?.value || ''),
-  );
+
+  await MilvusClient.insert({
+    collection_name: 'blocks',
+    fields_data: fieldsData
+  });
+
+  const deleteOperations = updates.filter((update) => update.type === 'delete');
+
+  await MilvusClient.deleteEntities({
+    collection_name: 'blocks',
+    expr: `block_id in [${deleteOperations.map((operation) => operation.id).join(', ')}]`,
+  });
+
+  await MilvusClient.flush({
+    collection_names: ['blocks'],
+  });
 };
 
 export default refreshEmbeds;

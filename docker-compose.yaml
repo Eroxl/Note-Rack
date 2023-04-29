@@ -28,12 +28,10 @@ services:
       - backend-mongo
       - backend-supertokens
       - backend-elasticsearch
-      - backend-chroma
     depends_on:
       - mongo
       - supertokens
       - elasticsearch
-      - chroma
     environment:
       MONGO_URL: ${MONGO_URL}
       SUPERTOKENS_URL: ${SUPERTOKENS_URL}
@@ -42,12 +40,12 @@ services:
       ELASTICSEARCH_URL: ${ELASTICSEARCH_URL}
       ELASTICSEARCH_PASSWORD: ${ELASTICSEARCH_PASSWORD}
       ELASTICSEARCH_USERNAME: ${ELASTICSEARCH_USERNAME}
-      CHROMA_URL: ${CHROMA_URL}
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
       GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID}
       GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET}
       OPENAI_API_KEY: ${OPENAI_API_KEY}
+      MILVUS_URL: ${MILVUS_URL}
   
   mongo:
     image: mongo:4.0-xenial
@@ -127,54 +125,82 @@ services:
     logging:
       driver: none
 
-  chroma:
-    build:
-      context: https://github.com/chroma-core/chroma.git#0.3.14
-    restart: unless-stopped
-    expose:
-      - 8000
+  milvus-standalone:
+    container_name: milvus-standalone
+    image: milvusdb/milvus:v2.2.6
+    command: ["milvus", "run", "standalone"]
     environment:
-      - CHROMA_DB_IMPL=${CHROMA_DB_IMPL}
-      - CLICKHOUSE_HOST=${CLICKHOUSE_HOST}
-      - CLICKHOUSE_PORT=${CLICKHOUSE_PORT}
+      ETCD_ENDPOINTS: etcd:2379
+      MINIO_ADDRESS: minio:9000
+    networks:
+      - backend-milvus
+      - milvus-minio
+      - milvus-etcd
+    volumes:
+      - milvus-data:/var/lib/milvus
+    expose:
+      - 19530
+      - 9091
     depends_on:
-      - clickhouse
-    networks:
-      - backend-chroma
-      - chroma-clickhouse
-    command: uvicorn chromadb.app:app --reload --workers 1 --host 0.0.0.0 --port 8000
-    volumes:
-      - chroma-data:/index_data
+      - etcd
+      - minio
+    logging:
+      driver: none
 
-  clickhouse:
-    image: clickhouse/clickhouse-server:22.9-alpine
-    restart: unless-stopped
-    expose:
-      - ${CLICKHOUSE_PORT}
-      - 9000
+  etcd:
+    container_name: milvus-etcd
+    image: quay.io/coreos/etcd:v3.5.5
     environment:
-      - ALLOW_EMPTY_PASSWORD=yes
-      - CLICKHOUSE_TCP_PORT=9000
-      - CLICKHOUSE_HTTP_PORT=${CLICKHOUSE_PORT}
+      - ETCD_AUTO_COMPACTION_MODE=revision
+      - ETCD_AUTO_COMPACTION_RETENTION=1000
+      - ETCD_QUOTA_BACKEND_BYTES=4294967296
+      - ETCD_SNAPSHOT_COUNT=50000
     networks:
-      - chroma-clickhouse
+      - milvus-minio
     volumes:
-      - clickhouse-data:/bitnami/clickhouse
-      - ./config/chroma_users.xml:/etc/clickhouse-server/users.d/chroma.xml
+      - etcd-data:/etcd
+    command: etcd -advertise-client-urls=http://127.0.0.1:2379 -listen-client-urls http://0.0.0.0:2379 --data-dir /etcd
+    expose:
+      - 2379
+    logging:
+      driver: none
+
+  minio:
+    container_name: milvus-minio
+    image: minio/minio:RELEASE.2023-03-20T20-16-18Z
+    environment:
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+    networks:
+      - milvus-minio
+    volumes:
+      - minio-data:/minio_data
+    command: minio server /minio_data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    expose:
+      - 9000
+    logging:
+      driver: none
+
 
 volumes:
   mongo-data:
   sql-data:
   elasticsearch-data:
-  chroma-data:
-  clickhouse-data:
+  etcd-data:
+  minio-data:
+  milvus-data:
 
 networks:
   web-backend:
   backend-mongo:
   backend-supertokens:
   backend-elasticsearch:
-  backend-redis:
+  backend-milvus:
   supertokens-sql:
-  backend-chroma:
-  chroma-clickhouse:
+  milvus-minio:
+  milvus-etcd:

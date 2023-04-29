@@ -4,18 +4,17 @@
   "description": "Note Rack",
   "main": "index.js",
   "devDependencies": {
-    "cypress": "^11.2.0"
+    "cypress": "^11.2.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.4"
   },
   "scripts": {
     "test": "docker compose down -v && docker-compose build && docker-compose up -d && cypress run --browser chrome",
     "test:manual": "docker-compose down -v && docker-compose build && docker-compose up -d && cypress open",
-    
-    "dev": "docker compose --env-file ./config/.env -f docker-compose.dev.yaml build && docker-compose --env-file ./config/.env -f docker-compose.dev.yaml up",
-    "dev:down": "docker compose -f docker-compose.dev.yaml down",
-    
+    "setup-env": "ts-node ./config/load-env.ts",
     "build": "docker compose --env-file ./config/.env build",
     "start": "yarn build && docker compose --env-file ./config/.env up",
-    "start:down": "docker compose down"
+    "start:down": "docker compose --env-file ./config/.env build down"
   },
   "repository": {
     "type": "git",

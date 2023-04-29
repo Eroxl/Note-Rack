@@ -12,13 +12,22 @@ router.get(
   '/chat',
   verifySession(),
   async (req: SessionRequest, res) => {
-    const { message, previousMessages } = req.query;
+    const { message, previousMessages, pageID } = req.query;
 
     if (typeof message !== 'string') {
       res.statusCode = 401;
       res.json({
         status: 'error',
         message: 'Please enter a message!',
+      });
+      return;
+    }
+
+    if (typeof pageID !== 'string') {
+      res.statusCode = 401;
+      res.json({
+        status: 'error',
+        message: 'Please enter a pageID!',
       });
       return;
     }
@@ -55,7 +64,7 @@ router.get(
       messages = messages.slice(-10);
     }
 
-    const response = await getChatResponse(messages, message, req.session!.getUserId());
+    const response = await getChatResponse(messages, message, pageID);
 
     messages.push(
       {

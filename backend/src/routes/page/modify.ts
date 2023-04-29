@@ -67,7 +67,7 @@ router.post(
 
           return {
             type: 'update',
-            id: `${page}-${data['new-block-properties']?.value as string}`,
+            id: data['new-block-properties']?.value as string,
             context: (req.pageData!.data as (IPage['data'][0] & { _id: string })[])
               .slice(Math.max(0, index - 5), Math.min(req.pageData!.data.length, index + 5))
               .map((block) => block._id as string),
@@ -102,15 +102,15 @@ router.post(
 
           if (index === undefined || !block) return;
 
-          if (oldText === newText || newText === undefined || oldText === undefined) return;
+          // if (oldText === newText || newText === undefined || oldText === undefined) return;
 
-          const updateDistance = distance(oldText, newText);
+          // const updateDistance = distance(oldText, newText);
 
-          if (updateDistance <= 0) return;
+          // if (updateDistance <= 0) return;
 
           return {
             type: 'update',
-            id: `${page}-${data['doc-ids'][data['doc-ids'].length - 1]}`,
+            id: data['doc-ids'][data['doc-ids'].length - 1],
             context: (req.pageData!.data as (IPage['data'][0] & { _id: string })[])
               .slice(Math.max(0, index - 5), Math.min(req.pageData!.data.length, index + 5))
               .map((block) => block._id as string),
@@ -121,14 +121,14 @@ router.post(
 
           return {
             type: 'delete',
-            id: `${page}-${data['doc-ids'][data['doc-ids'].length - 1]}`,
+            id: data['doc-ids'][data['doc-ids'].length - 1],
           }
         }
       })
       .filter((operation) => operation) as EmbedOperation[];
 
     if (embedChanges.length > 0) {
-      await refreshEmbeds(embedChanges, page, pageOwner);
+      await refreshEmbeds(embedChanges, page);
     }
   }
 );
