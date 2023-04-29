@@ -67,12 +67,10 @@ const milvusClient = new MilvusClient(
   await milvusClient.createIndex({
     collection_name: 'blocks',
     field_name: 'embedding',
-    index_type: 'IVF_FLAT',
-    params: {
-      M: 8,
-      efConstruction: 64
-    }
-  })
+    index_type: 'AUTOINDEX',
+    index_name: 'embedding_index',
+    metric_type: 'L2',
+  });
 })();
 
 export default milvusClient;

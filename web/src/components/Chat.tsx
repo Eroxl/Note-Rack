@@ -17,7 +17,7 @@ const Chat = () => {
 
   // ~ Ask the question to the bot
   const askQuestion = async (chatMessages: ChatMessage[], newMessage: string): Promise<ChatMessage[]> => {
-    const questionRequestParameters = `message=${newMessage}&previousMessages=${JSON.stringify(chatMessages)}&pageID=642677f04de15b4602121eb2`
+    const questionRequestParameters = `message=${newMessage}&previousMessages=${JSON.stringify(chatMessages)}&pageID=644d80d371788657e59633ca`
     const questionRequestURI = `${process.env.NEXT_PUBLIC_API_URL}/account/chat?${questionRequestParameters}`;
 
     const questionRequest = await fetch(questionRequestURI, {

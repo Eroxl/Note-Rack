@@ -37,31 +37,27 @@ const getChatResponse = async (
       limit: RELATIVE_TEXT_COUNT,
       vector_type: DataType.FloatVector,
       params: {
-        anns_field: 'block_id',
         topk: `${RELATIVE_TEXT_COUNT}`,
         metric_type: "L2",
         params: JSON.stringify({ nprobe: 10 }),
       },
       vector: embeddings.data.data[0].embedding,
-      expr: `page_id == ${page}`,
+      // expr: `page_id == ${page}`,
       output_fields: ['content', 'context']
     })
 
     // ~ If there are no similar messages, return a default message
-    if (!similarMessages.results) {
+    if (similarMessages.status.reason !== '') {
       return 'I don\'t know what to say.';
     }
-
-    console.log(JSON.stringify(
-      similarMessages
-    ))
 
     // ~ Get the context messages
     const contextIDs = Array.from(
       new Set(
         similarMessages.results
           .flat()
-          .flatMap((metadata) => JSON.parse(metadata.context) as string[])
+          .flatMap((metadata) => JSON.parse((metadata.context as string).replace('\\"', '"')) as string[])
+          .map((id) => `"${id}"`)
       )
     );
 
@@ -79,12 +75,11 @@ const getChatResponse = async (
 
     const context = similarMessages.results
       .map((result) => result.context)
-      .flat()
+      .flatMap((context) => JSON.parse((context as string).replace('\\"', '"')) as string[])
       .map((id) => contextMessagesMap[id])
       .filter((message) => message)
       .map((message) => message.trim())
       .join('\n')
-
     
     // ~ TODO: Start adding support for streaming the response
     //         https://www.reddit.com/r/ChatGPT/comments/11m3jdw/chatgpt_api_streaming/
