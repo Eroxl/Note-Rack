@@ -83,10 +83,7 @@ const getChatResponse = async (
       .filter((message) => message)
       .map((message) => message.trim())
       .join('\n')
-    
-    // ~ TODO: Start adding support for streaming the response
-    //         https://www.reddit.com/r/ChatGPT/comments/11m3jdw/chatgpt_api_streaming/
-    //         https://gist.github.com/montanaflynn/6a438f0be606daede899);
+
     // ~ Create the chat completion
     fetch(
       'https://api.openai.com/v1/chat/completions',
