@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
-import { useSessionContext } from 'supertokens-auth-react/recipe/session'; 
 
 import Trash from '../public/icons/Trash.svg';
 import Brain from '../public/icons/Brain.svg';
@@ -14,20 +13,19 @@ const Chat = () => {
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const chatRef = useRef<HTMLDivElement>(null);
+  const mostRecentMessageRef = useRef<HTMLDivElement>(null);
 
   // ~ Ask the question to the bot
-  const askQuestion = async (chatMessages: ChatMessage[], newMessage: string): Promise<string> => {
+  const askQuestion = async (chatMessages: ChatMessage[], newMessage: string) => {
     const questionRequestParameters = `message=${newMessage}&previousMessages=${JSON.stringify(chatMessages)}&pageID=644d80d371788657e59633ca`
     const questionRequestURI = `${process.env.NEXT_PUBLIC_API_URL}/account/chat?${questionRequestParameters}`;
 
-    const questionRequest = await fetch(questionRequestURI, {
+    const questionRequest = fetch(questionRequestURI, {
       method: 'GET',
       credentials: 'include',
     });
 
-    const questionResponse = await questionRequest.json();
-
-    return questionResponse.message
+    return questionRequest;
   }
 
   useEffect(() => {
@@ -132,7 +130,10 @@ const Chat = () => {
                         : 'Bot'
                     }
                   </p>
-                  <p className="text-sm whitespace-pre-line">
+                  <p 
+                    className="text-sm whitespace-pre-line"
+                    ref={index === chatMessages.length - 1 ? mostRecentMessageRef : null}
+                  >
                     {message.content}
                   </p>
                 </div>
@@ -166,21 +167,62 @@ const Chat = () => {
                   }
                 ])
 
-                const newChatMessages = await askQuestion(chatMessages, value);
+                askQuestion(chatMessages, value).then((response) => {
+                  const reader = response.body?.getReader();
 
-                setChatMessages([
-                  ...chatMessages,
-                  {
-                    role: 'user',
-                    content: value,
-                  },
-                  {
-                    role: 'assistant',
-                    content: newChatMessages,
-                  }
-                ]);
+                  if (!mostRecentMessageRef.current) return;
 
-                localStorage.setItem('chatMessages', JSON.stringify(newChatMessages));
+                  const processText = async (result: ReadableStreamReadResult<Uint8Array>) => {
+                    if (result.done) {
+                      const newMessages: ChatMessage[] = [
+                        ...chatMessages,
+                        {
+                          role: 'user',
+                          content: value,
+                        },
+                        {
+                          role: 'assistant',
+                          content: mostRecentMessageRef.current!.innerText,
+                        }
+                      ];
+
+                      setChatMessages(newMessages);
+                      localStorage.setItem('chatMessages', JSON.stringify(newMessages));
+
+                      return;
+                    }
+
+                    const decoder = new TextDecoder('utf-8');
+
+                    const chunk = decoder.decode(result.value, { stream: true });
+
+                    if (mostRecentMessageRef.current!.innerText === '...') {
+                      mostRecentMessageRef.current!.innerText = '';
+                    }
+
+                    mostRecentMessageRef.current!.innerText += chunk;
+
+                    reader?.read().then(processText);
+                  };
+
+                  reader?.read().then(processText);
+                });
+
+                // const newChatMessages = await askQuestion(chatMessages, value);
+
+                // setChatMessages([
+                //   ...chatMessages,
+                //   {
+                //     role: 'user',
+                //     content: value,
+                //   },
+                //   {
+                //     role: 'assistant',
+                //     content: newChatMessages,
+                //   }
+                // ]);
+
+                // localStorage.setItem('chatMessages', JSON.stringify(newChatMessages));
               })();
             }}
           />
