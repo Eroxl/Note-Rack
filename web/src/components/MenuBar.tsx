@@ -22,7 +22,7 @@ const MenuBar = (props: MenuBarProps) => {
       className="w-full h-full overflow-hidden print:h-max print:overflow-visible bg-amber-50 no-scrollbar dark:bg-zinc-700 print:dark:bg-white"
     >
       <div className="absolute">
-        <div className="relative z-10 flex w-screen h-10 print:h-0 bg-amber-50 no-scrollbar dark:bg-zinc-700 print:dark:bg-white">
+        <div className="relative z-10 flex w-screen h-10 border-b-4 print:h-0 bg-amber-50 no-scrollbar dark:bg-zinc-700 print:dark:bg-white border-black/10">
           {isLoggedIn 
             ? (
               <>
