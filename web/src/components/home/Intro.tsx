@@ -22,11 +22,13 @@ const Intro = () => (
       </p>
     </p>
   
-    <p className="m-8 text-2xl font-bold text-center">
-      Streamline your study routine with Note Rack: the unified
-      <br />
-      hub for all your notes and tasks.
-    </p>
+    <div>
+      <p className="m-8 text-2xl font-bold text-center">
+        Streamline your study routine with Note Rack: the unified
+        <br />
+        hub for all your notes and tasks.
+      </p>
+    </div>
 
     <div className="flex flex-col items-center justify-center m-8 transition-all duration-75">
       <Link href="/auth#">
