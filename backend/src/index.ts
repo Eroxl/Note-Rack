@@ -26,6 +26,15 @@ setupAuth();
 // -=- Setup body parser -=-
 app.use(bodyParser.json());
 
+// -=- Warnings -=-
+if (process.env.NEXT_PUBLIC_IS_CHAT_ENABLED === 'false') {
+  console.log(
+    '\x1b[1m\x1b[4m\x1b[33m%s\x1b[0m',
+    'Warning:',
+    'Chat features are disabled, please enable them in your .env file to use them!'
+  );
+}
+
 // -=- URL Info -=-
 const {
   WEBSITE_DOMAIN,
@@ -53,7 +62,11 @@ app.use('/', routes);
 // -=- Setup Super Tokens Error Handling -=-
 app.use(errorHandler());
 
-console.log(`Server running on port ${port}`);
+console.log(
+  '\x1b[1m\x1b[4m\x1b[32m%s\x1b[0m',
+  'Success:',
+  `Server running on port ${port}`
+);
 
 // -=- Start The Express Server -=-
 app.listen(port);

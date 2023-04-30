@@ -55,6 +55,8 @@ router.post(
     // -=- Update ElasticSearch -=-
     await updateElasticsearchIndexes(operations, page, pageOwner);
 
+    if (process.env.NEXT_PUBLIC_IS_CHAT_ENABLED === 'false') return;
+
     // -=- Refresh Embeds -=-
     const embedChanges = operations
       .map((operation) => {

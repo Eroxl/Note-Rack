@@ -4,7 +4,6 @@ import Image from 'next/image';
 import PageSidebarItem from './PageSidebarItem';
 import Brain from '../../public/icons/Brain.svg';
 import Search from '../../public/icons/Search.svg';
-import Link from 'next/link';
 
 export interface PageSidebarItemProps {
   _id: string,
@@ -17,6 +16,8 @@ export interface PageSidebarItemProps {
 const PageSidebar = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [pageTree, setPageTree] = useState<PageSidebarItemProps[] | undefined>(undefined);
+
+  const areChatFeaturesEnabled = process.env.NEXT_PUBLIC_IS_CHAT_ENABLED !== 'false';
 
   useEffect(() => {
     (async () => {
@@ -74,20 +75,22 @@ const PageSidebar = () => {
           />
           Search
         </button>
-        <button
-          className="flex flex-row gap-1 p-2 py-1 text-left text-white rounded hover:bg-white/20"
-          onClick={() => {
-            document.dispatchEvent(new CustomEvent('openChatPanel'));
-          }}
-        >
-          <Image
-            src={Brain}
-            alt="Chat"
-            width={24}
-            height={24}
-          />
-          Chat
-        </button>
+        {areChatFeaturesEnabled && (
+          <button
+            className="flex flex-row gap-1 p-2 py-1 text-left text-white rounded hover:bg-white/20"
+            onClick={() => {
+              document.dispatchEvent(new CustomEvent('openChatPanel'));
+            }}
+          >
+            <Image
+              src={Brain}
+              alt="Chat"
+              width={24}
+              height={24}
+            />
+            Chat
+          </button>
+        )}
       </div>
       {/* ~ Render the page tree after it has been loaded */}
       {!isLoading && (

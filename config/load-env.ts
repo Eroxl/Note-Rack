@@ -72,14 +72,10 @@ const writeEnv = (path: string, env: Record<string, string>): void => {
 
 // ~  Load the .env file
 const lines = loadEnv(envPath);
-const clientLines = loadEnv(clientEnvPath);
 
 // ~  Parse the .env file
 const backendEnv = parseEnv(lines, 'backend');
-const frontendEnv = {
-  ...parseEnv(lines, 'frontend'),
-  ...parseEnv(clientLines),
-}
+const frontendEnv = parseEnv(lines, 'frontend');
 
 writeEnv(`${__dirname}/../backend/.env`, backendEnv);
 writeEnv(`${__dirname}/../web/src/.env.local`, frontendEnv);

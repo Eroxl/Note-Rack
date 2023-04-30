@@ -23,19 +23,28 @@ const getChatResponse = async (
   page: string,
   response: Response,
 ): Promise<void> => {
+  if (process.env.NEXT_PUBLIC_IS_CHAT_ENABLED === 'false') {
+    response.statusCode = 401;
+    response.json({
+      status: 'error',
+      message: 'Chat is not enabled!',
+    });
+    return;
+  }
+
   // ~ Load the block collection
-  await MilvusClient.loadCollection({
+  await MilvusClient!.loadCollection({
     collection_name: 'blocks',
   });
 
   // ~ Create an embedding for the latest message
-  const embeddings = await OpenAIClient.createEmbedding({
+  const embeddings = await OpenAIClient!.createEmbedding({
     input: question,
     model: 'text-embedding-ada-002',
   });
 
   try {
-    const similarMessages = await MilvusClient.search({
+    const similarMessages = await MilvusClient!.search({
       collection_name: 'blocks',
       limit: RELATIVE_TEXT_COUNT,
       vector_type: DataType.FloatVector,
@@ -64,7 +73,7 @@ const getChatResponse = async (
       )
     );
 
-    const contextMessages = await MilvusClient.query({
+    const contextMessages = await MilvusClient!.query({
       collection_name: 'blocks',
       expr: `block_id in [${contextIDs.join(', ')}]`,
       output_fields: ['content', 'block_id'],

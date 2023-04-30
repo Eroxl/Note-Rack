@@ -14,6 +14,15 @@ router.get(
   async (req: SessionRequest, res) => {
     const { message, previousMessages, pageID } = req.query;
 
+    if (process.env.NEXT_PUBLIC_IS_CHAT_ENABLED === 'false') {
+      res.statusCode = 401;
+      res.json({
+        status: 'error',
+        message: 'Chat is not enabled!',
+      });
+      return;
+    }
+
     if (typeof message !== 'string') {
       res.statusCode = 401;
       res.json({
