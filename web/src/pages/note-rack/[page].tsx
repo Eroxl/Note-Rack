@@ -111,7 +111,7 @@ const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {
               isChatOpen && (
                 <>
                   <div className="w-1 bg-black/10" />
-                  <div className="w-1/2">
+                  <div className="w-1/2 h-screen">
                     <Chat />
                   </div>
                 </>
