@@ -102,11 +102,11 @@ router.post(
 
           if (index === undefined || !block) return;
 
-          // if (oldText === newText || newText === undefined || oldText === undefined) return;
+          if (oldText === newText || newText === undefined || oldText === undefined) return;
 
-          // const updateDistance = distance(oldText, newText);
+          const updateDistance = distance(oldText, newText);
 
-          // if (updateDistance <= 0) return;
+          if (updateDistance <= 0) return;
 
           return {
             type: 'update',
