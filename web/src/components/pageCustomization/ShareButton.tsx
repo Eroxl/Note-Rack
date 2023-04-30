@@ -50,8 +50,8 @@ const ShareButton = () => {
       >
         <div className="flex flex-row h-full gap-1 p-2 select-none w-max print:hidden">
           <div
-            className="w-full h-full text-center rounded cursor-pointer text-zinc-700 dark:text-amber-50"
-            onClick={() => {
+            className="flex flex-col items-center justify-center w-full h-full text-center rounded cursor-pointer text-zinc-700 dark:text-amber-50"
+            onMouseDown={() => {
               setIsMenuOpen(!isMenuOpen);
             }}
           >
