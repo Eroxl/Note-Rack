@@ -1,5 +1,6 @@
 import { DataType } from '@zilliz/milvus2-sdk-node/dist/milvus';
 import type { ChatCompletionRequestMessage } from 'openai';
+import type { Response } from 'express';
 
 import OpenAIClient from './clients/OpenAIClient';
 import MilvusClient from './clients/MilvusClient';
@@ -18,8 +19,9 @@ Try to keep your answers helpful, short and to the point using markdown formatti
 const getChatResponse = async (
   messages: ChatCompletionRequestMessage[],
   question: string,
-  page: string
-): Promise<string> => {
+  page: string,
+  response: Response,
+): Promise<void> => {
   // ~ Load the block collection
   await MilvusClient.loadCollection({
     collection_name: 'blocks',
@@ -48,7 +50,7 @@ const getChatResponse = async (
 
     // ~ If there are no similar messages, return a default message
     if (similarMessages.status.reason !== '') {
-      return 'I don\'t know what to say.';
+      throw new Error(similarMessages.status.reason);
     }
 
     // ~ Get the context messages
@@ -83,37 +85,85 @@ const getChatResponse = async (
     
     // ~ TODO: Start adding support for streaming the response
     //         https://www.reddit.com/r/ChatGPT/comments/11m3jdw/chatgpt_api_streaming/
-    //         https://gist.github.com/montanaflynn/6a438f0be606daede899
-    const response = await OpenAIClient.createChatCompletion({
-      messages: [
-        {
-          role: 'system',
-          content: PRE_PROMPT
+    //         https://gist.github.com/montanaflynn/6a438f0be606daede899);
+    // ~ Create the chat completion
+    fetch(
+      'https://api.openai.com/v1/chat/completions',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
         },
-        ...messages,
-        {
-          role: 'system',
-          content: `${CONTEXT_PROMPT_TEMPLATE}${context}`
-        },
-        {
-          role: 'user',
-          content: `${QUESTION_PROMPT_TEMPLATE}${question}`
+        body: JSON.stringify({
+          model: "gpt-3.5-turbo",
+          stream: true,
+          messages: [
+            {
+              role: 'system',
+              content: PRE_PROMPT
+            },
+            ...messages,
+            {
+              role: 'system',
+              content: `${CONTEXT_PROMPT_TEMPLATE}${context}`
+            },
+            {
+              role: 'user',
+              content: `${QUESTION_PROMPT_TEMPLATE}${question}`
+            }
+          ]
+        }),
+      }
+    ).then((completionResponse) => {
+      const reader = completionResponse.body?.getReader();
+    
+      if (!reader) {
+        throw new Error('No reader found');
+      }
+
+      response.writeHead(200, {
+        'Content-Type': 'text/plain',
+        'Transfer-Encoding': 'chunked'
+      });
+
+      const decoder = new TextDecoder();
+
+      let chunk = '';
+
+      const processResult = (result: ReadableStreamReadResult<Uint8Array>) => {
+        chunk += decoder.decode(result.value, { stream: true });
+
+        const dataObjects = chunk.split('\n').filter(Boolean);
+
+        const latestData = dataObjects[dataObjects.length - 1].replace(/^data: /, '');
+
+        if (latestData === '[DONE]') {
+          reader.cancel();
+          response.end();
+
+          return;
         }
-      ],
-      model: 'gpt-3.5-turbo'
-    })
 
-    const answer = response.data.choices[0].message?.content;
+        const jsonData = JSON.parse(latestData);
 
-    if (!answer) {
-      return 'I don\'t know what to say.';
-    }
+        if (jsonData.choices && jsonData.choices[0].delta.content) {
+          const responseMessage = jsonData.choices[0].delta.content;
 
-    return answer;
+          response.write(responseMessage);
+        }
+
+        reader.read().then(processResult);
+      };
+
+      reader.read().then(processResult);
+    });
   } catch (error) {
-    console.log(error);
-
-    return 'I don\'t know what to say.';
+    response.statusCode = 500;
+    response.json({
+      status: 'error',
+      message: 'Something went wrong!',
+    });
   }
 }
 

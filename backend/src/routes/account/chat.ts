@@ -64,25 +64,13 @@ router.get(
       messages = messages.slice(-10);
     }
 
-    const response = await getChatResponse(messages, message, pageID);
-
-    messages.push(
-      {
-        role: 'user',
-        content: message,
-      },
-      {
-        role: 'assistant',
-        content: response,
-      },
+    await getChatResponse(
+      messages,
+      message,
+      pageID,
+      res
     );
-
-    res.statusCode = 200;
-    res.json({
-      status: 'success',
-      messages: messages.slice(-10),
-    });
-  },
+  }
 )
 
 export default router;

@@ -15,10 +15,8 @@ const Chat = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const chatRef = useRef<HTMLDivElement>(null);
 
-  const session = useSessionContext();
-
   // ~ Ask the question to the bot
-  const askQuestion = async (chatMessages: ChatMessage[], newMessage: string): Promise<ChatMessage[]> => {
+  const askQuestion = async (chatMessages: ChatMessage[], newMessage: string): Promise<string> => {
     const questionRequestParameters = `message=${newMessage}&previousMessages=${JSON.stringify(chatMessages)}&pageID=644d80d371788657e59633ca`
     const questionRequestURI = `${process.env.NEXT_PUBLIC_API_URL}/account/chat?${questionRequestParameters}`;
 
@@ -29,7 +27,7 @@ const Chat = () => {
 
     const questionResponse = await questionRequest.json();
 
-    return questionResponse.messages as ChatMessage[];
+    return questionResponse.message
   }
 
   useEffect(() => {
@@ -170,7 +168,17 @@ const Chat = () => {
 
                 const newChatMessages = await askQuestion(chatMessages, value);
 
-                setChatMessages(newChatMessages);
+                setChatMessages([
+                  ...chatMessages,
+                  {
+                    role: 'user',
+                    content: value,
+                  },
+                  {
+                    role: 'assistant',
+                    content: newChatMessages,
+                  }
+                ]);
 
                 localStorage.setItem('chatMessages', JSON.stringify(newChatMessages));
               })();
