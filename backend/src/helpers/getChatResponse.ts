@@ -14,7 +14,8 @@ const QUESTION_PROMPT_TEMPLATE = '### Question: ';
 
 const PRE_PROMPT = `You are a helpful AI assistant. Use the following pieces of context to answer the question at the end.
 If you don't know the answer, just say you don't know. DO NOT try to make up an answer.
-Try to keep your answers helpful, short and to the point using markdown formatting.`;
+Try to keep your answers helpful, short and to the point. Answers should be no longer than 3 sentences.
+Any math equations should be written in KaTeX and surrounded by dollar signs.`;
 
 const getChatResponse = async (
   messages: ChatCompletionRequestMessage[],

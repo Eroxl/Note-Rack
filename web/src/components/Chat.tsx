@@ -1,5 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
+import katex from 'katex';
+import 'katex/dist/katex.min.css';
 
 import Trash from '../public/icons/Trash.svg';
 import Brain from '../public/icons/Brain.svg';
@@ -134,7 +136,23 @@ const Chat = () => {
                     className="text-sm whitespace-pre-line"
                     ref={index === chatMessages.length - 1 ? mostRecentMessageRef : null}
                   >
-                    {message.content}
+                    {
+                      message.content.split('$').map((part, index) => {
+                        if (index % 2 === 0) {
+                          return part;
+                        } else {
+                          return (
+                            <span
+                              dangerouslySetInnerHTML={{ __html: (
+                                katex.renderToString(part, {
+                                  throwOnError: false,
+                                })
+                              )}}
+                            />
+                          )
+                        }
+                      })
+                    }
                   </p>
                 </div>
               </div>
@@ -186,6 +204,8 @@ const Chat = () => {
                         }
                       ];
 
+                      mostRecentMessageRef.current!.innerText = '';
+                      
                       setChatMessages(newMessages);
                       localStorage.setItem('chatMessages', JSON.stringify(newMessages));
 
@@ -207,22 +227,6 @@ const Chat = () => {
 
                   reader?.read().then(processText);
                 });
-
-                // const newChatMessages = await askQuestion(chatMessages, value);
-
-                // setChatMessages([
-                //   ...chatMessages,
-                //   {
-                //     role: 'user',
-                //     content: value,
-                //   },
-                //   {
-                //     role: 'assistant',
-                //     content: newChatMessages,
-                //   }
-                // ]);
-
-                // localStorage.setItem('chatMessages', JSON.stringify(newChatMessages));
               })();
             }}
           />
