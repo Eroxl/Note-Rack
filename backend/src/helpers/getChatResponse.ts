@@ -45,7 +45,7 @@ const getChatResponse = async (
         params: JSON.stringify({ nprobe: 10 }),
       },
       vector: embeddings.data.data[0].embedding,
-      // expr: `page_id == ${page}`,
+      expr: `page_id == \"${page}\"`,
       output_fields: ['content', 'context']
     })
 

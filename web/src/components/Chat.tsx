@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
 
@@ -18,9 +19,11 @@ const Chat = () => {
   const chatRef = useRef<HTMLDivElement>(null);
   const mostRecentMessageRef = useRef<HTMLDivElement>(null);
 
+  const { page } = useRouter().query;
+
   // ~ Ask the question to the bot
   const askQuestion = async (chatMessages: ChatMessage[], newMessage: string) => {
-    const questionRequestParameters = `message=${newMessage}&previousMessages=${JSON.stringify(chatMessages)}&pageID=644d80d371788657e59633ca`
+    const questionRequestParameters = `message=${newMessage}&previousMessages=${JSON.stringify(chatMessages)}&pageID=${page}`
     const questionRequestURI = `${process.env.NEXT_PUBLIC_API_URL}/account/chat?${questionRequestParameters}`;
 
     const questionRequest = fetch(questionRequestURI, {
@@ -35,7 +38,7 @@ const Chat = () => {
     if (chatRef.current) {
       chatRef.current.scrollTop = chatRef.current.scrollHeight;
     }
-  }, [chatMessages, chatRef]);
+  }, [chatMessages, chatRef, page]);
 
   // ~ Fetch chat messages from local storage
   useEffect(() => {
