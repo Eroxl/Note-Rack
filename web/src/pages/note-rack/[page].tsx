@@ -12,8 +12,11 @@ import SaveManager from '../../lib/classes/SaveManager';
 import PageContext from '../../contexts/PageContext';
 import MenuBar from '../../components/MenuBar';
 import Chat from '../../components/Chat';
+import Link from 'next/link';
 
 const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {
+  const [status, setStatus] = useState<'loading' | 'loaded' | 'error'>('loading');
+  const [error, setError] = useState<string | undefined>();
   const [pageData, setPageData] = useState<PageDataInterface['message']>();
   const [isChatOpen, setIsChatOpen] = useState(false);
   const { pageDataReq } = props;
@@ -27,7 +30,16 @@ const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {
     // -=- Setup Page Data -=-
     // ~ Get the page data
     (async () => {
-      setPageData((await pageDataReq)?.message);
+      const pageData = await pageDataReq;
+     
+      if (pageData.status === 'error') {
+        setError(pageData.message as unknown as string);
+        setStatus('error');
+        return;
+      }
+
+      setPageData(pageData.message);
+      setStatus('loaded');
     })();
 
     // -=- Setup Auto Saving -=-
@@ -101,9 +113,32 @@ const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {
             <div className={`${isChatOpen ? 'w-1/2' : 'w-full'}`}>
               <DndProvider backend={HTML5Backend}>
                 {
-                  !pageData
+                  status === 'loading'
                     ? <LoadingPage />
-                    : <Editor />
+                    : status === 'error'
+                      ? (
+                        <div className="w-full h-full mt-10 overflow-hidden">
+                          <div className="flex flex-col items-center w-full h-screen bg-amber-50 dark:bg-zinc-700">
+                            <div className="flex flex-col items-center justify-center w-full h-full max-w-4xl px-20 break-words pb-36 text-zinc-700 dark:text-amber-50">
+                              <p>
+                                <p className="text-2xl text-center">
+                                  There was an error loading the page.
+                                </p>
+                                <p className="text-2xl text-center text-red-400">
+                                  {error}
+                                </p>
+                              </p>
+
+                              <Link href="/note-rack/">
+                                <a className="mt-10 text-xl text-center text-blue-400 hover:underline">
+                                  Go back to your Note Rack
+                                </a>
+                              </Link>
+                            </div>
+                          </div>
+                        </div>
+                      )
+                      : <Editor />
                 }
               </DndProvider>
             </div>
