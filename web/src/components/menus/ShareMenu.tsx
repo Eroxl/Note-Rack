@@ -43,7 +43,7 @@ const ShareMenu = (props: ShareMenuProps) => {
   return (
     <div
       className={`
-        absolute -bottom-1 right-1 z-20
+        absolute -bottom-2 right-1 z-20
         flex flex-col w-[362px] gap-3 p-3
         translate-y-full
         border border-black rounded-md opacity-100 h-max
