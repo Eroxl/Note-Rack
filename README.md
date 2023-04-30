@@ -15,6 +15,7 @@
 * Other Features
     * Global Search
     * [PDF Exporting](./images/Note%20Rack%20Page.pdf)
+    * [Chat GPT Integration](https://github.com/Eroxl/Note-Rack/releases/tag/v1.0.5)
 
 ## 📄 Markdown Syntax
 - Headings
