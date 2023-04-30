@@ -14,6 +14,7 @@ interface ChatMessage {
 const Chat = () => {
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isChatDone, setIsChatDone] = useState(true);
   const chatRef = useRef<HTMLDivElement>(null);
   const mostRecentMessageRef = useRef<HTMLDivElement>(null);
 
@@ -172,8 +173,11 @@ const Chat = () => {
             className="relative flex-grow p-2 px-3 overflow-scroll text-white break-normal rounded-md max-h-12 bg-white/10 focus:outline-none"
             placeholder="Ask a question..."
             type="text"
+            disabled={!isChatDone}
             onKeyDown={(e) => {
               if (e.key !== 'Enter') return;
+
+              setIsChatDone(false);
 
               (async () => {
                 const input = e.target as HTMLInputElement;
@@ -215,6 +219,8 @@ const Chat = () => {
                       setChatMessages(newMessages);
                       localStorage.setItem('chatMessages', JSON.stringify(newMessages));
 
+                      setIsChatDone(true);
+
                       return;
                     }
 
@@ -242,6 +248,7 @@ const Chat = () => {
             }}
           />
           <button
+            disabled={!isChatDone}
             className="flex items-center justify-center w-12 h-12 bg-red-400 rounded-md"
             onClick={() => setIsDeleteModalOpen(true)}
           >
