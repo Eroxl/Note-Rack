@@ -137,21 +137,29 @@ const Chat = () => {
                     ref={index === chatMessages.length - 1 ? mostRecentMessageRef : null}
                   >
                     {
-                      message.content.split('$').map((part, index) => {
-                        if (index % 2 === 0) {
-                          return part;
-                        } else {
-                          return (
-                            <span
-                              dangerouslySetInnerHTML={{ __html: (
-                                katex.renderToString(part, {
-                                  throwOnError: false,
-                                })
-                              )}}
-                            />
-                          )
+                      (() => {
+                        if (index === chatMessages.length - 1 && message.content.match(/\$.*\$/) && mostRecentMessageRef.current) {
+                          mostRecentMessageRef.current.innerText = '';
                         }
-                      })
+
+                        return (
+                          message.content.split('$').map((part, index) => {
+                            if (index % 2 === 0) {
+                              return part;
+                            } else {
+                              return (
+                                <span
+                                  dangerouslySetInnerHTML={{ __html: (
+                                    katex.renderToString(part, {
+                                      throwOnError: false,
+                                    })
+                                  )}}
+                                />
+                              )
+                            }
+                          })
+                        )
+                      })()
                     }
                   </p>
                 </div>
@@ -203,8 +211,6 @@ const Chat = () => {
                           content: mostRecentMessageRef.current!.innerText,
                         }
                       ];
-
-                      mostRecentMessageRef.current!.innerText = '';
                       
                       setChatMessages(newMessages);
                       localStorage.setItem('chatMessages', JSON.stringify(newMessages));
@@ -221,6 +227,11 @@ const Chat = () => {
                     }
 
                     mostRecentMessageRef.current!.innerText += chunk;
+                    
+                    chatRef.current!.scrollTo({
+                      top: chatRef.current!.scrollHeight,
+                      behavior: 'smooth',
+                    });
 
                     reader?.read().then(processText);
                   };
