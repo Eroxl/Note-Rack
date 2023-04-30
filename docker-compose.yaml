@@ -10,6 +10,8 @@ services:
     restart: unless-stopped
     networks:
       - web-backend
+    volumes:
+      - ./config/client.env:/usr/src/src/.env.local
     depends_on:
       - backend
       - supertokens
@@ -31,13 +33,19 @@ services:
       - supertokens
       - elasticsearch
     environment:
-      MONGO_URL: "mongodb://mongo:27017"
-      SUPERTOKENS_URL: "http://supertokens:3567"
-      WEBSITE_DOMAIN: "http://127.0.0.1:3000"
-      API_DOMAIN: "http://127.0.0.1:8000"
-      ELASTICSEARCH_URL: "http://elasticsearch:9200"
-      ELASTICSEARCH_PASSWORD: "changeme"
-      ELASTICSEARCH_USERNAME: "elastic"
+      MONGO_URL: ${MONGO_URL}
+      SUPERTOKENS_URL: ${SUPERTOKENS_URL}
+      WEBSITE_DOMAIN: ${WEBSITE_DOMAIN}
+      API_DOMAIN: ${API_DOMAIN}
+      ELASTICSEARCH_URL: ${ELASTICSEARCH_URL}
+      ELASTICSEARCH_PASSWORD: ${ELASTICSEARCH_PASSWORD}
+      ELASTICSEARCH_USERNAME: ${ELASTICSEARCH_USERNAME}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID}
+      GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      MILVUS_URL: ${MILVUS_URL}
   
   mongo:
     image: mongo:4.0-xenial
@@ -58,7 +66,7 @@ services:
     expose:
       - 3567
     environment:
-      MYSQL_CONNECTION_URI: mysql://supertokens_user:somePassword@sql:3306/supertokens
+      MYSQL_CONNECTION_URI: "mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@${MYSQL_HOST}:3306/${MYSQL_DATABASE}"
     networks:
       - supertokens-sql
       - backend-supertokens
@@ -76,10 +84,10 @@ services:
   sql:
     image: mysql:latest
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_USER: supertokens_user
-      MYSQL_PASSWORD: somePassword 
-      MYSQL_DATABASE: supertokens
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
     expose:
       - 3306
     networks:
@@ -105,8 +113,8 @@ services:
       - discovery.type=single-node
       - cluster.name=docker-cluster
       - xpack.security.enabled=false
-      - ELASTIC_PASSWORD=changeme
-      - ELASTIC_USERNAME=elastic
+      - ELASTIC_PASSWORD=${ELASTICSEARCH_PASSWORD}
+      - ELASTIC_USERNAME=${ELASTICSEARCH_USERNAME}
     volumes:
       - elasticsearch-data:/usr/share/elasticsearch/data
     healthcheck:
@@ -117,14 +125,82 @@ services:
     logging:
       driver: none
 
+  milvus-standalone:
+    container_name: milvus-standalone
+    image: milvusdb/milvus:v2.2.6
+    command: ["milvus", "run", "standalone"]
+    environment:
+      ETCD_ENDPOINTS: etcd:2379
+      MINIO_ADDRESS: minio:9000
+    networks:
+      - backend-milvus
+      - milvus-minio
+      - milvus-etcd
+    volumes:
+      - milvus-data:/var/lib/milvus
+    expose:
+      - 19530
+      - 9091
+    depends_on:
+      - etcd
+      - minio
+    logging:
+      driver: none
+
+  etcd:
+    container_name: milvus-etcd
+    image: quay.io/coreos/etcd:v3.5.5
+    environment:
+      - ETCD_AUTO_COMPACTION_MODE=revision
+      - ETCD_AUTO_COMPACTION_RETENTION=1000
+      - ETCD_QUOTA_BACKEND_BYTES=4294967296
+      - ETCD_SNAPSHOT_COUNT=50000
+    networks:
+      - milvus-minio
+    volumes:
+      - etcd-data:/etcd
+    command: etcd -advertise-client-urls=http://127.0.0.1:2379 -listen-client-urls http://0.0.0.0:2379 --data-dir /etcd
+    expose:
+      - 2379
+    logging:
+      driver: none
+
+  minio:
+    container_name: milvus-minio
+    image: minio/minio:RELEASE.2023-03-20T20-16-18Z
+    environment:
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+    networks:
+      - milvus-minio
+    volumes:
+      - minio-data:/minio_data
+    command: minio server /minio_data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    expose:
+      - 9000
+    logging:
+      driver: none
+
+
 volumes:
   mongo-data:
   sql-data:
   elasticsearch-data:
+  etcd-data:
+  minio-data:
+  milvus-data:
 
 networks:
   web-backend:
   backend-mongo:
   backend-supertokens:
-  supertokens-sql:
   backend-elasticsearch:
+  backend-milvus:
+  supertokens-sql:
+  milvus-minio:
+  milvus-etcd:

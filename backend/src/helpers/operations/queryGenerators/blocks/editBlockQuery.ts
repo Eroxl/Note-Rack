@@ -1,6 +1,6 @@
 import { Types } from 'mongoose';
 
-interface editBlockQueryProps {
+export interface editBlockQueryProps {
   'doc-ids': string[];
   'block-type': string,
   'block-properties': Record<string, unknown>,

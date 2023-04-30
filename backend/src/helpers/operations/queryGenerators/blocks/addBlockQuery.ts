@@ -1,6 +1,6 @@
 import { Types } from 'mongoose';
 
-interface addBlockQueryProps {
+export interface addBlockQueryProps {
   'doc-ids': string[] | undefined;
   'new-block-type': string;
   'new-block-index': number,

@@ -3,33 +3,31 @@ import { GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { useSessionContext } from 'supertokens-auth-react/recipe/session'; 
-import Link from 'next/link';
+import { useSessionContext } from 'supertokens-auth-react/recipe/session';
 
-import PagePath from '../../components/pageInfo/PagePath';
 import type PageDataInterface from '../../lib/types/pageTypes';
-import PageSidebar from '../../components/pageInfo/PageSidebar';
 import Editor from '../../components/Editor';
 import LoadingPage from '../../components/LoadingPage';
 import SaveManager from '../../lib/classes/SaveManager';
-import ShareButton from '../../components/pageCustomization/ShareButton';
 import PageContext from '../../contexts/PageContext';
-import SearchModal from '../../components/modals/SearchModal';
+import MenuBar from '../../components/MenuBar';
+import Chat from '../../components/Chat';
 
 const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {
   const [pageData, setPageData] = useState<PageDataInterface['message']>();
+  const [isChatOpen, setIsChatOpen] = useState(false);
   const { pageDataReq } = props;
 
   const session = useSessionContext();
-
   const isLoggedIn = session?.loading === false && session?.doesSessionExist === true;
+
 
   // TODO:EROXL: Add error handling here...
   useEffect(() => {
     // -=- Setup Page Data -=-
     // ~ Get the page data
     (async () => {
-      setPageData((await pageDataReq).message);
+      setPageData((await pageDataReq)?.message);
     })();
 
     // -=- Setup Auto Saving -=-
@@ -52,6 +50,18 @@ const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {
       document.removeEventListener('keydown', handleKeyDown);
     }
   }, []);
+
+  useEffect(() => {
+    const handleChatToggle = () => {
+      setIsChatOpen(!isChatOpen);
+    };
+
+    document.addEventListener('openChatPanel', handleChatToggle);
+
+    return () => {
+      document.removeEventListener('openChatPanel', handleChatToggle);
+    }
+  }, [isChatOpen]);
 
   return (
     <>
@@ -86,39 +96,29 @@ const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {
           setPageData,
         }}
       >
-        <div className="w-full h-full overflow-hidden print:h-max print:overflow-visible bg-amber-50 no-scrollbar dark:bg-zinc-700 print:dark:bg-white">
-          <div className="absolute">
-            <div className="relative z-10 flex w-screen h-10 print:h-0 bg-amber-50 no-scrollbar dark:bg-zinc-700 print:dark:bg-white">
-              {isLoggedIn 
-                ? (
-                  <>
-                    <PagePath />
-                    <ShareButton />
-                  </>
-                )
-                : (
-                  <Link href="/auth#">
-                    <a
-                      href="/auth#"
-                      className="px-2 my-auto ml-auto text-center rounded cursor-pointer text-zinc-700 dark:text-amber-50"
-                    >Login</a>
-                  </Link>
-                )
-              }
+        <MenuBar>
+          <div className={`flex ${isLoggedIn && 'pl-52'} print:pl-0 h-screen`}>
+            <div className={`${isChatOpen ? 'w-1/2' : 'w-full'}`}>
+              <DndProvider backend={HTML5Backend}>
+                {
+                  !pageData
+                    ? <LoadingPage />
+                    : <Editor />
+                }
+              </DndProvider>
             </div>
-          </div>
-          {isLoggedIn && (
-            <PageSidebar />
-          )}
-          <DndProvider backend={HTML5Backend}>
             {
-              !pageData
-                ? <LoadingPage />
-                : <Editor />
+              isChatOpen && (
+                <>
+                  <div className="w-1 bg-black/10" />
+                  <div className="w-1/2 h-screen">
+                    <Chat />
+                  </div>
+                </>
+              )
             }
-          </DndProvider>
-          <SearchModal />
-        </div>
+          </div>
+        </MenuBar>
       </PageContext.Provider>
     </>
   );
@@ -129,6 +129,12 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
   const { req, params } = context;
   const { page } = params as { page: string };
   const { cookies } = req;
+
+  if (!page || page === 'chat') {
+    return {
+      props: (async () => ({}))()
+    }
+  }
 
   // -=- Get Page Data -=-
   // ~ Get the page data from the server, and return it to the client

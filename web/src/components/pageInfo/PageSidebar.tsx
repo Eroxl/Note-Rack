@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 import PageSidebarItem from './PageSidebarItem';
+import Brain from '../../public/icons/Brain.svg';
+import Search from '../../public/icons/Search.svg';
+import Link from 'next/link';
 
 export interface PageSidebarItemProps {
   _id: string,
@@ -55,6 +59,36 @@ const PageSidebar = () => {
 
   return (
     <div className="absolute h-screen pt-12 pr-3 select-none print:h-max w-52 print:w-0 bg-amber-400/10 no-scrollbar dark:bg-white/10">
+      <div className="flex flex-col w-full gap-2 pb-2 pl-3">
+        <button
+          className="flex flex-row gap-1 p-2 py-1 text-left text-white rounded hover:bg-white/20"
+          onClick={() => {
+            document.dispatchEvent(new CustomEvent('openSearchModal'));
+          }}
+        >
+          <Image
+            src={Search}
+            alt="Search"
+            width={24}
+            height={24}
+          />
+          Search
+        </button>
+        <button
+          className="flex flex-row gap-1 p-2 py-1 text-left text-white rounded hover:bg-white/20"
+          onClick={() => {
+            document.dispatchEvent(new CustomEvent('openChatPanel'));
+          }}
+        >
+          <Image
+            src={Brain}
+            alt="Chat"
+            width={24}
+            height={24}
+          />
+          Chat
+        </button>
+      </div>
       {/* ~ Render the page tree after it has been loaded */}
       {!isLoading && (
         (pageTree as PageSidebarItemProps[]).map((pageItem) => {

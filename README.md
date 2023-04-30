@@ -7,19 +7,16 @@
 </div>
 
 ## 🌳 Features
-* Basic Markdown Syntax
-    * H1, H2, H3, H4, H5
+* Markdown
+    * Headings (H1 - H5)
     * Quotes
-* Custom Markdown Syntax
     * Call Outs
-* Page Management
-    * Sub Pages
-    * Page Navigation
-    * Page Styling
-* Exporting
+    * Math
+* Other Features
+    * Global Search
     * [PDF Exporting](./images/Note%20Rack%20Page.pdf)
 
-## 🎹 Keybinds
+## 📄 Markdown Syntax
 - Headings
     - `#` - H1
     - `##` - H2
@@ -29,103 +26,40 @@
 - Other
     - `>` Quote
     - `|` Callout
-    - `$$` Math [KaTeX](https://katex.org/)
+    - `$$` Math ([KaTeX](https://katex.org/))
     -  `[[ Page Name ]]` Page ("Page Name" can be any string)
 
+## 🎹 Keyboard Shortcuts
+- `Ctrl + F` or `Cmd + F` Global Search
+- `Ctrl + P` or `Cmd + P` Save Page
+
 ## 📦 Installation
-1. Download the repo
-    * Clone the repo
-        ```bash
-        git clone https://github.com/Eroxl/Note-Rack.git
-        ```
-    * Or download the [zip file](https://github.com/Eroxl/Note-Rack/archive/refs/heads/main.zip)
+1. Clone the repo
+    ```bash
+    git clone https://github.com/Eroxl/Note-Rack.git
+    ```
 
 2. Navigate to the repository
-    * If you cloned the repo
-        ```bash
-        cd Note-Rack
-        ```
-    * If you downloaded the zip file
-        1. Unzip the file
-            ```bash
-            unzip main.zip
-            ```
-        2. Navigate to the folder
-            ```bash
-            cd Note-Rack-main
-            ```
-
-2. Copy the server environment file and fill in the values
     ```bash
-    cp ./backend/.env.example /backend.env
-    ```
-    * If you want to open it in a text editor
-        ```bash
-        nano ./backend/.env
-        ```
-
-3. Copy the client environment file and fill in the values
-    ```bash
-    cp ./web/src/.env.example ./web/src/.env.local
+    cd ./Note-Rack
     ```
 
-    * If you want to open it in a text editor
-        ```bash
-        nano ./web/src/.env.local
-        ```
+3. Copy the server environment file and fill in the values
+    ```bash
+    cp ./config/.env.example ./config/.env
+    ```
 
-4. With Docker
-    1. Install Docker and Docker Compose
-        - [Docker](https://docs.docker.com/get-docker/)
-        - [Docker Compose](https://docs.docker.com/compose/install/)
+4. Install Docker and Docker Compose
+    - [Docker](https://docs.docker.com/get-docker/)
 
-    2. Run the Docker Compose file
-        ```bash
-        docker-compose up --build
-        ```
+5. Run the Docker Compose file
+    ```bash
+    yarn start
+    ```
 
-    6. Navigate to the web application at [http://127.0.0.1:3000](http://127.0.0.1:3000)
-
-5. Without Docker
-    1. Install Node.js
-        - [Node.js](https://nodejs.org/en/download/)
-
-    2. Install Yarn
-        - [Yarn](https://classic.yarnpkg.com/en/docs/install)
-
-    3. Install Dependencies
-        ```bash
-        cd ./backend && \
-        yarn install && \
-        cd ../web && \
-        yarn install
-        ```
-    
-    4. Setup a MongoDB database
-        - Local
-            - [MongoDB](https://docs.mongodb.com/manual/installation/)
-        - Cloud
-            - [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
-
-    5. Setup a Supertokens instance
-        - Locally
-            - [Supertokens](https://supertokens.com/docs/thirdparty/pre-built-ui/setup/core/without-docker)
-        - Cloud
-            - [Supertokens](https://supertokens.com/docs/thirdparty/pre-built-ui/setup/core/saas-setup)
-
-    6. Run the server
-        ```bash
-        cd ./backend && \
-        yarn dev
-        ```
-
-    7. Run the client
-        ```bash
-        cd ./web && \
-        yarn dev
-        ```
+6. Navigate to the web application at [http://127.0.0.1:3000](http://127.0.0.1:3000)
 
 ## 🔬 Examples
 
-#### Current State (dark)
+#### Editor
 <img src="./images/Desktop_Current_State_Dark.png" width="500">

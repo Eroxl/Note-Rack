@@ -10,11 +10,15 @@ import setupAuth from './setupAuth';
 
 // -=- Connect to MongoDB with dotenv file -=-
 dotenv.config();
-mongoose.connect(process.env.MONGO_URL ?? '');
+mongoose.connect(
+  process.env.MONGO_URL ?? '',
+).catch((err) => {
+  console.log(err);
+});
 
 // -=- Setup express -=-
 const app = express();
-const port = 8000;
+const port = 8000;  
 
 // -=- Setup Super Tokens -=-
 setupAuth();

@@ -1,6 +1,6 @@
 import { Types } from 'mongoose';
 
-interface deleteBlockQueryProps {
+export interface deleteBlockQueryProps {
   'doc-ids': string[];
 }
 

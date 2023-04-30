@@ -112,6 +112,7 @@ const SearchModal = () => {
             `}
             onClick={() => {
               setIsOpen(false)
+              document.dispatchEvent(new CustomEvent('openChatPage', { detail: { open: false } }));
               setSearchResults([]);
 
               if (inputRef.current) {

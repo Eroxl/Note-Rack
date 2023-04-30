@@ -1,7 +1,7 @@
 import { Client } from '@elastic/elasticsearch';
 
-if (!process.env.ELASTICSEARCH_URL) {
-  throw new Error('ELASTICSEARCH_URL is not defined');
+if (!process.env.ELASTICSEARCH_URL && !process.env.ELASTICSEARCH_CLOUD_ID) {
+  throw new Error('ELASTICSEARCH_URL is not defined or ELASTICSEARCH_CLOUD_ID is not defined');
 }
 
 if (!process.env.ELASTICSEARCH_PASSWORD) {
@@ -12,8 +12,18 @@ if (!process.env.ELASTICSEARCH_USERNAME) {
   throw new Error('ELASTICSEARCH_USERNAME is not defined');
 }
 
+const URLConnection = process.env.ELASTICSEARCH_URL !== undefined
+  ? {
+    node: process.env.ELASTICSEARCH_URL as string,
+  }
+  : {
+    cloud: {
+      id: process.env.ELASTICSEARCH_CLOUD_ID as string,
+    }
+  }
+
 const client = new Client({
-  node: process.env.ELASTICSEARCH_URL,
+  ...URLConnection,
   auth: {
     password: process.env.ELASTICSEARCH_PASSWORD,
     username: process.env.ELASTICSEARCH_USERNAME,
