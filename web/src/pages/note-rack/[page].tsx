@@ -109,8 +109,8 @@ const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {
         }}
       >
         <MenuBar>
-          <div className={`flex ${isLoggedIn && 'pl-52'} print:pl-0 h-screen`}>
-            <div className={`${isChatOpen ? 'w-1/2' : 'w-full'}`}>
+          <div className={`flex ${isLoggedIn && 'pl-52'} print:pl-0 h-screen print:h-full`}>
+            <div className={`${isChatOpen ? 'w-1/2 print:w-full' : 'w-full'}`}>
               <DndProvider backend={HTML5Backend}>
                 {
                   status === 'loading'
@@ -145,8 +145,8 @@ const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {
             {
               isChatOpen && (
                 <>
-                  <div className="w-1 bg-black/10" />
-                  <div className="w-1/2 h-screen">
+                  <div className="w-1 bg-black/10 print:hidden" />
+                  <div className="w-1/2 h-screen print:hidden">
                     <Chat />
                   </div>
                 </>
