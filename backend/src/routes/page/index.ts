@@ -6,6 +6,7 @@ import getHomePage from './getHomePage';
 import getPage from './getPage';
 import getPageInfo from './getPageInfo';
 import updatePermissions from './updatePermissions';
+import chat from './chat';
 
 const router = express.Router();
 
@@ -37,6 +38,12 @@ router.use(
 router.use(
   '/',
   updatePermissions,
+);
+
+// -=- Create Chat API -=-
+router.use(
+  '/',
+  chat,
 );
 
 // -=- Create Modify Page API -=-
