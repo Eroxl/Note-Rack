@@ -1,5 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
-import Image from 'next/image';
+import React, { useEffect } from 'react';
 
 interface ShareMenuProps {
   page: string,

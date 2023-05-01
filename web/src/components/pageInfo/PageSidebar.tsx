@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 import PageSidebarItem from './PageSidebarItem';
 import Brain from '../../public/icons/Brain.svg';
-import Search from '../../public/icons/Search.svg';
+import Search from '@mui/icons-material/Search';
 
 export interface PageSidebarItemProps {
   _id: string,
@@ -67,12 +67,7 @@ const PageSidebar = () => {
             document.dispatchEvent(new CustomEvent('openSearchModal'));
           }}
         >
-          <Image
-            src={Search}
-            alt="Search"
-            width={24}
-            height={24}
-          />
+          <Search />
           Search
         </button>
         {areChatFeaturesEnabled && (

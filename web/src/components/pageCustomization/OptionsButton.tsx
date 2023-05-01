@@ -1,8 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useRouter } from 'next/router';
-import Image from 'next/image';
 
-import More from '../../public/icons/More.svg';
+import MoreHoriz from '@mui/icons-material/MoreHoriz';
 import OptionsMenu from '../menus/OptionsMenu';
 
 const ShareButton = () => {
@@ -21,11 +20,8 @@ const ShareButton = () => {
             setIsMenuOpen(!isMenuOpen);
           }}
         >
-          <Image
-            src={More}
-            alt="More"
-            width={32}
-            height={32}
+          <MoreHoriz
+            fontSize="large"
           />
         </div>
       </div>
