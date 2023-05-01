@@ -13,9 +13,9 @@ const CONTEXT_PROMPT_TEMPLATE = '### Context: ';
 const QUESTION_PROMPT_TEMPLATE = '### Question: ';
 
 const PRE_PROMPT = `You are a helpful AI assistant. Use the following pieces of context to answer the question at the end.
-If you don't know the answer, just say you don't know. DO NOT try to make up an answer.
+The user will never directly reference the context, but it is there to help you answer the question.
 Try to keep your answers helpful, short and to the point. Answers should be no longer than 3 sentences.
-Any math equations should be written in KaTeX and surrounded by dollar signs.`;
+Any math equations should be written in KaTeX and surrounded by a single $ on each side.`;
 
 const getChatResponse = async (
   messages: ChatCompletionRequestMessage[],
@@ -106,11 +106,11 @@ const getChatResponse = async (
           model: "gpt-3.5-turbo",
           stream: true,
           messages: [
+            ...messages,
             {
               role: 'system',
               content: PRE_PROMPT
             },
-            ...messages,
             {
               role: 'system',
               content: `${CONTEXT_PROMPT_TEMPLATE}${context}`

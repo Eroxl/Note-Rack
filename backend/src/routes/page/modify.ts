@@ -57,6 +57,8 @@ router.post(
 
     if (process.env.NEXT_PUBLIC_IS_CHAT_ENABLED === 'false') return;
 
+    // NOTE:EROXL:(2023-04-30): Re-write literally everything below this line
+
     // -=- Refresh Embeds -=-
     const embedChanges = operations
       .map((operation) => {
@@ -66,6 +68,10 @@ router.post(
           if (!data['new-block-properties']?.value) return;
 
           const index = data['new-block-index']
+
+          if (data['new-block-properties']?.blockType === 'math') {
+            data['new-block-properties']!.value = `$${data['new-block-properties']?.value}$`
+          }
 
           return {
             type: 'update',
@@ -104,11 +110,15 @@ router.post(
 
           if (index === undefined || !block) return;
 
-          if (oldText === newText || newText === undefined || oldText === undefined) return;
+          // if (oldText === newText || newText === undefined || oldText === undefined) return;
 
-          const updateDistance = distance(oldText, newText);
+          // const updateDistance = distance(oldText, newText);
 
-          if (updateDistance <= 0) return;
+          // if (updateDistance <= 0) return;
+
+          if (data['block-properties']?.blockType === 'math') {
+            data['block-properties']!.value = `$${data['block-properties']?.value}$`
+          }
 
           return {
             type: 'update',
@@ -116,7 +126,7 @@ router.post(
             context: (req.pageData!.data as (IPage['data'][0] & { _id: string })[])
               .slice(Math.max(0, index - 5), Math.min(req.pageData!.data.length, index + 5))
               .map((block) => block._id as string),
-            value: newText,
+            value: data['block-properties']?.value as string,
           }
         } else {
           const data = operation.data as deleteBlockQueryProps;

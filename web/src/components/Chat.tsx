@@ -13,13 +13,59 @@ interface ChatMessage {
 }
 
 const Chat = () => {
-  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [shouldIntroBeShown, setShouldIntroBeShown] = useState(true);
   const [isChatDone, setIsChatDone] = useState(true);
   const chatRef = useRef<HTMLDivElement>(null);
-  const mostRecentMessageRef = useRef<HTMLDivElement>(null);
 
   const { page } = useRouter().query;
+
+  const renderChatMessage = (role: 'system' | 'user' | 'assistant', content: string) => {
+    if (!chatRef.current) return;
+
+    const chatMessageContainer = document.createElement('div');
+
+    if (shouldIntroBeShown) {
+      setShouldIntroBeShown(false);
+    }
+
+    chatMessageContainer.className = `flex flex-row gap-2 py-2 ${role === 'user' ? 'justify-end' : 'justify-start'}`;
+
+    const chatMessage = document.createElement('div');
+
+    chatMessage.className = `flex flex-col gap-1 px-3 py-2 rounded-lg ${role === 'user' ? 'bg-sky-300 text-zinc-700' : 'bg-amber-50 text-zinc-700'}`;
+
+    const chatMessageRole = document.createElement('p');
+
+    chatMessageRole.className = 'text-sm font-medium whitespace-pre-line';
+    chatMessageRole.innerText = role === 'user' ? 'You' : 'Bot';
+
+    const chatMessageContent = document.createElement('p');
+
+    chatMessageContent.className = 'text-sm whitespace-pre-line';
+    chatMessageContent.innerText = '';
+    content.split('$').forEach((part, index) => {
+      if (index % 2 === 0) {
+        chatMessageContent.appendChild(document.createTextNode(part));
+      } else {
+        const html = katex.renderToString(part, {
+          throwOnError: false,
+        });
+
+        const span = document.createElement('span');
+
+        span.innerHTML = html;
+
+        chatMessageContent.appendChild(span.firstChild!);
+      }
+    });
+
+    chatMessage.appendChild(chatMessageRole);
+    chatMessage.appendChild(chatMessageContent);
+    chatMessageContainer.appendChild(chatMessage);
+
+    chatRef.current.appendChild(chatMessageContainer);
+  };
 
   // ~ Ask the question to the bot
   const askQuestion = async (chatMessages: ChatMessage[], newMessage: string) => {
@@ -38,15 +84,19 @@ const Chat = () => {
     if (chatRef.current) {
       chatRef.current.scrollTop = chatRef.current.scrollHeight;
     }
-  }, [chatMessages, chatRef, page]);
+  }, [chatRef, page]);
 
   // ~ Fetch chat messages from local storage
   useEffect(() => {
-    const chatMessages = localStorage.getItem('chatMessages');
+    const unParsedChatMessages = localStorage.getItem('chatMessages');
 
-    if (chatMessages) {
-      setChatMessages(JSON.parse(chatMessages));
-    }
+    if (!unParsedChatMessages) return;
+
+    const chatMessages: ChatMessage[] = JSON.parse(unParsedChatMessages);
+
+    chatMessages.forEach((chatMessage) => {
+      renderChatMessage(chatMessage.role, chatMessage.content);
+    });
   }, []);
 
   return (
@@ -86,7 +136,12 @@ const Chat = () => {
                     onClick={() => {
                       setIsDeleteModalOpen(false);
                       localStorage.removeItem('chatMessages');
-                      setChatMessages([]);
+
+                      setShouldIntroBeShown(true);
+
+                      if (chatRef.current) {
+                        chatRef.current.innerHTML = '';
+                      }
                     }}
                   >
                     Delete
@@ -96,81 +151,32 @@ const Chat = () => {
             </div>
           )
         }
+        {shouldIntroBeShown && (
+          <div
+            className="absolute flex flex-col justify-center w-full h-full px-20 text-center -translate-y-[56.5%] top-1/2"
+          >
+            <p className="flex items-center justify-center pb-3 text-2xl font-bold text-amber-50">
+              <Image
+                src={Brain}
+                alt="Brain"
+                width={50}
+                height={50}
+              />
+              Chat
+            </p>
+            <p className="text-xl font-medium text-amber-50">
+              Ask a question to get started
+            </p>
+            <p className="text-amber-50">
+              Note Rack chat allows you to ask questions about the page you are on,
+              and get answers from an interactive assistant.
+            </p>
+          </div>
+        )}
         <div
           className="flex flex-col w-full h-[calc(100%-8rem)] mx-auto overflow-scroll no-scrollbar px-20"
           ref={chatRef}
-        >
-          {chatMessages.length === 0 && (
-            <div className="flex flex-col justify-center w-full h-full text-center">
-              <p className="flex items-center justify-center pb-3 text-2xl font-bold text-amber-50">
-                <Image
-                  src={Brain}
-                  alt="Brain"
-                  width={50}
-                  height={50}
-                />
-                Chat
-              </p>
-              <p className="text-xl font-medium text-amber-50">
-                Ask a question to get started
-              </p>
-              <p className="text-amber-50">
-                Note Rack chat allows you to ask questions about the page you are on,
-                and get answers from an interactive assistant.
-              </p>
-            </div>
-          )}
-          {
-            chatMessages.map((message, index) => (
-              <div
-                key={index}
-                className={`flex flex-row gap-2 py-2 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-              >
-                <div
-                  className={`flex flex-col gap-1 px-3 py-2 rounded-lg ${message.role === 'user' ? 'bg-sky-300 text-zinc-700' : 'bg-amber-50 text-zinc-700'}`}
-                >
-                  <p className="text-sm font-medium whitespace-pre-line">
-                    {
-                      message.role === 'user'
-                        ? 'You'
-                        : 'Bot'
-                    }
-                  </p>
-                  <p 
-                    className="text-sm whitespace-pre-line"
-                    ref={index === chatMessages.length - 1 ? mostRecentMessageRef : null}
-                  >
-                    {
-                      (() => {
-                        if (index === chatMessages.length - 1 && message.content.match(/\$.*\$/) && mostRecentMessageRef.current) {
-                          mostRecentMessageRef.current.innerText = '';
-                        }
-
-                        return (
-                          message.content.split('$').map((part, index) => {
-                            if (index % 2 === 0) {
-                              return part;
-                            } else {
-                              return (
-                                <span
-                                  dangerouslySetInnerHTML={{ __html: (
-                                    katex.renderToString(part, {
-                                      throwOnError: false,
-                                    })
-                                  )}}
-                                />
-                              )
-                            }
-                          })
-                        )
-                      })()
-                    }
-                  </p>
-                </div>
-              </div>
-            ))
-          }
-        </div>
+        />
         <div className="absolute flex flex-row w-full max-w-4xl gap-2 px-20 mx-auto translate-x-1/2 -translate-y-full bottom-5 right-1/2">
           <input
             className="relative flex-grow p-2 px-3 overflow-scroll text-white break-normal rounded-md max-h-12 bg-white/10 focus:outline-none"
@@ -188,22 +194,24 @@ const Chat = () => {
 
                 input.value = '';
 
-                setChatMessages([
+                renderChatMessage('user', value);
+                const chatMessages: ChatMessage[] = JSON.parse(localStorage.getItem('chatMessages') || '[]');
+
+                // ~ Add the user's message to the chat
+                localStorage.setItem('chatMessages', JSON.stringify([
                   ...chatMessages,
                   {
                     role: 'user',
                     content: value,
                   },
-                  {
-                    role: 'assistant',
-                    content: '...',
-                  }
-                ])
+                ]));
+                
+                renderChatMessage('assistant', '...');
 
                 askQuestion(chatMessages, value).then((response) => {
                   const reader = response.body?.getReader();
 
-                  if (!mostRecentMessageRef.current) return;
+                  let fullText = '';
 
                   const processText = async (result: ReadableStreamReadResult<Uint8Array>) => {
                     if (result.done) {
@@ -215,11 +223,11 @@ const Chat = () => {
                         },
                         {
                           role: 'assistant',
-                          content: mostRecentMessageRef.current!.innerText,
+                          content: fullText,
                         }
                       ];
                       
-                      setChatMessages(newMessages);
+                      // setChatMessages(newMessages);
                       localStorage.setItem('chatMessages', JSON.stringify(newMessages));
 
                       setIsChatDone(true);
@@ -231,11 +239,12 @@ const Chat = () => {
 
                     const chunk = decoder.decode(result.value, { stream: true });
 
-                    if (mostRecentMessageRef.current!.innerText === '...') {
-                      mostRecentMessageRef.current!.innerText = '';
-                    }
+                    // ~ Remove the most recent message
+                    chatRef.current!.lastChild?.remove();
 
-                    mostRecentMessageRef.current!.innerText += chunk;
+                    fullText += chunk;
+
+                    renderChatMessage('assistant', fullText);
                     
                     chatRef.current!.scrollTo({
                       top: chatRef.current!.scrollHeight,
