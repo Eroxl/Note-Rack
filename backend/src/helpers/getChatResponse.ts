@@ -59,8 +59,10 @@ const getChatResponse = async (
     })
 
     // ~ If there are no similar messages, return a default message
-    if (similarMessages.status.reason !== '') {
-      throw new Error(similarMessages.status.reason);
+    if (similarMessages.status.reason !== '' || similarMessages.results.length === 0) {
+      response.statusCode = 200;
+      response.send('I\'m sorry, I don\'t know the answer to that question yet, write some text in this page to help me learn!');
+      return;
     }
 
     // ~ Get the context messages
@@ -167,10 +169,7 @@ const getChatResponse = async (
     });
   } catch (error) {
     response.statusCode = 500;
-    response.json({
-      status: 'error',
-      message: 'Something went wrong!',
-    });
+    response.send('Something went wrong!')
   }
 }
 
