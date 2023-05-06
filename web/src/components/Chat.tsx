@@ -6,6 +6,7 @@ import 'katex/dist/katex.min.css';
 
 import Trash from '../public/icons/Trash.svg';
 import Brain from '../public/icons/Brain.svg';
+import { ReadableStreamDefaultReadResult } from 'stream/web';
 
 interface ChatMessage {
   role: 'system' | 'user' | 'assistant',
@@ -213,7 +214,7 @@ const Chat = () => {
 
                   let fullText = '';
 
-                  const processText = async (result: ReadableStreamReadResult<Uint8Array>) => {
+                  const processText = async (result: ReadableStreamDefaultReadResult<Uint8Array>) => {
                     if (result.done) {
                       const newMessages: ChatMessage[] = [
                         ...chatMessages,
@@ -251,10 +252,10 @@ const Chat = () => {
                       behavior: 'smooth',
                     });
 
-                    reader?.read().then(processText);
+                    reader?.read().then(processText as any);
                   };
 
-                  reader?.read().then(processText);
+                  reader?.read().then(processText as any);
                 });
               })();
             }}
