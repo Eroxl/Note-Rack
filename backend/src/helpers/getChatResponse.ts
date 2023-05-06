@@ -4,6 +4,7 @@ import type { Response } from 'express';
 
 import OpenAIClient from './clients/OpenAIClient';
 import MilvusClient from './clients/MilvusClient';
+import { ReadableStreamDefaultReadResult } from 'stream/web';
 
 
 const RELATIVE_TEXT_COUNT = 3;
@@ -140,7 +141,7 @@ const getChatResponse = async (
 
       let chunk = '';
 
-      const processResult = (result: ReadableStreamReadResult<Uint8Array>) => {
+      const processResult = (result: ReadableStreamDefaultReadResult<Uint8Array>) => {
         chunk += decoder.decode(result.value, { stream: true });
 
         const dataObjects = chunk.split('\n').filter(Boolean);
@@ -162,10 +163,10 @@ const getChatResponse = async (
           response.write(responseMessage);
         }
 
-        reader.read().then(processResult);
+        reader.read().then(processResult as any);
       };
 
-      reader.read().then(processResult);
+      reader.read().then(processResult as any);
     });
   } catch (error) {
     response.statusCode = 500;

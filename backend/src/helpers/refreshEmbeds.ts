@@ -15,13 +15,13 @@ export interface EmbedOperation {
  * @param pageData The page data of the page that is being updated.
  */
 const refreshEmbeds = async (updates: EmbedOperation[], page: string) => {
-  await MilvusClient.loadCollection({
+  await MilvusClient!.loadCollection({
     collection_name: 'blocks'
   });
 
   const updateOperations = updates.filter((update) => update.type === 'update');
 
-  const embeddings = await OpenAIClient.createEmbedding({
+  const embeddings = await OpenAIClient!.createEmbedding({
     input: updateOperations.map((operation) => operation.value),
     model: 'text-embedding-ada-002',
   });
@@ -37,19 +37,19 @@ const refreshEmbeds = async (updates: EmbedOperation[], page: string) => {
     }));
 
 
-  await MilvusClient.insert({
+  await MilvusClient!.insert({
     collection_name: 'blocks',
     fields_data: fieldsData
   });
 
   const deleteOperations = updates.filter((update) => update.type === 'delete');
 
-  await MilvusClient.deleteEntities({
+  await MilvusClient!.deleteEntities({
     collection_name: 'blocks',
     expr: `block_id in [${deleteOperations.map((operation) => operation.id).join(', ')}]`,
   });
 
-  await MilvusClient.flush({
+  await MilvusClient!.flush({
     collection_names: ['blocks'],
   });
 };

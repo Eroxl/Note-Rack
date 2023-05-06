@@ -12,6 +12,10 @@
     "incremental": true,
     "outDir": "dist",
     "sourceMap": true,
+    "lib": [
+      "dom",
+      "es6"
+    ],
   },
   "include": ["**/*.ts"],
   "exclude": ["node_modules"]
