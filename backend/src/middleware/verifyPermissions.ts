@@ -61,6 +61,25 @@ const verifyPermissions = (permissions: ValidPermissions[]) => {
       }
     }
 
+    if (!pageData?.permissions) {
+      req.pageData = pageData;
+
+      req.permissions = Object.entries(userPermissionsOnPage)
+        .filter(([_, value]) => value === true)
+        .map(([key, _]) => key as ValidPermissions);
+
+      if (req.permissions.length === 0) {
+        res.statusCode = 403;
+        res.json({
+          status: 'error',
+          message: 'You do not have access to this page...',
+        });
+        return;
+      }
+
+      next();
+    }
+
     // Merge pageData.permissions['*'] with userPermissionsOnPage
     if (pageData.permissions['*']) {
       Object.entries(pageData.permissions['*']).forEach(([key, value]) => {
