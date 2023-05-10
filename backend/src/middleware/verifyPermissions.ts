@@ -47,7 +47,19 @@ const verifyPermissions = (permissions: ValidPermissions[]) => {
       return;
     }
 
-    const userPermissionsOnPage = pageData.permissions[username] || {};
+    let userPermissionsOnPage: Omit<IPage['permissions'][string], 'email'> = {
+      read: false,
+      write: false,
+      admin: false,
+    };
+
+    if (username && pageData?.permissions) {
+      const userPermission = pageData.permissions[username];
+
+      if (userPermission) {
+        userPermissionsOnPage = userPermission;
+      }
+    }
 
     // Merge pageData.permissions['*'] with userPermissionsOnPage
     if (pageData.permissions['*']) {
