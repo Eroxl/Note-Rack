@@ -9,14 +9,23 @@ import { ReadableStreamDefaultReadResult } from 'stream/web';
 
 const RELATIVE_TEXT_COUNT = 3;
 
-const CONTEXT_PROMPT_TEMPLATE = '### Context: ';
+// SOURCE: https://github.com/mayooear/gpt4-pdf-chatbot-langchain/blob/main/utils/makechain.ts
+const CONDENSER_PROMPT = `Given the following conversation and a follow up question, rephrase the follow up question to be a standalone question.
 
-const QUESTION_PROMPT_TEMPLATE = '### Question: ';
+Chat History:
+{chat_history}
+Follow Up Input: {question}
+Standalone question:`;
 
 const PRE_PROMPT = `You are a helpful AI assistant. Use the following pieces of context to answer the question at the end.
 The user will never directly reference the context, but it is there to help you answer the question.
 Try to keep your answers helpful, short and to the point. Answers should be no longer than 3 sentences.
-Any math equations should be written in KaTeX and surrounded by a single $ on each side.`;
+Any math equations should be written in KaTeX and surrounded by a single $ on each side
+
+Context: {context}
+
+Question: {question}
+Helpful answer in markdown:`;
 
 const getChatResponse = async (
   messages: ChatCompletionRequestMessage[],
@@ -38,9 +47,24 @@ const getChatResponse = async (
     collection_name: 'blocks',
   });
 
+  // ~ Condense the context
+  const condensedQuestionResponse = await OpenAIClient!.createChatCompletion({
+    model: 'gpt-3.5-turbo',
+    messages: [
+      {
+        role: 'system',
+        content: CONDENSER_PROMPT
+          .replace('{chat_history}', JSON.stringify(messages))
+          .replace('{question}', question)
+      }
+    ]
+  });
+
+  const condensedQuestion = condensedQuestionResponse.data.choices[0].message?.content;
+
   // ~ Create an embedding for the latest message
   const embeddings = await OpenAIClient!.createEmbedding({
-    input: question,
+    input: condensedQuestion || question,
     model: 'text-embedding-ada-002',
   });
 
@@ -109,18 +133,11 @@ const getChatResponse = async (
           model: "gpt-3.5-turbo",
           stream: true,
           messages: [
-            ...messages,
-            {
-              role: 'system',
-              content: PRE_PROMPT
-            },
-            {
-              role: 'system',
-              content: `${CONTEXT_PROMPT_TEMPLATE}${context}`
-            },
             {
               role: 'user',
-              content: `${QUESTION_PROMPT_TEMPLATE}${question}`
+              content: PRE_PROMPT
+                .replace('{context}', context)
+                .replace('{question}', condensedQuestion || question)
             }
           ]
         }),
@@ -169,6 +186,8 @@ const getChatResponse = async (
       reader.read().then(processResult as any);
     });
   } catch (error) {
+    console.error(error);
+
     response.statusCode = 500;
     response.send('Something went wrong!')
   }
