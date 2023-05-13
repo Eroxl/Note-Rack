@@ -49,6 +49,7 @@ const setupAuth = () => {
       websiteDomain: WEBSITE_DOMAIN,
       apiBasePath: '/auth',
       websiteBasePath: '/auth',
+      apiGatewayPath: API_DOMAIN.replace(/https?:\/\/.*?\//, '')
     },
     recipeList: [
       ThirdParty.init({

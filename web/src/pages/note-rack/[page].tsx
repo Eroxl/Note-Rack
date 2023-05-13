@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { useSessionContext } from 'supertokens-auth-react/recipe/session';
+import { useSessionContext, attemptRefreshingSession,  } from 'supertokens-auth-react/recipe/session';
 
 import type PageDataInterface from '../../lib/types/pageTypes';
 import Editor from '../../components/Editor';
@@ -13,25 +12,46 @@ import PageContext from '../../contexts/PageContext';
 import MenuBar from '../../components/MenuBar';
 import Chat from '../../components/Chat';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
-const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {
+const NoteRackPage = () => {
   const [status, setStatus] = useState<'loading' | 'loaded' | 'error'>('loading');
   const [error, setError] = useState<string | undefined>();
   const [pageData, setPageData] = useState<PageDataInterface['message']>();
   const [isChatOpen, setIsChatOpen] = useState(false);
-  const { pageDataReq } = props;
+
+  const router = useRouter();
+  const { page } = router.query as { page: string };
 
   const session = useSessionContext();
   const isLoggedIn = session?.loading === false && session?.doesSessionExist === true;
 
-
   // TODO:EROXL: Add error handling here...
   useEffect(() => {
-    // -=- Setup Page Data -=-
-    // ~ Get the page data
-    (async () => {
-      const pageData = await pageDataReq;
+    if (!page) return;
+
+    const loadPageData = async (shouldRefreshSession = true) => {
+      let pageDataReq = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/page/get-page/${page}`,
+        {
+          credentials: 'include',
+        },
+      );
+
+      const pageData = await pageDataReq.json();
      
+      if (pageDataReq.status === 401 && pageData.message === 'try refresh token') {
+        if (!shouldRefreshSession) {
+          setError('You are not authorized to view this page.');
+          setStatus('error');
+          return;
+        }
+
+        await attemptRefreshingSession();
+        loadPageData(false);
+        return;
+      }
+
       if (pageData.status === 'error') {
         setError(pageData.message as unknown as string);
         setStatus('error');
@@ -40,12 +60,16 @@ const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {
 
       setPageData(pageData.message);
       setStatus('loaded');
-    })();
+    };
+
+    // -=- Setup Page Data -=-
+    // ~ Get the page data
+    loadPageData();
 
     // -=- Setup Auto Saving -=-
     // ~ Every 2.5 seconds, send the page changes to the server
     setInterval(() => { SaveManager.sendToServer(); }, 2500);
-  }, [pageDataReq]);
+  }, [page]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -157,31 +181,6 @@ const NoteRackPage = (props: {pageDataReq: Promise<PageDataInterface>}) => {
       </PageContext.Provider>
     </>
   );
-};
-
-export const getServerSideProps = async (context: GetServerSidePropsContext) => {
-  // -=- Get Cookies -=-
-  const { req, params } = context;
-  const { page } = params as { page: string };
-  const { cookies } = req;
-
-  if (!page || page === 'chat') {
-    return {
-      props: (async () => ({}))()
-    }
-  }
-
-  // -=- Get Page Data -=-
-  // ~ Get the page data from the server, and return it to the client
-  return ({
-    props: (async () => ({
-      pageDataReq: await (await fetch(`${process.env.LOCAL_API_URL}/page/get-page/${page}`, {
-        headers: {
-          Cookie: Object.keys(cookies).map((cookieKey) => `${cookieKey}=${cookies[cookieKey]}`).join('; '),
-        },
-      })).json(),
-    }))(),
-  });
 };
 
 export default NoteRackPage;

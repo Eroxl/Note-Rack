@@ -10,7 +10,7 @@ const superTokensConfig = () => ({
     appName: 'Note Rack',
     apiDomain: process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000',
     websiteDomain: process.env.NEXT_PUBLIC_BASE_URL || 'http://127.0.0.1:3000',
-    apiBasePath: '/auth',
+    apiBasePath: `${process.env.NEXT_PUBLIC_API_URL?.replace(/https?:\/\/.*?\//, '')}/auth` || '/auth',
     websiteBasePath: '/auth',
   },
   recipeList: [
