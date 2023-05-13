@@ -122,8 +122,6 @@ const selectEnd = (element: HTMLElement, position: number) => {
       position -= length;
 
       if (position <= 0 || node === lastTextNode) {
-        console.log(node);
-
         const index = Math.max(Math.min(position + length, length), 0);
 
         if (node.textContent?.at(index - 1) === '\n') {
