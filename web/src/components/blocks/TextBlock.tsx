@@ -22,7 +22,7 @@ const TextBlock = (props: EditableText) => {
 
   const { pageData, setPageData } = useContext(PageContext);
 
-  const isAllowedToEdit = pageData!.userPermissions.write;
+  const isAllowedToEdit = pageData?.userPermissions.write || false;
 
   const handlePotentialTypeChange = async (element: HTMLSpanElement) => {
     textKeybinds.forEach(async (bind) => {

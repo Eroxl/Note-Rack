@@ -43,8 +43,8 @@ const handleKeyDown = (
   focusBlockAtIndexRelativeToTop(
     index,
     pageData,
-    distanceFromBottom
+    distanceFromBottom,
   );
-}
+};
 
 export default handleKeyDown;

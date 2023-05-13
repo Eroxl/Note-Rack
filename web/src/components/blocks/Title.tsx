@@ -23,7 +23,7 @@ const Title = (props: TitleProps) => {
 
   const { pageData, setPageData } = useContext(PageContext);
 
-  const isAllowedToEdit = pageData?.userPermissions.admin; 
+  const isAllowedToEdit = pageData?.userPermissions.admin;
 
   const onTitleChanged = (text: string) => {
     if (!isAllowedToEdit) return;
@@ -78,9 +78,9 @@ const Title = (props: TitleProps) => {
             } else if (e.code === 'ArrowDown' && isCaretAtBottom(e.currentTarget)) {
               handleKeyDown(
                 e,
-                index-1,
+                index - 1,
                 pageData,
-              )
+              );
             } else if (e.code === 'ArrowUp' && isCaretAtTop(e.currentTarget)) {
               e.preventDefault();
             }

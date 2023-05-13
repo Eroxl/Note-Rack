@@ -22,7 +22,7 @@ const dropdownInfo: {
       admin: true,
       write: true,
       read: true,
-    }
+    },
   },
   [DropdownOptions.EditOnly]: {
     title: 'Edit only',
@@ -40,8 +40,8 @@ const dropdownInfo: {
       admin: false,
       write: false,
       read: true,
-    }
+    },
   },
-}
+};
 
-export { DropdownOptions, dropdownInfo }
+export { DropdownOptions, dropdownInfo };

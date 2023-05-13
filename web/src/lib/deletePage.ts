@@ -16,7 +16,6 @@ const deletePage = async (page: string) => {
   // ~ If the response is 200 (Ok), return
   if (deletePageResp.status === 200) return;
 
-
   // -=- Error Handling -=-
   // ~ If the response is not 200 (Ok), throw an error
   throw new Error(`Couldn't delete page because: ${deletePageRespJSON.message}`);

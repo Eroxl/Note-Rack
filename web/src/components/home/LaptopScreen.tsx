@@ -9,8 +9,7 @@ const LaptopScreen = (props: LaptopScreenProps) => {
 
   return (
     <div className="relative flex border-[6px] rounded-lg border-zinc-400 drop-shadow-md h-min">
-      <div className="absolute -top-1 -bottom-1 -left-1 -right-1 bg-black border-black rounded-lg border-[6px]">
-      </div>
+      <div className="absolute -top-1 -bottom-1 -left-1 -right-1 bg-black border-black rounded-lg border-[6px]" />
       {children}
     </div>
   );

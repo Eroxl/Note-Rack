@@ -27,19 +27,24 @@ const getClosestTextNode = (node: Node): Node[] => {
   const textNodes = [];
 
   // ~ Get all text nodes or br elements
-  const iterator = document.createNodeIterator(node, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT, {
-    acceptNode: (node) => {
-      if (node.nodeName === 'BR') return NodeFilter.FILTER_ACCEPT;
-      if (node.nodeName === '#text') return NodeFilter.FILTER_ACCEPT;
-      return NodeFilter.FILTER_SKIP;
-    }
-  });
+  const iterator = document.createNodeIterator(
+    node,
+    // eslint-disable-next-line no-bitwise
+    NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT,
+    {
+      acceptNode: (childNode) => {
+        if (childNode.nodeName === 'BR') return NodeFilter.FILTER_ACCEPT;
+        if (childNode.nodeName === '#text') return NodeFilter.FILTER_ACCEPT;
+        return NodeFilter.FILTER_SKIP;
+      },
+    },
+  );
 
   let nextNode = iterator.nextNode();
   while (nextNode) {
     textNodes.push(nextNode);
-    
-    nextNode = iterator.nextNode()
+
+    nextNode = iterator.nextNode();
   }
 
   // ~ If there are no text nodes, return the element
@@ -52,14 +57,16 @@ const getClosestTextNode = (node: Node): Node[] => {
 const getNextEditableBlock = (
   index: number,
   pageData: PageDataInterface['message'],
-  direction: 'up' | 'down' = 'up'
+  direction: 'up' | 'down' = 'up',
 ): HTMLElement | undefined => {
+  if (!pageData) return undefined;
+
   if (direction === 'up') {
     // ~ Find the previous editable block
     while (index > 0) {
       index -= 1;
 
-      const block = document.getElementById(pageData!.data[index]._id)
+      const block = document.getElementById(pageData.data[index]._id);
       if (block?.getAttribute('contenteditable') === 'true') {
         return block;
       }
@@ -67,69 +74,22 @@ const getNextEditableBlock = (
 
     // ~ If there is no previous editable block, focus the first editable block
     const block = document.getElementById('page-title')?.firstChild;
-    if (!block) return;
+    if (!block) return undefined;
 
     return block as HTMLElement;
   }
 
   // ~ Find the next editable block
-  while (index < pageData!.data.length - 1) {
+  while (index < pageData.data.length - 1) {
     index += 1;
 
-    const block = document.getElementById(pageData!.data[index]._id)
+    const block = document.getElementById(pageData.data[index]._id);
     if (block?.getAttribute('contenteditable') === 'true') {
       return block;
     }
   }
-};
 
-const focusBlockAtIndex = (
-  index: number,
-  pageData: PageDataInterface['message'],
-) => {
-  const block = getNextEditableBlock(index, pageData);
-  if (!block) return;
-
-  // ~ Focus the block
-  selectEnd(block, -1);
-};
-
-
-const focusBlockAtIndexRelativeToTop = (
-  index: number,
-  pageData: PageDataInterface['message'],
-  position: number,
-) => {
-  const block = getNextEditableBlock(index, pageData, 'down');
-  if (!block) return;
-
-  const offset = Math.min(position, getFirstLineLength(block));
-
-  // ~ Focus the block
-  selectEnd(block, offset);
-};
-
-const focusBlockAtIndexRelativeToBottom = (
-  index: number,
-  pageData: PageDataInterface['message'],
-  position: number,
-) => {
-  const block = getNextEditableBlock(index, pageData);
-  if (!block) return;
-
-  let lengthExcludingLastLine = getLengthExcludingLastLine(block);
-
-  if (lengthExcludingLastLine !== 0) {
-    lengthExcludingLastLine += 1;
-  }
-
-  const offset = Math.min(
-    lengthExcludingLastLine + position,
-    block.textContent?.length || 0,
-  );
-
-  // ~ Focus the block
-  selectEnd(block, offset);
+  return undefined;
 };
 
 /**
@@ -181,9 +141,57 @@ const selectEnd = (element: HTMLElement, position: number) => {
   sel?.addRange(range);
 };
 
+const focusBlockAtIndex = (
+  index: number,
+  pageData: PageDataInterface['message'],
+) => {
+  const block = getNextEditableBlock(index, pageData);
+  if (!block) return;
+
+  // ~ Focus the block
+  selectEnd(block, -1);
+};
+
+const focusBlockAtIndexRelativeToTop = (
+  index: number,
+  pageData: PageDataInterface['message'],
+  position: number,
+) => {
+  const block = getNextEditableBlock(index, pageData, 'down');
+  if (!block) return;
+
+  const offset = Math.min(position, getFirstLineLength(block));
+
+  // ~ Focus the block
+  selectEnd(block, offset);
+};
+
+const focusBlockAtIndexRelativeToBottom = (
+  index: number,
+  pageData: PageDataInterface['message'],
+  position: number,
+) => {
+  const block = getNextEditableBlock(index, pageData);
+  if (!block) return;
+
+  let lengthExcludingLastLine = getLengthExcludingLastLine(block);
+
+  if (lengthExcludingLastLine !== 0) {
+    lengthExcludingLastLine += 1;
+  }
+
+  const offset = Math.min(
+    lengthExcludingLastLine + position,
+    block.textContent?.length || 0,
+  );
+
+  // ~ Focus the block
+  selectEnd(block, offset);
+};
+
 export {
   focusBlockAtIndex,
   focusBlockAtIndexRelativeToTop,
   focusBlockAtIndexRelativeToBottom,
-  getLengthExcludingLastLine 
+  getLengthExcludingLastLine,
 };

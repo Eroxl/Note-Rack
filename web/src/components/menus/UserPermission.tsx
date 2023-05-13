@@ -1,9 +1,11 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
-import { UserPermissions, Permissions } from '../../lib/types/pageTypes';
+import React, {
+  useState, useEffect, useRef, useContext,
+} from 'react';
+import { useRouter } from 'next/router';
 
+import { UserPermissions, Permissions } from '../../lib/types/pageTypes';
 import { DropdownOptions, dropdownInfo } from '../../lib/constants/ShareOptions';
 import ShareOptionsDropdown from './ShareOptionsDropdown';
-import { useRouter } from 'next/router';
 import PagePermissionsContext from '../../contexts/PagePermissionsContext';
 
 interface UserPermissionProps {
@@ -28,8 +30,8 @@ const UserPermission = (props: UserPermissionProps) => {
     const permissions = Object.entries(currentPermissions).find(([, value]) => value.email === email)?.[1];
 
     const defaultDropdownOption = Object.keys(dropdownInfo).find((uuid) => {
-      let keyPermissions = dropdownInfo[+uuid].permissions;
-  
+      const keyPermissions = dropdownInfo[+uuid].permissions;
+
       return Object.entries(keyPermissions).every(([key, value]) => {
         if (!permissions) return false;
 
@@ -48,29 +50,29 @@ const UserPermission = (props: UserPermissionProps) => {
       ) {
         setIsDropdownOpen(false);
       }
-    }
+    };
 
     document.addEventListener('mousedown', handleClickOutside);
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
-    }
+    };
   });
 
   const setSelectDropdownOption = (option: DropdownOptions) => {
-    let key = Object.keys(currentPermissions).find((key) => currentPermissions[key].email === email) || email;
+    const key = Object.keys(currentPermissions).find((key) => currentPermissions[key].email === email) || email;
 
     setCurrentPermissions({
       ...currentPermissions,
       [key]: {
         ...dropdownInfo[option].permissions,
-        email: email,
-      }
+        email,
+      },
     } as Permissions);
 
     (async () => {
       await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/page/update-permissions/${page}`, 
+        `${process.env.NEXT_PUBLIC_API_URL}/page/update-permissions/${page}`,
         {
           method: 'POST',
           headers: {
@@ -78,22 +80,22 @@ const UserPermission = (props: UserPermissionProps) => {
           },
           body: JSON.stringify({
             email,
-            permissions: dropdownInfo[option].permissions
+            permissions: dropdownInfo[option].permissions,
           }),
-        }
+        },
       );
     })();
 
     setSelectedDropdownOption(option);
-  }
+  };
 
   return (
     <div
       className={`
         relative flex w-full gap-2 p-2 px-2 rounded-sm hover:cursor-pointer
         ${isDropdownOpen
-          ? 'bg-black/10 dark:bg-white/10'
-          : 'dark:hover:bg-white/10 hover:bg-black/10'
+        ? 'bg-black/10 dark:bg-white/10'
+        : 'dark:hover:bg-white/10 hover:bg-black/10'
         }
       `}
       onClick={() => {
@@ -131,12 +133,12 @@ const UserPermission = (props: UserPermissionProps) => {
               <p
                 onClick={() => {
                   setCurrentPermissions({
-                    ...Object.fromEntries(Object.entries(currentPermissions).filter(([_, value]) => value.email !== email))
+                    ...Object.fromEntries(Object.entries(currentPermissions).filter(([_, value]) => value.email !== email)),
                   } as Permissions);
 
                   (async () => {
                     await fetch(
-                      `${process.env.NEXT_PUBLIC_API_URL}/page/update-permissions/${page}`, 
+                      `${process.env.NEXT_PUBLIC_API_URL}/page/update-permissions/${page}`,
                       {
                         method: 'POST',
                         headers: {
@@ -148,9 +150,9 @@ const UserPermission = (props: UserPermissionProps) => {
                             read: false,
                             write: false,
                             admin: false,
-                          }
+                          },
                         }),
-                      }
+                      },
                     );
                   })();
                 }}
@@ -163,7 +165,7 @@ const UserPermission = (props: UserPermissionProps) => {
         }
       </div>
     </div>
-  )
+  );
 };
 
 export default UserPermission;

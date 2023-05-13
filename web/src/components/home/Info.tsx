@@ -1,7 +1,7 @@
 import React from 'react';
-import LaptopScreen from './LaptopScreen';
 import Image from 'next/image';
 
+import LaptopScreen from './LaptopScreen';
 import LabReport from '../../public/promo/Lab-Report-Example.png';
 import ShareExample from '../../public/promo/Share-Example.png';
 import MathExample from '../../public/promo/Math-Example.png';

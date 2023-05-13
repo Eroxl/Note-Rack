@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { DropdownOptions, dropdownInfo } from '../../lib/constants/ShareOptions';
 
 interface ShareOptionsDropdownProps {
@@ -75,6 +76,6 @@ const ShareOptionsDropdown = (props: ShareOptionsDropdownProps) => {
       </ul>
     </div>
   );
-}
+};
 
 export default ShareOptionsDropdown;

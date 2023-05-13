@@ -31,13 +31,13 @@ const ShareMenu = (props: ShareMenuProps) => {
       ) {
         setIsMenuOpen(false);
       }
-    }
+    };
 
     document.addEventListener('mousedown', handleClickOutside);
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
-    }
+    };
   });
 
   return (
@@ -64,16 +64,16 @@ const ShareMenu = (props: ShareMenuProps) => {
               className="flex flex-row gap-2"
               onClick={() => {
                 if (!permissionsOnPage?.admin) return;
-                
+
                 setIsEditingEmails(true);
               }}
-              >
+            >
               <div
                 className={`
                   flex flex-col justify-center w-full px-2 py-2 rounded
                   ${permissionsOnPage?.admin
-                    ? 'cursor-pointer'
-                    : 'cursor-not-allowed'
+                  ? 'cursor-pointer'
+                  : 'cursor-not-allowed'
                   }
                   dark:bg-white/10 bg-black/10 dark:text-amber-50/40 text-zinc-700/40
                 `}
@@ -84,8 +84,8 @@ const ShareMenu = (props: ShareMenuProps) => {
                 className={`
                   flex flex-col items-center justify-center px-2 py-2 text-sm font-bold text-center border
                   ${permissionsOnPage?.admin
-                    ? 'bg-blue-500 border-blue-600 cursor-pointer'
-                    : 'bg-gray-300 border-gray-400 cursor-not-allowed'
+                  ? 'bg-blue-500 border-blue-600 cursor-pointer'
+                  : 'bg-gray-300 border-gray-400 cursor-not-allowed'
                   } rounded text-zinc-700 dark:text-amber-50
                 `}
               >
@@ -101,8 +101,8 @@ const ShareMenu = (props: ShareMenuProps) => {
                       && Object.values(currentPermissions).filter(
                         (permission) => {
                           const hasAnyPermissions = permission.read || permission.write || permission.admin;
-                          return permission.email !== '*' && hasAnyPermissions; 
-                        }
+                          return permission.email !== '*' && hasAnyPermissions;
+                        },
                       ).length > 0
                     ) && (
                       <div>
@@ -127,10 +127,10 @@ const ShareMenu = (props: ShareMenuProps) => {
                       className="flex flex-row w-full gap-5 p-2 text-left rounded-sm cursor-pointer select-none dark:hover:bg-white/10 hover:bg-black/10"
                       onClick={() => {
                         setIsPagePublic(!isPagePublic);
-                        
+
                         (async () => {
                           await fetch(
-                            `${process.env.NEXT_PUBLIC_API_URL}/page/update-permissions/${page}`, 
+                            `${process.env.NEXT_PUBLIC_API_URL}/page/update-permissions/${page}`,
                             {
                               method: 'POST',
                               headers: {
@@ -142,9 +142,9 @@ const ShareMenu = (props: ShareMenuProps) => {
                                   read: !isPagePublic,
                                   write: false,
                                   admin: false,
-                                }
+                                },
                               }),
-                            }
+                            },
                           );
                         })();
                       }}
@@ -154,7 +154,8 @@ const ShareMenu = (props: ShareMenuProps) => {
                         alt="Globe"
                         height={48}
                         width={48}
-                        className="select-none" />
+                        className="select-none"
+                      />
                       <div className="w-52">
                         <span className="font-bold">Share to Web</span>
                         <span className="block text-sm text-zinc-700 dark:text-amber-50">
@@ -179,9 +180,10 @@ const ShareMenu = (props: ShareMenuProps) => {
                         before:h-3/4 before:aspect-square
                         my-auto border
                         ${isPagePublic
-                            ? 'bg-zinc-500 dark:bg-blue-500 border-blue-600 before:right-0 before:-translate-x-1/4'
-                            : 'bg-zinc-200 dark:bg-slate-400 before:left-0 before:translate-x-1/4 border-zinc-400 dark:border-slate-500'}
-                      `} />
+                          ? 'bg-zinc-500 dark:bg-blue-500 border-blue-600 before:right-0 before:-translate-x-1/4'
+                          : 'bg-zinc-200 dark:bg-slate-400 before:left-0 before:translate-x-1/4 border-zinc-400 dark:border-slate-500'}
+                      `}
+                      />
                     </div>
                   </div>
                   <div
@@ -196,10 +198,9 @@ const ShareMenu = (props: ShareMenuProps) => {
               )
             }
           </>
-        )
-      }
+        )}
     </div>
   );
-}
+};
 
 export default ShareMenu;

@@ -18,7 +18,6 @@ const Home: NextPage = () => {
       // ~ If the user is logged in, redirect them to their home page
       if (session !== false) {
         Router.push('/note-rack');
-        return;
       }
     })();
   }, []);

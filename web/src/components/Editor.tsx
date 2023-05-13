@@ -28,7 +28,6 @@ const Editor = () => {
 
   // -=- Setup Selection -=-
   const selectionData = useSelectionCollector('blocks');
-  
 
   useEffect(() => {
     const handleSelectionEvents = (event: KeyboardEvent) => {
@@ -37,7 +36,7 @@ const Editor = () => {
 
       // ~ Check if there is an element selected
       if (document.activeElement?.tagName === 'INPUT') return;
-      
+
       // ~ Iterate over all the selected blocks
       for (let i = 0; i < selectionData.length; i += 1) {
         const {
@@ -49,7 +48,7 @@ const Editor = () => {
         // ~ If the block is a page, delete the page differently
         if (isBlockPage) {
           document.dispatchEvent(
-            new CustomEvent('deletePage', { detail: { pageID: blockID } })
+            new CustomEvent('deletePage', { detail: { pageID: blockID } }),
           );
           deletePage(blockID);
         }
@@ -75,10 +74,10 @@ const Editor = () => {
   // -=- Render -=-
   return (
     <Selectable
-      accepts={isAllowedToEdit ? "blocks" : ""}
+      accepts={isAllowedToEdit ? 'blocks' : ''}
       selectionClassName="bg-sky-300 opacity-20"
     >
-      <div className={`w-full h-full mt-10 overflow-y-auto print:m-0 print:p-0 overflow-x-clip no-scrollbar`} id="main-editor">
+      <div className="w-full h-full mt-10 overflow-y-auto print:m-0 print:p-0 overflow-x-clip no-scrollbar" id="main-editor">
         <div
           className="flex flex-col items-center w-full h-max bg-amber-50 dark:bg-zinc-700 print:dark:bg-white print:bg-white"
         >

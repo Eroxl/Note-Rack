@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import React, {
+  useState, useEffect, useRef, useContext,
+} from 'react';
 
 import ColourPicker from './ColoursPicker';
 import PageContext from '../../contexts/PageContext';

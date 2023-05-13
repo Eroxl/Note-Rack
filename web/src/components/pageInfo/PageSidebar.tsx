@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
+import Search from '@mui/icons-material/Search';
 
 import PageSidebarItem from './PageSidebarItem';
 import Brain from '../../public/icons/Brain.svg';
-import Search from '@mui/icons-material/Search';
 
 export interface PageSidebarItemProps {
   _id: string,
@@ -47,7 +47,6 @@ const PageSidebar = () => {
     })();
   }, []);
 
-  
   if (!pageTree?.length) {
     return (
       <div className="absolute h-screen p-3 pt-12 select-none print:h-max w-52 print:w-0 bg-amber-400/10 no-scrollbar dark:bg-white/10">

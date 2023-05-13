@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { useSessionContext } from 'supertokens-auth-react/recipe/session'; 
+import { useSessionContext } from 'supertokens-auth-react/recipe/session';
 
 import PagePath from './pageInfo/PagePath';
 import ShareButton from './pageCustomization/ShareButton';
@@ -24,7 +24,7 @@ const MenuBar = (props: MenuBarProps) => {
     >
       <div className="absolute">
         <div className="relative z-10 flex w-screen h-10 border-b-4 print:h-0 bg-amber-50 no-scrollbar dark:bg-zinc-700 print:dark:bg-white border-black/10 print:border-0">
-          {isLoggedIn 
+          {isLoggedIn
             ? (
               <>
                 <PagePath />
@@ -37,10 +37,11 @@ const MenuBar = (props: MenuBarProps) => {
                 <a
                   href="/auth#"
                   className="px-2 my-auto ml-auto text-center rounded cursor-pointer text-zinc-700 dark:text-amber-50"
-                >Login</a>
+                >
+                  Login
+                </a>
               </Link>
-            )
-          }
+            )}
         </div>
       </div>
       {isLoggedIn && (
@@ -49,7 +50,7 @@ const MenuBar = (props: MenuBarProps) => {
       {children}
       <SearchModal />
     </div>
-  )
+  );
 };
 
 export default MenuBar;

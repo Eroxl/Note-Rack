@@ -4,9 +4,10 @@ import { useRouter } from 'next/router';
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
 
+import { ReadableStreamDefaultReadResult } from 'stream/web';
+
 import Trash from '../public/icons/Trash.svg';
 import Brain from '../public/icons/Brain.svg';
-import { ReadableStreamDefaultReadResult } from 'stream/web';
 
 interface ChatMessage {
   role: 'system' | 'user' | 'assistant',
@@ -70,7 +71,7 @@ const Chat = () => {
 
   // ~ Ask the question to the bot
   const askQuestion = async (chatMessages: ChatMessage[], newMessage: string) => {
-    const questionRequestParameters = `message=${newMessage}&previousMessages=${JSON.stringify(chatMessages)}`
+    const questionRequestParameters = `message=${newMessage}&previousMessages=${JSON.stringify(chatMessages)}`;
     const questionRequestURI = `${process.env.NEXT_PUBLIC_API_URL}/page/chat/${page}?${questionRequestParameters}`;
 
     const questionRequest = fetch(questionRequestURI, {
@@ -79,7 +80,7 @@ const Chat = () => {
     });
 
     return questionRequest;
-  }
+  };
 
   useEffect(() => {
     if (chatRef.current) {
@@ -191,7 +192,7 @@ const Chat = () => {
 
               (async () => {
                 const input = e.target as HTMLInputElement;
-                const value = input.value;
+                const { value } = input;
 
                 input.value = '';
 
@@ -206,7 +207,7 @@ const Chat = () => {
                     content: value,
                   },
                 ]));
-                
+
                 renderChatMessage('assistant', '...');
 
                 askQuestion(chatMessages, value).then((response) => {
@@ -225,9 +226,9 @@ const Chat = () => {
                         {
                           role: 'assistant',
                           content: fullText,
-                        }
+                        },
                       ];
-                      
+
                       // setChatMessages(newMessages);
                       localStorage.setItem('chatMessages', JSON.stringify(newMessages));
 
@@ -246,7 +247,7 @@ const Chat = () => {
                     fullText += chunk;
 
                     renderChatMessage('assistant', fullText);
-                    
+
                     chatRef.current!.scrollTo({
                       top: chatRef.current!.scrollHeight,
                       behavior: 'smooth',
@@ -275,7 +276,7 @@ const Chat = () => {
         </div>
       </div>
     </div>
-  )
+  );
 };
 
 export default Chat;

@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { useSessionContext, attemptRefreshingSession,  } from 'supertokens-auth-react/recipe/session';
+import { useSessionContext, attemptRefreshingSession } from 'supertokens-auth-react/recipe/session';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 import type PageDataInterface from '../../lib/types/pageTypes';
 import Editor from '../../components/Editor';
@@ -11,8 +13,6 @@ import SaveManager from '../../lib/classes/SaveManager';
 import PageContext from '../../contexts/PageContext';
 import MenuBar from '../../components/MenuBar';
 import Chat from '../../components/Chat';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
 
 const NoteRackPage = () => {
   const [status, setStatus] = useState<'loading' | 'loaded' | 'error'>('loading');
@@ -31,7 +31,7 @@ const NoteRackPage = () => {
     if (!page) return;
 
     const loadPageData = async (shouldRefreshSession = true) => {
-      let pageDataReq = await fetch(
+      const pageDataReq = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/page/get-page/${page}`,
         {
           credentials: 'include',
@@ -39,7 +39,7 @@ const NoteRackPage = () => {
       );
 
       const pageData = await pageDataReq.json();
-     
+
       if (pageDataReq.status === 401 && pageData.message === 'try refresh token') {
         if (!shouldRefreshSession) {
           setError('You are not authorized to view this page.');
@@ -84,7 +84,7 @@ const NoteRackPage = () => {
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
-    }
+    };
   }, []);
 
   useEffect(() => {
@@ -96,7 +96,7 @@ const NoteRackPage = () => {
 
     return () => {
       document.removeEventListener('openChatPanel', handleChatToggle);
-    }
+    };
   }, [isChatOpen]);
 
   return (
