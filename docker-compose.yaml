@@ -10,8 +10,6 @@ services:
     restart: unless-stopped
     networks:
       - web-backend
-    volumes:
-      - ./config/client.env:/usr/src/src/.env.local
     depends_on:
       - backend
     env_file:
