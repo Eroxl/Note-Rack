@@ -90,13 +90,13 @@ const Editor = () => {
             {/* ~ Render the page icon */}
             <Icon
               page={page as string}
-              icon={pageData!.style.icon}
+              icon={pageData.style.icon}
             />
             {/* ~ Render the title */}
             <Title
               page={page as string}
               index={0}
-              title={pageData!.style.name}
+              title={pageData.style.name}
             />
 
             {/* ~ Render the blocks */}

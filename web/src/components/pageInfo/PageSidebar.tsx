@@ -47,7 +47,13 @@ const PageSidebar = () => {
     })();
   }, []);
 
-  if (!pageTree?.length) {
+  if (isLoading) {
+    return (
+      <div className="absolute h-screen p-3 pt-12 select-none print:h-max w-52 print:w-0 bg-amber-400/10 no-scrollbar dark:bg-white/10" />
+    );
+  }
+
+  if (!pageTree?.length && !isLoading) {
     return (
       <div className="absolute h-screen p-3 pt-12 select-none print:h-max w-52 print:w-0 bg-amber-400/10 no-scrollbar dark:bg-white/10">
         <p className="text-white">
@@ -62,6 +68,7 @@ const PageSidebar = () => {
       <div className="flex flex-col w-full gap-2 pb-2 pl-3">
         <button
           className="flex flex-row gap-1 p-2 py-1 text-left text-white rounded hover:bg-white/20"
+          type="button"
           onClick={() => {
             document.dispatchEvent(new CustomEvent('openSearchModal'));
           }}
@@ -72,6 +79,7 @@ const PageSidebar = () => {
         {areChatFeaturesEnabled && (
           <button
             className="flex flex-row gap-1 p-2 py-1 text-left text-white rounded hover:bg-white/20"
+            type="button"
             onClick={() => {
               document.dispatchEvent(new CustomEvent('openChatPanel'));
             }}

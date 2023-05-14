@@ -3,8 +3,9 @@ import React, { useEffect } from 'react';
 import Router from 'next/router';
 import Session from 'supertokens-auth-react/recipe/session';
 
+import MenuBar from '../../components/MenuBar';
+
 const NoteRack = () => {
-  // TODO:EROXL: (2023-01-24) This should be done server side when the request is made
   useEffect(() => {
     (async () => {
       // -=- Verification -=-
@@ -42,9 +43,13 @@ const NoteRack = () => {
   }, []);
 
   // -=- Render -=-
-  // ~ Return a blank page while the user is being redirected
+  // ~ Return a loading page while the user is being redirected
   return (
-    <div className="relative flex flex-col items-center w-screen h-screen bg-amber-50 dark:bg-zinc-700" />
+    <MenuBar
+      forceLoading
+    >
+      <div />
+    </MenuBar>
   );
 };
 
