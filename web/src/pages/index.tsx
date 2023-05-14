@@ -16,8 +16,6 @@ const Home: NextPage = () => (
 );
 
 const getServerSideProps: GetServerSideProps = async (context) => {
-  // -=- Verification -=-
-  // ~ Check if the user is logged in
   const { req, res } = context;
   const { cookies } = req;
 
