@@ -14,11 +14,43 @@ const getFirstLineLength = (node: HTMLElement): number => {
 const getLengthExcludingLastLine = (node: HTMLElement): number => {
   // ~ Get the 2nd last newline character
   const newlineIndex = node.innerText.slice(0, -1).lastIndexOf('\n') || -1;
+  let lastTextNode = node.nodeName === '#text' ? node : node.lastChild;
 
-  // ~ If there is no newline character, return 0
+  while (lastTextNode?.nodeName !== '#text') {
+    const newLastTextNode = lastTextNode?.previousSibling;
+
+    if (!newLastTextNode) return 0;
+
+    lastTextNode = newLastTextNode;
+  }
+
+  lastTextNode = lastTextNode as Text;
+
+  const range = document.createRange();
+
+  if (!lastTextNode.textContent) return node.textContent?.length || 0;
+
+  const textNodeLength = lastTextNode.textContent.length - 1;
+
+  for (let i = textNodeLength; i >= 0; i -= 1) {
+    range.setStart(lastTextNode, i);
+    range.setEnd(lastTextNode, textNodeLength);
+
+    const rectLength = (range.getClientRects()?.length || 1) - 1;
+
+    if (rectLength > 0) {
+      const artificialLastLine = (node.textContent?.length || 0) - (textNodeLength - i + 1);
+
+      if (newlineIndex >= artificialLastLine) {
+        return newlineIndex;
+      }
+
+      return artificialLastLine;
+    }
+  }
+
   if (newlineIndex === -1) return 0;
 
-  // ~ If there is a newline character, return the index of the newline character
   return newlineIndex;
 };
 

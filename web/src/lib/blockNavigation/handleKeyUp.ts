@@ -1,4 +1,4 @@
-import PageDataInterface from '../types/pageTypes';
+import PageDataInterface from '../types/pageTypes.d';
 import { focusBlockAtIndexRelativeToBottom } from '../helpers/focusHelpers';
 
 const handleKeyUp = (
