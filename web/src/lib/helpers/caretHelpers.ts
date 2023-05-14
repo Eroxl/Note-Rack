@@ -40,8 +40,6 @@ const isCaretAtBottom = (element: HTMLElement) => {
   const bottomPadding = getStyle(element, 'padding-bottom');
   const elementPosition = element.getBoundingClientRect().bottom - bottomPadding;
 
-  console.log(y);
-
   const caretPosition = (elementPosition - y) - getStyle(element, 'line-height');
 
   // ~ Check if the caret is at the bottom of the element (within 5px)
