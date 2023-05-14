@@ -47,7 +47,11 @@ const Intro = () => (
 
     <div className="max-w-4xl mx-auto my-20">
       <LaptopScreen>
-        <Image src={NotesExample} className="rounded-md" />
+        <img
+          src="/promo/Notes-Example.png"
+          alt="Note Rack Example"
+          className="rounded-md"
+        />
       </LaptopScreen>
     </div>
   </div>

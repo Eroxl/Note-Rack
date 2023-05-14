@@ -8,9 +8,7 @@ import Info from '../components/home/Info';
 const Home: NextPage = () => (
   <div className="w-screen h-full px-4 mx-auto overflow-scroll bg-white text-zinc-700 max-w-7xl no-scrollbar">
     <NavBar />
-
     <Intro />
-
     <Info />
   </div>
 );
