@@ -19,7 +19,7 @@ const getServerSideProps: GetServerSideProps = async (context) => {
   const { req, res } = context;
   const { cookies } = req;
 
-  if (cookies.sIRTFrontend && cookies.sIRTFrontend !== '') {
+  if (cookies.sIRTFrontend && cookies.sIRTFrontend !== '' && cookies.sIRTFrontend !== 'remove') {
     res.setHeader('location', '/note-rack');
     res.statusCode = 302;
   }
