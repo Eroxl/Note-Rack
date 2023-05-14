@@ -1,5 +1,5 @@
 import Router from 'next/router';
-import type { NextPage } from 'next';
+import type { GetServerSideProps, NextPage } from 'next';
 import React, { useEffect } from 'react';
 import Session from 'supertokens-auth-react/recipe/session';
 
@@ -34,5 +34,23 @@ const Home: NextPage = () => {
     </div>
   );
 };
+
+const getServerSideProps: GetServerSideProps = async (context) => {
+  // -=- Verification -=-
+  // ~ Check if the user is logged in
+  const { req, res } = context;
+  const { cookies } = req;
+
+  if (cookies.sIRTFrontend && cookies.sIRTFrontend !== '') {
+    res.setHeader('location', '/note-rack');
+    res.statusCode = 302;
+  }
+
+  return {
+    props: {},
+  };
+};
+
+export { getServerSideProps };
 
 export default Home;
