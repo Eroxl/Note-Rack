@@ -141,4 +141,6 @@ const Info = () => (
   </div>
 );
 
+Info.InfoPanel = InfoPanel;
+
 export default Info;
