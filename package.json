@@ -12,9 +12,12 @@
     "test": "docker compose down -v && docker-compose build && docker-compose up -d && cypress run --browser chrome",
     "test:manual": "docker-compose down -v && docker-compose build && docker-compose up -d && cypress open",
     "setup-env": "ts-node ./config/load-env.ts",
+    "dev:down": "docker compose --env-file ./config/.env --file ./docker-compose.dev.yaml down",
+    "dev:build": "docker compose --env-file ./config/.env --file ./docker-compose.dev.yaml build",
+    "dev": "yarn dev:build && docker compose --env-file ./config/.env --file ./docker-compose.dev.yaml up",
     "build": "docker compose --env-file ./config/.env build",
     "start": "yarn build && docker compose --env-file ./config/.env up",
-    "start:down": "docker compose --env-file ./config/.env build down"
+    "start:down": "docker compose --env-file ./config/.env down"
   },
   "repository": {
     "type": "git",
