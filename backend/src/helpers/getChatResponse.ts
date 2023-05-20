@@ -1,10 +1,9 @@
-import { DataType } from '@zilliz/milvus2-sdk-node/dist/milvus';
 import type { ChatCompletionRequestMessage } from 'openai';
 import type { Response } from 'express';
 
 import OpenAIClient from './clients/OpenAIClient';
-import MilvusClient from './clients/MilvusClient';
 import { ReadableStreamDefaultReadResult } from 'stream/web';
+import QdrantClient from './clients/QDrantClient';
 
 
 const RELATIVE_TEXT_COUNT = 3;
@@ -25,7 +24,7 @@ Any math equations should be written in KaTeX and surrounded by a single $ on ea
 Context: {context}
 
 Question: {question}
-Helpful answer in markdown:`;
+Helpful answer:`;
 
 const getChatResponse = async (
   messages: ChatCompletionRequestMessage[],
@@ -41,12 +40,6 @@ const getChatResponse = async (
     });
     return;
   }
-
-  // ~ Load the block collection
-  await MilvusClient!.loadCollection({
-    collection_name: 'blocks',
-  });
-
   // ~ Condense the context
   const condensedQuestionResponse = await OpenAIClient!.createChatCompletion({
     model: 'gpt-3.5-turbo',
@@ -69,22 +62,26 @@ const getChatResponse = async (
   });
 
   try {
-    const similarMessages = await MilvusClient!.search({
-      collection_name: 'blocks',
+    const similarMessages = await (await QdrantClient!.searchPoints('blocks', undefined, {
+      vector: embeddings.data.data[0].embedding as any,
       limit: RELATIVE_TEXT_COUNT,
-      vector_type: DataType.FloatVector,
-      params: {
-        topk: `${RELATIVE_TEXT_COUNT}`,
-        metric_type: "L2",
-        params: JSON.stringify({ nprobe: 10 }),
+      filter: {
+        must: [
+          {
+            key: 'page_id',
+            match: {
+              value: page,
+            }
+          } as any,
+        ]
       },
-      vector: embeddings.data.data[0].embedding,
-      expr: `page_id == \"${page}\"`,
-      output_fields: ['content', 'context']
-    })
+      with_payload: {
+        include: ['context'],
+      } as any,
+    }))();
 
     // ~ If there are no similar messages, return a default message
-    if (similarMessages.status.reason !== '' || similarMessages.results.length === 0) {
+    if (similarMessages.status !== 200 || !similarMessages.data.result?.length) {
       response.statusCode = 200;
       response.send('I\'m sorry, I don\'t know the answer to that question yet, write some text in this page to help me learn!');
       return;
@@ -93,28 +90,47 @@ const getChatResponse = async (
     // ~ Get the context messages
     const contextIDs = Array.from(
       new Set(
-        similarMessages.results
-          .flat()
-          .flatMap((metadata) => JSON.parse((metadata.context as string).replace('\\"', '"')) as string[])
-          .map((id) => `"${id}"`)
+        similarMessages.data.result
+          .flatMap((result) => (result.payload as any)?.context as string[])
       )
     );
 
-    const contextMessages = await MilvusClient!.query({
-      collection_name: 'blocks',
-      expr: `block_id in [${contextIDs.join(', ')}]`,
-      output_fields: ['content', 'block_id'],
-    })
+    const contextMessages = await (await QdrantClient!.searchPoints('blocks', undefined, {
+      vector: embeddings.data.data[0].embedding as any,
+      filter: {
+        must: [
+          {
+            key: 'block_id',
+            match: {
+              any: contextIDs,
+            },
+          },
+          {
+            key: 'page_id',
+            match: {
+              value: page,
+            },
+          }
+        ],
+      },
+      with_payload: {
+        include: ['content', 'block_id'],
+      },
+      limit: contextIDs.length,
+    } as any))();
+
+    console.log(contextMessages.data.result);
 
     const contextMessagesMap: Record<string, string> = {};
 
-    contextMessages.data.forEach((result) => {
-      contextMessagesMap[result.block_id] =  result.content;
+    contextMessages.data.result?.forEach((result) => {
+      if (!(result.payload as any)?.block_id) return;
+      
+      contextMessagesMap[(result.payload as any)?.block_id] = (result.payload as any)?.content;
     });
 
-    const context = similarMessages.results
-      .map((result) => result.context)
-      .flatMap((context) => JSON.parse((context as string).replace('\\"', '"')) as string[])
+    const context = similarMessages.data.result
+      .flatMap((result) => (result.payload as any).context as string[])
       .map((id) => contextMessagesMap[id])
       .filter((message) => message)
       .map((message) => message.trim())
