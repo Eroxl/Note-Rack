@@ -3,7 +3,7 @@ import type { Response } from 'express';
 
 import OpenAIClient from './clients/OpenAIClient';
 import { ReadableStreamDefaultReadResult } from 'stream/web';
-import QdrantClient from './clients/QDrantClient';
+import QdrantClient, { Block } from './clients/QDrantClient';
 
 
 const RELATIVE_TEXT_COUNT = 3;
@@ -61,152 +61,154 @@ const getChatResponse = async (
     model: 'text-embedding-ada-002',
   });
 
-  try {
-    const similarMessages = await (await QdrantClient!.searchPoints('blocks', undefined, {
-      vector: embeddings.data.data[0].embedding as any,
-      limit: RELATIVE_TEXT_COUNT,
-      filter: {
-        must: [
-          {
-            key: 'page_id',
-            match: {
-              value: page,
-            }
-          } as any,
-        ]
-      },
-      with_payload: {
-        include: ['context'],
-      } as any,
-    }))();
+  const similarMessages = await QdrantClient!.searchPoints<
+    { include: ['context'] },
+    Block
+  >(
+    'blocks',
+    embeddings.data.data[0].embedding,
+    RELATIVE_TEXT_COUNT,
+    {
+      must: [
+        {
+          key: 'page_id',
+          match: {
+            value: page,
+          }
+        }
+      ],
+    },
+    {
+      include: ['context'],
+    }
+  );
 
-    // ~ If there are no similar messages, return a default message
-    if (similarMessages.status !== 200 || !similarMessages.data.result?.length) {
-      response.statusCode = 200;
-      response.send('I\'m sorry, I don\'t know the answer to that question yet, write some text in this page to help me learn!');
+  // ~ If there are no similar messages, return a default message
+  if (!similarMessages || !similarMessages.length) {
+    response.statusCode = 200;
+    response.send('I\'m sorry, I don\'t know the answer to that question yet, write some text in this page to help me learn!');
+    return;
+  }
+
+  // ~ Get the context messages
+  const contextIDs = Array.from(
+    new Set(
+      similarMessages
+        .flatMap((result) => result.payload.context)
+    )
+  );
+
+  const contextMessages = await QdrantClient!.searchPoints<
+    { include: ['content', 'block_id'] },
+    Block
+  >(
+    'blocks',
+    embeddings.data.data[0].embedding,
+    contextIDs.length,
+    {
+      must: [
+        {
+          key: 'block_id',
+          match: {
+            any: contextIDs,
+          },
+
+        },
+        {
+          key: 'page_id',
+          match: {
+            value: page,
+          },
+        }
+      ],
+    },
+    {
+      include: ['content', 'block_id'],
+    }
+  );
+
+  const contextMessagesMap: Record<string, string> = {};
+
+  contextMessages?.forEach((result) => {
+    if (!result.payload.block_id) {
       return;
     }
+    
+    contextMessagesMap[result.payload.block_id] = result.payload.content;
+  });
 
-    // ~ Get the context messages
-    const contextIDs = Array.from(
-      new Set(
-        similarMessages.data.result
-          .flatMap((result) => (result.payload as any)?.context as string[])
-      )
-    );
+  const context = similarMessages
+    .flatMap((result) => result.payload.context)
+    .map((id) => contextMessagesMap[id])
+    .filter((message) => message)
+    .map((message) => message.trim())
+    .join('\n')
 
-    const contextMessages = await (await QdrantClient!.searchPoints('blocks', undefined, {
-      vector: embeddings.data.data[0].embedding as any,
-      filter: {
-        must: [
+  // ~ Create the chat completion
+  fetch(
+    'https://api.openai.com/v1/chat/completions',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: "gpt-3.5-turbo",
+        stream: true,
+        messages: [
           {
-            key: 'block_id',
-            match: {
-              any: contextIDs,
-            },
-          },
-          {
-            key: 'page_id',
-            match: {
-              value: page,
-            },
+            role: 'user',
+            content: PRE_PROMPT
+              .replace('{context}', context)
+              .replace('{question}', condensedQuestion || question)
           }
-        ],
-      },
-      with_payload: {
-        include: ['content', 'block_id'],
-      },
-      limit: contextIDs.length,
-    } as any))();
+        ]
+      }),
+    }
+  ).then((completionResponse) => {
+    const reader = completionResponse.body?.getReader();
+  
+    if (!reader) {
+      throw new Error('No reader found');
+    }
 
-    console.log(contextMessages.data.result);
-
-    const contextMessagesMap: Record<string, string> = {};
-
-    contextMessages.data.result?.forEach((result) => {
-      if (!(result.payload as any)?.block_id) return;
-      
-      contextMessagesMap[(result.payload as any)?.block_id] = (result.payload as any)?.content;
+    response.writeHead(200, {
+      'Content-Type': 'text/plain',
+      'Transfer-Encoding': 'chunked'
     });
 
-    const context = similarMessages.data.result
-      .flatMap((result) => (result.payload as any).context as string[])
-      .map((id) => contextMessagesMap[id])
-      .filter((message) => message)
-      .map((message) => message.trim())
-      .join('\n')
+    const decoder = new TextDecoder();
 
-    // ~ Create the chat completion
-    fetch(
-      'https://api.openai.com/v1/chat/completions',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-        },
-        body: JSON.stringify({
-          model: "gpt-3.5-turbo",
-          stream: true,
-          messages: [
-            {
-              role: 'user',
-              content: PRE_PROMPT
-                .replace('{context}', context)
-                .replace('{question}', condensedQuestion || question)
-            }
-          ]
-        }),
-      }
-    ).then((completionResponse) => {
-      const reader = completionResponse.body?.getReader();
-    
-      if (!reader) {
-        throw new Error('No reader found');
+    let chunk = '';
+
+    const processResult = (result: ReadableStreamDefaultReadResult<Uint8Array>) => {
+      chunk += decoder.decode(result.value, { stream: true });
+
+      const dataObjects = chunk.split('\n').filter(Boolean);
+
+      const latestData = dataObjects[dataObjects.length - 1].replace(/^data: /, '');
+
+      if (latestData === '[DONE]') {
+        reader.cancel();
+        response.end();
+
+        return;
       }
 
-      response.writeHead(200, {
-        'Content-Type': 'text/plain',
-        'Transfer-Encoding': 'chunked'
-      });
+      const jsonData = JSON.parse(latestData);
 
-      const decoder = new TextDecoder();
+      if (jsonData.choices && jsonData.choices[0].delta.content) {
+        const responseMessage = jsonData.choices[0].delta.content;
 
-      let chunk = '';
-
-      const processResult = (result: ReadableStreamDefaultReadResult<Uint8Array>) => {
-        chunk += decoder.decode(result.value, { stream: true });
-
-        const dataObjects = chunk.split('\n').filter(Boolean);
-
-        const latestData = dataObjects[dataObjects.length - 1].replace(/^data: /, '');
-
-        if (latestData === '[DONE]') {
-          reader.cancel();
-          response.end();
-
-          return;
-        }
-
-        const jsonData = JSON.parse(latestData);
-
-        if (jsonData.choices && jsonData.choices[0].delta.content) {
-          const responseMessage = jsonData.choices[0].delta.content;
-
-          response.write(responseMessage);
-        }
-
-        reader.read().then(processResult as any);
-      };
+        response.write(responseMessage);
+      }
 
       reader.read().then(processResult as any);
-    });
-  } catch (error) {
-    console.error(error);
+    };
 
-    response.statusCode = 500;
-    response.send('Something went wrong!')
-  }
+    reader.read().then(processResult as any);
+  });
 }
 
 export default getChatResponse;

@@ -15,25 +15,22 @@ export interface EmbedOperation {
  * @param pageData The page data of the page that is being updated.
  */
 const refreshEmbeds = async (updates: EmbedOperation[], page: string) => {
-  await (await QdrantClient!.deletePoints('blocks', undefined, undefined, {
-    filter: {
-      must: [
-        {
-          key: 'block_id',
-          match: {
-            any: updates.map((operation) => operation.id)
-          },
+  await QdrantClient!.deletePoints('blocks', {
+    must: [
+      {
+        key: 'block_id',
+        match: {
+          any: updates.map((operation) => operation.id)
         },
-        {
-          key: 'page_id',
-          match: {
-            value: page,
-          }
+      },
+      {
+        key: 'page_id',
+        match: {
+          value: page,
         }
-      ] as any[],
-    },
-    points: undefined as any,
-  }))();
+      }
+    ],
+  });
 
   const updateOperations = updates.filter((update) => update.type === 'update');
 
@@ -59,9 +56,7 @@ const refreshEmbeds = async (updates: EmbedOperation[], page: string) => {
       },
     }));
 
-  await (await QdrantClient!.upsertPoints('blocks', undefined, undefined, {
-    points: fieldsData,
-  }))();
+  await QdrantClient!.upsertPoints('blocks', fieldsData);
 };
 
 export default refreshEmbeds;
