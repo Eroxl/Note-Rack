@@ -223,7 +223,6 @@ if (process.env.NEXT_PUBLIC_IS_CHAT_ENABLED !== 'false') {
         },
         body: JSON.stringify({
           vectors,
-
         }),
       });
 
@@ -279,6 +278,8 @@ if (process.env.NEXT_PUBLIC_IS_CHAT_ENABLED !== 'false') {
     },
 
     upsertPoints: async (collection, vectors) => {
+      console.log(vectors);
+
       const response = await fetch(`${baseURL}/collections/${collection}/points`, {
         method: 'PUT',
         headers: {
@@ -289,6 +290,8 @@ if (process.env.NEXT_PUBLIC_IS_CHAT_ENABLED !== 'false') {
           points: vectors,
         }),
       });
+
+      console.log(await response.json())
 
       return response.status === 200;
     }
@@ -303,13 +306,11 @@ if (process.env.NEXT_PUBLIC_IS_CHAT_ENABLED !== 'false') {
       console.warn('Collection "blocks" does not exist. Creating it...')
 
       const status = await qdrantClient?.createCollection('blocks', {
-        vectors: {
-          distance: 'Cosine',
-          size: 1536,
-          hnsw_config: {
-            on_disk: true,
-          }
-        },
+        distance: 'Cosine',
+        size: 1536,
+        hnsw_config: {
+          on_disk: true,
+        }
       });
 
       if (!status) {

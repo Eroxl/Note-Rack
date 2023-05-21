@@ -15,22 +15,25 @@ export interface EmbedOperation {
  * @param pageData The page data of the page that is being updated.
  */
 const refreshEmbeds = async (updates: EmbedOperation[], page: string) => {
-  await QdrantClient!.deletePoints('blocks', {
-    must: [
-      {
-        key: 'block_id',
-        match: {
-          any: updates.map((operation) => operation.id)
+  await QdrantClient!.deletePoints(
+    'blocks',
+    {
+      must: [
+        {
+          key: 'block_id',
+          match: {
+            any: updates.map((operation) => operation.id)
+          },
         },
-      },
-      {
-        key: 'page_id',
-        match: {
-          value: page,
+        {
+          key: 'page_id',
+          match: {
+            value: page,
+          }
         }
-      }
-    ],
-  });
+      ],
+    },
+  );
 
   const updateOperations = updates.filter((update) => update.type === 'update');
 
