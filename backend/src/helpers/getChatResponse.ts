@@ -3,7 +3,8 @@ import type { Response } from 'express';
 
 import OpenAIClient from './clients/OpenAIClient';
 import { ReadableStreamDefaultReadResult } from 'stream/web';
-import QdrantClient, { Block } from './clients/QDrantClient';
+import QdrantClient from './clients/QDrantClient';
+import type { Block } from './clients/QDrantClient.d';
 
 
 const RELATIVE_TEXT_COUNT = 3;
