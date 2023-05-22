@@ -2,9 +2,9 @@ import React, { useEffect, useState, useContext } from 'react';
 import Image from 'next/image';
 
 import EmailShareMenu from './EmailShareMenu';
-import Globe from '../../public/Globe.svg';
+import Globe from '../../../public/Globe.svg';
 import UserPermission from './UserPermission';
-import PagePermissionsContext from '../../contexts/PagePermissionsContext';
+import PagePermissionsContext from '../../../contexts/PagePermissionsContext';
 
 interface ShareMenuProps {
   page: string,

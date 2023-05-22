@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Search from '@mui/icons-material/Search';
 
 import PageSidebarItem from './PageSidebarItem';
-import Brain from '../../public/icons/Brain.svg';
+import Brain from '../../../public/icons/Brain.svg';
 
 export interface PageSidebarItemProps {
   _id: string,

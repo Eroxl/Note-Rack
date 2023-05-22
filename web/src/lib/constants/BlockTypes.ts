@@ -1,5 +1,5 @@
 import Icon from '../../components/blocks/Icon';
-import Title from '../../components/blocks/Title';
+import Title from '../../components/pageCustomization/Title';
 import TextBlock from '../../components/blocks/TextBlock';
 import PageBlock from '../../components/blocks/PageBlock';
 import MathBlock from '../../components/blocks/MathBlock';

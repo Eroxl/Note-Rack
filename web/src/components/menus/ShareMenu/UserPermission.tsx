@@ -3,10 +3,10 @@ import React, {
 } from 'react';
 import { useRouter } from 'next/router';
 
-import { UserPermissions, Permissions } from '../../lib/types/pageTypes';
-import { DropdownOptions, dropdownInfo } from '../../lib/constants/ShareOptions';
+import { UserPermissions, Permissions } from '../../../lib/types/pageTypes';
+import { DropdownOptions, dropdownInfo } from '../../../lib/constants/ShareOptions';
 import ShareOptionsDropdown from './ShareOptionsDropdown';
-import PagePermissionsContext from '../../contexts/PagePermissionsContext';
+import PagePermissionsContext from '../../../contexts/PagePermissionsContext';
 
 interface UserPermissionProps {
   email: string,

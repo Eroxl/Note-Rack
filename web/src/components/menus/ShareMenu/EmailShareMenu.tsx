@@ -2,9 +2,9 @@ import React, {
   useState, useRef, useEffect, useContext,
 } from 'react';
 
-import { DropdownOptions, dropdownInfo } from '../../lib/constants/ShareOptions';
+import { DropdownOptions, dropdownInfo } from '../../../lib/constants/ShareOptions';
 import ShareOptionsDropdown from './ShareOptionsDropdown';
-import PagePermissionContext from '../../contexts/PagePermissionsContext';
+import PagePermissionContext from '../../../contexts/PagePermissionsContext';
 
 interface ShareMenuProps {
   page: string,

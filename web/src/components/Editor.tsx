@@ -10,7 +10,7 @@ import { Selectable, useSelectionCollector } from 'react-virtual-selection';
 
 import BaseBlock from './blocks/BaseBlock';
 import PageThumbnail from './pageCustomization/PageThumbnail';
-import Title from './blocks/Title';
+import Title from './pageCustomization/Title';
 import Icon from './blocks/Icon';
 import { removeBlock } from '../lib/pages/updatePage';
 import deletePage from '../lib/deletePage';

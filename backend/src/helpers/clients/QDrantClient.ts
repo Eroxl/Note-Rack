@@ -96,8 +96,6 @@ if (process.env.NEXT_PUBLIC_IS_CHAT_ENABLED !== 'false') {
     },
 
     upsertPoints: async (collection, vectors) => {
-      console.log(vectors);
-
       const response = await fetch(`${baseURL}/collections/${collection}/points`, {
         method: 'PUT',
         headers: {

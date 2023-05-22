@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { DropdownOptions, dropdownInfo } from '../../lib/constants/ShareOptions';
+import { DropdownOptions, dropdownInfo } from '../../../lib/constants/ShareOptions';
 
 interface ShareOptionsDropdownProps {
   setIsDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>,

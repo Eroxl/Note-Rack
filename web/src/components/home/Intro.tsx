@@ -3,7 +3,6 @@ import React from 'react';
 import Image from 'next/image';
 
 import LaptopScreen from './LaptopScreen';
-import NotesExample from '../../public/promo/Notes-Example.png';
 
 const Intro = () => (
   <div className="mt-12">

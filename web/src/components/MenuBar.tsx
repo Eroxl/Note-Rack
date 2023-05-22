@@ -5,7 +5,7 @@ import { useSessionContext } from 'supertokens-auth-react/recipe/session';
 import PagePath from './pageInfo/PagePath';
 import ShareButton from './pageCustomization/ShareButton';
 import OptionsButton from './pageCustomization/OptionsButton';
-import PageSidebar from './pageInfo/PageSidebar';
+import PageSidebar from './pageInfo/PageSidebar/PageSidebar';
 import SearchModal from './modals/SearchModal';
 
 interface MenuBarProps {

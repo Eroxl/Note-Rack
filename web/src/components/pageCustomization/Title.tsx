@@ -2,7 +2,6 @@
 import React, { useContext } from 'react';
 import { useDrop } from 'react-dnd';
 
-import TitleBreaker from './TitleBreaker';
 import { addBlockAtIndex, moveBlock } from '../../lib/pages/updatePage';
 import type { PermanentEditableText } from '../../lib/types/blockTypes';
 import editStyle from '../../lib/pages/editStyle';
@@ -95,7 +94,15 @@ const Title = (props: TitleProps) => {
       >
         {title}
       </span>
-      <TitleBreaker />
+      <div className="
+        w-full h-0.5 bg-black opacity-5 rounded-md
+        dark:bg-white
+        print:bg-opacity-0
+        print:relative print:overflow-hidden
+        print:before:border-[999px]
+        print:before:border-black
+        "
+      />
       { hovered && <div className="absolute w-full h-0.5 bg-blue-400 -bottom-2 print:hidden" /> }
     </div>
   );

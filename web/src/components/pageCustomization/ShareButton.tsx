@@ -3,8 +3,8 @@ import React, {
 } from 'react';
 import { useRouter } from 'next/router';
 
-import type { Permissions, UserPermissions } from '../../lib/types/pageTypes';
-import ShareMenu from '../menus/ShareMenu';
+import type { Permissions } from '../../lib/types/pageTypes';
+import ShareMenu from '../menus/ShareMenu/ShareMenu';
 import PagePermissionsContext from '../../contexts/PagePermissionsContext';
 import PageContext from '../../contexts/PageContext';
 
