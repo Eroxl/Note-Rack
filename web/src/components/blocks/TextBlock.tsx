@@ -8,6 +8,7 @@ import type { EditableText } from '../../lib/types/blockTypes';
 import handleKeyDown from '../../lib/blockNavigation/handleKeyDown';
 import handleKeyUp from '../../lib/blockNavigation/handleKeyUp';
 import PageContext from '../../contexts/PageContext';
+import useSlashMenu from '../../hooks/useSlashMenu';
 
 const TextBlock = (props: EditableText) => {
   const {
@@ -23,6 +24,8 @@ const TextBlock = (props: EditableText) => {
   const { pageData, setPageData } = useContext(PageContext);
 
   const isAllowedToEdit = pageData?.userPermissions.write || false;
+
+  const [editableRef, slashMenu] = useSlashMenu();
 
   const handlePotentialTypeChange = async (element: HTMLSpanElement) => {
     textKeybinds.forEach(async (bind) => {
@@ -58,6 +61,7 @@ const TextBlock = (props: EditableText) => {
       tabIndex={0}
       contentEditable={isAllowedToEdit}
       suppressContentEditableWarning
+      ref={isAllowedToEdit ? editableRef : undefined}
       id={blockID}
       onInput={(e) => {
         handlePotentialTypeChange(e.currentTarget);
@@ -98,6 +102,7 @@ const TextBlock = (props: EditableText) => {
       data-cy="block-text"
     >
       {value}
+      {slashMenu}
     </span>
   );
 };
