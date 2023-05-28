@@ -16,6 +16,7 @@ const SlashMenu = (props: SlashMenuProps) => {
 
   const slashMenuRef = React.useRef<HTMLDivElement>(null);
 
+  const [relevantOptions, setRelevantOptions] = React.useState<SlashMenuCategory[]>([]);
   const [isSlashMenuOpen, setIsSlashMenuOpen] = React.useState(false);
   const [slashMenuQuery, setSlashMenuQuery] = React.useState('');
   const [slashLocation, setSlashLocation] = React.useState(0);
@@ -25,39 +26,46 @@ const SlashMenu = (props: SlashMenuProps) => {
   const [y, setY] = React.useState(0);
 
   /**
-   * Get the relevant slash menu options based on the slash menu query
-   * @returns Relevant slash menu options
+   * Get the distance between two strings
+   * @param a
+   * @param b 
+   * @returns Distance between the two strings
    */
-  const getRelevantOptions = (): SlashMenuCategory[] => {
-    let parsedSlashMenuQuery = slashMenuQuery.replace(/^\//, '').toLowerCase()
+  const getStringDistance = (a: string, b: string): number => {
+    if (a.length === 0) return b.length;
 
-    console.log(parsedSlashMenuQuery);
+    if (b.length === 0) return a.length;
 
-    if (!parsedSlashMenuQuery) return slashMenuCategories;
+    const matrix = [];
 
-    const relevantOptions: SlashMenuCategory[] = []
+    // ~ Increment along the first column of each row
+    let i;
+    for (i = 0; i <= b.length; i++) {
+      matrix[i] = [i];
+    }
 
-    for (let i = 0; i < slashMenuCategories.length; i++) {
-      const category = slashMenuCategories[i];
-      const categoryOptions: SlashMenuOption[] = [];
+    // ~ Increment each column in the first row
+    let j;
+    for (j = 0; j <= a.length; j++) {
+      matrix[0][j] = j;
+    }
 
-      for (let j = 0; j < category.options.length; j++) {
-        const option = category.options[j];
-        
-        if (option.name.toLowerCase().includes(parsedSlashMenuQuery)) {
-          categoryOptions.push(option);
+    // ~ Fill in the rest of the matrix
+    for (i = 1; i <= b.length; i++) {
+      for (j = 1; j <= a.length; j++) {
+        if (b.charAt(i - 1) === a.charAt(j - 1)) {
+          matrix[i][j] = matrix[i - 1][j - 1];
+        } else {
+          matrix[i][j] = Math.min(
+            matrix[i - 1][j - 1], // ~ substitution
+            matrix[i][j - 1], // ~ insertion
+            matrix[i - 1][j], // ~ deletion
+          ) + 1;
         }
-      }
-
-      if (categoryOptions.length > 0) {
-        relevantOptions.push({
-          name: category.name,
-          options: categoryOptions,
-        });
       }
     }
 
-    return relevantOptions;
+    return matrix[b.length][a.length];
   };
 
   /**
@@ -260,18 +268,68 @@ const SlashMenu = (props: SlashMenuProps) => {
     };
   }, [slashMenuQuery, slashLocation, editableRef.current, editableElementLength]);
 
+  /**
+   * Handle re-generating the slash menu options when the slash menu query changes
+   * or when the slash menu options change
+   */
+  useEffect(() => {
+    if (!isSlashMenuOpen) return;
+
+    let parsedSlashMenuQuery = slashMenuQuery.replace(/^\//, '').toLowerCase()
+    let minDistance = Infinity;
+    
+    if (!parsedSlashMenuQuery) {
+      setRelevantOptions(slashMenuCategories)
+      return;
+    }
+
+    const relevantOptions: SlashMenuCategory[] = []
+
+    for (let i = 0; i < slashMenuCategories.length; i++) {
+      const category = slashMenuCategories[i];
+      const categoryOptions: SlashMenuOption[] = [];
+
+      for (let j = 0; j < category.options.length; j++) {
+        const option = category.options[j];
+        
+        const distance = getStringDistance(parsedSlashMenuQuery, option.name.toLowerCase().slice(0, parsedSlashMenuQuery.length));
+        
+        if (distance <= 2) {
+          categoryOptions.push(option);
+        }
+        
+        if (distance < minDistance) {
+          minDistance = distance;
+        }
+      }
+
+      if (categoryOptions.length > 0) {
+        relevantOptions.push({
+          name: category.name,
+          options: categoryOptions,
+        });
+      }
+    }
+
+    if (minDistance >= 4) {
+      setIsSlashMenuOpen(false);
+    }
+
+    setRelevantOptions(relevantOptions);
+  }, [slashMenuQuery, slashMenuCategories]);
+
   return (
     <>
     {isSlashMenuOpen && (
       <div
           ref={slashMenuRef}
-          className="absolute z-50 bg-neutral-600 rounded-md shadow-md w-64 p-4 overflow-y-scroll max-h-[33.3%] border-black border border-opacity-5 no-scrollbar"
+          className={`absolute z-50 bg-neutral-600 rounded-md shadow-md w-64 p-4 overflow-y-scroll max-h-[33.3%] border-black border border-opacity-5 no-scrollbar ${relevantOptions.length === 0 ? 'hidden' : ''}`}
           style={{
             top: y,
             left: x,
           }}
         >
-          {getRelevantOptions().map((category) => (
+          {relevantOptions.map((category) => (
             <div className="flex flex-col pb-2">
               <div className="text-amber-50 text-lg font-medium">
                 {category.name}
@@ -292,10 +350,6 @@ const SlashMenu = (props: SlashMenuProps) => {
                     editableRef.current.focus();
 
                     const newCaretOffset = textBeforeSlash.length;
-
-                    setSlashLocation(newCaretOffset);
-
-                    setEditableElementLength(editableRef.current.innerText.length);
 
                     const range = document.createRange();
                     const sel = window.getSelection()!;
