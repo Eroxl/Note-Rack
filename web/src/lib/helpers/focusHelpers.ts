@@ -224,4 +224,5 @@ export {
   focusBlockAtIndexRelativeToTop,
   focusBlockAtIndexRelativeToBottom,
   getLengthExcludingLastLine,
+  getClosestTextNode,
 };

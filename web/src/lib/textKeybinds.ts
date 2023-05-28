@@ -1,11 +1,13 @@
 import Router from 'next/router';
 
+import type BlockTypes from './constants/BlockTypes';
+
 // -=- Keybinds -=-
 // ~ Keybinds for block elements
 const textKeybinds: {
   keybind: RegExp,
   plainTextKeybind: string,
-  type: string,
+  type: keyof typeof BlockTypes,
   customFunc?: (
     properties: Record<string, unknown>, blockID: string,
     page: string, element: unknown,

@@ -8,7 +8,7 @@ import type { EditableText } from '../../lib/types/blockTypes';
 import handleKeyDown from '../../lib/blockNavigation/handleKeyDown';
 import handleKeyUp from '../../lib/blockNavigation/handleKeyUp';
 import PageContext from '../../contexts/PageContext';
-import useSlashMenu from '../../hooks/useSlashMenu';
+import useSlashMenu, { createDefaultSlashMenuCategories } from '../../hooks/useSlashMenu';
 
 const TextBlock = (props: EditableText) => {
   const {
@@ -25,7 +25,30 @@ const TextBlock = (props: EditableText) => {
 
   const isAllowedToEdit = pageData?.userPermissions.write || false;
 
-  const [editableRef, slashMenu] = useSlashMenu();
+  const [editableRef, slashMenu] = useSlashMenu(
+    createDefaultSlashMenuCategories(
+      async (type) => {
+        const bind = textKeybinds.find((bind) => bind.type === type);
+
+        let newBlockProperties;
+
+        if (bind?.customFunc) {
+          newBlockProperties = await bind.customFunc(
+            {
+              ...properties,
+              value: editableRef.current?.innerText,
+            },
+            blockID,
+            page,
+            editableRef.current,
+          );
+        }
+
+        await editBlock([blockID], type, newBlockProperties, page);
+        setCurrentBlockType(type);
+      },
+    ),
+  );
 
   const handlePotentialTypeChange = async (element: HTMLSpanElement) => {
     textKeybinds.forEach(async (bind) => {
