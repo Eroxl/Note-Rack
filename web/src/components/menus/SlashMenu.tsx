@@ -21,9 +21,46 @@ const SlashMenu = (props: SlashMenuProps) => {
   const [slashMenuQuery, setSlashMenuQuery] = React.useState('');
   const [slashLocation, setSlashLocation] = React.useState(0);
   const [editableElementLength, setEditableElementLength] = React.useState(0);
+  const [selectedOption, setSelectedOption] = React.useState({
+    categoryIndex: 0,
+    optionIndex: 0,
+  });
 
   const [x, setX] = React.useState(0);
   const [y, setY] = React.useState(0);
+
+  /**
+   * Run the action of the selected option and remove the slash menu
+   * @param categoryIndex The index of the category of the selected option
+   * @param optionIndex The index of the selected option
+   */
+  const selectOption = (categoryIndex: number, optionIndex: number) => {
+    if (!editableRef.current) return;
+
+    const textBeforeSlash = editableRef.current.innerText.slice(0, slashLocation);
+    const textAfterSlash = editableRef.current.innerText.slice(slashLocation + slashMenuQuery.length);
+
+    editableRef.current.innerText = textBeforeSlash + textAfterSlash;
+
+    setIsSlashMenuOpen(false);
+
+    editableRef.current.focus();
+
+    const newCaretOffset = textBeforeSlash.length;
+
+    const range = document.createRange();
+    const sel = window.getSelection()!;
+    
+    range.setStart(editableRef.current.childNodes[0], newCaretOffset);
+    range.collapse(true);
+    sel.removeAllRanges();
+    sel.addRange(range);
+
+    editableRef.current.dispatchEvent(new Event('input'));
+    editableRef.current.dispatchEvent(new Event('change'));
+
+    relevantOptions[categoryIndex].options[optionIndex].action();
+  };
 
   /**
    * Get the distance between two strings
@@ -275,6 +312,11 @@ const SlashMenu = (props: SlashMenuProps) => {
   useEffect(() => {
     if (!isSlashMenuOpen) return;
 
+    setSelectedOption({
+      categoryIndex: 0,
+      optionIndex: 0,
+    });
+
     let parsedSlashMenuQuery = slashMenuQuery.replace(/^\//, '').toLowerCase()
     let minDistance = Infinity;
     
@@ -294,7 +336,7 @@ const SlashMenu = (props: SlashMenuProps) => {
         
         const distance = getStringDistance(parsedSlashMenuQuery, option.name.toLowerCase().slice(0, parsedSlashMenuQuery.length));
         
-        if (distance <= 2) {
+        if (distance <= 1) {
           categoryOptions.push(option);
         }
         
@@ -318,10 +360,83 @@ const SlashMenu = (props: SlashMenuProps) => {
     setRelevantOptions(relevantOptions);
   }, [slashMenuQuery, slashMenuCategories]);
 
+  /**
+   * Handle the selected slash menu option being changed
+   */
+  useEffect(() => {
+    const handleSelectionChange = (e: KeyboardEvent) => {
+      if (!isSlashMenuOpen) return;
+
+      switch (e.key) {
+        case 'ArrowUp':
+          setSelectedOption((selectedOption) => {
+            if (selectedOption.optionIndex === 0 && selectedOption.categoryIndex === 0) {
+              return selectedOption;
+            }
+
+            if (selectedOption.optionIndex === 0) {
+              return {
+                categoryIndex: selectedOption.categoryIndex - 1,
+                optionIndex: relevantOptions[selectedOption.categoryIndex - 1].options.length - 1,
+              };
+            }
+
+            return {
+              categoryIndex: selectedOption.categoryIndex,
+              optionIndex: selectedOption.optionIndex - 1,
+            };
+          });
+
+          e.preventDefault();
+          e.stopPropagation();
+          break;
+        case 'ArrowDown':
+          console.log(selectedOption);
+
+          setSelectedOption((selectedOption) => {
+            if (
+              selectedOption.optionIndex === relevantOptions[selectedOption.categoryIndex].options.length - 1
+              && selectedOption.categoryIndex === relevantOptions.length - 1
+            ) {
+              return selectedOption;
+            }
+
+            if (selectedOption.optionIndex === relevantOptions[selectedOption.categoryIndex].options.length - 1) {
+              return {
+                categoryIndex: selectedOption.categoryIndex + 1,
+                optionIndex: 0,
+              };
+            }
+
+            return {
+              categoryIndex: selectedOption.categoryIndex,
+              optionIndex: selectedOption.optionIndex + 1,
+            };
+          });
+
+          e.preventDefault();
+          e.stopPropagation();
+          break;
+        case 'Enter':
+          selectOption(selectedOption.categoryIndex, selectedOption.optionIndex);
+
+          e.preventDefault();
+          e.stopPropagation();
+          break;
+      }
+    };
+
+    editableRef.current?.addEventListener('keydown', handleSelectionChange);
+
+    return () => {
+      editableRef.current?.removeEventListener('keydown', handleSelectionChange);
+    }
+  }, [relevantOptions, selectedOption, isSlashMenuOpen, editableRef.current]);
+
   return (
     <>
-    {isSlashMenuOpen && (
-      <div
+      {isSlashMenuOpen && (
+        <div
           ref={slashMenuRef}
           className={`absolute z-50 bg-neutral-600 rounded-md shadow-md w-64 p-4 overflow-y-scroll max-h-[33.3%] border-black border border-opacity-5 no-scrollbar ${relevantOptions.length === 0 ? 'hidden' : ''}`}
           style={{
@@ -329,40 +444,24 @@ const SlashMenu = (props: SlashMenuProps) => {
             left: x,
           }}
         >
-          {relevantOptions.map((category) => (
-            <div className="flex flex-col pb-2">
+          {relevantOptions.map((category, categoryIndex) => (
+            <div
+              className="flex flex-col pb-2"
+              key={category.name}
+            >
               <div className="text-amber-50 text-lg font-medium">
                 {category.name}
               </div>
-              {category.options.map((option) => (
+              {category.options.map((option, optionIndex) => (
                 <div
-                  className="px-2 gap-2 py-1 text-gray-200 hover:bg-gray-700 hover:bg-opacity-10 cursor-pointer flex flex-row items-center"
+                  className={`
+                    p-2 gap-2 text-gray-200 cursor-pointer flex flex-row items-center
+                    ${selectedOption.categoryIndex === categoryIndex && selectedOption.optionIndex === optionIndex ? 'bg-white bg-opacity-10 rounded' : ''}
+                  `}
+                  key={option.name}
+                  onMouseEnter={() => setSelectedOption({ categoryIndex, optionIndex })}
                   onClick={() => {
-                    if (!editableRef.current) return;
-
-                    const textBeforeSlash = editableRef.current.innerText.slice(0, slashLocation);
-                    const textAfterSlash = editableRef.current.innerText.slice(slashLocation + slashMenuQuery.length);
-
-                    editableRef.current.innerText = textBeforeSlash + textAfterSlash;
-
-                    setIsSlashMenuOpen(false);
-
-                    editableRef.current.focus();
-
-                    const newCaretOffset = textBeforeSlash.length;
-
-                    const range = document.createRange();
-                    const sel = window.getSelection()!;
-                    
-                    range.setStart(editableRef.current.childNodes[0], newCaretOffset);
-                    range.collapse(true);
-                    sel.removeAllRanges();
-                    sel.addRange(range);
-
-                    editableRef.current.dispatchEvent(new Event('input'));
-                    editableRef.current.dispatchEvent(new Event('change'));
-
-                    option.action();
+                    selectOption(categoryIndex, optionIndex);
                   }}
                 >
                   <img
@@ -381,7 +480,7 @@ const SlashMenu = (props: SlashMenuProps) => {
                 </div>
               ))}
             </div>
-        ))}
+          ))}
         </div>
       )}
     </>
