@@ -9,6 +9,7 @@ import handleKeyDown from '../../lib/blockNavigation/handleKeyDown';
 import handleKeyUp from '../../lib/blockNavigation/handleKeyUp';
 import PageContext from '../../contexts/PageContext';
 import useSlashMenu, { createDefaultSlashMenuCategories } from '../../hooks/useSlashMenu';
+import Router from 'next/router';
 
 const TextBlock = (props: EditableText) => {
   const {
@@ -74,6 +75,9 @@ const TextBlock = (props: EditableText) => {
 
       await editBlock([blockID], bind.type, newBlockProperties, page);
       setCurrentBlockType(bind.type);
+
+      // ~ Redirect to the new page
+      Router.replace(`/note-rack/${blockID}/`);
     });
   };
 

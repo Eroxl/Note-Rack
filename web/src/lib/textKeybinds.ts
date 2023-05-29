@@ -1,5 +1,3 @@
-import Router from 'next/router';
-
 import type BlockTypes from './constants/BlockTypes';
 
 // -=- Keybinds -=-
@@ -66,8 +64,6 @@ const textKeybinds: {
         credentials: 'include',
       });
 
-      // ~ Redirect to the new page
-      Router.replace(`/note-rack/${blockID}/`);
 
       // ~ Dispatch an event to add the new page to the sidebar
       const addPageEvent = new CustomEvent('addPage', {
