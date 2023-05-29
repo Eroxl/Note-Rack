@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import SlashMenu from '../components/menus/SlashMenu';
@@ -86,14 +86,21 @@ export type SlashMenuCategory = {
  */
 const useSlashMenu = (slashMenuCategories: SlashMenuCategory[]) => {
   const editableRef = useRef<HTMLSpanElement>(null);
+  const [slashMenu, setSlashMenu] = useState<JSX.Element | null>(null);
 
-  const slashMenu = createPortal(
-    <SlashMenu
-      editableRef={editableRef}
-      slashMenuCategories={slashMenuCategories}
-    />,
-    document.body,
-  );
+  useEffect(() => {
+    if (!editableRef.current) return;
+
+    setSlashMenu(
+      createPortal(
+        <SlashMenu
+          editableRef={editableRef}
+          slashMenuCategories={slashMenuCategories}
+        />,
+        editableRef.current.parentElement as HTMLElement,
+      )
+    )
+  }, [editableRef.current, slashMenuCategories]);
 
   return [editableRef, slashMenu] as const;
 };

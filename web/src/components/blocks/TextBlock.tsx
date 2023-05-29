@@ -79,7 +79,7 @@ const TextBlock = (props: EditableText) => {
 
   return (
     <span
-      className={`min-h-[1.2em] outline-none whitespace-pre-wrap w-full ${TextStyles[type]}`}
+      className={`min-h-[1.2em] outline-none relative whitespace-pre-wrap w-full ${TextStyles[type]}`}
       role="textbox"
       tabIndex={0}
       contentEditable={isAllowedToEdit}

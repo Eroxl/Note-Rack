@@ -194,6 +194,13 @@ const SlashMenu = (props: SlashMenuProps) => {
       y = boundingRect.top;
     }
 
+    const boundingRect = editableRef.current.parentElement?.getBoundingClientRect()
+
+    if (boundingRect) {
+      x -= boundingRect.left;
+      y -= boundingRect.top;
+    }
+
     setX(x);
     setY(y + +(window.getComputedStyle(editableRef.current!).lineHeight.replace('px', '') || 0));
   }, [slashLocation, editableRef.current]);
@@ -360,7 +367,7 @@ const SlashMenu = (props: SlashMenuProps) => {
       {isSlashMenuOpen && (
         <div
           ref={slashMenuRef}
-          className={`absolute z-50 bg-neutral-600 rounded-md shadow-md w-64 p-4 overflow-y-scroll max-h-[33.3%] border-black border border-opacity-5 no-scrollbar ${relevantOptions.length === 0 ? 'hidden' : ''}`}
+          className={`absolute z-50 bg-neutral-600 rounded-md shadow-md w-64 p-4 overflow-y-scroll max-h-[33vh] border-black border border-opacity-5 no-scrollbar ${relevantOptions.length === 0 ? 'hidden' : ''}`}
           style={{
             top: y,
             left: x,
