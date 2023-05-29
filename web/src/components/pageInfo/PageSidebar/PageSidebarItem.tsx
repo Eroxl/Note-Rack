@@ -89,7 +89,7 @@ const PageSidebarItem = (props: PageSidebarItemProps & { pagePath: PagePath[] })
       document.removeEventListener('addPage', addChild as EventListener);
       document.removeEventListener('deletePage', removeChild as EventListener);
     };
-  }, []);
+  }, [router.query.page]);
 
   return (
     <div className={`pl-3 ${parentExpanded || 'hidden'}`}>
