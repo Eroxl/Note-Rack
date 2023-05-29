@@ -1,19 +1,21 @@
-import React, { useState, useRef, useEffect, useContext } from 'react';
+import React, {
+  useState, useRef, useEffect, useContext,
+} from 'react';
 import { useRouter } from 'next/router';
 
-import type { Permissions, UserPermissions } from '../../lib/types/pageTypes';
-import ShareMenu from '../menus/ShareMenu';
+import type { Permissions } from '../../lib/types/pageTypes';
+import ShareMenu from '../menus/ShareMenu/ShareMenu';
 import PagePermissionsContext from '../../contexts/PagePermissionsContext';
 import PageContext from '../../contexts/PageContext';
 
 const ShareButton = () => {
   const {
     userPermissions: permissionsOnPage,
-    permissions: pagePermissions
+    permissions: pagePermissions,
   } = useContext(PageContext).pageData || {};
   const { page } = useRouter().query;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const buttonRef = useRef<HTMLDivElement>(null);  
+  const buttonRef = useRef<HTMLDivElement>(null);
   const [isPagePublic, setIsPagePublic] = useState(false);
   const [currentPermissions, setCurrentPermissions] = useState<Permissions>({});
 
@@ -65,8 +67,7 @@ const ShareButton = () => {
         }
       </div>
     </PagePermissionsContext.Provider>
-  )
-}
-
+  );
+};
 
 export default ShareButton;

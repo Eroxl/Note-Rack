@@ -14,11 +14,43 @@ const getFirstLineLength = (node: HTMLElement): number => {
 const getLengthExcludingLastLine = (node: HTMLElement): number => {
   // ~ Get the 2nd last newline character
   const newlineIndex = node.innerText.slice(0, -1).lastIndexOf('\n') || -1;
+  let lastTextNode = node.nodeName === '#text' ? node : node.lastChild;
 
-  // ~ If there is no newline character, return 0
+  while (lastTextNode?.nodeName !== '#text') {
+    const newLastTextNode = lastTextNode?.previousSibling;
+
+    if (!newLastTextNode) return 0;
+
+    lastTextNode = newLastTextNode;
+  }
+
+  lastTextNode = lastTextNode as Text;
+
+  const range = document.createRange();
+
+  if (!lastTextNode.textContent) return node.textContent?.length || 0;
+
+  const textNodeLength = lastTextNode.textContent.length - 1;
+
+  for (let i = textNodeLength; i >= 0; i -= 1) {
+    range.setStart(lastTextNode, i);
+    range.setEnd(lastTextNode, textNodeLength);
+
+    const rectLength = (range.getClientRects()?.length || 1) - 1;
+
+    if (rectLength > 0) {
+      const artificialLastLine = (node.textContent?.length || 0) - (textNodeLength - i + 1);
+
+      if (newlineIndex >= artificialLastLine) {
+        return newlineIndex;
+      }
+
+      return artificialLastLine;
+    }
+  }
+
   if (newlineIndex === -1) return 0;
 
-  // ~ If there is a newline character, return the index of the newline character
   return newlineIndex;
 };
 
@@ -27,19 +59,24 @@ const getClosestTextNode = (node: Node): Node[] => {
   const textNodes = [];
 
   // ~ Get all text nodes or br elements
-  const iterator = document.createNodeIterator(node, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT, {
-    acceptNode: (node) => {
-      if (node.nodeName === 'BR') return NodeFilter.FILTER_ACCEPT;
-      if (node.nodeName === '#text') return NodeFilter.FILTER_ACCEPT;
-      return NodeFilter.FILTER_SKIP;
-    }
-  });
+  const iterator = document.createNodeIterator(
+    node,
+    // eslint-disable-next-line no-bitwise
+    NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT,
+    {
+      acceptNode: (childNode) => {
+        if (childNode.nodeName === 'BR') return NodeFilter.FILTER_ACCEPT;
+        if (childNode.nodeName === '#text') return NodeFilter.FILTER_ACCEPT;
+        return NodeFilter.FILTER_SKIP;
+      },
+    },
+  );
 
   let nextNode = iterator.nextNode();
   while (nextNode) {
     textNodes.push(nextNode);
-    
-    nextNode = iterator.nextNode()
+
+    nextNode = iterator.nextNode();
   }
 
   // ~ If there are no text nodes, return the element
@@ -52,14 +89,16 @@ const getClosestTextNode = (node: Node): Node[] => {
 const getNextEditableBlock = (
   index: number,
   pageData: PageDataInterface['message'],
-  direction: 'up' | 'down' = 'up'
+  direction: 'up' | 'down' = 'up',
 ): HTMLElement | undefined => {
+  if (!pageData) return undefined;
+
   if (direction === 'up') {
     // ~ Find the previous editable block
     while (index > 0) {
       index -= 1;
 
-      const block = document.getElementById(pageData!.data[index]._id)
+      const block = document.getElementById(pageData.data[index]._id);
       if (block?.getAttribute('contenteditable') === 'true') {
         return block;
       }
@@ -67,20 +106,69 @@ const getNextEditableBlock = (
 
     // ~ If there is no previous editable block, focus the first editable block
     const block = document.getElementById('page-title')?.firstChild;
-    if (!block) return;
+    if (!block) return undefined;
 
     return block as HTMLElement;
   }
 
   // ~ Find the next editable block
-  while (index < pageData!.data.length - 1) {
+  while (index < pageData.data.length - 1) {
     index += 1;
 
-    const block = document.getElementById(pageData!.data[index]._id)
+    const block = document.getElementById(pageData.data[index]._id);
     if (block?.getAttribute('contenteditable') === 'true') {
       return block;
     }
   }
+
+  return undefined;
+};
+
+/**
+ * Select the end of the element
+ * @param element The element to focus
+ */
+const selectEnd = (element: HTMLElement, position: number) => {
+  element.focus();
+
+  // ~ Move the cursor to the end of the block unless the only text is a newline
+  if (element.textContent === '\n') return;
+
+  const range = document.createRange();
+  const sel = window.getSelection();
+
+  const textNodes = getClosestTextNode(element);
+
+  if (position === -1) {
+    range.setStart(textNodes.slice(-1)[0], element.textContent?.length || 0);
+  } else {
+    const lastTextNode = textNodes.reverse().find((node) => node.nodeName === '#text');
+
+    textNodes.forEach((node) => {
+      if (position < 0) return;
+
+      const length = node.nodeName === '#text'
+        ? node.textContent?.length || 0
+        : 1;
+
+      position -= length;
+
+      if (position <= 0 || node === lastTextNode) {
+        const index = Math.max(Math.min(position + length, length), 0);
+
+        if (node.textContent?.at(index - 1) === '\n') {
+          range.setStart(node, Math.max(index - 1, 0));
+        } else {
+          range.setStart(node, index);
+        }
+
+        position = -1;
+      }
+    });
+  }
+
+  sel?.removeAllRanges();
+  sel?.addRange(range);
 };
 
 const focusBlockAtIndex = (
@@ -93,7 +181,6 @@ const focusBlockAtIndex = (
   // ~ Focus the block
   selectEnd(block, -1);
 };
-
 
 const focusBlockAtIndexRelativeToTop = (
   index: number,
@@ -133,57 +220,47 @@ const focusBlockAtIndexRelativeToBottom = (
 };
 
 /**
- * Select the end of the element
- * @param element The element to focus
- */
-const selectEnd = (element: HTMLElement, position: number) => {
-  element.focus();
-
-  // ~ Move the cursor to the end of the block unless the only text is a newline
-  if (element.textContent === '\n') return;
-
+   * Get the x and y coordinates of a cursor at a given offset
+   * @param offset Offset of the cursor
+   * @returns X and y coordinates of the cursor
+   */
+const getCaretCoordinatesFromOffset = (element: HTMLElement, offset: number): { x: number, y: number } => {
   const range = document.createRange();
-  const sel = window.getSelection();
 
   const textNodes = getClosestTextNode(element);
 
-  if (position === -1) {
-    range.setStart(textNodes.slice(-1)[0], element.textContent?.length || 0);
-  } else {
-    const lastTextNode = textNodes.reverse().find((node) => node.nodeName === '#text');
+  if (!textNodes) return { x: 0, y: 0 };
 
-    textNodes.forEach((node) => {
-      if (position < 0) return;
+  for (let i = 0; i < textNodes.length; i++) {
+    const textNode = textNodes[i];
 
-      const length = node.nodeName === '#text'
-        ? node.textContent?.length || 0
-        : 1;
+    if (!textNode) continue;
 
-      position -= length;
+    if (textNode.textContent?.length! >= offset) {
+      range.setStart(textNode, offset);
+      range.collapse(true);
+      break;
+    }
 
-      if (position <= 0 || node === lastTextNode) {
-        console.log(node);
-
-        const index = Math.max(Math.min(position + length, length), 0);
-
-        if (node.textContent?.at(index - 1) === '\n') {
-          range.setStart(node, Math.max(index - 1, 0));
-        } else {
-          range.setStart(node, index);
-        }
-
-        position = -1;
-      }
-    });
+    offset -= textNode.textContent?.length!;
   }
 
-  sel?.removeAllRanges();
-  sel?.addRange(range);
+  const rect = range.getClientRects()[0];
+
+  if (!rect) return { x: 0, y: 0 };
+
+  return {
+    x: rect.left,
+    y: rect.top,
+  };
 };
+
 
 export {
   focusBlockAtIndex,
   focusBlockAtIndexRelativeToTop,
   focusBlockAtIndexRelativeToBottom,
-  getLengthExcludingLastLine 
+  getLengthExcludingLastLine,
+  getClosestTextNode,
+  getCaretCoordinatesFromOffset,
 };

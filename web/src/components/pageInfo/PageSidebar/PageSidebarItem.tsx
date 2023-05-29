@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
-import type { PagePath } from './PagePath';
+import type { PagePath } from '../PagePath';
 import type { PageSidebarItemProps } from './PageSidebar';
-import editPageTree from '../../lib/pageTrees/editPageTree';
+import editPageTree from '../../../lib/pageTrees/editPageTree';
 
 const PageSidebarItem = (props: PageSidebarItemProps & { pagePath: PagePath[] }) => {
   const {
@@ -73,11 +73,13 @@ const PageSidebarItem = (props: PageSidebarItemProps & { pagePath: PagePath[] })
       document.addEventListener('deletePage', removeChild as EventListener);
 
       // -=- Update page path -=-
-      document.dispatchEvent(new CustomEvent('pagePath', { detail: [...pagePath, {
-        name: currentName,
-        icon: currentIcon,
-        pageID,
-      }] }));
+      document.dispatchEvent(new CustomEvent('pagePath', {
+        detail: [...pagePath, {
+          name: currentName,
+          icon: currentIcon,
+          pageID,
+        }],
+      }));
     }
 
     // -=- Cleanup -=-
@@ -134,7 +136,7 @@ const PageSidebarItem = (props: PageSidebarItemProps & { pagePath: PagePath[] })
                   pageID,
                   icon: currentIcon,
                   name: currentName,
-                }
+                },
               ]}
             />
           );

@@ -1,5 +1,5 @@
 import { focusBlockAtIndexRelativeToTop, getLengthExcludingLastLine } from '../helpers/focusHelpers';
-import type PageDataInterface from '../types/pageTypes';
+import type PageDataInterface from '../types/pageTypes.d';
 
 const handleKeyDown = (
   e: React.KeyboardEvent<HTMLSpanElement>,
@@ -43,8 +43,8 @@ const handleKeyDown = (
   focusBlockAtIndexRelativeToTop(
     index,
     pageData,
-    distanceFromBottom
+    distanceFromBottom,
   );
-}
+};
 
 export default handleKeyDown;

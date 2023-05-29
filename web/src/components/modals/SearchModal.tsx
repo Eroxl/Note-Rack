@@ -11,7 +11,7 @@ interface SearchResult {
 }
 
 interface PageStylingMapEvent extends CustomEvent {
-  detail: { 
+  detail: {
     pageTree: {
       _id: string,
       style: {
@@ -64,7 +64,7 @@ const SearchModal = () => {
     if (!searchResultsJSON.message) return;
 
     setSearchResults(searchResultsJSON.message);
-  }
+  };
 
   const parseSearchResults = (results: SearchResult[]) => {
     const parsedResults = results.map((result) => {
@@ -99,7 +99,7 @@ const SearchModal = () => {
         });
 
         return parsedContent;
-      }
+      };
 
       return (
         <Link
@@ -111,7 +111,7 @@ const SearchModal = () => {
               rounded text-xl text-white hover:bg-zinc-600 
             `}
             onClick={() => {
-              setIsOpen(false)
+              setIsOpen(false);
               document.dispatchEvent(new CustomEvent('openChatPage', { detail: { open: false } }));
               setSearchResults([]);
 
@@ -128,16 +128,16 @@ const SearchModal = () => {
             </span>
             <span className="pl-2 text-sm text-zinc-300">
               {replaceHighlights(
-                `${content}${content.length >= 100 ? '...' : ''}`
+                `${content}${content.length >= 100 ? '...' : ''}`,
               )}
             </span>
           </a>
         </Link>
-      )
+      );
     });
 
     return parsedResults;
-  }
+  };
 
   useEffect(() => {
     const handleOpenSearchModal = () => {
@@ -146,7 +146,7 @@ const SearchModal = () => {
       if (inputRef.current && !isOpen) {
         inputRef.current.focus();
       }
-    }
+    };
 
     document.addEventListener('openSearchModal', handleOpenSearchModal);
 
@@ -156,7 +156,7 @@ const SearchModal = () => {
   }, [isOpen]);
 
   // NOTE:EROXL: (2023-4-1) Don't want to make a second request so this is piggybacking on the PageSidebar logic
-  useEffect(() => {    
+  useEffect(() => {
     const addPage = (event: NewPageEvent) => {
       const { newPageID, newPageStyle } = event.detail;
 
@@ -166,7 +166,7 @@ const SearchModal = () => {
       };
 
       setPageStylingMap(pageStylingMap);
-    }
+    };
 
     const deletePage = (event: DeletePageEvent) => {
       const { deletedPageID } = event.detail;
@@ -181,7 +181,7 @@ const SearchModal = () => {
       }
 
       setPageStylingMap(pageStylingMap);
-    }
+    };
 
     const handlePageStylingMap = (event: PageStylingMapEvent) => {
       const parsePageTree = (pageTree: PageStylingMapEvent['detail']['pageTree']) => {
@@ -195,12 +195,12 @@ const SearchModal = () => {
             parsePageTree(page.subPages);
           }
         });
-      }
+      };
 
       parsePageTree(event.detail.pageTree);
 
       setPageStylingMap(pageStylingMap);
-    }
+    };
 
     document.addEventListener('pageTreeLoaded', handlePageStylingMap as EventListener);
     document.addEventListener('addPage', addPage as EventListener);
@@ -225,7 +225,7 @@ const SearchModal = () => {
       };
 
       setPageStylingMap(pageStylingMap);
-    }
+    };
 
     document.addEventListener('changePageTitle', changePage as EventListener);
 
@@ -234,12 +234,11 @@ const SearchModal = () => {
     };
   }, [page]);
 
-
   return (
     <BaseModal
       isOpen={isOpen}
       setIsOpen={setIsOpen}
-      className="top-[calc(50%-16rem)] translate-y-0 max-h-[calc(100vh-12rem)] rounded-md h-min overflow-scroll justify-start items-start"
+      className="top-[calc(50%-16rem)] translate-y-0 max-h-[calc(100vh-12rem)] rounded-md h-min overflow-scroll justify-start items-start no-scrollbar"
     >
       <div className="flex flex-col w-screen max-w-2xl gap-2 p-2 rounded-lg h-max bg-zinc-700">
         <div
@@ -250,13 +249,13 @@ const SearchModal = () => {
         >
           <input
             className="text-xl text-white bg-transparent border-0 outline-none"
-            placeholder='Search notes...'
+            placeholder="Search notes..."
             ref={inputRef}
             onInput={(event) => {
               const searchQuery = (event.target as HTMLInputElement).value;
 
               clearTimeout(searchTimeout);
-              
+
               searchTimeout = setTimeout(() => {
                 if (searchQuery.length === 0) {
                   setSearchResults([]);
@@ -276,6 +275,6 @@ const SearchModal = () => {
       </div>
     </BaseModal>
   );
-}
+};
 
 export default SearchModal;

@@ -1,8 +1,10 @@
-import React, { useState, useRef, useEffect, useContext } from 'react';
+import React, {
+  useState, useRef, useEffect, useContext,
+} from 'react';
 
-import { DropdownOptions, dropdownInfo } from '../../lib/constants/ShareOptions';
+import { DropdownOptions, dropdownInfo } from '../../../lib/constants/ShareOptions';
 import ShareOptionsDropdown from './ShareOptionsDropdown';
-import PagePermissionContext from '../../contexts/PagePermissionsContext';
+import PagePermissionContext from '../../../contexts/PagePermissionsContext';
 
 interface ShareMenuProps {
   page: string,
@@ -16,7 +18,7 @@ const EmailShareMenu = (props: ShareMenuProps) => {
     currentPermissions,
     setCurrentPermissions,
   } = useContext(PagePermissionContext);
-  
+
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedDropdownOption, setSelectedDropdownOption] = useState(DropdownOptions.FullAccess);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -30,13 +32,13 @@ const EmailShareMenu = (props: ShareMenuProps) => {
       ) {
         setIsDropdownOpen(false);
       }
-    }
+    };
 
     document.addEventListener('mousedown', handleClickOutside);
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
-    }
+    };
   });
 
   const addPermissions = (email: string, newPermissions: any) => {
@@ -58,7 +60,7 @@ const EmailShareMenu = (props: ShareMenuProps) => {
         email,
       },
     });
-  }
+  };
 
   return (
     <>
@@ -123,7 +125,7 @@ const EmailShareMenu = (props: ShareMenuProps) => {
 
             (async () => {
               const status = await fetch(
-                `${process.env.NEXT_PUBLIC_API_URL}/page/update-permissions/${page}`, 
+                `${process.env.NEXT_PUBLIC_API_URL}/page/update-permissions/${page}`,
                 {
                   method: 'POST',
                   headers: {
@@ -133,8 +135,8 @@ const EmailShareMenu = (props: ShareMenuProps) => {
                     email,
                     permissions: dropdownInfo[selectedDropdownOption].permissions,
                   }),
-                }
-              )
+                },
+              );
 
               if (status.ok) {
                 addPermissions(email, dropdownInfo[selectedDropdownOption].permissions);
@@ -147,6 +149,6 @@ const EmailShareMenu = (props: ShareMenuProps) => {
       </div>
     </>
   );
-}
+};
 
 export default EmailShareMenu;

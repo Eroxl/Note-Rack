@@ -1,61 +1,30 @@
 version: '3.8'
 
 services:
-  web:
-    build: ./web
-    ports:
-      - 3000:3000
-    expose:
-      - 3000
-    restart: unless-stopped
-    networks:
-      - web-backend
-    depends_on:
-      - backend
-    env_file:
-      - ./web/src/.env.local
-  
-  backend:
-    build: ./backend
-    ports:
-      - 8000:8000
-    expose:
-      - 8000
-    restart: unless-stopped
-    networks:
-      - web-backend
-      - backend-mongo
-      - backend-supertokens
-      - backend-elasticsearch
-    env_file:
-      - ./backend/.env
-    depends_on:
-      - mongo
-      - supertokens
-      - sql
-      - elasticsearch
-
   mongo:
     image: mongo:4.0-xenial
     restart: unless-stopped
-    networks:
-      - backend-mongo
-    expose:
-      - 27017
+    ports:
+      - 27017:27017
     volumes:
-      - mongo-data:/data/db
+      - mongo-data:/data/dbs
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    command: mongod
 
   supertokens:
     image: registry.supertokens.io/supertokens/supertokens-mysql:4.2
     depends_on:
       - sql
-    expose:
-      - 3567
+    ports:
+      - 3567:3567
     environment:
       MYSQL_CONNECTION_URI: "mysql://${MYSQL_USERNAME}:${MYSQL_PASSWORD}@${MYSQL_HOST}:3306/${MYSQL_DATABASE}"
     networks:
       - supertokens-sql
-      - backend-supertokens
     restart:
       unless-stopped
     healthcheck:
@@ -89,10 +58,8 @@ services:
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.6.0
     restart: unless-stopped
-    expose:
-      - 9200
-    networks:
-      - backend-elasticsearch
+    ports:
+      - 9200:9200
     environment:
       - discovery.type=single-node
       - cluster.name=docker-cluster
@@ -106,28 +73,21 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
-    logging:
-      driver: none
 
   qdrant:
     image: qdrant/qdrant:latest
     restart: unless-stopped
-    expose:
-      - 6333
+    ports:
+      - 6333:6333
     environment:
       - QDRANT_API_PORT=6333
     volumes:
       - qdrant-data:/qdrant_data
-    networks:
-      - backend-qdrant
     healthcheck:
       test: curl -s http://qdrant:6333/health >/dev/null || exit 1
       interval: 30s
       timeout: 10s
       retries: 5
-    logging:
-      driver: none
-
 
 volumes:
   mongo-data:
@@ -136,9 +96,4 @@ volumes:
   qdrant-data:
 
 networks:
-  web-backend:
-  backend-mongo:
-  backend-supertokens:
-  backend-elasticsearch:
   supertokens-sql:
-  backend-qdrant:

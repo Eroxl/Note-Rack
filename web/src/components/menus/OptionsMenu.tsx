@@ -10,7 +10,7 @@ const ShareMenu = (props: ShareMenuProps) => {
   const {
     page,
     buttonRef,
-    setIsMenuOpen
+    setIsMenuOpen,
   } = props;
 
   useEffect(() => {
@@ -21,13 +21,13 @@ const ShareMenu = (props: ShareMenuProps) => {
       ) {
         setIsMenuOpen(false);
       }
-    }
+    };
 
     document.addEventListener('mousedown', handleClickOutside);
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
-    }
+    };
   });
 
   return (
@@ -44,6 +44,6 @@ const ShareMenu = (props: ShareMenuProps) => {
       Hello World
     </div>
   );
-}
+};
 
 export default ShareMenu;

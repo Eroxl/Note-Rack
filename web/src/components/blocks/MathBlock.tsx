@@ -111,28 +111,27 @@ const MathBlock = (props: EditableText) => {
         )
         : (
           (!currentValue || currentValue === 'Edit to enter KaTeX' || currentValue === '\n')
-          ? (
-            <span
-              className="min-h-[1.2em] outline-none whitespace-pre-wrap opacity-50"
-              role="button"
-              tabIndex={0}
-              id={`preview-${blockID}`}
-              key={`preview-${blockID}`}
-              onClick={switchToEditing}
-            >
-              Edit to enter KaTeX
-            </span>
-          ) 
-          : (
-            <span
-              className="min-h-[1.2em] outline-none whitespace-pre-wrap w-full flex justify-center align-middle"
-              dangerouslySetInnerHTML={{ __html: katex.renderToString(currentValue, { throwOnError: false }) || 'Edit to enter KaTeX' }}
-            />
-          )
-        )
-      }
+            ? (
+              <span
+                className="min-h-[1.2em] outline-none whitespace-pre-wrap opacity-50"
+                role="button"
+                tabIndex={0}
+                id={`preview-${blockID}`}
+                key={`preview-${blockID}`}
+                onClick={switchToEditing}
+              >
+                Edit to enter KaTeX
+              </span>
+            )
+            : (
+              <span
+                className="min-h-[1.2em] outline-none whitespace-pre-wrap w-full flex justify-center align-middle"
+                dangerouslySetInnerHTML={{ __html: katex.renderToString(currentValue, { throwOnError: false }) || 'Edit to enter KaTeX' }}
+              />
+            )
+        )}
     </div>
-  )
+  );
 };
 
 export default MathBlock;

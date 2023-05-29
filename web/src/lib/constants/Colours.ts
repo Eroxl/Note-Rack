@@ -93,7 +93,7 @@ const ConvertColours = () => (
       // -=- Conversion -=-
       // ~ Convert hex to rgb
       const [r, g, b] = [colour.substring(0, 2), colour.substring(2, 4), colour.substring(4)];
-      
+
       // ~ Return converted colour's hex and rgb values
       return {
         hex: colour,

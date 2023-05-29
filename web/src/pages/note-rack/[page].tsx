@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Head from 'next/head';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { useSessionContext, attemptRefreshingSession,  } from 'supertokens-auth-react/recipe/session';
+import { useSessionContext, attemptRefreshingSession } from 'supertokens-auth-react/recipe/session';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 import type PageDataInterface from '../../lib/types/pageTypes';
 import Editor from '../../components/Editor';
@@ -11,14 +13,17 @@ import SaveManager from '../../lib/classes/SaveManager';
 import PageContext from '../../contexts/PageContext';
 import MenuBar from '../../components/MenuBar';
 import Chat from '../../components/Chat';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
 
 const NoteRackPage = () => {
   const [status, setStatus] = useState<'loading' | 'loaded' | 'error'>('loading');
   const [error, setError] = useState<string | undefined>();
   const [pageData, setPageData] = useState<PageDataInterface['message']>();
   const [isChatOpen, setIsChatOpen] = useState(false);
+
+  const pageContextMemo = useMemo(() => ({
+    pageData,
+    setPageData,
+  }), [pageData, setPageData]);
 
   const router = useRouter();
   const { page } = router.query as { page: string };
@@ -31,16 +36,16 @@ const NoteRackPage = () => {
     if (!page) return;
 
     const loadPageData = async (shouldRefreshSession = true) => {
-      let pageDataReq = await fetch(
+      const pageDataReq = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/page/get-page/${page}`,
         {
           credentials: 'include',
         },
       );
 
-      const pageData = await pageDataReq.json();
-     
-      if (pageDataReq.status === 401 && pageData.message === 'try refresh token') {
+      const newPageData = await pageDataReq.json();
+
+      if (pageDataReq.status === 401 && newPageData.message === 'try refresh token') {
         if (!shouldRefreshSession) {
           setError('You are not authorized to view this page.');
           setStatus('error');
@@ -52,13 +57,13 @@ const NoteRackPage = () => {
         return;
       }
 
-      if (pageData.status === 'error') {
-        setError(pageData.message as unknown as string);
+      if (newPageData.status === 'error') {
+        setError(newPageData.message as unknown as string);
         setStatus('error');
         return;
       }
 
-      setPageData(pageData.message);
+      setPageData(newPageData.message);
       setStatus('loaded');
     };
 
@@ -84,7 +89,7 @@ const NoteRackPage = () => {
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
-    }
+    };
   }, []);
 
   useEffect(() => {
@@ -96,7 +101,7 @@ const NoteRackPage = () => {
 
     return () => {
       document.removeEventListener('openChatPanel', handleChatToggle);
-    }
+    };
   }, [isChatOpen]);
 
   return (
@@ -126,43 +131,42 @@ const NoteRackPage = () => {
             )
         }
       </Head>
-      <PageContext.Provider
-        value={{
-          pageData,
-          setPageData,
-        }}
-      >
+      <PageContext.Provider value={pageContextMemo}>
         <MenuBar>
-          <div className={`flex ${isLoggedIn && 'pl-52'} print:pl-0 h-screen print:h-full`}>
+          <div className={`flex ${(session?.loading || isLoggedIn) && 'pl-52'} print:pl-0 h-screen print:h-full`}>
             <div className={`${isChatOpen ? 'w-1/2 print:w-full' : 'w-full'}`}>
               <DndProvider backend={HTML5Backend}>
                 {
-                  status === 'loading'
-                    ? <LoadingPage />
-                    : status === 'error'
-                      ? (
-                        <div className="w-full h-full mt-10 overflow-hidden">
-                          <div className="flex flex-col items-center w-full h-screen bg-amber-50 dark:bg-zinc-700">
-                            <div className="flex flex-col items-center justify-center w-full h-full max-w-4xl px-20 break-words pb-36 text-zinc-700 dark:text-amber-50">
-                              <p>
-                                <p className="text-2xl text-center">
-                                  There was an error loading the page.
-                                </p>
-                                <p className="text-2xl text-center text-red-400">
-                                  {error}
-                                </p>
+                  status === 'loading' && <LoadingPage />
+                }
+                {
+                  status === 'error'
+                    ? (
+                      <div className="w-full h-full mt-10 overflow-hidden">
+                        <div className="flex flex-col items-center w-full h-screen bg-amber-50 dark:bg-zinc-700">
+                          <div className="flex flex-col items-center justify-center w-full h-full max-w-4xl px-20 break-words pb-36 text-zinc-700 dark:text-amber-50">
+                            <p>
+                              <p className="text-2xl text-center">
+                                There was an error loading the page.
                               </p>
+                              <p className="text-2xl text-center text-red-400">
+                                {error}
+                              </p>
+                            </p>
 
-                              <Link href="/note-rack/">
-                                <a className="mt-10 text-xl text-center text-blue-400 hover:underline">
-                                  Go back to your Note Rack
-                                </a>
-                              </Link>
-                            </div>
+                            <Link href="/note-rack/">
+                              <a
+                                href="/note-rack/"
+                                className="mt-10 text-xl text-center text-blue-400 hover:underline"
+                              >
+                                Go back to your Note Rack
+                              </a>
+                            </Link>
                           </div>
                         </div>
-                      )
-                      : <Editor />
+                      </div>
+                    )
+                    : <Editor />
                 }
               </DndProvider>
             </div>

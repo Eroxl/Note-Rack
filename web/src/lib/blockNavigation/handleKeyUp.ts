@@ -1,4 +1,4 @@
-import PageDataInterface from '../types/pageTypes';
+import PageDataInterface from '../types/pageTypes.d';
 import { focusBlockAtIndexRelativeToBottom } from '../helpers/focusHelpers';
 
 const handleKeyUp = (
@@ -10,12 +10,12 @@ const handleKeyUp = (
 
   // ~ Get the offset of the current range
   const offset = window.getSelection()?.getRangeAt(0).startOffset || 0;
-  
+
   focusBlockAtIndexRelativeToBottom(
     index,
     pageData,
-    offset
+    offset,
   );
-}
+};
 
 export default handleKeyUp;

@@ -1,5 +1,5 @@
-import MilvusClient from './clients/MilvusClient';
 import OpenAIClient from './clients/OpenAIClient';
+import QdrantClient from './clients/QDrantClient';
 
 export interface EmbedOperation {
   type: 'update' | 'delete';
@@ -15,11 +15,31 @@ export interface EmbedOperation {
  * @param pageData The page data of the page that is being updated.
  */
 const refreshEmbeds = async (updates: EmbedOperation[], page: string) => {
-  await MilvusClient!.loadCollection({
-    collection_name: 'blocks'
-  });
+  await QdrantClient!.deletePoints(
+    'blocks',
+    {
+      must: [
+        {
+          key: 'block_id',
+          match: {
+            any: updates.map((operation) => operation.id)
+          },
+        },
+        {
+          key: 'page_id',
+          match: {
+            value: page,
+          }
+        }
+      ],
+    },
+  );
 
   const updateOperations = updates.filter((update) => update.type === 'update');
+
+  if (!updateOperations.length) {
+    return;
+  }
 
   const embeddings = await OpenAIClient!.createEmbedding({
     input: updateOperations.map((operation) => operation.value),
@@ -29,29 +49,17 @@ const refreshEmbeds = async (updates: EmbedOperation[], page: string) => {
   const fieldsData = new Array(updateOperations.length)
     .fill(undefined)
     .map((_, index) => ({
-      block_id: updateOperations[index].id,
-      page_id: page,
-      embedding: embeddings.data.data[index].embedding,
-      content: updateOperations[index].value,
-      context: JSON.stringify(updateOperations[index].context),
+      id: Math.floor(Math.random() * 2 ** 64),
+      vector: embeddings.data.data[index].embedding,
+      payload: {
+        block_id: updateOperations[index].id,
+        page_id: page,
+        content: updateOperations[index].value,
+        context: updateOperations[index].context,
+      },
     }));
 
-
-  await MilvusClient!.insert({
-    collection_name: 'blocks',
-    fields_data: fieldsData
-  });
-
-  const deleteOperations = updates.filter((update) => update.type === 'delete');
-
-  await MilvusClient!.deleteEntities({
-    collection_name: 'blocks',
-    expr: `block_id in [${deleteOperations.map((operation) => operation.id).join(', ')}]`,
-  });
-
-  await MilvusClient!.flush({
-    collection_names: ['blocks'],
-  });
+  await QdrantClient!.upsertPoints('blocks', fieldsData);
 };
 
 export default refreshEmbeds;

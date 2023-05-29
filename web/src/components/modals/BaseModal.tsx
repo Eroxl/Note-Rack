@@ -10,7 +10,9 @@ interface BaseModalProps {
 const defaultClassName = 'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50';
 
 const BaseModal = (props: BaseModalProps) => {
-  const { children, isOpen, setIsOpen, className } = props;
+  const {
+    children, isOpen, setIsOpen, className,
+  } = props;
   const [parsedClassName, setParsedClassName] = useState<string>('');
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -52,9 +54,9 @@ const BaseModal = (props: BaseModalProps) => {
       setParsedClassName(defaultClassName);
       return;
     }
-    
+
     const splitClassNames = className.split(' ');
-    const splitDefaultClassNames = defaultClassName.split(' ')
+    const splitDefaultClassNames = defaultClassName.split(' ');
 
     splitClassNames
       .forEach((cn) => {
@@ -62,7 +64,7 @@ const BaseModal = (props: BaseModalProps) => {
 
         for (let i = 0; i < splitDefaultClassNames.length; i++) {
           const dcn = splitDefaultClassNames[i];
-          
+
           if (dcn.startsWith(classType)) {
             splitDefaultClassNames.splice(i, 1);
             return cn;
@@ -83,7 +85,7 @@ const BaseModal = (props: BaseModalProps) => {
       >
         {children}
       </div>
-      <div 
+      <div
         className={`absolute top-0 left-0 z-40 w-screen h-screen bg-black/50 ${isOpen ? 'block print:hidden' : 'hidden'}`}
       />
     </>

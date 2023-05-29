@@ -2,7 +2,6 @@
 import React, { useContext } from 'react';
 import { useDrop } from 'react-dnd';
 
-import TitleBreaker from './TitleBreaker';
 import { addBlockAtIndex, moveBlock } from '../../lib/pages/updatePage';
 import type { PermanentEditableText } from '../../lib/types/blockTypes';
 import editStyle from '../../lib/pages/editStyle';
@@ -23,7 +22,7 @@ const Title = (props: TitleProps) => {
 
   const { pageData, setPageData } = useContext(PageContext);
 
-  const isAllowedToEdit = pageData?.userPermissions.admin; 
+  const isAllowedToEdit = pageData?.userPermissions.admin;
 
   const onTitleChanged = (text: string) => {
     if (!isAllowedToEdit) return;
@@ -78,9 +77,9 @@ const Title = (props: TitleProps) => {
             } else if (e.code === 'ArrowDown' && isCaretAtBottom(e.currentTarget)) {
               handleKeyDown(
                 e,
-                index-1,
+                index - 1,
                 pageData,
-              )
+              );
             } else if (e.code === 'ArrowUp' && isCaretAtTop(e.currentTarget)) {
               e.preventDefault();
             }
@@ -95,7 +94,15 @@ const Title = (props: TitleProps) => {
       >
         {title}
       </span>
-      <TitleBreaker />
+      <div className="
+        w-full h-0.5 bg-black opacity-5 rounded-md
+        dark:bg-white
+        print:bg-opacity-0
+        print:relative print:overflow-hidden
+        print:before:border-[999px]
+        print:before:border-black
+        "
+      />
       { hovered && <div className="absolute w-full h-0.5 bg-blue-400 -bottom-2 print:hidden" /> }
     </div>
   );

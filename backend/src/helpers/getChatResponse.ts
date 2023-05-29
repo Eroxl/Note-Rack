@@ -1,10 +1,10 @@
-import { DataType } from '@zilliz/milvus2-sdk-node/dist/milvus';
 import type { ChatCompletionRequestMessage } from 'openai';
 import type { Response } from 'express';
 
 import OpenAIClient from './clients/OpenAIClient';
-import MilvusClient from './clients/MilvusClient';
 import { ReadableStreamDefaultReadResult } from 'stream/web';
+import QdrantClient from './clients/QDrantClient';
+import type { Block } from './clients/QDrantClient.d';
 
 
 const RELATIVE_TEXT_COUNT = 3;
@@ -25,7 +25,7 @@ Any math equations should be written in KaTeX and surrounded by a single $ on ea
 Context: {context}
 
 Question: {question}
-Helpful answer in markdown:`;
+Helpful answer:`;
 
 const getChatResponse = async (
   messages: ChatCompletionRequestMessage[],
@@ -41,12 +41,6 @@ const getChatResponse = async (
     });
     return;
   }
-
-  // ~ Load the block collection
-  await MilvusClient!.loadCollection({
-    collection_name: 'blocks',
-  });
-
   // ~ Condense the context
   const condensedQuestionResponse = await OpenAIClient!.createChatCompletion({
     model: 'gpt-3.5-turbo',
@@ -68,129 +62,154 @@ const getChatResponse = async (
     model: 'text-embedding-ada-002',
   });
 
-  try {
-    const similarMessages = await MilvusClient!.search({
-      collection_name: 'blocks',
-      limit: RELATIVE_TEXT_COUNT,
-      vector_type: DataType.FloatVector,
-      params: {
-        topk: `${RELATIVE_TEXT_COUNT}`,
-        metric_type: "L2",
-        params: JSON.stringify({ nprobe: 10 }),
-      },
-      vector: embeddings.data.data[0].embedding,
-      expr: `page_id == \"${page}\"`,
-      output_fields: ['content', 'context']
-    })
+  const similarMessages = await QdrantClient!.searchPoints<
+    { include: ['context'] },
+    Block
+  >(
+    'blocks',
+    embeddings.data.data[0].embedding,
+    RELATIVE_TEXT_COUNT,
+    {
+      must: [
+        {
+          key: 'page_id',
+          match: {
+            value: page,
+          }
+        }
+      ],
+    },
+    {
+      include: ['context'],
+    }
+  );
 
-    // ~ If there are no similar messages, return a default message
-    if (similarMessages.status.reason !== '' || similarMessages.results.length === 0) {
-      response.statusCode = 200;
-      response.send('I\'m sorry, I don\'t know the answer to that question yet, write some text in this page to help me learn!');
+  // ~ If there are no similar messages, return a default message
+  if (!similarMessages || !similarMessages.length) {
+    response.statusCode = 200;
+    response.send('I\'m sorry, I don\'t know the answer to that question yet, write some text in this page to help me learn!');
+    return;
+  }
+
+  // ~ Get the context messages
+  const contextIDs = Array.from(
+    new Set(
+      similarMessages
+        .flatMap((result) => result.payload.context)
+    )
+  );
+
+  const contextMessages = await QdrantClient!.searchPoints<
+    { include: ['content', 'block_id'] },
+    Block
+  >(
+    'blocks',
+    embeddings.data.data[0].embedding,
+    contextIDs.length,
+    {
+      must: [
+        {
+          key: 'block_id',
+          match: {
+            any: contextIDs,
+          },
+
+        },
+        {
+          key: 'page_id',
+          match: {
+            value: page,
+          },
+        }
+      ],
+    },
+    {
+      include: ['content', 'block_id'],
+    }
+  );
+
+  const contextMessagesMap: Record<string, string> = {};
+
+  contextMessages?.forEach((result) => {
+    if (!result.payload.block_id) {
       return;
     }
+    
+    contextMessagesMap[result.payload.block_id] = result.payload.content;
+  });
 
-    // ~ Get the context messages
-    const contextIDs = Array.from(
-      new Set(
-        similarMessages.results
-          .flat()
-          .flatMap((metadata) => JSON.parse((metadata.context as string).replace('\\"', '"')) as string[])
-          .map((id) => `"${id}"`)
-      )
-    );
+  const context = similarMessages
+    .flatMap((result) => result.payload.context)
+    .map((id) => contextMessagesMap[id])
+    .filter((message) => message)
+    .map((message) => message.trim())
+    .join('\n')
 
-    const contextMessages = await MilvusClient!.query({
-      collection_name: 'blocks',
-      expr: `block_id in [${contextIDs.join(', ')}]`,
-      output_fields: ['content', 'block_id'],
-    })
+  // ~ Create the chat completion
+  fetch(
+    'https://api.openai.com/v1/chat/completions',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: "gpt-3.5-turbo",
+        stream: true,
+        messages: [
+          {
+            role: 'user',
+            content: PRE_PROMPT
+              .replace('{context}', context)
+              .replace('{question}', condensedQuestion || question)
+          }
+        ]
+      }),
+    }
+  ).then((completionResponse) => {
+    const reader = completionResponse.body?.getReader();
+  
+    if (!reader) {
+      throw new Error('No reader found');
+    }
 
-    const contextMessagesMap: Record<string, string> = {};
-
-    contextMessages.data.forEach((result) => {
-      contextMessagesMap[result.block_id] =  result.content;
+    response.writeHead(200, {
+      'Content-Type': 'text/plain',
+      'Transfer-Encoding': 'chunked'
     });
 
-    const context = similarMessages.results
-      .map((result) => result.context)
-      .flatMap((context) => JSON.parse((context as string).replace('\\"', '"')) as string[])
-      .map((id) => contextMessagesMap[id])
-      .filter((message) => message)
-      .map((message) => message.trim())
-      .join('\n')
+    const decoder = new TextDecoder();
 
-    // ~ Create the chat completion
-    fetch(
-      'https://api.openai.com/v1/chat/completions',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-        },
-        body: JSON.stringify({
-          model: "gpt-3.5-turbo",
-          stream: true,
-          messages: [
-            {
-              role: 'user',
-              content: PRE_PROMPT
-                .replace('{context}', context)
-                .replace('{question}', condensedQuestion || question)
-            }
-          ]
-        }),
-      }
-    ).then((completionResponse) => {
-      const reader = completionResponse.body?.getReader();
-    
-      if (!reader) {
-        throw new Error('No reader found');
+    let chunk = '';
+
+    const processResult = (result: ReadableStreamDefaultReadResult<Uint8Array>) => {
+      chunk += decoder.decode(result.value, { stream: true });
+
+      const dataObjects = chunk.split('\n').filter(Boolean);
+
+      const latestData = dataObjects[dataObjects.length - 1].replace(/^data: /, '');
+
+      if (latestData === '[DONE]') {
+        reader.cancel();
+        response.end();
+
+        return;
       }
 
-      response.writeHead(200, {
-        'Content-Type': 'text/plain',
-        'Transfer-Encoding': 'chunked'
-      });
+      const jsonData = JSON.parse(latestData);
 
-      const decoder = new TextDecoder();
+      if (jsonData.choices && jsonData.choices[0].delta.content) {
+        const responseMessage = jsonData.choices[0].delta.content;
 
-      let chunk = '';
-
-      const processResult = (result: ReadableStreamDefaultReadResult<Uint8Array>) => {
-        chunk += decoder.decode(result.value, { stream: true });
-
-        const dataObjects = chunk.split('\n').filter(Boolean);
-
-        const latestData = dataObjects[dataObjects.length - 1].replace(/^data: /, '');
-
-        if (latestData === '[DONE]') {
-          reader.cancel();
-          response.end();
-
-          return;
-        }
-
-        const jsonData = JSON.parse(latestData);
-
-        if (jsonData.choices && jsonData.choices[0].delta.content) {
-          const responseMessage = jsonData.choices[0].delta.content;
-
-          response.write(responseMessage);
-        }
-
-        reader.read().then(processResult as any);
-      };
+        response.write(responseMessage);
+      }
 
       reader.read().then(processResult as any);
-    });
-  } catch (error) {
-    console.error(error);
+    };
 
-    response.statusCode = 500;
-    response.send('Something went wrong!')
-  }
+    reader.read().then(processResult as any);
+  });
 }
 
 export default getChatResponse;

@@ -1,13 +1,13 @@
 import React, { useState, useRef } from 'react';
 import { useRouter } from 'next/router';
-
 import MoreHoriz from '@mui/icons-material/MoreHoriz';
+
 import OptionsMenu from '../menus/OptionsMenu';
 
 const ShareButton = () => {
   const { page } = useRouter().query;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const buttonRef = useRef<HTMLDivElement>(null);  
+  const buttonRef = useRef<HTMLDivElement>(null);
 
   return (
     <div
@@ -35,8 +35,7 @@ const ShareButton = () => {
         )
       }
     </div>
-  )
-}
-
+  );
+};
 
 export default ShareButton;
