@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
 
 import type { SlashMenuCategory, SlashMenuOption } from '../../hooks/useSlashMenu';
-import { getClosestTextNode } from '../../lib/helpers/focusHelpers';
+import { getCaretCoordinatesFromOffset } from '../../lib/helpers/focusHelpers';
+import getStringDistance from '../../lib/helpers/getStringDistance';
 
 interface SlashMenuProps {
   slashMenuCategories: SlashMenuCategory[];
@@ -60,87 +61,6 @@ const SlashMenu = (props: SlashMenuProps) => {
     editableRef.current.dispatchEvent(new Event('change'));
 
     relevantOptions[categoryIndex].options[optionIndex].action();
-  };
-
-  /**
-   * Get the distance between two strings
-   * @param a
-   * @param b 
-   * @returns Distance between the two strings
-   */
-  const getStringDistance = (a: string, b: string): number => {
-    if (a.length === 0) return b.length;
-
-    if (b.length === 0) return a.length;
-
-    const matrix = [];
-
-    // ~ Increment along the first column of each row
-    let i;
-    for (i = 0; i <= b.length; i++) {
-      matrix[i] = [i];
-    }
-
-    // ~ Increment each column in the first row
-    let j;
-    for (j = 0; j <= a.length; j++) {
-      matrix[0][j] = j;
-    }
-
-    // ~ Fill in the rest of the matrix
-    for (i = 1; i <= b.length; i++) {
-      for (j = 1; j <= a.length; j++) {
-        if (b.charAt(i - 1) === a.charAt(j - 1)) {
-          matrix[i][j] = matrix[i - 1][j - 1];
-        } else {
-          matrix[i][j] = Math.min(
-            matrix[i - 1][j - 1], // ~ substitution
-            matrix[i][j - 1], // ~ insertion
-            matrix[i - 1][j], // ~ deletion
-          ) + 1;
-        }
-      }
-    }
-
-    return matrix[b.length][a.length];
-  };
-
-  /**
-   * Get the x and y coordinates of a cursor at a given offset
-   * @param offset Offset of the cursor
-   * @returns X and y coordinates of the cursor
-   */
-  const getCursorCoordinates = (offset: number): { x: number, y: number } => {
-    if (!editableRef.current) return { x: 0, y: 0 };
-
-    const range = document.createRange();
-
-    const textNodes = getClosestTextNode(editableRef.current);
-
-    if (!textNodes) return { x: 0, y: 0 };
-
-    for (let i = 0; i < textNodes.length; i++) {
-      const textNode = textNodes[i];
-
-      if (!textNode) continue;
-
-      if (textNode.textContent?.length! >= offset) {
-        range.setStart(textNode, offset);
-        range.collapse(true);
-        break;
-      }
-
-      offset -= textNode.textContent?.length!;
-    }
-
-    const rect = range.getClientRects()[0];
-
-    if (!rect) return { x: 0, y: 0 };
-
-    return {
-      x: rect.left,
-      y: rect.top,
-    };
   };
 
   /**
@@ -261,7 +181,9 @@ const SlashMenu = (props: SlashMenuProps) => {
    * Handle rendering the slash menu when it is open
    */
   useEffect(() => {
-    let { x, y } = getCursorCoordinates(slashLocation);
+    if (!editableRef.current) return;
+  
+    let { x, y } = getCaretCoordinatesFromOffset(editableRef.current, slashLocation);
 
     if (x === 0 && y === 0) {
       const boundingRect = editableRef.current?.getBoundingClientRect();
