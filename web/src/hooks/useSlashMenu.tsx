@@ -100,7 +100,7 @@ const useSlashMenu = (slashMenuCategories: SlashMenuCategory[]) => {
         editableRef.current.parentElement as HTMLElement,
       )
     )
-  }, [editableRef.current, slashMenuCategories]);
+  }, [editableRef.current]);
 
   return [editableRef, slashMenu] as const;
 };

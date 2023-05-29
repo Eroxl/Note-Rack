@@ -320,8 +320,6 @@ const SlashMenu = (props: SlashMenuProps) => {
           e.stopPropagation();
           break;
         case 'ArrowDown':
-          console.log(selectedOption);
-
           setSelectedOption((selectedOption) => {
             if (
               selectedOption.optionIndex === relevantOptions[selectedOption.categoryIndex].options.length - 1
