@@ -24,8 +24,8 @@ const BlockHandle = (props: BlockHandleProps) => {
               type="button"
               ref={draggableRef}
               onClick={() => {
-                setIsMenuOpen(!isMenuOpen);
-                setIsGlobalMenuOpen(!isMenuOpen);
+                // setIsMenuOpen(!isMenuOpen);
+                // setIsGlobalMenuOpen(!isMenuOpen);
               }}
               className={`relative w-6 py-1 rounded fill-current cursor-grab self-end ${isMenuOpen ? 'dark:bg-white/10 bg-black/10' : 'dark:hover:bg-white/10 hover:bg-black/10'} text-zinc-800/50 dark:text-amber-50/50`}
             >

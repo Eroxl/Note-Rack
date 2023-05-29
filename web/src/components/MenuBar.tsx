@@ -36,7 +36,7 @@ const MenuBar = (props: MenuBarProps) => {
               <>
                 <PagePath />
                 <ShareButton />
-                <OptionsButton />
+                {/* <OptionsButton /> */}
               </>
             )
             : (
