@@ -1,21 +1,21 @@
 const inlineTextKeybinds = [
   {
-    keybind: /(\*\*|__)(.*?)\1/g,
+    keybind: /(\*\*)(.*?)\1/,
     plainTextKeybind: '**',
     type: 'bold',
   },
   {
-    keybind: /(\*|_)(.*?)\1/g,
+    keybind: /(\*)(.*?)\1/,
     plainTextKeybind: '*',
     type: 'italic',
   },
   {
-    keybind: /(--)(.*?)\1/g,
+    keybind: /(--)(.*?)\1/,
     plainTextKeybind: '--',
     type: 'strikethrough',
   },
   {
-    keybind: /(__)(.*?)\1/g,
+    keybind: /(__)(.*?)\1/,
     plainTextKeybind: '__',
     type: 'underline',
   },

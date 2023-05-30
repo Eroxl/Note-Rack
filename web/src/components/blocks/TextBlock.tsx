@@ -1,8 +1,10 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 
 import { isCaretAtTop, isCaretAtBottom } from '../../lib/helpers/caretHelpers';
 import { editBlock, addBlockAtIndex, removeBlock } from '../../lib/pages/updatePage';
+import InlineTextStyles from '../../lib/constants/InlineTextStyles';
 import TextStyles from '../../lib/constants/TextStyles';
+import inlineTextKeybinds from '../../lib/inlineTextKeybinds';
 import textKeybinds from '../../lib/textKeybinds';
 import type { EditableText } from '../../lib/types/blockTypes';
 import handleKeyDown from '../../lib/blockNavigation/handleKeyDown';
@@ -77,6 +79,67 @@ const TextBlock = (props: EditableText) => {
     });
   };
 
+  const renderInlineBlocks = (value: string) => {
+    const values = [{
+      value,
+      style: [] as string[],
+      plaintTextBind: [] as string[],
+    }];
+
+    let hasParsedAllInlineBlocks = false;
+
+    while (!hasParsedAllInlineBlocks) {
+      hasParsedAllInlineBlocks = true;
+
+      inlineTextKeybinds.forEach((bind) => {
+        values.forEach((value, index) => {
+            const regexSearch = bind.keybind.exec(value.value);
+
+            if (!regexSearch || value.value === '') return;
+
+            hasParsedAllInlineBlocks = false;
+
+            const before = value.value.slice(0, regexSearch.index);
+            const after = value.value.slice(regexSearch.index + regexSearch[0].length);
+
+            values[index] = {
+              value: regexSearch[2] ?? '',
+              style: [...value.style, InlineTextStyles[bind.type]],
+              plaintTextBind: [...value.plaintTextBind, bind.plainTextKeybind],
+            }
+            
+            if (before) {
+              values.splice(index, 0, {
+                value: before,
+                style: value.style,
+                plaintTextBind: value.plaintTextBind,
+              });
+            }
+
+            if (!after) return;
+
+            values.splice(index + 1, 0, {
+              value: after,
+              style: value.style,
+              plaintTextBind: value.plaintTextBind,
+            });
+          });
+      });
+    };
+
+    console.log(values);
+
+    return values.map((value, index) => (
+      <span
+        className={value.style.join(' ')}
+        key={index}
+        data-keybinds={value.plaintTextBind.join('')}
+      >
+        {value.value}
+      </span>
+    ));
+  }
+
   return (
     <span
       className={`min-h-[1.2em] outline-none relative whitespace-pre-wrap w-full ${TextStyles[type]}`}
@@ -124,7 +187,7 @@ const TextBlock = (props: EditableText) => {
       }
       data-cy="block-text"
     >
-      {value}
+      {renderInlineBlocks(value)}
       {slashMenu}
     </span>
   );
