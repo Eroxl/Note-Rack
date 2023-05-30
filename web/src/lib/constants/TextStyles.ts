@@ -17,6 +17,12 @@ const TextStyles: {[key: string]: string} = {
     print:before:border-[999px] print:before:-mt-3 print:before:-ml-3 print:before:border-black/5
     relative print:overflow-hidden print:before:absolute
   `,
+  
+  // -=- Inline Components -=-
+  bold: 'font-bold',
+  italic: 'italic',
+  underline: 'underline',
+  strikethrough: 'line-through',
 };
 
 export default TextStyles;
