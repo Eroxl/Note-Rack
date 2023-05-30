@@ -1,7 +1,7 @@
 /**
  * Get the distance between two strings
  * @param a
- * @param b 
+ * @param b
  * @returns Distance between the two strings
  */
 const getStringDistance = (a: string, b: string): number => {

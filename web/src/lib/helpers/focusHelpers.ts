@@ -255,7 +255,6 @@ const getCaretCoordinatesFromOffset = (element: HTMLElement, offset: number): { 
   };
 };
 
-
 export {
   focusBlockAtIndex,
   focusBlockAtIndexRelativeToTop,

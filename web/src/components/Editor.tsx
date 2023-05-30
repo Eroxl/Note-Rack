@@ -105,7 +105,7 @@ const Editor = () => {
                 blockType={block.blockType}
                 blockID={block._id}
                 index={index}
-                key={block._id}
+                key={`${block._id}-${page}`}
                 page={page as string}
                 properties={block.properties}
                 children={block.children}

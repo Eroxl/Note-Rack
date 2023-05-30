@@ -51,7 +51,7 @@ const SlashMenu = (props: SlashMenuProps) => {
 
     const range = document.createRange();
     const sel = window.getSelection()!;
-    
+
     range.setStart(editableRef.current.childNodes[0], newCaretOffset);
     range.collapse(true);
     sel.removeAllRanges();
@@ -117,7 +117,7 @@ const SlashMenu = (props: SlashMenuProps) => {
       if (e.key === 'Escape') {
         setIsSlashMenuOpen(false);
       }
-    }
+    };
 
     editableRef.current.addEventListener('keydown', handleSlashMenu);
     document.addEventListener('keydown', handleSlashMenuClose);
@@ -125,7 +125,7 @@ const SlashMenu = (props: SlashMenuProps) => {
     return () => {
       editableRef.current?.removeEventListener('keydown', handleSlashMenu);
       document.removeEventListener('keydown', handleSlashMenuClose);
-    }
+    };
   }, [editableRef.current, isSlashMenuOpen]);
 
   /**
@@ -151,7 +151,7 @@ const SlashMenu = (props: SlashMenuProps) => {
         && cursorOffset <= slashLocation + slashMenuQuery.length
       );
     };
-    
+
     const handleSlashMenuClose = (e: MouseEvent) => {
       if (slashMenuRef.current?.contains(e.target as Node)) return;
 
@@ -174,7 +174,7 @@ const SlashMenu = (props: SlashMenuProps) => {
     return () => {
       document.removeEventListener('click', handleSlashMenuClose);
       document.removeEventListener('keydown', handleArrowKeys);
-    }
+    };
   }, [slashMenuRef.current, slashLocation, slashMenuQuery]);
 
   /**
@@ -182,7 +182,7 @@ const SlashMenu = (props: SlashMenuProps) => {
    */
   useEffect(() => {
     if (!editableRef.current) return;
-  
+
     let { x, y } = getCaretCoordinatesFromOffset(editableRef.current, slashLocation);
 
     if (x === 0 && y === 0) {
@@ -194,7 +194,7 @@ const SlashMenu = (props: SlashMenuProps) => {
       y = boundingRect.top;
     }
 
-    const boundingRect = editableRef.current.parentElement?.getBoundingClientRect()
+    const boundingRect = editableRef.current.parentElement?.getBoundingClientRect();
 
     if (boundingRect) {
       x -= boundingRect.left;
@@ -214,7 +214,7 @@ const SlashMenu = (props: SlashMenuProps) => {
     const handleSlashMenuQuery = () => {
       if (!editableRef.current || !isSlashMenuOpen) return;
 
-      const slashLengthChange = editableRef.current.innerText.length - editableElementLength ;
+      const slashLengthChange = editableRef.current.innerText.length - editableElementLength;
 
       const newQuery = editableRef.current.innerText.slice(slashLocation, slashLocation + slashMenuQuery.length + slashLengthChange);
 
@@ -246,15 +246,15 @@ const SlashMenu = (props: SlashMenuProps) => {
       optionIndex: 0,
     });
 
-    let parsedSlashMenuQuery = slashMenuQuery.replace(/^\//, '').toLowerCase()
+    const parsedSlashMenuQuery = slashMenuQuery.replace(/^\//, '').toLowerCase();
     let minDistance = Infinity;
-    
+
     if (!parsedSlashMenuQuery) {
-      setRelevantOptions(slashMenuCategories)
+      setRelevantOptions(slashMenuCategories);
       return;
     }
 
-    const relevantOptions: SlashMenuCategory[] = []
+    const relevantOptions: SlashMenuCategory[] = [];
 
     for (let i = 0; i < slashMenuCategories.length; i++) {
       const category = slashMenuCategories[i];
@@ -262,13 +262,13 @@ const SlashMenu = (props: SlashMenuProps) => {
 
       for (let j = 0; j < category.options.length; j++) {
         const option = category.options[j];
-        
+
         const distance = getStringDistance(parsedSlashMenuQuery, option.name.toLowerCase().slice(0, parsedSlashMenuQuery.length));
-        
+
         if (distance <= 1) {
           categoryOptions.push(option);
         }
-        
+
         if (distance < minDistance) {
           minDistance = distance;
         }
@@ -357,7 +357,7 @@ const SlashMenu = (props: SlashMenuProps) => {
 
     return () => {
       editableRef.current?.removeEventListener('keydown', handleSelectionChange);
-    }
+    };
   }, [relevantOptions, selectedOption, isSlashMenuOpen, editableRef.current]);
 
   return (
@@ -411,7 +411,7 @@ const SlashMenu = (props: SlashMenuProps) => {
         </div>
       )}
     </>
-  )
+  );
 };
 
 export default SlashMenu;

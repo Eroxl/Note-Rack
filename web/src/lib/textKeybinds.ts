@@ -64,7 +64,6 @@ const textKeybinds: {
         credentials: 'include',
       });
 
-
       // ~ Dispatch an event to add the new page to the sidebar
       const addPageEvent = new CustomEvent('addPage', {
         detail: {
