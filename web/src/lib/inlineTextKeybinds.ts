@@ -1,13 +1,4 @@
-import textKeybinds from './textKeybinds';
-
-const inlineTextKeybinds: {
-  keybind: RegExp,
-  plainTextKeybind: string,
-  type: string,
-  customFunc?: (
-    ...args: unknown[]
-  ) => Promise<Record<string, unknown>>,
-}[] = [
+const inlineTextKeybinds = [
   {
     keybind: /(\*\*|__)(.*?)\1/g,
     plainTextKeybind: '**',
@@ -28,6 +19,6 @@ const inlineTextKeybinds: {
     plainTextKeybind: '__',
     type: 'underline',
   },
-]
+] as const;
 
 export default inlineTextKeybinds;

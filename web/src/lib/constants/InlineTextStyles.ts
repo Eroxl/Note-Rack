@@ -1,7 +1,7 @@
 import inlineTextKeybinds from "../inlineTextKeybinds";
 
 const InlineTextStyles: {
-  [key: (typeof inlineTextKeybinds)[number]['type']]: string
+  [key in (typeof inlineTextKeybinds)[number]['type']]: string
 } = {
   bold: 'font-bold',
   italic: 'italic',
