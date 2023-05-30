@@ -79,6 +79,26 @@ const TextBlock = (props: EditableText) => {
     });
   };
 
+  const saveBlock = (element: HTMLSpanElement) => {
+    if (!isAllowedToEdit) return;
+
+    const treeWalker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null);
+
+    const textNodes = [];
+
+    while (treeWalker.nextNode()) {
+      textNodes.push(treeWalker.currentNode);
+    }
+
+    const text = textNodes.map((node) => {
+      const keybind = node.parentElement?.getAttribute('data-keybinds');
+
+      return `${keybind}${node.textContent}${keybind}`;
+    }).join('');
+
+    editBlock([blockID], undefined, { value: text }, page);
+  };
+
   const renderInlineBlocks = (value: string) => {
     const values = [{
       value,
@@ -127,8 +147,6 @@ const TextBlock = (props: EditableText) => {
       });
     };
 
-    console.log(values);
-
     return values.map((value, index) => (
       <span
         className={value.style.join(' ')}
@@ -154,9 +172,10 @@ const TextBlock = (props: EditableText) => {
       }}
       onBlur={
         (e) => {
-          if (!isAllowedToEdit) return;
+          // if (!isAllowedToEdit) return;
 
-          editBlock([blockID], undefined, { value: e.currentTarget.innerText }, page);
+          // editBlock([blockID], undefined, { value: e.currentTarget.innerText }, page);
+          saveBlock(e.currentTarget);
         }
       }
       onKeyDown={
