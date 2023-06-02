@@ -159,19 +159,25 @@ const TextBlock = (props: EditableText) => {
     }[] = [];
 
     inlineTextKeybinds.forEach((bind) => {
-      const regexSearch = bind.keybind.exec(value);
+      // const regexSearch = bind.keybind.exec(value);
+      const regexSearchResult = value.matchAll(bind.keybind);
 
-      if (!regexSearch || value === '') return;
+      let match = regexSearchResult.next();
+      while (!match.done) {
+        values.push({
+          start: match.value.index || 0,
+          end: (match.value.index || 0) + match.value[0].length,
+          types: [bind.type],
+          binds: [bind.plainTextKeybind]
+        });
+  
+        const padding = '\\'.repeat(bind.plainTextKeybind.length)
+        // value = value.replace(regexSearch[0], `${padding}${regexSearch[2] ?? ''}${padding}`);
+        value = value.replace(match.value[0], `${padding}${match.value[2] ?? ''}${padding}`);
 
-      values.push({
-        start: regexSearch.index,
-        end: regexSearch.index + regexSearch[0].length,
-        types: [bind.type],
-        binds: [bind.plainTextKeybind]
-      });
+        match = regexSearchResult.next();
+      };
 
-      const padding = '\\'.repeat(bind.plainTextKeybind.length)
-      value = value.replace(regexSearch[0], `${padding}${regexSearch[2] ?? ''}${padding}`);
     });
 
     /**
@@ -236,11 +242,11 @@ const TextBlock = (props: EditableText) => {
       }
 
 
-      const generateSubElements = (types: (keyof typeof InlineTextStyles)[], text: string) => {
+      const generateSubElements = (types: (keyof typeof InlineTextStyles)[], text: string, textKeybinds?: string[]) => {
         return (
           <span
             className={InlineTextStyles[types[0]]}
-            data-keybinds={inlineBlock.binds.join('')}
+            data-keybinds={textKeybinds ? inlineBlock.binds.join(' ') : undefined}
           >
             {
               types.length > 1
@@ -256,6 +262,7 @@ const TextBlock = (props: EditableText) => {
         generateSubElements(
           inlineBlock.types,
           value.slice(inlineBlock.start, inlineBlock.end).replace(/\\/g, ''),
+          inlineBlock.binds,
         )
       );
 
