@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 
 import { isCaretAtTop, isCaretAtBottom } from '../../lib/helpers/caretHelpers';
 import { editBlock, addBlockAtIndex, removeBlock } from '../../lib/pages/updatePage';
@@ -52,6 +52,57 @@ const TextBlock = (props: EditableText) => {
     ),
   );
 
+  const handlePotentialInlineBlocks = async (element: HTMLSpanElement) => {
+    inlineTextKeybinds.forEach(async (bind) => {
+      const regexSearch = bind.keybind.exec(element.textContent || '');
+
+      if (!regexSearch) return;
+
+      let currentLength = 0;
+      const treeWalker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null);
+
+      while (treeWalker.nextNode()) {
+        const length = treeWalker.currentNode.textContent?.length || 0;
+
+        if (currentLength + length >= regexSearch.index) break;
+
+        currentLength += length;
+      }
+
+      const textNode = treeWalker.currentNode;
+
+      if (!textNode) return;
+
+      const before = textNode.textContent?.slice(0, regexSearch.index - currentLength);
+
+      if (before) {
+        const newTextNode = document.createElement('span');
+        newTextNode.textContent = before;
+
+        if (textNode.parentElement?.classList.length) {
+          newTextNode.classList.add(textNode.parentElement.className);
+        }
+        
+        console.log(newTextNode.classList, newTextNode.textContent);
+      }
+
+      let newElementText = regexSearch[2] ?? ''
+
+      while (newElementText.length > (treeWalker.nextNode()?.textContent?.length || 0) && treeWalker.currentNode) {
+        const elementText = newElementText.slice(0, treeWalker.currentNode.textContent?.length || 0);
+        newElementText = newElementText.slice(treeWalker.currentNode.textContent?.length || 0);
+
+        console.log(
+          treeWalker.currentNode.parentElement?.classList + ' ' + InlineTextStyles[bind.type],
+          elementText,
+        );
+      }
+
+      if (newElementText.length === 0) return;
+      
+    });
+  };
+
   const handlePotentialTypeChange = async (element: HTMLSpanElement) => {
     textKeybinds.forEach(async (bind) => {
       const regexSearch = bind.keybind.exec(element.textContent || '');
@@ -91,7 +142,7 @@ const TextBlock = (props: EditableText) => {
     }
 
     const text = textNodes.map((node) => {
-      const keybind = node.parentElement?.getAttribute('data-keybinds');
+      const keybind = node.parentElement?.getAttribute('data-keybinds') || '';
 
       return `${keybind}${node.textContent}${keybind}`;
     }).join('');
@@ -100,62 +151,130 @@ const TextBlock = (props: EditableText) => {
   };
 
   const renderInlineBlocks = (value: string) => {
-    const values = [{
-      value,
-      style: [] as string[],
-      plaintTextBind: [] as string[],
-    }];
+    const values: {
+      start: number;
+      end: number;
+      binds: string[];
+      types: (keyof typeof InlineTextStyles)[];
+    }[] = [];
 
-    let hasParsedAllInlineBlocks = false;
+    inlineTextKeybinds.forEach((bind) => {
+      const regexSearch = bind.keybind.exec(value);
 
-    while (!hasParsedAllInlineBlocks) {
-      hasParsedAllInlineBlocks = true;
+      if (!regexSearch || value === '') return;
 
-      inlineTextKeybinds.forEach((bind) => {
-        values.forEach((value, index) => {
-            const regexSearch = bind.keybind.exec(value.value);
-
-            if (!regexSearch || value.value === '') return;
-
-            hasParsedAllInlineBlocks = false;
-
-            const before = value.value.slice(0, regexSearch.index);
-            const after = value.value.slice(regexSearch.index + regexSearch[0].length);
-
-            values[index] = {
-              value: regexSearch[2] ?? '',
-              style: [...value.style, InlineTextStyles[bind.type]],
-              plaintTextBind: [...value.plaintTextBind, bind.plainTextKeybind],
-            }
-            
-            if (before) {
-              values.splice(index, 0, {
-                value: before,
-                style: value.style,
-                plaintTextBind: value.plaintTextBind,
-              });
-            }
-
-            if (!after) return;
-
-            values.splice(index + 1, 0, {
-              value: after,
-              style: value.style,
-              plaintTextBind: value.plaintTextBind,
-            });
-          });
+      values.push({
+        start: regexSearch.index,
+        end: regexSearch.index + regexSearch[0].length,
+        types: [bind.type],
+        binds: [bind.plainTextKeybind]
       });
+
+      const padding = '\\'.repeat(bind.plainTextKeybind.length)
+      value = value.replace(regexSearch[0], `${padding}${regexSearch[2] ?? ''}${padding}`);
+    });
+
+    /**
+     * Merge the binds and style of overlapping inline blocks
+     * in place
+     * @param valuesToMerge The values to merge
+     */
+    const mergeOverlapping = (valuesToMerge: typeof values): void => {
+      let didMerge = true;
+
+      while (didMerge) {
+        didMerge = false;
+
+        let newValuesToMerge: typeof valuesToMerge = [];
+
+        valuesToMerge.sort((a, b) => a.start - b.start);
+
+        valuesToMerge.forEach((value, index) => {
+          const nextValue = valuesToMerge[index + 1];
+
+          if (!nextValue) return;
+
+          // ~ The value is overlapping the next value
+          if (value.end >= nextValue.start) {
+            // ~ The next value is completely inside the current value
+            if (value.end >= nextValue.end) {
+              nextValue.binds.push(...value.binds);
+              nextValue.types.push(...value.types);
+
+              newValuesToMerge.push({
+                start: value.start,
+                end: nextValue.start,
+                binds: value.binds,
+                types: value.types,
+              });
+
+              value.start = nextValue.end + 1;
+
+              didMerge = true;
+            }
+          }
+        });
+        
+        valuesToMerge.push(...newValuesToMerge);
+      };
+
+      valuesToMerge.sort((a, b) => a.start - b.start);
     };
 
-    return values.map((value, index) => (
-      <span
-        className={value.style.join(' ')}
-        key={index}
-        data-keybinds={value.plaintTextBind.join('')}
-      >
-        {value.value}
-      </span>
-    ));
+    mergeOverlapping(values);
+
+    let currentMin = 0;
+
+    // ~ Fill in empty blocks between inline blocks
+    const elements = values.flatMap((inlineBlock) => {
+      const elements: JSX.Element[] = [];
+
+      if (inlineBlock.start > currentMin) {
+        elements.push(
+          <span key={currentMin}>{value.slice(currentMin, inlineBlock.start)}</span>
+        );
+      }
+
+
+      const generateSubElements = (types: (keyof typeof InlineTextStyles)[], text: string) => {
+        return (
+          <span
+            className={InlineTextStyles[types[0]]}
+            data-keybinds={inlineBlock.binds.join('')}
+          >
+            {
+              types.length > 1
+                ? generateSubElements(types.slice(1), text)
+                : text
+            }
+          </span>
+        )
+      };
+
+    
+      elements.push(
+        generateSubElements(
+          inlineBlock.types,
+          value.slice(inlineBlock.start, inlineBlock.end).replace(/\\/g, ''),
+        )
+      );
+
+      currentMin = inlineBlock.end;
+
+      return elements;
+    });
+
+    if (currentMin < value.length) {
+      elements.push(
+        <span key={currentMin}>{value.slice(currentMin)}</span>
+      );
+    }
+
+    if (!elements.length) {
+      return <span>{value}</span>;
+    }
+
+    return elements;
   }
 
   return (
@@ -169,14 +288,10 @@ const TextBlock = (props: EditableText) => {
       id={blockID}
       onInput={(e) => {
         handlePotentialTypeChange(e.currentTarget);
+        // handlePotentialInlineBlocks(e.currentTarget);
       }}
       onBlur={
-        (e) => {
-          // if (!isAllowedToEdit) return;
-
-          // editBlock([blockID], undefined, { value: e.currentTarget.innerText }, page);
-          saveBlock(e.currentTarget);
-        }
+        (e) => { saveBlock(e.currentTarget); }
       }
       onKeyDown={
         (e) => {
@@ -207,6 +322,7 @@ const TextBlock = (props: EditableText) => {
       data-cy="block-text"
     >
       {renderInlineBlocks(value)}
+      {/* {value} */}
       {slashMenu}
     </span>
   );
