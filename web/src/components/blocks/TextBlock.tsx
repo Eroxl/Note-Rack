@@ -172,7 +172,6 @@ const TextBlock = (props: EditableText) => {
         });
   
         const padding = '\\'.repeat(bind.plainTextKeybind.length)
-        // value = value.replace(regexSearch[0], `${padding}${regexSearch[2] ?? ''}${padding}`);
         value = value.replace(match.value[0], `${padding}${match.value[2] ?? ''}${padding}`);
 
         match = regexSearchResult.next();
@@ -201,7 +200,7 @@ const TextBlock = (props: EditableText) => {
           if (!nextValue) return;
 
           // ~ The value is overlapping the next value
-          if (value.end >= nextValue.start) {
+          if (value.end > nextValue.start) {
             // ~ The next value is completely inside the current value
             if (value.end >= nextValue.end) {
               nextValue.binds.push(...value.binds);
@@ -215,6 +214,20 @@ const TextBlock = (props: EditableText) => {
               });
 
               value.start = nextValue.end + 1;
+
+              didMerge = true;
+            } else {
+              const difference = nextValue.end - value.end;
+              nextValue.start += difference;
+              nextValue.end -= difference;
+
+
+              valuesToMerge.push({
+                start: value.end,
+                end: nextValue.start,
+                binds: [...value.binds, ...nextValue.binds],
+                types: [...value.types, ...nextValue.types],
+              });
 
               didMerge = true;
             }
@@ -329,7 +342,9 @@ const TextBlock = (props: EditableText) => {
       data-cy="block-text"
     >
       {renderInlineBlocks(value)}
-      {/* {value} */}
+      <br />
+      <br />
+      {value}
       {slashMenu}
     </span>
   );
