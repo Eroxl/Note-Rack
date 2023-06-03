@@ -170,7 +170,7 @@ const TextBlock = (props: EditableText) => {
           types: [bind.type],
           binds: [bind.plainTextKeybind]
         });
-  
+
         const padding = '\\'.repeat(bind.plainTextKeybind.length)
         value = value.replace(match.value[0], `${padding}${match.value[2] ?? ''}${padding}`);
 
@@ -185,59 +185,50 @@ const TextBlock = (props: EditableText) => {
      * @param valuesToMerge The values to merge
      */
     const mergeOverlapping = (valuesToMerge: typeof values): void => {
-      let didMerge = true;
-
-      while (didMerge) {
-        didMerge = false;
-
-        let newValuesToMerge: typeof valuesToMerge = [];
-
-        valuesToMerge.sort((a, b) => a.start - b.start);
-
-        valuesToMerge.forEach((value, index) => {
-          const nextValue = valuesToMerge[index + 1];
-
-          if (!nextValue) return;
-
-          // ~ The value is overlapping the next value
-          if (value.end > nextValue.start) {
-            // ~ The next value is completely inside the current value
-            if (value.end >= nextValue.end) {
-              nextValue.binds.push(...value.binds);
-              nextValue.types.push(...value.types);
-
-              newValuesToMerge.push({
-                start: value.start,
-                end: nextValue.start,
-                binds: value.binds,
-                types: value.types,
-              });
-
-              value.start = nextValue.end + 1;
-
-              didMerge = true;
-            } else {
-              const difference = nextValue.end - value.end;
-              nextValue.start += difference;
-              nextValue.end -= difference;
-
-
-              valuesToMerge.push({
-                start: value.end,
-                end: nextValue.start,
-                binds: [...value.binds, ...nextValue.binds],
-                types: [...value.types, ...nextValue.types],
-              });
-
-              didMerge = true;
-            }
-          }
-        });
-        
-        valuesToMerge.push(...newValuesToMerge);
-      };
-
       valuesToMerge.sort((a, b) => a.start - b.start);
+
+      let i = 0;
+      let j = 1;
+
+      while (true) {
+        const currentValue = valuesToMerge[i];
+        const nextValue = valuesToMerge[j];
+
+        if (!nextValue) {
+           if (!currentValue) break;
+
+          i++;
+          j = i + 1;
+          continue;
+        }
+
+        if (nextValue.start >= valuesToMerge[i].end) {
+          j++;
+          continue;
+        };
+
+        // ~ If the next value is completely inside the current value
+        if (
+          nextValue.start <= currentValue.end
+          && nextValue.start >= currentValue.start
+        ) {
+          nextValue.binds.push(...valuesToMerge[i].binds);
+          nextValue.types.push(...valuesToMerge[i].types);
+          
+          valuesToMerge.splice(j + 1, 0, {
+            start: nextValue.end,
+            end: currentValue.end,
+            binds: valuesToMerge[i].binds,
+            types: valuesToMerge[i].types,
+          });
+
+          valuesToMerge[i].end = nextValue.start;
+
+          valuesToMerge.sort((a, b) => a.start - b.start);
+        }
+
+        j++;
+      }
     };
 
     mergeOverlapping(values);
@@ -250,7 +241,7 @@ const TextBlock = (props: EditableText) => {
 
       if (inlineBlock.start > currentMin) {
         elements.push(
-          <span key={currentMin}>{value.slice(currentMin, inlineBlock.start)}</span>
+          <span key={currentMin}>{value.slice(currentMin, inlineBlock.start).replace(/\\/g, '')}</span>
         );
       }
 
@@ -286,7 +277,7 @@ const TextBlock = (props: EditableText) => {
 
     if (currentMin < value.length) {
       elements.push(
-        <span key={currentMin}>{value.slice(currentMin)}</span>
+        <span key={currentMin}>{value.slice(currentMin).replace(/\\/g, '')}</span>
       );
     }
 
@@ -341,9 +332,9 @@ const TextBlock = (props: EditableText) => {
       }
       data-cy="block-text"
     >
-      {renderInlineBlocks(value)}
+      {/* {renderInlineBlocks(value)}
       <br />
-      <br />
+      <br /> */}
       {value}
       {slashMenu}
     </span>
