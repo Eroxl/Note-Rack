@@ -179,115 +179,6 @@ const TextBlock = (props: EditableText) => {
 
     });
 
-    /**
-     * Merge the binds and style of overlapping inline blocks
-     * in place
-     * @param valuesToMerge The values to merge
-     */
-    const mergeOverlapping = (valuesToMerge: typeof values): void => {
-      valuesToMerge.sort((a, b) => a.start - b.start);
-
-      let i = 0;
-      let j = 1;
-
-      while (true) {
-        const currentValue = valuesToMerge[i];
-        const nextValue = valuesToMerge[j];
-
-        if (!nextValue) {
-           if (!currentValue) break;
-
-          i++;
-          j = i + 1;
-          continue;
-        }
-
-        if (nextValue.start >= valuesToMerge[i].end) {
-          j++;
-          continue;
-        };
-
-        // ~ If the next value is completely inside the current value
-        if (
-          nextValue.start <= currentValue.end
-          && nextValue.start >= currentValue.start
-        ) {
-          nextValue.binds.push(...valuesToMerge[i].binds);
-          nextValue.types.push(...valuesToMerge[i].types);
-          
-          valuesToMerge.splice(j + 1, 0, {
-            start: nextValue.end,
-            end: currentValue.end,
-            binds: valuesToMerge[i].binds,
-            types: valuesToMerge[i].types,
-          });
-
-          valuesToMerge[i].end = nextValue.start;
-
-          valuesToMerge.sort((a, b) => a.start - b.start);
-        }
-
-        j++;
-      }
-    };
-
-    mergeOverlapping(values);
-
-    let currentMin = 0;
-
-    // ~ Fill in empty blocks between inline blocks
-    const elements = values.flatMap((inlineBlock) => {
-      const elements: JSX.Element[] = [];
-
-      if (inlineBlock.start > currentMin) {
-        elements.push(
-          <span key={currentMin}>{value.slice(currentMin, inlineBlock.start).replace(/\\/g, '')}</span>
-        );
-      }
-
-
-      const generateSubElements = (types: (keyof typeof InlineTextStyles)[], text: string, textKeybinds?: string[]) => {
-        return (
-          <span
-            className={InlineTextStyles[types[0]]}
-            data-keybinds={textKeybinds ? inlineBlock.binds.join(' ') : undefined}
-          >
-            {
-              types.length > 1
-                ? generateSubElements(types.slice(1), text)
-                : text
-            }
-          </span>
-        )
-      };
-
-    
-      elements.push(
-        generateSubElements(
-          inlineBlock.types,
-          value.slice(inlineBlock.start, inlineBlock.end).replace(/\\/g, ''),
-          inlineBlock.binds,
-        )
-      );
-
-      currentMin = inlineBlock.end;
-
-      return elements;
-    });
-
-    if (currentMin < value.length) {
-      elements.push(
-        <span key={currentMin}>{value.slice(currentMin).replace(/\\/g, '')}</span>
-      );
-    }
-
-    if (!elements.length) {
-      return <span>{value}</span>;
-    }
-
-    return elements;
-  }
-
   return (
     <span
       className={`min-h-[1.2em] outline-none relative whitespace-pre-wrap w-full ${TextStyles[type]}`}
@@ -299,7 +190,7 @@ const TextBlock = (props: EditableText) => {
       id={blockID}
       onInput={(e) => {
         handlePotentialTypeChange(e.currentTarget);
-        // handlePotentialInlineBlocks(e.currentTarget);
+        handlePotentialInlineBlocks(e.currentTarget);
       }}
       onBlur={
         (e) => { saveBlock(e.currentTarget); }
@@ -332,9 +223,6 @@ const TextBlock = (props: EditableText) => {
       }
       data-cy="block-text"
     >
-      {/* {renderInlineBlocks(value)}
-      <br />
-      <br /> */}
       {value}
       {slashMenu}
     </span>
