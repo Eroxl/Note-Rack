@@ -130,24 +130,54 @@ const TextBlock = (props: EditableText) => {
     });
   };
 
+  /**
+   * Saves the block to the database
+   * @param element The element to save
+   */
   const saveBlock = (element: HTMLSpanElement) => {
     if (!isAllowedToEdit) return;
+  
+    const style: {
+      type: string,
+      start: number,
+      end: number,
+    }[] = [];
 
     const treeWalker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null);
 
-    const textNodes = [];
+    const textNodes: Node[] = [];
 
     while (treeWalker.nextNode()) {
       textNodes.push(treeWalker.currentNode);
     }
 
-    const text = textNodes.map((node) => {
-      const keybind = node.parentElement?.getAttribute('data-keybinds') || '';
+    let length = 0;
 
-      return `${keybind}${node.textContent}${keybind}`;
-    }).join('');
+    textNodes.forEach((node) => {
+      if (!node.textContent || !node.parentElement) return;
 
-    editBlock([blockID], undefined, { value: text }, page);
+      length += node.textContent.length || 0;
+
+      const type = node.parentElement.getAttribute('data-inline-type');
+
+      if (!type) return;
+
+      style.push({
+        type,
+        start: length - node.textContent.length,
+        end: length,
+      });
+    })
+
+    editBlock(
+      [blockID],
+      undefined,
+      {
+        value: element.innerText,
+        style,
+      },
+      page
+    );
   };
 
   return (
