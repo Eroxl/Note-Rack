@@ -150,35 +150,6 @@ const TextBlock = (props: EditableText) => {
     editBlock([blockID], undefined, { value: text }, page);
   };
 
-  const renderInlineBlocks = (value: string) => {
-    const values: {
-      start: number;
-      end: number;
-      binds: string[];
-      types: (keyof typeof InlineTextStyles)[];
-    }[] = [];
-
-    inlineTextKeybinds.forEach((bind) => {
-      // const regexSearch = bind.keybind.exec(value);
-      const regexSearchResult = value.matchAll(bind.keybind);
-
-      let match = regexSearchResult.next();
-      while (!match.done) {
-        values.push({
-          start: match.value.index || 0,
-          end: (match.value.index || 0) + match.value[0].length,
-          types: [bind.type],
-          binds: [bind.plainTextKeybind]
-        });
-
-        const padding = '\\'.repeat(bind.plainTextKeybind.length)
-        value = value.replace(match.value[0], `${padding}${match.value[2] ?? ''}${padding}`);
-
-        match = regexSearchResult.next();
-      };
-
-    });
-
   return (
     <span
       className={`min-h-[1.2em] outline-none relative whitespace-pre-wrap w-full ${TextStyles[type]}`}
