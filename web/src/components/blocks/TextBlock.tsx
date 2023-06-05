@@ -58,7 +58,7 @@ const TextBlock = (props: EditableText) => {
   
       const regexSearch = bind.keybind.exec(element.textContent || '');
 
-      if (!regexSearch) continue;
+      if (!regexSearch || !regexSearch[2].length) continue;
 
       let currentLength = 0;
       const treeWalker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null);
