@@ -86,6 +86,8 @@ const TextBlock = (props: EditableText) => {
 
         currentLength += node.textContent.length;
 
+        console.log(node.textContent);
+
         let parentElement = node.parentElement;
 
         // ~ If the node is entirely contained in the regex
@@ -151,8 +153,14 @@ const TextBlock = (props: EditableText) => {
         parentElement.innerHTML = '';
 
         // ~ If there is non regex text before the regex
-        if (regexSearch.index > currentLength - node.textContent.length) {
-          const nonRegexText = node.textContent.substring(0, regexSearch.index - currentLength + node.textContent.length + 1);
+        if (regexSearch.index > currentLength - node.textContent.length) {     
+          const nonRegexTextLength = regexSearch.index - (currentLength - node.textContent.length);
+
+          // ~ Hack to get the substring to not include the first character
+          //   of the regex when the keybind is > 1 character
+          const offset = 1 - Math.floor(regexSearch[1]?.length / 2)
+          
+          const nonRegexText = node.textContent.substring(0, nonRegexTextLength + offset);
           const nonRegexTextNode = document.createTextNode(nonRegexText);
           
           parentElement.appendChild(nonRegexTextNode);
