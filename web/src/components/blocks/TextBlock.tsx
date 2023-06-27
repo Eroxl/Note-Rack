@@ -70,7 +70,9 @@ const TextBlock = (props: EditableText) => {
         const length = treeWalker.currentNode.textContent?.length || 0;
 
         // ~ All of the text nodes the regex could be in have been found
-        if (currentLength > regexSearch.index) break;
+        if (currentLength > regexSearch.index) {
+          continue;
+        }
 
         if (currentLength + length >= regexSearch.index) {
           blocksContainingRegex.push(treeWalker.currentNode)
@@ -79,14 +81,12 @@ const TextBlock = (props: EditableText) => {
 
         currentLength += length;
       }
-
+      
       // ~ Render the inline block
       blocksContainingRegex.forEach((node) => {
         if (!node.parentElement || !node.textContent) return;
 
         currentLength += node.textContent.length;
-
-        console.log(node.textContent);
 
         let parentElement = node.parentElement;
 
@@ -149,8 +149,24 @@ const TextBlock = (props: EditableText) => {
         // ~ If the node is not entirely contained in the regex
         //   we need to split the node into 2-3 parts
 
-        // ~ Clear the parent element so we can add the new nodes
-        parentElement.innerHTML = '';
+        // ~ If there is non regex text after the regex
+        if (regexSearch.index + regexSearch[0].length <= currentLength) {
+          const nonRegexText = node.textContent.substring(
+            regexSearch.index + regexSearch[0].length - currentLength + node.textContent.length,
+          );
+
+          const nonRegexTextNode = document.createTextNode(nonRegexText);
+          
+          // parentElement.appendChild(nonRegexTextNode);
+          parentElement.insertBefore(nonRegexTextNode, node.nextSibling);
+        }
+
+        // ~ Create a new span to contain the inline block
+        const newSpan = document.createElement('span');
+        newSpan.classList.add(InlineTextStyles[bind.type]);
+        newSpan.textContent = regexSearch[2];
+        // parentElement.appendChild(newSpan);
+        parentElement.insertBefore(newSpan, node.nextSibling);
 
         // ~ If there is non regex text before the regex
         if (regexSearch.index > currentLength - node.textContent.length) {     
@@ -163,24 +179,7 @@ const TextBlock = (props: EditableText) => {
           const nonRegexText = node.textContent.substring(0, nonRegexTextLength + offset);
           const nonRegexTextNode = document.createTextNode(nonRegexText);
           
-          parentElement.appendChild(nonRegexTextNode);
-        }
-
-        // ~ Create a new span to contain the inline block
-        const newSpan = document.createElement('span');
-        newSpan.classList.add(InlineTextStyles[bind.type]);
-        newSpan.textContent = regexSearch[2];
-        parentElement.appendChild(newSpan);
-
-        // ~ If there is non regex text after the regex
-        if (regexSearch.index + regexSearch[0].length <= currentLength) {
-          const nonRegexText = node.textContent.substring(
-            regexSearch.index + regexSearch[0].length - currentLength + node.textContent.length,
-          );
-
-          const nonRegexTextNode = document.createTextNode(nonRegexText);
-          
-          parentElement.appendChild(nonRegexTextNode);
+          parentElement.replaceChild(nonRegexTextNode, node);
         }
       });
 
