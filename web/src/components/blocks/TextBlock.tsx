@@ -116,14 +116,13 @@ const TextBlock = (props: EditableText) => {
             const newSpan = document.createElement('span');
             newSpan.setAttribute('data-inline-type', JSON.stringify([bind.type]));
             newSpan.classList.add(InlineTextStyles[bind.type]);
-            newSpan.textContent = regexSearch[2];
+            newSpan.textContent = node.textContent;
 
             // ~ If the node is the editableRef, remove only the node
             //   and append the new span. Otherwise, replace the node
             //   with the new span
             if (topElement === editableRef.current) {
-              topElement.removeChild(node);
-              topElement.appendChild(newSpan);
+              topElement.replaceChild(newSpan, node);
               return;
             }
 
@@ -146,8 +145,6 @@ const TextBlock = (props: EditableText) => {
 
         // ~ If the node is not entirely contained in the regex
         //   we need to split the node into 2-3 parts
-
-        console.log(node);
 
         // ~ Create a new text node to contain the text after the regex
         const nonRegexText = node.textContent.substring(
@@ -271,13 +268,19 @@ const TextBlock = (props: EditableText) => {
     );
   };
 
+  /**
+   * Renders the inline blocks
+   * @param value The text value
+   * @param style The style of the text
+   * @returns The rendered inline blocks
+   */
   const renderInlineBlocks = (
     value: string,
     style: EditableText['properties']['style']
-  ): JSX.Element[] | string => {
+  ): (JSX.Element | string)[] | string => {
     if (!style) return properties.value;
 
-    const blocks: JSX.Element[] = [];
+    const blocks: (JSX.Element | string)[] = [];
 
     let start = 0;
 
@@ -286,7 +289,7 @@ const TextBlock = (props: EditableText) => {
       const inlineText = value.substring(block.start, block.end);
 
       if (text) {
-        blocks.push(<span>{text}</span>);
+        blocks.push(text);
       }
 
       blocks.push(
@@ -302,9 +305,7 @@ const TextBlock = (props: EditableText) => {
 
     const text = value.substring(start);
 
-    if (text) {
-      blocks.push(<span>{text}</span>);
-    }
+    if (text) blocks.push(text);
 
     return blocks;
   }
