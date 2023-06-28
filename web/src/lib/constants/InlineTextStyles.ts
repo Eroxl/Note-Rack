@@ -5,7 +5,7 @@ const InlineTextStyles: {
 } = {
   bold: 'font-bold',
   italic: 'italic',
-  underline: 'underline',
+  underline: 'border-b',
   strikethrough: 'line-through',
 } as const;
 

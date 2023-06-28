@@ -71,7 +71,7 @@ const TextBlock = (props: EditableText) => {
 
         // ~ All of the text nodes the regex could be in have been found
         if (currentLength > regexSearch.index) {
-          continue;
+          break;
         }
 
         if (currentLength + length >= regexSearch.index) {
@@ -81,7 +81,9 @@ const TextBlock = (props: EditableText) => {
 
         currentLength += length;
       }
-      
+
+      console.log(blocksContainingRegex);
+
       // ~ Render the inline block
       blocksContainingRegex.forEach((node) => {
         if (!node.parentElement || !node.textContent) return;
@@ -92,7 +94,10 @@ const TextBlock = (props: EditableText) => {
 
         // ~ If the node is entirely contained in the regex
         //   no calculations are needed and the style can be applied
-        if (node.textContent.length === regexSearch[0].length) {
+        if (
+          currentLength - node.textContent.length >= regexSearch.index
+          && currentLength <= regexSearch.index + regexSearch[0].length
+        ) {
           // ~ Walk up the tree until we find the node who's parent is
           //   the `editableRef` and add the bind type to it
           let topElement = node.parentElement;
@@ -133,59 +138,55 @@ const TextBlock = (props: EditableText) => {
           if (!Array.isArray(newStyle)) return;
 
           newStyle.push(bind.type);
-
-          const newSpan = document.createElement('span');
-          newSpan.classList.add(InlineTextStyles[bind.type]);
-
-          // ~ Remove the current child and replace it with the new span
-          const oldTextNode = parentElement.removeChild(node);
-          newSpan.appendChild(oldTextNode);
-          parentElement.appendChild(newSpan);
-
+          topElement.classList.add(InlineTextStyles[bind.type]);
           topElement.setAttribute('data-inline-type', JSON.stringify(newStyle));
+    
           return;
         }
 
         // ~ If the node is not entirely contained in the regex
         //   we need to split the node into 2-3 parts
 
-        // ~ If there is non regex text after the regex
-        if (regexSearch.index + regexSearch[0].length <= currentLength) {
-          const nonRegexText = node.textContent.substring(
-            regexSearch.index + regexSearch[0].length - currentLength + node.textContent.length,
-          );
+        console.log(node);
 
-          const nonRegexTextNode = document.createTextNode(nonRegexText);
-          
-          // parentElement.appendChild(nonRegexTextNode);
-          parentElement.insertBefore(nonRegexTextNode, node.nextSibling);
-        }
+        // ~ Create a new text node to contain the text after the regex
+        const nonRegexText = node.textContent.substring(
+          regexSearch.index + regexSearch[0].length - currentLength + node.textContent.length,
+        );
+
+        const nonRegexTextNode = document.createTextNode(nonRegexText);
+        
+        parentElement.insertBefore(nonRegexTextNode, node.nextSibling);
 
         // ~ Create a new span to contain the inline block
         const newSpan = document.createElement('span');
         newSpan.classList.add(InlineTextStyles[bind.type]);
-        newSpan.textContent = regexSearch[2];
+
+        const startingPosition = regexSearch.index - (currentLength - node.textContent.length);
+
+        const endingPosition = Math.min(startingPosition + regexSearch[0].length - regexSearch[1]?.length, node.textContent.length)
+        
+        newSpan.textContent = node.textContent.substring(
+          startingPosition + regexSearch[1]?.length,
+          endingPosition,
+        )
+
         newSpan.setAttribute('data-inline-type', JSON.stringify([bind.type]));
         parentElement.insertBefore(newSpan, node.nextSibling);
 
         // ~ If there is non regex text before the regex
         if (regexSearch.index > currentLength - node.textContent.length) {     
           const nonRegexTextLength = regexSearch.index - (currentLength - node.textContent.length);
-
-          // ~ Hack to get the substring to not include the first character
-          //   of the regex when the keybind is > 1 character
-          const offset = 1 - Math.floor(regexSearch[1]?.length / 2)
           
-          const nonRegexText = node.textContent.substring(0, nonRegexTextLength + offset);
+          const nonRegexText = node.textContent.substring(0, nonRegexTextLength);
+
           const nonRegexTextNode = document.createTextNode(nonRegexText);
           
           parentElement.replaceChild(nonRegexTextNode, node);
         }
 
         // ~ If the node still has text, remove it
-        if (node.textContent.length) {
-          node.parentElement?.removeChild(node);
-        }
+        node?.parentElement?.removeChild(node);
       });
 
       // ~ Assume only one match per execution

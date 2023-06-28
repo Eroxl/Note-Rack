@@ -5,7 +5,7 @@ const inlineTextKeybinds = [
     type: 'bold',
   },
   {
-    keybind: /[^\*]?(\*)(.*?)\1/g,
+    keybind: /(?<!\*)(\*)(?!\*)(.*?)\1/g,
     plainTextKeybind: '*',
     type: 'italic',
   },
