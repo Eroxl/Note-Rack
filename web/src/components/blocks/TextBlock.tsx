@@ -11,6 +11,7 @@ import handleKeyDown from '../../lib/blockNavigation/handleKeyDown';
 import handleKeyUp from '../../lib/blockNavigation/handleKeyUp';
 import PageContext from '../../contexts/PageContext';
 import useSlashMenu, { createDefaultSlashMenuCategories } from '../../hooks/useSlashMenu';
+import { getCursorOffset } from '../../lib/helpers/caretHelpers';
 
 const TextBlock = (props: EditableText) => {
   const {
@@ -21,7 +22,6 @@ const TextBlock = (props: EditableText) => {
     blockID,
     setCurrentBlockType,
   } = props;
-  const { value } = properties;
 
   const { pageData, setPageData } = useContext(PageContext);
 
@@ -53,6 +53,9 @@ const TextBlock = (props: EditableText) => {
   );
 
   const handlePotentialInlineBlocks = async (element: HTMLSpanElement) => {
+    let cursorOffset = getCursorOffset(element);
+    let updatedCursorOffset = 0;
+
     for (let i = 0; i < inlineTextKeybinds.length; i++) {
       const bind = inlineTextKeybinds[i];
   
@@ -81,8 +84,6 @@ const TextBlock = (props: EditableText) => {
 
         currentLength += length;
       }
-
-      console.log(blocksContainingRegex);
 
       // ~ Render the inline block
       blocksContainingRegex.forEach((node) => {
@@ -186,8 +187,52 @@ const TextBlock = (props: EditableText) => {
         node?.parentElement?.removeChild(node);
       });
 
-      // ~ Assume only one match per execution
+      // ~ Handle correctly moving the cursor to the same spot after
+      //   the inline block is rendered
+
+      // ~ If the cursor is before the match, do nothing
+      if (regexSearch?.index > cursorOffset) break;
+
+      // ~ If the cursor is in the middle of the match, subtract the
+      //   length of the keybind from the cursor offset, otherwise
+      //   subtract the length of the keybind times 2.
+      const isAfterFullMatch = regexSearch?.index + regexSearch?.[0]?.length >= cursorOffset;
+
+      updatedCursorOffset = (regexSearch?.[1]?.length || 0) * (isAfterFullMatch ? 2 : 1);
       break;
+    }
+
+    // ~ Update the cursor position
+    if (updatedCursorOffset !== 0 && editableRef.current) {
+      const range = document.createRange();
+      const sel = window.getSelection()!;
+      
+      let nodeToSelect: Node = editableRef.current;
+
+      const walker = document.createTreeWalker(nodeToSelect, NodeFilter.SHOW_TEXT, null);
+
+      const offset = cursorOffset - updatedCursorOffset;
+      let currentOffset = 0;
+
+      while (walker.nextNode()) {
+        const node = walker.currentNode;
+
+        if (currentOffset + node.textContent?.length! >= offset) {
+          nodeToSelect = node;
+          break;
+        }
+
+        currentOffset += node.textContent?.length!;
+      }
+
+      if (!nodeToSelect) return;
+
+      console.log(nodeToSelect);
+
+      range.setStart(nodeToSelect, offset - currentOffset);
+      range.collapse(true);
+      sel.removeAllRanges();
+      sel.addRange(range);
     }
   };
 
