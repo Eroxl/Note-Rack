@@ -1,6 +1,7 @@
 import type { Dispatch, SetStateAction } from 'react';
 
 import type PageDataInterface from './pageTypes';
+import InlineTextStyles from '../../lib/constants/InlineTextStyles';
 
 // -=- Used for the base block -=-
 interface BaseBlockProps {
@@ -28,6 +29,11 @@ interface PermanentEditableText extends PermanentBlock {
 interface EditableText extends PermanentEditableText {
   properties: {
     value: string,
+    style?: {
+      type: (keyof typeof InlineTextStyles)[],
+      start: number,
+      end: number,
+    }[],
   },
   type: string,
   blockID: string,

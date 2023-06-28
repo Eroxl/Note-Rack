@@ -165,7 +165,7 @@ const TextBlock = (props: EditableText) => {
         const newSpan = document.createElement('span');
         newSpan.classList.add(InlineTextStyles[bind.type]);
         newSpan.textContent = regexSearch[2];
-        // parentElement.appendChild(newSpan);
+        newSpan.setAttribute('data-inline-type', JSON.stringify([bind.type]));
         parentElement.insertBefore(newSpan, node.nextSibling);
 
         // ~ If there is non regex text before the regex
@@ -180,6 +180,11 @@ const TextBlock = (props: EditableText) => {
           const nonRegexTextNode = document.createTextNode(nonRegexText);
           
           parentElement.replaceChild(nonRegexTextNode, node);
+        }
+
+        // ~ If the node still has text, remove it
+        if (node.textContent.length) {
+          node.parentElement?.removeChild(node);
         }
       });
 
@@ -265,6 +270,45 @@ const TextBlock = (props: EditableText) => {
     );
   };
 
+  const renderInlineBlocks = (
+    value: string,
+    style: EditableText['properties']['style']
+  ): JSX.Element[] | string => {
+    if (!style) return properties.value;
+
+    const blocks: JSX.Element[] = [];
+
+    let start = 0;
+
+    style.forEach((block) => {
+      const text = value.substring(start, block.start);
+      const inlineText = value.substring(block.start, block.end);
+
+      if (text) {
+        blocks.push(<span>{text}</span>);
+      }
+
+      blocks.push(
+        <span
+          className={block.type.map((type) => InlineTextStyles[type]).join(' ')}
+        >
+          {inlineText}
+        </span>
+      );
+
+      start = block.end;
+    });
+
+    const text = value.substring(start);
+
+    if (text) {
+      blocks.push(<span>{text}</span>);
+    }
+
+    return blocks;
+  }
+
+
   return (
     <span
       className={`min-h-[1.2em] outline-none relative whitespace-pre-wrap w-full ${TextStyles[type]}`}
@@ -309,7 +353,12 @@ const TextBlock = (props: EditableText) => {
       }
       data-cy="block-text"
     >
-      {value}
+      {
+        renderInlineBlocks(
+          properties.value,
+          properties.style
+        )
+      }
       {slashMenu}
     </span>
   );

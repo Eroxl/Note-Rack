@@ -7,6 +7,6 @@ const InlineTextStyles: {
   italic: 'italic',
   underline: 'underline',
   strikethrough: 'line-through',
-};
+} as const;
 
 export default InlineTextStyles;
