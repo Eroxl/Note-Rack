@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-to-interactive-role */
-import React, { useContext } from 'react';
+import React, { useContext, useRef } from 'react';
 import { useDrop } from 'react-dnd';
 
 import { addBlockAtIndex, moveBlock } from '../../lib/pages/updatePage';
@@ -21,6 +21,7 @@ const Title = (props: TitleProps) => {
   } = props;
 
   const { pageData, setPageData } = useContext(PageContext);
+  const titleRef = useRef<HTMLSpanElement>(null);
 
   const isAllowedToEdit = pageData?.userPermissions.admin;
 
@@ -55,13 +56,15 @@ const Title = (props: TitleProps) => {
   }), [index]);
 
   return (
-    <div className="relative flex flex-col" id="page-title">
+    <div
+      ref={drop}
+      className="relative flex flex-col" id="page-title">
       <span
         className="text-5xl font-bold outline-none empty:before:content-['Untitled'] empty:before:opacity-30 pb-3"
         contentEditable={isAllowedToEdit}
         role="textbox"
         tabIndex={0}
-        ref={drop}
+        ref={titleRef}
         onBlur={
           (e) => {
             onTitleChanged(e.currentTarget.innerText);
@@ -74,11 +77,12 @@ const Title = (props: TitleProps) => {
               e.preventDefault();
               e.currentTarget.blur();
               addBlockAtIndex(index, page, pageData, setPageData);
-            } else if (e.code === 'ArrowDown' && isCaretAtBottom(e.currentTarget)) {
+            } else if (e.code === 'ArrowDown' && isCaretAtBottom(e.currentTarget) && titleRef.current) {
               handleKeyDown(
                 e,
                 index - 1,
                 pageData,
+                titleRef.current,
               );
             } else if (e.code === 'ArrowUp' && isCaretAtTop(e.currentTarget)) {
               e.preventDefault();

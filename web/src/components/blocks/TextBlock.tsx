@@ -389,17 +389,19 @@ const TextBlock = (props: EditableText) => {
             editBlock([blockID], 'text', undefined, page);
           } else if (e.code === 'Backspace' && type === 'text' && (e.currentTarget.innerText === '' || e.currentTarget.innerText === '\n')) {
             removeBlock(index, [blockID], page, pageData, setPageData, true);
-          } else if (e.code === 'ArrowUp' && isCaretAtTop(e.currentTarget)) {
+          } else if (e.code === 'ArrowUp' && isCaretAtTop(e.currentTarget) && editableRef.current) {
             handleKeyUp(
               e,
               index,
               pageData,
+              editableRef.current,
             );
-          } else if (e.code === 'ArrowDown' && isCaretAtBottom(e.currentTarget)) {
+          } else if (e.code === 'ArrowDown' && isCaretAtBottom(e.currentTarget) && editableRef.current) {
             handleKeyDown(
               e,
               index,
               pageData,
+              editableRef.current,
             );
           }
         }
