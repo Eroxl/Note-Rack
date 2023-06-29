@@ -53,7 +53,7 @@ const TextBlock = (props: EditableText) => {
   );
 
   const handlePotentialInlineBlocks = async (element: HTMLSpanElement) => {
-    let cursorOffset = getCursorOffset(element);
+    const cursorOffset = getCursorOffset(element);
     let updatedCursorOffset = 0;
 
     for (let i = 0; i < inlineTextKeybinds.length; i++) {
@@ -207,7 +207,7 @@ const TextBlock = (props: EditableText) => {
       const range = document.createRange();
       const sel = window.getSelection()!;
       
-      let nodeToSelect: Node = editableRef.current;
+      let nodeToSelect: Node | null = editableRef.current;
 
       const walker = document.createTreeWalker(nodeToSelect, NodeFilter.SHOW_TEXT, null);
 
@@ -218,6 +218,12 @@ const TextBlock = (props: EditableText) => {
         const node = walker.currentNode;
 
         if (currentOffset + node.textContent?.length! >= offset) {
+          if (node.textContent?.length! === offset - currentOffset) {
+            nodeToSelect = walker.nextNode();
+            currentOffset = offset;
+            break;
+          }
+
           nodeToSelect = node;
           break;
         }
