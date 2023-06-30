@@ -12,6 +12,8 @@ import handleKeyUp from '../../lib/blockNavigation/handleKeyUp';
 import PageContext from '../../contexts/PageContext';
 import useSlashMenu, { createDefaultSlashMenuCategories } from '../../hooks/useSlashMenu';
 import { getCursorOffset } from '../../lib/helpers/caretHelpers';
+import findNodesInRange from '../../lib/helpers/inlineBlocks/findNodesInRange';
+import renderNewInlineBlocks from '../../lib/helpers/inlineBlocks/renderNewInlineBlocks';
 
 const TextBlock = (props: EditableText) => {
   const {
@@ -53,6 +55,8 @@ const TextBlock = (props: EditableText) => {
   );
 
   const handlePotentialInlineBlocks = async (element: HTMLSpanElement) => {
+    if (!editableRef.current) return;
+
     const cursorOffset = getCursorOffset(element);
     let updatedCursorOffset = 0;
 
@@ -63,129 +67,26 @@ const TextBlock = (props: EditableText) => {
 
       if (!regexSearch || !regexSearch[2].length) continue;
 
-      let currentLength = 0;
-      const treeWalker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null);
-
-      let blocksContainingRegex: Node[] = [];
-
-      // ~ Find the text nodes that contains the regex
-      while (treeWalker.nextNode()) {
-        const length = treeWalker.currentNode.textContent?.length || 0;
-
-        // ~ All of the text nodes the regex could be in have been found
-        if (currentLength > regexSearch.index) {
-          break;
+      const nodesInRange = findNodesInRange(
+        element,
+        {
+          start: regexSearch.index,
+          end: regexSearch.index + regexSearch[0].length,
         }
+      )
 
-        if (currentLength + length >= regexSearch.index) {
-          blocksContainingRegex.push(treeWalker.currentNode)
-          continue;
-        }
-
-        currentLength += length;
-      }
-
-      // ~ Render the inline block
-      blocksContainingRegex.forEach((node) => {
-        if (!node.parentElement || !node.textContent) return;
-
-        currentLength += node.textContent.length;
-
-        let parentElement = node.parentElement;
-
-        // ~ If the node is entirely contained in the regex
-        //   no calculations are needed and the style can be applied
-        if (
-          currentLength - node.textContent.length >= regexSearch.index
-          && currentLength <= regexSearch.index + regexSearch[0].length
-        ) {
-          // ~ Walk up the tree until we find the node who's parent is
-          //   the `editableRef` and add the bind type to it
-          let topElement = node.parentElement;
-
-          while (topElement.parentElement !== editableRef.current && topElement !== editableRef.current) {
-            if (!topElement.parentElement) break;
-
-            topElement = topElement.parentElement;
-          }
-          
-          const currentStyle = topElement.getAttribute('data-inline-type')
-          
-          // ~ If the node doesn't have a style assume it's a text node
-          //   and create a new span to contain the inline block
-          if (!currentStyle || topElement === editableRef.current) {
-            const newSpan = document.createElement('span');
-            newSpan.setAttribute('data-inline-type', JSON.stringify([bind.type]));
-            newSpan.classList.add(InlineTextStyles[bind.type]);
-            newSpan.textContent = node.textContent;
-
-            // ~ If the node is the editableRef, remove only the node
-            //   and append the new span. Otherwise, replace the node
-            //   with the new span
-            if (topElement === editableRef.current) {
-              topElement.replaceChild(newSpan, node);
-              return;
-            }
-
-            topElement.replaceWith(newSpan);
-            return;
-          }
-
-          // ~ If the node already has a style, add the new style to it
-          const newStyle = JSON.parse(currentStyle);
-
-          // ~ Just in case the style is not an array for some reason
-          if (!Array.isArray(newStyle)) return;
-
-          newStyle.push(bind.type);
-          topElement.classList.add(InlineTextStyles[bind.type]);
-          topElement.setAttribute('data-inline-type', JSON.stringify(newStyle));
-    
-          return;
-        }
-
-        // ~ If the node is not entirely contained in the regex
-        //   we need to split the node into 2-3 parts
-
-        // ~ Create a new text node to contain the text after the regex
-        const nonRegexText = node.textContent.substring(
-          regexSearch.index + regexSearch[0].length - currentLength + node.textContent.length,
-        );
-
-        const nonRegexTextNode = document.createTextNode(nonRegexText);
-        
-        parentElement.insertBefore(nonRegexTextNode, node.nextSibling);
-
-        // ~ Create a new span to contain the inline block
-        const newSpan = document.createElement('span');
-        newSpan.classList.add(InlineTextStyles[bind.type]);
-
-        const startingPosition = regexSearch.index - (currentLength - node.textContent.length);
-
-        const endingPosition = Math.min(startingPosition + regexSearch[0].length - regexSearch[1]?.length, node.textContent.length)
-        
-        newSpan.textContent = node.textContent.substring(
-          startingPosition + regexSearch[1]?.length,
-          endingPosition,
-        )
-
-        newSpan.setAttribute('data-inline-type', JSON.stringify([bind.type]));
-        parentElement.insertBefore(newSpan, node.nextSibling);
-
-        // ~ If there is non regex text before the regex
-        if (regexSearch.index > currentLength - node.textContent.length) {     
-          const nonRegexTextLength = regexSearch.index - (currentLength - node.textContent.length);
-          
-          const nonRegexText = node.textContent.substring(0, nonRegexTextLength);
-
-          const nonRegexTextNode = document.createTextNode(nonRegexText);
-          
-          parentElement.replaceChild(nonRegexTextNode, node);
-        }
-
-        // ~ If the node still has text, remove it
-        node?.parentElement?.removeChild(node);
-      });
+      renderNewInlineBlocks(
+        nodesInRange.nodes,
+        InlineTextStyles[bind.type],
+        bind.type,
+        nodesInRange.startOffset,
+        {
+          start: regexSearch.index,
+          end: regexSearch.index + regexSearch[0].length,
+          bindLength: regexSearch[1].length,
+        },
+        editableRef.current,
+      )
 
       // ~ Handle correctly moving the cursor to the same spot after
       //   the inline block is rendered
@@ -233,8 +134,6 @@ const TextBlock = (props: EditableText) => {
 
       if (!nodeToSelect) return;
 
-      console.log(nodeToSelect);
-
       range.setStart(nodeToSelect, offset - currentOffset);
       range.collapse(true);
       sel.removeAllRanges();
@@ -244,6 +143,8 @@ const TextBlock = (props: EditableText) => {
 
   const handlePotentialTypeChange = async (element: HTMLSpanElement) => {
     textKeybinds.forEach(async (bind) => {
+      if (!editableRef.current) return;
+
       const regexSearch = bind.keybind.exec(element.textContent || '');
 
       if (!regexSearch) return;
