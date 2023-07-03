@@ -1,10 +1,14 @@
-<h1 align="center">
-    📝 Note Rack
-</h1>
+<a href="https://note-rack.erox.one/">
+    <h1 align="center">
+        📝 Note Rack
+    </h1>
+</a>
 
 <div align="center">
     <a href="https://wakatime.com/@Eroxl"><img src="https://wakatime.com/badge/user/f69fecb5-785d-48d4-a275-ee9a147ec35a/project/c6a2aa40-78a1-4946-bcb9-e350f5b1254c.svg" alt="Wakatime Note Rack stats"></a>
 </div>
+
+<img src="./images/Desktop_Current_State_Dark.png" width="500">
 
 ## 🌳 Features
 * Markdown
@@ -12,6 +16,11 @@
     * Quotes
     * Call Outs
     * Math
+* Inline Blocks
+    * Bold
+    * Italic
+    * Underline
+    * Strikethrough
 * Other Features
     * Global Search
     * [PDF Exporting](./images/Note%20Rack%20Page.pdf)
@@ -24,6 +33,11 @@
     - `###` - H3
     - `####` - H4
     - `#####` - H5
+- Inline Blocks
+    - `**` Bold
+    - `*` Italic
+    - `__` Underline
+    - `--` Strikethrough
 - Other
     - `>` Quote
     - `|` Callout
@@ -59,8 +73,3 @@
     ```
 
 6. Navigate to the web application at [http://127.0.0.1:3000](http://127.0.0.1:3000)
-
-## 🔬 Examples
-
-#### Editor
-<img src="./images/Desktop_Current_State_Dark.png" width="500">
