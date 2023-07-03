@@ -175,39 +175,64 @@ const TextBlock = (props: EditableText) => {
    * @param element The element to save
    */
   const saveBlock = (element: HTMLSpanElement) => {
-    if (!isAllowedToEdit) return;
+    if (!isAllowedToEdit || !editableRef.current) return;
   
-    const style: {
-      type: string,
-      start: number,
-      end: number,
-    }[] = [];
+    const style: typeof properties.style = [];
 
-    const treeWalker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null);
+    /**
+     * Walk up the tree to get the full text style of the node
+     * @param node The node to get the full text style of
+     * @returns The full text style of the node
+     */
+    const getFullTextStyle = (node: Node): (keyof typeof InlineTextStyles)[] => {
+      if (!editableRef.current) return [];
 
-    const textNodes: Node[] = [];
+      let currentNode = node;
+      let style: string[] = [];
 
-    while (treeWalker.nextNode()) {
-      textNodes.push(treeWalker.currentNode);
-    }
+      while (currentNode.parentElement && currentNode.parentElement !== editableRef.current) {
+        currentNode = currentNode.parentElement;
+
+        const type = (currentNode as HTMLElement).getAttribute('data-inline-type');
+
+        console.log(currentNode);
+
+        if (!type) continue;
+
+        style.push(...JSON.parse(type));
+      }
+
+      console.log(node, style)
+
+      return style as (keyof typeof InlineTextStyles)[];
+    };
+
+    const treeWalker = document.createTreeWalker(
+      editableRef.current,
+      NodeFilter.SHOW_TEXT,
+      null
+    );
 
     let length = 0;
 
-    textNodes.forEach((node) => {
-      if (!node.textContent || !node.parentElement) return;
+    while (treeWalker.nextNode()) {
+      const node = treeWalker.currentNode;
+
+      if (!node.textContent) continue;
 
       length += node.textContent.length || 0;
 
-      const type = node.parentElement.getAttribute('data-inline-type');
+      const type = getFullTextStyle(node);
 
-      if (!type) return;
+      if (!type.length) continue;
 
       style.push({
-        type: JSON.parse(type),
+        type,
         start: length - node.textContent.length,
         end: length,
       });
-    })
+    }
+    
 
     editBlock(
       [blockID],
@@ -247,6 +272,7 @@ const TextBlock = (props: EditableText) => {
       blocks.push(
         <span
           className={block.type.map((type) => InlineTextStyles[type]).join(' ')}
+          data-inline-type={JSON.stringify(block.type)}
         >
           {inlineText}
         </span>
