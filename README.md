@@ -8,7 +8,10 @@
     <a href="https://wakatime.com/@Eroxl"><img src="https://wakatime.com/badge/user/f69fecb5-785d-48d4-a275-ee9a147ec35a/project/c6a2aa40-78a1-4946-bcb9-e350f5b1254c.svg" alt="Wakatime Note Rack stats"></a>
 </div>
 
-<img src="./images/Desktop_Current_State_Dark.png" width="500">
+<div align="center">
+    <img src="./images/Desktop_Current_State_Dark.png" width="500">
+</div>
+
 
 ## 🌳 Features
 * Markdown
