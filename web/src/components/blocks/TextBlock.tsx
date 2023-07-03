@@ -195,14 +195,10 @@ const TextBlock = (props: EditableText) => {
 
         const type = (currentNode as HTMLElement).getAttribute('data-inline-type');
 
-        console.log(currentNode);
-
         if (!type) continue;
 
         style.push(...JSON.parse(type));
       }
-
-      console.log(node, style)
 
       return style as (keyof typeof InlineTextStyles)[];
     };

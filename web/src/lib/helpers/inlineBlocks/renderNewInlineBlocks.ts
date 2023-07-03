@@ -21,10 +21,9 @@ const renderNewInlineBlocks = (
     let parentElement = node.parentElement;
 
     // ~ If the node is entirely contained in the regex
-    //   no calculations are needed and the style can be applied
     if (
-      currentOffset - node.textContent.length >= inlineBlock.start
-      && currentOffset <= inlineBlock.end
+      currentOffset - node.textContent.length >= (inlineBlock.start + inlineBlock.bindLength)
+      && currentOffset <= (inlineBlock.end - inlineBlock.bindLength)
     ) {
       // ~ Walk up the tree until we find the node who's parent is
       //   the `editableRef` and add the bind type to it
