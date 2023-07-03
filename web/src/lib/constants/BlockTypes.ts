@@ -26,7 +26,7 @@ const BlockTypes = {
   page: PageBlock,
 
   // -=- Other Components -=-
-  math: MathBlock,
+  math: MathBlock
 } as const;
 
 export default BlockTypes;

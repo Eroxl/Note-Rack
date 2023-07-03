@@ -140,10 +140,14 @@ const selectEnd = (element: HTMLElement, position: number) => {
   const textNodes = getClosestTextNode(element);
 
   if (position === -1) {
-    range.setStart(textNodes.slice(-1)[0], element.textContent?.length || 0);
-  } else {
-    const lastTextNode = textNodes.reverse().find((node) => node.nodeName === '#text');
+    const lastTextNode = textNodes.slice(-1)[0];
 
+    if (lastTextNode.textContent?.at(-1) === '\n') {
+      range.setStart(lastTextNode, Math.max(lastTextNode.textContent.length - 1, 0));
+    } else {
+      range.setStart(lastTextNode, lastTextNode.textContent?.length || 0);
+    }
+  } else {
     textNodes.forEach((node) => {
       if (position < 0) return;
 
@@ -153,7 +157,7 @@ const selectEnd = (element: HTMLElement, position: number) => {
 
       position -= length;
 
-      if (position <= 0 || node === lastTextNode) {
+      if (position <= 0 || node === textNodes[textNodes.length - 1]) {
         const index = Math.max(Math.min(position + length, length), 0);
 
         if (node.textContent?.at(index - 1) === '\n') {
@@ -254,7 +258,6 @@ const getCaretCoordinatesFromOffset = (element: HTMLElement, offset: number): { 
     y: rect.top,
   };
 };
-
 
 export {
   focusBlockAtIndex,

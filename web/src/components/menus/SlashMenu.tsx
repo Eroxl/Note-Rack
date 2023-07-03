@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import type { SlashMenuCategory, SlashMenuOption } from '../../hooks/useSlashMenu';
 import { getCaretCoordinatesFromOffset } from '../../lib/helpers/focusHelpers';
 import getStringDistance from '../../lib/helpers/getStringDistance';
+import { getCursorOffset } from '../../lib/helpers/caretHelpers';
 
 interface SlashMenuProps {
   slashMenuCategories: SlashMenuCategory[];
@@ -51,7 +52,7 @@ const SlashMenu = (props: SlashMenuProps) => {
 
     const range = document.createRange();
     const sel = window.getSelection()!;
-    
+
     range.setStart(editableRef.current.childNodes[0], newCaretOffset);
     range.collapse(true);
     sel.removeAllRanges();
@@ -61,33 +62,6 @@ const SlashMenu = (props: SlashMenuProps) => {
     editableRef.current.dispatchEvent(new Event('change'));
 
     relevantOptions[categoryIndex].options[optionIndex].action();
-  };
-
-  /**
-   * Get the number of characters between the start of the element and the
-   * cursor
-   * @param element Element to get the cursor offset for
-   * @returns Number of characters between the start of the element and the
-   */
-  const getCursorOffset = (element: HTMLElement): number => {
-    // ~ Get the range and selection
-    const selection = window.getSelection();
-
-    if (!selection) return 0;
-
-    const range = selection.getRangeAt(0);
-
-    if (!range) return 0;
-
-    // ~ Clone the range and select the contents of the element
-    const preCaretRange = range.cloneRange();
-    preCaretRange.selectNodeContents(element);
-
-    // ~ Set the end of the range to the start of the selection
-    preCaretRange.setEnd(range.endContainer, range.endOffset);
-
-    // ~ Return the length between the start of the element and the cursor
-    return preCaretRange.toString().length;
   };
 
   /**
@@ -117,7 +91,7 @@ const SlashMenu = (props: SlashMenuProps) => {
       if (e.key === 'Escape') {
         setIsSlashMenuOpen(false);
       }
-    }
+    };
 
     editableRef.current.addEventListener('keydown', handleSlashMenu);
     document.addEventListener('keydown', handleSlashMenuClose);
@@ -125,7 +99,7 @@ const SlashMenu = (props: SlashMenuProps) => {
     return () => {
       editableRef.current?.removeEventListener('keydown', handleSlashMenu);
       document.removeEventListener('keydown', handleSlashMenuClose);
-    }
+    };
   }, [editableRef.current, isSlashMenuOpen]);
 
   /**
@@ -151,7 +125,7 @@ const SlashMenu = (props: SlashMenuProps) => {
         && cursorOffset <= slashLocation + slashMenuQuery.length
       );
     };
-    
+
     const handleSlashMenuClose = (e: MouseEvent) => {
       if (slashMenuRef.current?.contains(e.target as Node)) return;
 
@@ -174,7 +148,7 @@ const SlashMenu = (props: SlashMenuProps) => {
     return () => {
       document.removeEventListener('click', handleSlashMenuClose);
       document.removeEventListener('keydown', handleArrowKeys);
-    }
+    };
   }, [slashMenuRef.current, slashLocation, slashMenuQuery]);
 
   /**
@@ -182,7 +156,7 @@ const SlashMenu = (props: SlashMenuProps) => {
    */
   useEffect(() => {
     if (!editableRef.current) return;
-  
+
     let { x, y } = getCaretCoordinatesFromOffset(editableRef.current, slashLocation);
 
     if (x === 0 && y === 0) {
@@ -194,7 +168,7 @@ const SlashMenu = (props: SlashMenuProps) => {
       y = boundingRect.top;
     }
 
-    const boundingRect = editableRef.current.parentElement?.getBoundingClientRect()
+    const boundingRect = editableRef.current.parentElement?.getBoundingClientRect();
 
     if (boundingRect) {
       x -= boundingRect.left;
@@ -214,7 +188,7 @@ const SlashMenu = (props: SlashMenuProps) => {
     const handleSlashMenuQuery = () => {
       if (!editableRef.current || !isSlashMenuOpen) return;
 
-      const slashLengthChange = editableRef.current.innerText.length - editableElementLength ;
+      const slashLengthChange = editableRef.current.innerText.length - editableElementLength;
 
       const newQuery = editableRef.current.innerText.slice(slashLocation, slashLocation + slashMenuQuery.length + slashLengthChange);
 
@@ -246,15 +220,15 @@ const SlashMenu = (props: SlashMenuProps) => {
       optionIndex: 0,
     });
 
-    let parsedSlashMenuQuery = slashMenuQuery.replace(/^\//, '').toLowerCase()
+    const parsedSlashMenuQuery = slashMenuQuery.replace(/^\//, '').toLowerCase();
     let minDistance = Infinity;
-    
+
     if (!parsedSlashMenuQuery) {
-      setRelevantOptions(slashMenuCategories)
+      setRelevantOptions(slashMenuCategories);
       return;
     }
 
-    const relevantOptions: SlashMenuCategory[] = []
+    const relevantOptions: SlashMenuCategory[] = [];
 
     for (let i = 0; i < slashMenuCategories.length; i++) {
       const category = slashMenuCategories[i];
@@ -262,13 +236,13 @@ const SlashMenu = (props: SlashMenuProps) => {
 
       for (let j = 0; j < category.options.length; j++) {
         const option = category.options[j];
-        
+
         const distance = getStringDistance(parsedSlashMenuQuery, option.name.toLowerCase().slice(0, parsedSlashMenuQuery.length));
-        
+
         if (distance <= 1) {
           categoryOptions.push(option);
         }
-        
+
         if (distance < minDistance) {
           minDistance = distance;
         }
@@ -357,7 +331,7 @@ const SlashMenu = (props: SlashMenuProps) => {
 
     return () => {
       editableRef.current?.removeEventListener('keydown', handleSelectionChange);
-    }
+    };
   }, [relevantOptions, selectedOption, isSlashMenuOpen, editableRef.current]);
 
   return (
@@ -411,7 +385,7 @@ const SlashMenu = (props: SlashMenuProps) => {
         </div>
       )}
     </>
-  )
+  );
 };
 
 export default SlashMenu;

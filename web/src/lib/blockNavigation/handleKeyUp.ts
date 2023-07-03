@@ -1,15 +1,16 @@
 import PageDataInterface from '../types/pageTypes.d';
 import { focusBlockAtIndexRelativeToBottom } from '../helpers/focusHelpers';
+import { getCursorOffset } from '../helpers/caretHelpers';
 
 const handleKeyUp = (
   e: React.KeyboardEvent<HTMLSpanElement>,
   index: number,
   pageData: PageDataInterface['message'],
+  element: HTMLSpanElement,
 ) => {
   e.preventDefault();
 
-  // ~ Get the offset of the current range
-  const offset = window.getSelection()?.getRangeAt(0).startOffset || 0;
+  const offset = getCursorOffset(element);
 
   focusBlockAtIndexRelativeToBottom(
     index,
