@@ -7,6 +7,7 @@ import getPage from './getPage';
 import getPageInfo from './getPageInfo';
 import updatePermissions from './updatePermissions';
 import chat from './chat';
+import complete from './complete';
 
 const router = express.Router();
 
@@ -44,6 +45,12 @@ router.use(
 router.use(
   '/',
   chat,
+);
+
+// -=- Create Autocomplete API -=-
+router.use(
+  '/',
+  complete,
 );
 
 // -=- Create Modify Page API -=-
