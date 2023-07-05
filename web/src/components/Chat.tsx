@@ -176,7 +176,7 @@ const Chat = () => {
           </div>
         )}
         <div
-          className="flex flex-col w-full h-[calc(100%-8rem)] mx-auto overflow-scroll no-scrollbar px-20"
+          className="flex flex-col w-full h-[calc(100%-8rem)] mx-auto overflow-scroll no-scrollbar px-20 pt-5"
           ref={chatRef}
         />
         <div className="absolute flex flex-row w-full max-w-4xl gap-2 px-20 mx-auto translate-x-1/2 -translate-y-full bottom-5 right-1/2">

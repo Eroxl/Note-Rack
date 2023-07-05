@@ -42,7 +42,7 @@ const renderNewInlineBlocks = (
       if (!currentStyle || topElement === parentElement) {
         const newSpan = document.createElement('span');
         newSpan.setAttribute('data-inline-type', JSON.stringify([blockType]));
-        newSpan.classList.add(style);
+        newSpan.classList.add(...style.split(' '));
         newSpan.textContent = node.textContent;
 
         // ~ If the node is the editableRef, remove only the node
@@ -64,7 +64,7 @@ const renderNewInlineBlocks = (
       if (!Array.isArray(newStyle)) return;
 
       newStyle.push(blockType);
-      topElement.classList.add(style);
+      topElement.classList.add(...style.split(' '));
       topElement.setAttribute('data-inline-type', JSON.stringify(newStyle));
 
       return;
@@ -84,7 +84,7 @@ const renderNewInlineBlocks = (
 
     // ~ Create a new span to contain the inline block
     const newSpan = document.createElement('span');
-    newSpan.classList.add(style);
+    newSpan.classList.add(...style.split(' '));
 
     const startingPosition = inlineBlock.start - (currentOffset - node.textContent.length);
 

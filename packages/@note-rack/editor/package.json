@@ -1,0 +1,28 @@
+{
+  "name": "@note-rack/editor",
+  "version": "1.0.0",
+  "description": "A react WYSIWYG markdown editor",
+  "repository": "https://github.com/Eroxl/Note-Rack/tree/main/packages/@note-rack/editor",
+  "author": "Eroxl <evan@erox.one>",
+  "license": "AGPL-3.0-only",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "private": false,
+  "type": "commonjs",
+  "scripts": {
+    "build": "babel src --out-dir dist --extensions \".ts,.tsx\" --ignore \"**/*.test.tsx\" && yarn build:types",
+    "build:types": "tsc",
+    "lint": "eslint ./src/ --fix",
+    "lint:check": "eslint ./src/"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.22.6",
+    "@babel/core": "^7.22.6",
+    "@babel/preset-env": "^7.22.6",
+    "@babel/preset-react": "^7.22.5"
+  },
+  "dependencies": {
+    "@babel/polyfill": "^7.12.1",
+    "react": "^18.2.0"
+  }
+}
