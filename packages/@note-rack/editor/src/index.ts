@@ -1,3 +1,5 @@
-console.log("test");
+import Editor from './components/Editor';
 
-export {};
+export {
+  Editor,
+};

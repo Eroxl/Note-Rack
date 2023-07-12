@@ -1,0 +1,9 @@
+.textBlock {
+  min-height: 1.2rem;
+  outline: none;
+  white-space: pre-wrap;
+  width: 100%;
+  position: relative;
+  font-family: Arial, Helvetica, sans-serif;
+  overflow-wrap: break-word;
+}

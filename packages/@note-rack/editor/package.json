@@ -10,19 +10,38 @@
   "private": false,
   "type": "commonjs",
   "scripts": {
-    "build": "babel src --out-dir dist --extensions \".ts,.tsx\" --ignore \"**/*.test.tsx\" && yarn build:types",
-    "build:types": "tsc",
+    "dev": "webpack-dev-server --hot --config ./webpack.config.js",
+    "build:esm": "swc -C module.type=commonjs -d dist src/",
+    "build:types": "tsc -b .",
+    "build": "yarn build:esm && yarn build:types",
     "lint": "eslint ./src/ --fix",
     "lint:check": "eslint ./src/"
   },
   "devDependencies": {
     "@babel/cli": "^7.22.6",
     "@babel/core": "^7.22.6",
-    "@babel/preset-env": "^7.22.6",
-    "@babel/preset-react": "^7.22.5"
+    "@babel/plugin-proposal-class-properties": "^7.18.6",
+    "@babel/plugin-syntax-dynamic-import": "^7.8.3",
+    "@babel/preset-env": "^7.22.9",
+    "@babel/preset-react": "^7.22.5",
+    "@babel/preset-typescript": "^7.22.5",
+    "@types/node": "^20.3.3",
+    "@types/react": "^18.2.14",
+    "@types/react-dom": "^18.2.6",
+    "babel-loader": "^9.1.3",
+    "css-loader": "^6.8.1",
+    "html-webpack-plugin": "^5.5.3",
+    "swc": "^1.0.11",
+    "webpack": "^5.88.1",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1"
   },
   "dependencies": {
     "@babel/polyfill": "^7.12.1",
-    "react": "^18.2.0"
+    "crypto-browserify": "^3.12.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "stream-browserify": "^3.0.0",
+    "style-loader": "^3.3.3"
   }
 }
