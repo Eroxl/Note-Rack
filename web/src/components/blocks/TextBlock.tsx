@@ -284,67 +284,59 @@ const TextBlock = (props: EditableText) => {
     return blocks;
   }
 
-
   return (
-    <div
-      style={{
-        display: 'flex',
+    <span
+      className={`min-h-[1.2em] outline-none relative whitespace-pre-wrap w-full ${TextStyles[type]}`}
+      role="textbox"
+      tabIndex={0}
+      contentEditable={isAllowedToEdit}
+      suppressContentEditableWarning
+      ref={isAllowedToEdit ? editableRef : undefined}
+      id={blockID}
+      onInput={(e) => {
+        handlePotentialTypeChange(e.currentTarget);
+        handlePotentialInlineBlocks(e.currentTarget);
       }}
-    >
-      <span
-        className={`min-h-[1.2em] outline-none relative whitespace-pre-wrap w-full ${TextStyles[type]}`}
-        role="textbox"
-        tabIndex={0}
-        contentEditable={isAllowedToEdit}
-        suppressContentEditableWarning
-        ref={isAllowedToEdit ? editableRef : undefined}
-        id={blockID}
-        onInput={(e) => {
-          handlePotentialTypeChange(e.currentTarget);
-          handlePotentialInlineBlocks(e.currentTarget);
-        }}
-        onBlur={
-          (e) => { saveBlock(e.currentTarget); }
-        }
-        onKeyDown={
-          (e) => {
-            if (e.code === 'Enter' && !e.shiftKey) {
-              e.preventDefault();
-              e.currentTarget.blur();
-              addBlockAtIndex(index + 1, page, pageData, setPageData);
-            } else if (e.code === 'Backspace' && type !== 'text' && window.getSelection()?.anchorOffset === 0) {
-              setCurrentBlockType('text');
-              editBlock([blockID], 'text', undefined, page);
-            } else if (e.code === 'Backspace' && type === 'text' && (e.currentTarget.innerText === '' || e.currentTarget.innerText === '\n')) {
-              removeBlock(index, [blockID], page, pageData, setPageData, true);
-            } else if (e.code === 'ArrowUp' && isCaretAtTop(e.currentTarget) && editableRef.current) {
-              handleKeyUp(
-                e,
-                index,
-                pageData,
-                editableRef.current,
-              );
-            } else if (e.code === 'ArrowDown' && isCaretAtBottom(e.currentTarget) && editableRef.current) {
-              handleKeyDown(
-                e,
-                index,
-                pageData,
-                editableRef.current,
-              );
-            }
+      onBlur={
+        (e) => { saveBlock(e.currentTarget); }
+      }
+      onKeyDown={
+        (e) => {
+          if (e.code === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            e.currentTarget.blur();
+            addBlockAtIndex(index + 1, page, pageData, setPageData);
+          } else if (e.code === 'Backspace' && type !== 'text' && window.getSelection()?.anchorOffset === 0) {
+            setCurrentBlockType('text');
+            editBlock([blockID], 'text', undefined, page);
+          } else if (e.code === 'Backspace' && type === 'text' && (e.currentTarget.innerText === '' || e.currentTarget.innerText === '\n')) {
+            removeBlock(index, [blockID], page, pageData, setPageData, true);
+          } else if (e.code === 'ArrowUp' && isCaretAtTop(e.currentTarget) && editableRef.current) {
+            handleKeyUp(
+              e,
+              index,
+              pageData,
+              editableRef.current,
+            );
+          } else if (e.code === 'ArrowDown' && isCaretAtBottom(e.currentTarget) && editableRef.current) {
+            handleKeyDown(
+              e,
+              index,
+              pageData,
+              editableRef.current,
+            );
           }
         }
-        data-cy="block-text"
-      >
-        {
-          renderInlineBlocks(
-            properties.value,
-            properties.style
-          )
-        }
-        {slashMenu}
-      </span>
-    </div>
+      }
+    >
+      {
+        renderInlineBlocks(
+          properties.value,
+          properties.style
+        )
+      }
+      {slashMenu}
+    </span>
   );
 };
 
