@@ -1,5 +1,3 @@
-/* eslint-disable react/no-children-prop */
-/* eslint-disable no-underscore-dangle */
 import React, {
   useState,
   useEffect,
@@ -16,6 +14,12 @@ import Icon from './blocks/Icon';
 import { removeBlock } from '../lib/pages/updatePage';
 import deletePage from '../lib/deletePage';
 import PageContext from '../contexts/PageContext';
+import isCaretAtBottom from '../lib/helpers/caret/isCaretAtBottom';
+import isCaretAtTop from '../lib/helpers/caret/isCaretAtTop';
+import focusElement from '../lib/helpers/focusElement';
+import getLastLineLength from '../lib/helpers/getLastLineLength';
+import getCursorOffset from '../lib/helpers/caret/getCursorOffset';
+import findNextBlock, { getClosestBlock } from '../lib/helpers/findNextBlock';
 
 const Editor = () => {
   const { pageData, setPageData } = useContext(PageContext);
@@ -107,6 +111,79 @@ const Editor = () => {
       document.removeEventListener('keydown', handleSelectionEvents);
     };
   }, [selectionData]);
+
+  /**
+   * Handle the up and down arrow editor navigation.
+   */
+  useEffect(() => {
+    const handleArrowNavigation = (event: KeyboardEvent) => {
+      if (!isAllowedToEdit || !pageData) return;
+
+      if (event.key !== 'ArrowUp' && event.key !== 'ArrowDown') return;
+
+      event.preventDefault();
+
+      const closestBlock = getClosestBlock(event.target as HTMLElement);
+
+      if (!closestBlock) return;
+
+      const blockIndex = parseInt(closestBlock.dataset.blockIndex);
+
+      if (event.key === 'ArrowUp' && isCaretAtTop(closestBlock)) {
+        if (blockIndex < 0) return;
+
+        let previousBlock;
+
+        // ~ If the block is the first block, focus the title
+        if (blockIndex === 0) {
+          previousBlock = document.getElementById('page-title-text');
+        } else {
+          previousBlock = findNextBlock(closestBlock, (start) => start - 1, pageData);
+        }
+
+        if (!previousBlock) return;
+
+        // ~ Get the offset of the caret in the previous block
+        //   relative to the end of the block.
+        const previousBlockOffset = (
+          previousBlock.innerText.length
+          - getLastLineLength(previousBlock)
+          + getCursorOffset(closestBlock)
+        );
+
+        focusElement(
+          previousBlock,
+          previousBlockOffset,
+        );
+      } else if (event.key === 'ArrowDown' && isCaretAtBottom(closestBlock)) {
+        // ~ If the block is the last block, do nothing.
+        if (blockIndex === pageData.data.length - 1) return;
+
+        let nextBlock = findNextBlock(closestBlock, (start) => start + 1, pageData);
+
+        if (!nextBlock) return;
+
+        // ~ Get the offset of the caret in the next block
+        //   relative to the start of the block.
+        const nextBlockOffset = (
+          getCursorOffset(closestBlock)
+          - closestBlock.innerText.length
+          + getLastLineLength(closestBlock)
+        );
+
+        focusElement(
+          nextBlock,
+          nextBlockOffset,
+        );
+      };
+    };
+
+    document.addEventListener('keydown', handleArrowNavigation);
+
+    return () => {
+      document.removeEventListener('keydown', handleArrowNavigation);
+    }
+  }, [pageData]);
 
   if (!pageData) return null;
 

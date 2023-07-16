@@ -1,12 +1,9 @@
-/* eslint-disable jsx-a11y/no-noninteractive-element-to-interactive-role */
 import React, { useContext, useRef } from 'react';
 import { useDrop } from 'react-dnd';
 
 import { addBlockAtIndex, moveBlock } from '../../lib/pages/updatePage';
 import type { PermanentEditableText } from '../../lib/types/blockTypes';
 import editStyle from '../../lib/pages/editStyle';
-import { isCaretAtBottom, isCaretAtTop } from '../../lib/helpers/caretHelpers';
-import handleKeyDown from '../../lib/blockNavigation/handleKeyDown';
 import PageContext from '../../contexts/PageContext';
 
 interface TitleProps extends PermanentEditableText {
@@ -77,15 +74,6 @@ const Title = (props: TitleProps) => {
               e.preventDefault();
               e.currentTarget.blur();
               addBlockAtIndex(index, page, pageData, setPageData);
-            } else if (e.code === 'ArrowDown' && isCaretAtBottom(e.currentTarget) && titleRef.current) {
-              handleKeyDown(
-                e,
-                index - 1,
-                pageData,
-                titleRef.current,
-              );
-            } else if (e.code === 'ArrowUp' && isCaretAtTop(e.currentTarget)) {
-              e.preventDefault();
             }
           }
         }
@@ -94,7 +82,8 @@ const Title = (props: TitleProps) => {
             document.dispatchEvent(new CustomEvent('changePageTitle', { detail: { newTitle: e.currentTarget.innerText } }));
           }
         }
-        data-cy="page-title"
+        id="page-title-text"
+        data-block-index={index-1}
       >
         {title}
       </span>

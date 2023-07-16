@@ -1,19 +1,16 @@
 import React, { useContext, useState } from 'react';
 
-import { isCaretAtTop, isCaretAtBottom } from '../../lib/helpers/caretHelpers';
 import { editBlock, addBlockAtIndex, removeBlock } from '../../lib/pages/updatePage';
 import InlineTextStyles from '../../lib/constants/InlineTextStyles';
 import TextStyles from '../../lib/constants/TextStyles';
 import inlineTextKeybinds from '../../lib/inlineTextKeybinds';
 import textKeybinds from '../../lib/textKeybinds';
 import type { EditableText } from '../../lib/types/blockTypes';
-import handleKeyDown from '../../lib/blockNavigation/handleKeyDown';
-import handleKeyUp from '../../lib/blockNavigation/handleKeyUp';
 import PageContext from '../../contexts/PageContext';
 import useSlashMenu, { createDefaultSlashMenuCategories } from '../../hooks/useSlashMenu';
-import { getCursorOffset } from '../../lib/helpers/caretHelpers';
 import findNodesInRange from '../../lib/helpers/inlineBlocks/findNodesInRange';
 import renderNewInlineBlocks from '../../lib/helpers/inlineBlocks/renderNewInlineBlocks';
+import getCursorOffset from '../../lib/helpers/caret/getCursorOffset';
 
 const TextBlock = (props: EditableText) => {
   const {
@@ -28,8 +25,6 @@ const TextBlock = (props: EditableText) => {
   const { pageData, setPageData } = useContext(PageContext);
   const [completionTimeout, setCompletionTimeout] = useState<NodeJS.Timeout | null>(null);
   const [completion, setCompletion] = useState<string | null>(null);
-  const [currentText, setCurrentText] = useState<string | null>(null);
-  const [cursorPosition, setCursorPosition] = useState<number | null>(null);
 
   const isAllowedToEdit = pageData?.userPermissions.write || false;
 
@@ -296,7 +291,8 @@ const TextBlock = (props: EditableText) => {
       contentEditable={isAllowedToEdit}
       suppressContentEditableWarning
       ref={isAllowedToEdit ? editableRef : undefined}
-      id={blockID}
+      id={`block-${blockID}`}
+      data-block-index={index}
       onInput={(e) => {
         handlePotentialTypeChange(e.currentTarget);
         handlePotentialInlineBlocks(e.currentTarget);
@@ -353,25 +349,6 @@ const TextBlock = (props: EditableText) => {
             editBlock([blockID], 'text', undefined, page);
           } else if (e.code === 'Backspace' && type === 'text' && (e.currentTarget.innerText === '' || e.currentTarget.innerText === '\n')) {
             removeBlock(index, [blockID], page, pageData, setPageData, true);
-          } else if (e.code === 'ArrowUp' && isCaretAtTop(e.currentTarget) && editableRef.current) {
-            handleKeyUp(
-              e,
-              index,
-              pageData,
-              editableRef.current,
-            );
-          } else if (e.code === 'ArrowDown' && isCaretAtBottom(e.currentTarget) && editableRef.current) {
-            handleKeyDown(
-              e,
-              index,
-              pageData,
-              editableRef.current,
-            );
-          } else if (e.code === 'Tab' && completion && editableRef.current) {
-            // setCompletion(null);
-            e.preventDefault();
-            // editableRef.current.innerText += completion;
-            // focusBlockAtIndex(index, pageData);
           }
         }
       }

@@ -1,11 +1,12 @@
 import type { Dispatch, SetStateAction } from 'react';
 
+import BlockTypes from '../constants/BlockTypes';
 import type PageDataInterface from './pageTypes';
 import InlineTextStyles from '../../lib/constants/InlineTextStyles';
 
 // -=- Used for the base block -=-
 interface BaseBlockProps {
-  blockType: string,
+  blockType: keyof typeof BlockTypes,
   blockID: string,
   properties: Record<string, unknown>,
   children: unknown[]

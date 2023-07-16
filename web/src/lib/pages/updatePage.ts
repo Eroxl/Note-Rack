@@ -2,7 +2,7 @@
 /* eslint-disable no-underscore-dangle */
 import crypto from 'crypto';
 
-import { focusBlockAtIndex } from '../helpers/focusHelpers';
+import focusElement from '../helpers/focusElement';
 import type PageDataInterface from '../types/pageTypes';
 import SaveManager from '../classes/SaveManager';
 
@@ -90,7 +90,8 @@ const removeBlock = async (
   // ~ Wait for the page to update to focus the end of the previous block
   await new Promise((resolve) => setTimeout(resolve, 5));
 
-  focusBlockAtIndex(index, tempPageData);
+  // TODO:EROXL: Fix this
+  // focusBlockAtIndex(index, tempPageData);
 };
 
 const editBlock = async (
