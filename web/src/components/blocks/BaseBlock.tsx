@@ -97,7 +97,7 @@ const BaseBlock = (props: BaseBlockProps) => {
       }
       {
         React.createElement(
-          BlockTypes[currentBlockType] ?? BlockTypes.text,
+          (BlockTypes[currentBlockType] ?? BlockTypes.text) as React.FC<any>,
           {
             page,
             index,

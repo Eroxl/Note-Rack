@@ -1,6 +1,8 @@
+import BlockTypes from "../constants/BlockTypes"
+
 interface Block {
   _id: string,
-  blockType: string,
+  blockType: keyof typeof BlockTypes,
   properties: Record<string, unknown>,
   children: Block[]
 }

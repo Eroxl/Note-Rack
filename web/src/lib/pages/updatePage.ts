@@ -2,9 +2,11 @@
 /* eslint-disable no-underscore-dangle */
 import crypto from 'crypto';
 
-import { focusBlockAtIndex } from '../helpers/focusHelpers';
+import focusElement from '../helpers/focusElement';
+import findNextBlock from '../helpers/findNextBlock';
 import type PageDataInterface from '../types/pageTypes';
 import SaveManager from '../classes/SaveManager';
+import BlockTypes from '../constants/BlockTypes';
 
 const addBlockAtIndex = async (
   index: number,
@@ -12,7 +14,7 @@ const addBlockAtIndex = async (
   pageData: PageDataInterface['message'],
   setPageData: React.Dispatch<React.SetStateAction<PageDataInterface['message']>>,
   blockIDs?: string[],
-  blockType?: string,
+  blockType?: keyof typeof BlockTypes,
   blockProperties?: Record<string, unknown>,
 ) => {
   // ~ Generate a random ID for the block
@@ -53,7 +55,8 @@ const addBlockAtIndex = async (
 
   // ~ Wait for page to update before adding the block
   await new Promise((resolve) => setTimeout(resolve, 5));
-  document.getElementById(objectID)?.focus();
+
+  document.getElementById(`block-${objectID}`)?.focus();
 };
 
 const removeBlock = async (
@@ -87,10 +90,13 @@ const removeBlock = async (
 
   if (!moveFocusToPreviousBlock) return;
 
-  // ~ Wait for the page to update to focus the end of the previous block
+  const previousBlock = findNextBlock(document.getElementById(`block-${blockIDs[0]}`), (start) => start - 1, pageData);
+
+  if (!previousBlock) return;
+
   await new Promise((resolve) => setTimeout(resolve, 5));
 
-  focusBlockAtIndex(index, tempPageData);
+  focusElement(previousBlock, previousBlock?.textContent?.length || 0);
 };
 
 const editBlock = async (

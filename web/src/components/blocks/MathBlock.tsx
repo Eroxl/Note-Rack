@@ -66,8 +66,7 @@ const MathBlock = (props: EditableText) => {
             tabIndex={0}
             contentEditable
             suppressContentEditableWarning
-            id={blockID}
-            key={blockID}
+            id={`block-${blockID}`}
             onBlur={
               (e) => {
                 if (!isAllowedToEdit) return;

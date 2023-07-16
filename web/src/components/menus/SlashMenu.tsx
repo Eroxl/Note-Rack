@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 
 import type { SlashMenuCategory, SlashMenuOption } from '../../hooks/useSlashMenu';
-import { getCaretCoordinatesFromOffset } from '../../lib/helpers/focusHelpers';
+import getOffsetCoordinates from '../../lib/helpers/getOffsetCoordinates';
 import getStringDistance from '../../lib/helpers/getStringDistance';
-import { getCursorOffset } from '../../lib/helpers/caretHelpers';
+import getCursorOffset from '../../lib/helpers/caret/getCursorOffset';
 
 interface SlashMenuProps {
   slashMenuCategories: SlashMenuCategory[];
@@ -157,7 +157,7 @@ const SlashMenu = (props: SlashMenuProps) => {
   useEffect(() => {
     if (!editableRef.current) return;
 
-    let { x, y } = getCaretCoordinatesFromOffset(editableRef.current, slashLocation);
+    let { x, y } = getOffsetCoordinates(editableRef.current, slashLocation);
 
     if (x === 0 && y === 0) {
       const boundingRect = editableRef.current?.getBoundingClientRect();

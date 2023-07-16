@@ -36,7 +36,7 @@ const PageBlock = (props: PageBlockProps) => {
       <a
         className="min-h-[1.2em] outline-none font-bold text-left"
         tabIndex={0}
-        id={blockID}
+        id={`block-${blockID}`}
         href={`/note-rack/${blockID}`}
       >
         [[
