@@ -135,11 +135,7 @@ const Editor = () => {
         let previousBlock;
 
         // ~ If the block is the first block, focus the title
-        if (blockIndex === 0) {
-          previousBlock = document.getElementById('page-title-text');
-        } else {
-          previousBlock = findNextBlock(closestBlock, (start) => start - 1, pageData);
-        }
+        previousBlock = findNextBlock(closestBlock, (start) => start - 1, pageData);
 
         if (!previousBlock) return;
 

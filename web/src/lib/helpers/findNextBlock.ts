@@ -43,7 +43,13 @@ const findNextBlock = (
 
   const nextBlock = editor.querySelector(`#block-${nextBlockID}`) as HTMLElement;
 
-  if (!nextBlock) return;
+  if (!nextBlock) {
+    const title = document.getElementById('page-title-text');
+
+    if (!title) return;
+
+    return title as HTMLElement;
+  }
 
   if (!nextBlock.dataset.blockIndex) return findNextBlock(nextBlock, iterator, pageData, editor);
 
