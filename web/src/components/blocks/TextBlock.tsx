@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 
 import { isCaretAtTop, isCaretAtBottom } from '../../lib/helpers/caretHelpers';
 import { editBlock, addBlockAtIndex, removeBlock } from '../../lib/pages/updatePage';
@@ -26,6 +26,10 @@ const TextBlock = (props: EditableText) => {
   } = props;
 
   const { pageData, setPageData } = useContext(PageContext);
+  const [completionTimeout, setCompletionTimeout] = useState<NodeJS.Timeout | null>(null);
+  const [completion, setCompletion] = useState<string | null>(null);
+  const [currentText, setCurrentText] = useState<string | null>(null);
+  const [cursorPosition, setCursorPosition] = useState<number | null>(null);
 
   const isAllowedToEdit = pageData?.userPermissions.write || false;
 
@@ -234,7 +238,7 @@ const TextBlock = (props: EditableText) => {
       [blockID],
       undefined,
       {
-        value: element.innerText,
+        value: element.innerText.slice(0, element.innerText.length - (completion?.length || 0)),
         style,
       },
       page
@@ -282,7 +286,7 @@ const TextBlock = (props: EditableText) => {
     if (text) blocks.push(text);
 
     return blocks;
-  }
+  };
 
   return (
     <span
@@ -296,9 +300,47 @@ const TextBlock = (props: EditableText) => {
       onInput={(e) => {
         handlePotentialTypeChange(e.currentTarget);
         handlePotentialInlineBlocks(e.currentTarget);
+
+        if (completionTimeout) {
+          clearTimeout(completionTimeout);
+        }
+        
+        setCompletion(null);
+
+        setCompletionTimeout(
+          setTimeout(() => {
+            if (!editableRef.current) return;
+
+            document.dispatchEvent(
+              new CustomEvent('completionRequest', {
+                detail: {
+                  index,
+                },
+              })
+            );
+
+            const handleCompletion = (event: CustomEvent<{ blockID: string; completion: string }>) => {
+              if (event.detail.blockID !== blockID) return;
+
+              setCompletion(event.detail.completion);
+              document.removeEventListener('completion', handleCompletion as EventListener);
+            };
+
+            document.addEventListener('completion', handleCompletion as EventListener);
+
+            new Promise((resolve) => {
+              setTimeout(resolve, 10000);
+            }).then(() => {
+              document.removeEventListener('completion', handleCompletion as EventListener);
+            });
+          }, 250)
+        );
       }}
       onBlur={
-        (e) => { saveBlock(e.currentTarget); }
+        (e) => {
+          setCompletion(null);
+          saveBlock(e.currentTarget);
+        }
       }
       onKeyDown={
         (e) => {
@@ -325,6 +367,11 @@ const TextBlock = (props: EditableText) => {
               pageData,
               editableRef.current,
             );
+          } else if (e.code === 'Tab' && completion && editableRef.current) {
+            // setCompletion(null);
+            e.preventDefault();
+            // editableRef.current.innerText += completion;
+            // focusBlockAtIndex(index, pageData);
           }
         }
       }
@@ -333,6 +380,16 @@ const TextBlock = (props: EditableText) => {
         renderInlineBlocks(
           properties.value,
           properties.style
+        )
+      }
+      {
+        completion && (
+          <span
+            className="text-amber-50/50"
+            contentEditable={false}
+          >
+            {completion}
+          </span>
         )
       }
       {slashMenu}

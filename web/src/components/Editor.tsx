@@ -4,6 +4,7 @@ import React, {
   useState,
   useEffect,
   useContext,
+  useRef,
 } from 'react';
 import { useRouter } from 'next/router';
 import { Selectable, useSelectionCollector } from 'react-virtual-selection';
@@ -19,6 +20,7 @@ import PageContext from '../contexts/PageContext';
 const Editor = () => {
   const { pageData, setPageData } = useContext(PageContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const editorRef = useRef<HTMLDivElement>(null);
 
   const isAllowedToEdit = pageData?.userPermissions.write;
 
@@ -28,6 +30,43 @@ const Editor = () => {
 
   // -=- Setup Selection -=-
   const selectionData = useSelectionCollector('blocks');
+
+  const generateAutocomplete = async (index: number) => {
+    if (!editorRef.current) return;
+
+    const textBefore = Array.from(editorRef.current.childNodes)
+      .slice(Math.max(1, index - 10), index + 3)
+      .map((node) => node.textContent)
+      .join('\n');
+
+    const completionEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/page/complete?context=${textBefore}`;
+
+    const completionRequest = await fetch(completionEndpoint);
+
+    const completion = await completionRequest.json();
+
+    if (completion.message) {
+      return completion.message;
+    }
+  };
+
+  useEffect(() => {
+    const handleCompletionRequest = (event: CustomEvent<{ index: number }>) => {
+      generateAutocomplete(event.detail.index).then((completion) => {
+        if (!completion) return;
+          
+        document.dispatchEvent(
+          new CustomEvent('completion', { detail: { completion, blockID: pageData?.data[event.detail.index]._id } }),
+        );
+      });
+    }
+
+    document.addEventListener('completionRequest', handleCompletionRequest as EventListener);
+
+    return () => {
+      document.removeEventListener('completionRequest', handleCompletionRequest as EventListener);
+    }
+  }, [pageData]);
 
   useEffect(() => {
     const handleSelectionEvents = (event: KeyboardEvent) => {
@@ -86,6 +125,7 @@ const Editor = () => {
           {/* ~ Render the main interactive editor */}
           <div
             className="flex flex-col w-full max-w-4xl gap-3 px-20 pb-56 mx-auto break-words select-none print:p-0 text-zinc-700 dark:text-amber-50 print:dark:text-zinc-700 h-max editor"
+            ref={editorRef}
           >
             {/* ~ Render the page icon */}
             <Icon
