@@ -227,13 +227,12 @@ const TextBlock = (props: EditableText) => {
         end: length,
       });
     }
-    
 
     editBlock(
       [blockID],
       undefined,
       {
-        value: element.innerText.slice(0, element.innerText.length - (completion?.length || 0)),
+        value: element.innerText,
         style,
       },
       page
@@ -248,7 +247,7 @@ const TextBlock = (props: EditableText) => {
    */
   const renderInlineBlocks = (
     value: string,
-    style: EditableText['properties']['style']
+    style: EditableText['properties']['style'],
   ): (JSX.Element | string)[] | string => {
     if (!style) return properties.value;
 
@@ -278,9 +277,49 @@ const TextBlock = (props: EditableText) => {
 
     const text = value.substring(start);
 
-    if (text) blocks.push(text);
+    if (text) {
+      if (text.endsWith('\n')) {
+        blocks.push(text.slice(0, text.length - 1));
+      } else {
+        blocks.push(text);
+      }
+    }
+
+    blocks.push('\n');
 
     return blocks;
+  };
+
+  const createCompletion = async () => {
+    if (!editableRef.current) return;
+
+      document.dispatchEvent(
+        new CustomEvent('completionRequest', {
+          detail: {
+            index,
+          },
+        })
+      );
+
+      const handleCompletion = (event: CustomEvent<{ blockID: string; completion: string }>) => {
+        if (event.detail.blockID !== blockID || !editableRef.current) return;
+
+        saveBlock(editableRef.current);
+
+        setTimeout(() => {
+          setCompletion(event.detail.completion);
+          
+          document.removeEventListener('completion', handleCompletion as EventListener);
+        }, 10);
+      };
+
+      document.addEventListener('completion', handleCompletion as EventListener);
+
+      new Promise((resolve) => {
+        setTimeout(resolve, 10000);
+      }).then(() => {
+        document.removeEventListener('completion', handleCompletion as EventListener);
+      });
   };
 
   return (
@@ -293,9 +332,11 @@ const TextBlock = (props: EditableText) => {
       ref={isAllowedToEdit ? editableRef : undefined}
       id={`block-${blockID}`}
       data-block-index={index}
-      onInput={(e) => {
-        handlePotentialTypeChange(e.currentTarget);
-        handlePotentialInlineBlocks(e.currentTarget);
+      onInput={(_) => {
+        if (!editableRef.current) return;
+
+        handlePotentialTypeChange(editableRef.current);
+        handlePotentialInlineBlocks(editableRef.current);
 
         if (completionTimeout) {
           clearTimeout(completionTimeout);
@@ -303,51 +344,41 @@ const TextBlock = (props: EditableText) => {
         
         setCompletion(null);
 
+        if (
+          getCursorOffset(editableRef.current) < (editableRef.current.innerText.length - 2)
+          || editableRef.current.innerText.length <= 1
+        ) return;
+
         setCompletionTimeout(
-          setTimeout(() => {
-            if (!editableRef.current) return;
-
-            document.dispatchEvent(
-              new CustomEvent('completionRequest', {
-                detail: {
-                  index,
-                },
-              })
-            );
-
-            const handleCompletion = (event: CustomEvent<{ blockID: string; completion: string }>) => {
-              if (event.detail.blockID !== blockID) return;
-
-              setCompletion(event.detail.completion);
-              document.removeEventListener('completion', handleCompletion as EventListener);
-            };
-
-            document.addEventListener('completion', handleCompletion as EventListener);
-
-            new Promise((resolve) => {
-              setTimeout(resolve, 10000);
-            }).then(() => {
-              document.removeEventListener('completion', handleCompletion as EventListener);
-            });
-          }, 250)
+          setTimeout(
+            createCompletion,
+            250
+          )
         );
       }}
       onBlur={
         (e) => {
+          if (completionTimeout) {
+            clearTimeout(completionTimeout);
+          }
+          
           setCompletion(null);
+          setCompletionTimeout(null);
           saveBlock(e.currentTarget);
         }
       }
       onKeyDown={
         (e) => {
+          if (!editableRef.current) return;
+
           if (e.code === 'Enter' && !e.shiftKey) {
             e.preventDefault();
             e.currentTarget.blur();
             addBlockAtIndex(index + 1, page, pageData, setPageData);
-          } else if (e.code === 'Backspace' && type !== 'text' && window.getSelection()?.anchorOffset === 0) {
+          } else if (e.code === 'Backspace' && type !== 'text' && getCursorOffset(editableRef.current) === 0) {
             setCurrentBlockType('text');
             editBlock([blockID], 'text', undefined, page);
-          } else if (e.code === 'Backspace' && type === 'text' && (e.currentTarget.innerText === '' || e.currentTarget.innerText === '\n')) {
+          } else if (e.code === 'Backspace' && type === 'text' && (editableRef.current.innerText === '' || editableRef.current.innerText === '\n')) {
             removeBlock(index, [blockID], page, pageData, setPageData, true);
           }
         }
@@ -357,16 +388,6 @@ const TextBlock = (props: EditableText) => {
         renderInlineBlocks(
           properties.value,
           properties.style
-        )
-      }
-      {
-        completion && (
-          <span
-            className="text-amber-50/50"
-            contentEditable={false}
-          >
-            {completion}
-          </span>
         )
       }
       {slashMenu}

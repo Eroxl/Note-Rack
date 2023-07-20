@@ -36,29 +36,28 @@ client.indices.exists({
   .then((exists) => {
     if (exists) return;
 
-    return client.indices.create({
+    client.indices.create({
       index: 'blocks',
-    });
-  })
-  .then(() => {
-    return client.indices.putMapping({
-      index: 'blocks',
-      body: {
-        properties: {
-          blockId: {
-            type: 'keyword',
-          },
-          content: {
-            type: 'text',
-          },
-          pageId: {
-            type: 'keyword',
-          },
-          userID: {
-            type: 'keyword',
+    }).then(() => {
+      client.indices.putMapping({
+        index: 'blocks',
+        body: {
+          properties: {
+            blockId: {
+              type: 'keyword',
+            },
+            content: {
+              type: 'text',
+            },
+            pageId: {
+              type: 'keyword',
+            },
+            userID: {
+              type: 'keyword',
+            },
           },
         },
-      },
+      });
     });
   })
   .catch((err) => {
