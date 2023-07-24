@@ -10,6 +10,8 @@ const getCursorOffset = (element: HTMLElement): number => {
 
   if (!selection) return 0;
 
+  if (selection.rangeCount === 0) return 0;
+
   const range = selection.getRangeAt(0);
 
   if (!range) return 0;

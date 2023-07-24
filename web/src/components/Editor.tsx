@@ -55,12 +55,16 @@ const Editor = () => {
   };
 
   useEffect(() => {
-    const handleCompletionRequest = (event: CustomEvent<{ index: number }>) => {
+    const handleCompletionRequest = (event: CustomEvent<{ index: number, eventID: string }>) => {
       generateAutocomplete(event.detail.index).then((completion) => {
         if (!completion) return;
           
         document.dispatchEvent(
-          new CustomEvent('completion', { detail: { completion, blockID: pageData?.data[event.detail.index]._id } }),
+          new CustomEvent('completion', { detail: {
+            completion,
+            blockID: pageData?.data[event.detail.index]._id,
+            eventID: event.detail.eventID,
+          } }),
         );
       });
     }

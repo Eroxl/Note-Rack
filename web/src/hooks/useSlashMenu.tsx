@@ -84,8 +84,8 @@ export type SlashMenuCategory = {
  *  </div>
  * );
  */
-const useSlashMenu = (slashMenuCategories: SlashMenuCategory[]) => {
-  const editableRef = useRef<HTMLSpanElement>(null);
+const useSlashMenu = (slashMenuCategories: SlashMenuCategory[], setText?: (text: string) => void) => {
+  const editableRef = useRef<HTMLDivElement>(null);
   const [slashMenu, setSlashMenu] = useState<JSX.Element | null>(null);
 
   useEffect(() => {
@@ -96,6 +96,7 @@ const useSlashMenu = (slashMenuCategories: SlashMenuCategory[]) => {
         <SlashMenu
           editableRef={editableRef}
           slashMenuCategories={slashMenuCategories}
+          setText={setText}
         />,
         editableRef.current.parentElement as HTMLElement,
       )

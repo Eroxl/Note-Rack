@@ -4,16 +4,19 @@ import type { SlashMenuCategory, SlashMenuOption } from '../../hooks/useSlashMen
 import getOffsetCoordinates from '../../lib/helpers/getOffsetCoordinates';
 import getStringDistance from '../../lib/helpers/getStringDistance';
 import getCursorOffset from '../../lib/helpers/caret/getCursorOffset';
+import focusElement from '../../lib/helpers/focusElement';
 
 interface SlashMenuProps {
   slashMenuCategories: SlashMenuCategory[];
   editableRef: React.RefObject<HTMLSpanElement>;
+  setText?: (text: string) => void;
 }
 
 const SlashMenu = (props: SlashMenuProps) => {
   const {
     slashMenuCategories,
     editableRef,
+    setText,
   } = props;
 
   const slashMenuRef = React.useRef<HTMLDivElement>(null);
@@ -42,7 +45,11 @@ const SlashMenu = (props: SlashMenuProps) => {
     const textBeforeSlash = editableRef.current.innerText.slice(0, slashLocation);
     const textAfterSlash = editableRef.current.innerText.slice(slashLocation + slashMenuQuery.length);
 
-    editableRef.current.innerText = textBeforeSlash + textAfterSlash;
+    if (setText) {
+      setText(textBeforeSlash + textAfterSlash);
+    } else {
+      editableRef.current.innerText = textBeforeSlash + textAfterSlash;
+    }
 
     setIsSlashMenuOpen(false);
 
@@ -50,16 +57,7 @@ const SlashMenu = (props: SlashMenuProps) => {
 
     const newCaretOffset = textBeforeSlash.length;
 
-    const range = document.createRange();
-    const sel = window.getSelection()!;
-
-    range.setStart(editableRef.current.childNodes[0], newCaretOffset);
-    range.collapse(true);
-    sel.removeAllRanges();
-    sel.addRange(range);
-
-    editableRef.current.dispatchEvent(new Event('input'));
-    editableRef.current.dispatchEvent(new Event('change'));
+    focusElement(editableRef.current, newCaretOffset);
 
     relevantOptions[categoryIndex].options[optionIndex].action();
   };

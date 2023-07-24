@@ -1,4 +1,5 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import crypto from 'crypto';
 
 import { editBlock, addBlockAtIndex, removeBlock } from '../../lib/pages/updatePage';
 import InlineTextStyles from '../../lib/constants/InlineTextStyles';
@@ -11,6 +12,9 @@ import useSlashMenu, { createDefaultSlashMenuCategories } from '../../hooks/useS
 import findNodesInRange from '../../lib/helpers/inlineBlocks/findNodesInRange';
 import renderNewInlineBlocks from '../../lib/helpers/inlineBlocks/renderNewInlineBlocks';
 import getCursorOffset from '../../lib/helpers/caret/getCursorOffset';
+import ContentEditable from 'react-contenteditable';
+import { sanitize } from 'dompurify';
+import focusElement from '../../lib/helpers/focusElement';
 
 const TextBlock = (props: EditableText) => {
   const {
@@ -25,9 +29,13 @@ const TextBlock = (props: EditableText) => {
   const { pageData, setPageData } = useContext(PageContext);
   const [completionTimeout, setCompletionTimeout] = useState<NodeJS.Timeout | null>(null);
   const [completion, setCompletion] = useState<string | null>(null);
+  const [state, setState] = useState({
+    value: properties.value,
+    style: properties.style,
+  });
 
   const isAllowedToEdit = pageData?.userPermissions.write || false;
-
+      
   const [editableRef, slashMenu] = useSlashMenu(
     createDefaultSlashMenuCategories(
       async (type) => {
@@ -51,6 +59,12 @@ const TextBlock = (props: EditableText) => {
         setCurrentBlockType(type);
       },
     ),
+    (text) => {
+      setState((state) => ({
+        ...state,
+        value: text,
+      }));
+    }
   );
 
   const handlePotentialInlineBlocks = async (element: HTMLSpanElement) => {
@@ -172,8 +186,13 @@ const TextBlock = (props: EditableText) => {
   /**
    * Saves the block to the database
    * @param element The element to save
+   * @param completionText The completion text to remove
+   * @returns The value and style of the block
    */
-  const saveBlock = (element: HTMLSpanElement) => {
+  const saveBlock = (
+    element: HTMLDivElement,
+    completionText: string | null = null,
+  ) => {
     if (!isAllowedToEdit || !editableRef.current) return;
   
     const style: typeof properties.style = [];
@@ -228,15 +247,12 @@ const TextBlock = (props: EditableText) => {
       });
     }
 
-    editBlock(
-      [blockID],
-      undefined,
-      {
-        value: element.innerText,
-        style,
-      },
-      page
-    );
+    const offset = completionText?.length || 0;
+
+    return {
+      value: element.innerText.substring(0, element.innerText.length - offset),
+      style,
+    };
   };
 
   /**
@@ -248,7 +264,8 @@ const TextBlock = (props: EditableText) => {
   const renderInlineBlocks = (
     value: string,
     style: EditableText['properties']['style'],
-  ): (JSX.Element | string)[] | string => {
+    completion?: string | null,
+  ): string => {
     if (!style) return properties.value;
 
     const blocks: (JSX.Element | string)[] = [];
@@ -264,12 +281,10 @@ const TextBlock = (props: EditableText) => {
       }
 
       blocks.push(
-        <span
-          className={block.type.map((type) => InlineTextStyles[type]).join(' ')}
-          data-inline-type={JSON.stringify(block.type)}
-        >
-          {inlineText}
-        </span>
+        `<span
+          class="${block.type.map((type) => InlineTextStyles[type]).join(' ')}"
+          data-inline-type="${JSON.stringify(block.type).replace(/"/g, '&quot;')}"
+        >${inlineText}</span>`
       );
 
       start = block.end;
@@ -278,121 +293,234 @@ const TextBlock = (props: EditableText) => {
     const text = value.substring(start);
 
     if (text) {
-      if (text.endsWith('\n')) {
-        blocks.push(text.slice(0, text.length - 1));
-      } else {
-        blocks.push(text);
-      }
+      blocks.push(text);
     }
 
-    blocks.push('\n');
+    if (completion) {
+      blocks.push(
+        `<span
+          class="text-amber-50/50"
+          contenteditable="false"
+        >${completion}</span>`
+      );
+    }
 
-    return blocks;
+    return sanitize(blocks.join(''), {
+      ALLOWED_TAGS: ['span'],
+      ALLOWED_ATTR: ['class', 'data-inline-type', 'contenteditable'],
+    });
   };
 
   const createCompletion = async () => {
     if (!editableRef.current) return;
 
+      const eventID = crypto.randomBytes(12).toString('hex');
+
       document.dispatchEvent(
         new CustomEvent('completionRequest', {
           detail: {
             index,
+            eventID,
           },
         })
       );
 
-      const handleCompletion = (event: CustomEvent<{ blockID: string; completion: string }>) => {
-        if (event.detail.blockID !== blockID || !editableRef.current) return;
+      const handleCompletion = (event: CustomEvent<{ blockID: string; completion: string, eventID: string }>) => {
+        if (
+          event.detail.blockID !== blockID
+          || eventID !== event.detail.eventID
+        ) return;
 
-        saveBlock(editableRef.current);
+        document.removeEventListener('completion', handleCompletion as EventListener);
 
-        setTimeout(() => {
-          setCompletion(event.detail.completion);
-          
-          document.removeEventListener('completion', handleCompletion as EventListener);
-        }, 10);
+        setCompletion(event.detail.completion);
       };
 
       document.addEventListener('completion', handleCompletion as EventListener);
-
-      new Promise((resolve) => {
-        setTimeout(resolve, 10000);
-      }).then(() => {
-        document.removeEventListener('completion', handleCompletion as EventListener);
-      });
   };
 
+  /**
+   * Ensure the state is always up to date
+   */
+  useEffect(() => {
+    setState({
+      style: properties.style,
+      value: properties.value,
+    });
+  }, [properties.value, properties.style]);
+
+  /**
+   * Ensure the cursor is never past the completion
+   */
+  useEffect(() => {
+    if (!editableRef.current) return;
+
+    const caretOffset = getCursorOffset(editableRef.current);
+
+    if (caretOffset > state.value.length) {
+      focusElement(editableRef.current, state.value.length);
+    }
+  }, [completion, editableRef.current, state.value]);
+
   return (
-    <span
-      className={`min-h-[1.2em] outline-none relative whitespace-pre-wrap w-full ${TextStyles[type]}`}
-      role="textbox"
-      tabIndex={0}
-      contentEditable={isAllowedToEdit}
-      suppressContentEditableWarning
-      ref={isAllowedToEdit ? editableRef : undefined}
-      id={`block-${blockID}`}
-      data-block-index={index}
-      onInput={(_) => {
-        if (!editableRef.current) return;
+    <>
+      <ContentEditable
+        className={`min-h-[1.2em] outline-none relative whitespace-pre-wrap w-full ${TextStyles[type]}`}
+        html={renderInlineBlocks(state.value, state.style, completion)}
+        tagName="span"
+        innerRef={editableRef}
+        id={`block-${blockID}`}
+        onChange={(_) => {
+          if (!editableRef.current) return;
 
-        handlePotentialTypeChange(editableRef.current);
-        handlePotentialInlineBlocks(editableRef.current);
+          handlePotentialTypeChange(editableRef.current);
+          handlePotentialInlineBlocks(editableRef.current);
 
-        if (completionTimeout) {
-          clearTimeout(completionTimeout);
-        }
-        
-        setCompletion(null);
+          if (completionTimeout) {
+            clearTimeout(completionTimeout);
+          }
 
-        if (
-          getCursorOffset(editableRef.current) < (editableRef.current.innerText.length - 2)
-          || editableRef.current.innerText.length <= 1
-        ) return;
+          setCompletion(null);
+          
+          const value = saveBlock(editableRef.current, completion);
 
-        setCompletionTimeout(
-          setTimeout(
-            createCompletion,
-            250
-          )
-        );
-      }}
-      onBlur={
-        (e) => {
+          if (!value) return;
+
+          setState(value);
+
+          if (
+            getCursorOffset(editableRef.current) < (editableRef.current.innerText.length - 2)
+            || editableRef.current.innerText.length <= 1
+          ) return;
+  
+          setCompletionTimeout(
+            setTimeout(
+              createCompletion,
+              500
+            )
+          );
+        }}
+        onBlur={() => {
+          if (!editableRef.current) return;
+
+          setCompletion(null);
+          
           if (completionTimeout) {
             clearTimeout(completionTimeout);
           }
           
-          setCompletion(null);
-          setCompletionTimeout(null);
-          saveBlock(e.currentTarget);
-        }
-      }
-      onKeyDown={
-        (e) => {
-          if (!editableRef.current) return;
+          const value = saveBlock(editableRef.current, completion);
 
-          if (e.code === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            e.currentTarget.blur();
-            addBlockAtIndex(index + 1, page, pageData, setPageData);
-          } else if (e.code === 'Backspace' && type !== 'text' && getCursorOffset(editableRef.current) === 0) {
-            setCurrentBlockType('text');
-            editBlock([blockID], 'text', undefined, page);
-          } else if (e.code === 'Backspace' && type === 'text' && (editableRef.current.innerText === '' || editableRef.current.innerText === '\n')) {
-            removeBlock(index, [blockID], page, pageData, setPageData, true);
+          if (!value) return;
+
+          editBlock([blockID], undefined, value, page);
+          setState(value);
+        }}
+        onKeyDown={
+          (event) => {
+            if (!editableRef.current) return;
+  
+            if (event.code === 'Enter' && !event.shiftKey) {
+              event.preventDefault();
+              event.currentTarget.blur();
+              addBlockAtIndex(index + 1, page, pageData, setPageData);
+            } else if (event.code === 'Backspace' && type !== 'text' && getCursorOffset(editableRef.current) === 0) {
+              setCurrentBlockType('text');
+              editBlock([blockID], 'text', undefined, page);
+            } else if (event.code === 'Backspace' && type === 'text' && (editableRef.current.innerText === '' || editableRef.current.innerText === '\n')) {
+              removeBlock(index, [blockID], page, pageData, setPageData, true);
+            } else if (event.code === 'Tab' && completion !== null) {
+              event.preventDefault();
+
+              const value = saveBlock(editableRef.current, null);
+
+              if (!value) return;
+
+              setState(value);
+              setCompletion(null);
+            }
           }
         }
-      }
-    >
-      {
-        renderInlineBlocks(
-          properties.value,
-          properties.style
-        )
-      }
+        disabled={!isAllowedToEdit}
+        suppressContentEditableWarning
+        data-block-index={index}
+      />
       {slashMenu}
-    </span>
-  );
+    </>
+  )
+
+  // return (
+  //   <ContentEditable
+  //     className={`min-h-[1.2em] outline-none relative whitespace-pre-wrap w-full ${TextStyles[type]}`}
+  //     role="textbox"
+  //     tabIndex={0}
+  //     contentEditable={isAllowedToEdit}
+  //     suppressContentEditableWarning
+  //     ref={isAllowedToEdit ? editableRef as unknown as React.RefObject<typeof ContentEditable> : null}
+  //     id={`block-${blockID}`}
+  //     data-block-index={index}
+  //     onInput={(_) => {
+  //       if (!editableRef.current) return;
+
+  //       handlePotentialTypeChange(editableRef.current);
+  //       handlePotentialInlineBlocks(editableRef.current);
+
+  //       if (completionTimeout) {
+  //         clearTimeout(completionTimeout);
+  //       }
+        
+  //       setCompletion(null);
+
+  //       if (
+  //         getCursorOffset(editableRef.current) < (editableRef.current.innerText.length - 2)
+  //         || editableRef.current.innerText.length <= 1
+  //       ) return;
+
+  //       setCompletionTimeout(
+  //         setTimeout(
+  //           createCompletion,
+  //           500
+  //         )
+  //       );
+  //     }}
+  //     onBlur={
+  //       (e) => {
+  //         if (completionTimeout) {
+  //           clearTimeout(completionTimeout);
+  //         }
+          
+  //         setCompletion(null);
+  //         setCompletionTimeout(null);
+  //         saveBlock(e.currentTarget);
+  //       }
+  //     }
+  //     onKeyDown={
+  //       (e) => {
+  //         if (!editableRef.current) return;
+
+  //         if (e.code === 'Enter' && !e.shiftKey) {
+  //           e.preventDefault();
+  //           e.currentTarget.blur();
+  //           addBlockAtIndex(index + 1, page, pageData, setPageData);
+  //         } else if (e.code === 'Backspace' && type !== 'text' && getCursorOffset(editableRef.current) === 0) {
+  //           setCurrentBlockType('text');
+  //           editBlock([blockID], 'text', undefined, page);
+  //         } else if (e.code === 'Backspace' && type === 'text' && (editableRef.current.innerText === '' || editableRef.current.innerText === '\n')) {
+  //           removeBlock(index, [blockID], page, pageData, setPageData, true);
+  //         }
+  //       }
+  //     }
+  //   >
+  //     {
+  //       renderInlineBlocks(
+  //         properties.value,
+  //         properties.style
+  //       )
+  //     }
+  //     {completion}
+  //     {slashMenu}
+  //   </ContentEditable>
+  // );
 };
 
 export default TextBlock;
