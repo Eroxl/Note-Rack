@@ -293,7 +293,11 @@ const TextBlock = (props: EditableText) => {
     const text = value.substring(start);
 
     if (text) {
-      blocks.push(text);
+      if (text.endsWith('\n')) {
+        blocks.push(text.substring(0, text.length - 1));
+      } else {
+        blocks.push(text);
+      }
     }
 
     if (completion) {
@@ -304,6 +308,8 @@ const TextBlock = (props: EditableText) => {
         >${completion}</span>`
       );
     }
+
+    blocks.push('<br />')
 
     return sanitize(blocks.join(''), {
       ALLOWED_TAGS: ['span'],
@@ -403,11 +409,11 @@ const TextBlock = (props: EditableText) => {
         onBlur={() => {
           if (!editableRef.current) return;
 
-          setCompletion(null);
-          
           if (completionTimeout) {
             clearTimeout(completionTimeout);
           }
+          
+          setCompletion(null);
           
           const value = saveBlock(editableRef.current, completion);
 

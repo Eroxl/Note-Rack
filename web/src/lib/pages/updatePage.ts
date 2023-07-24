@@ -40,7 +40,7 @@ const addBlockAtIndex = async (
     _id: objectID,
     blockType: blockType || 'text',
     properties: blockProperties || {
-      value: '\n',
+      value: '',
     },
     children: [],
   });
