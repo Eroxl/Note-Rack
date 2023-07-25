@@ -32,7 +32,8 @@ router.get(
     const response = await OpenAIClient!.createCompletion({
       model: 'text-davinci-003',
       prompt: context,
-      max_tokens: 10,
+      stop: ['\n'],
+      max_tokens: 100,
       n: 1,
     });
 
