@@ -15,6 +15,7 @@ import getCursorOffset from '../../lib/helpers/caret/getCursorOffset';
 import ContentEditable from 'react-contenteditable';
 import { sanitize } from 'dompurify';
 import focusElement from '../../lib/helpers/focusElement';
+import isElementFocused from '../../lib/helpers/isElementFocused';
 
 const TextBlock = (props: EditableText) => {
   const {
@@ -359,7 +360,13 @@ const TextBlock = (props: EditableText) => {
    * Ensure the cursor is never past the completion
    */
   useEffect(() => {
-    if (!editableRef.current) return;
+    if (!editableRef.current || !state.value) return;
+
+    if (!isElementFocused(editableRef.current)) {
+      setCompletion(null);
+      setCompletionTimeout(null);
+      return;
+    }
 
     const caretOffset = getCursorOffset(editableRef.current);
 
@@ -414,6 +421,7 @@ const TextBlock = (props: EditableText) => {
           }
           
           setCompletion(null);
+          setCompletionTimeout(null);
           
           const value = saveBlock(editableRef.current, completion);
 
@@ -453,80 +461,7 @@ const TextBlock = (props: EditableText) => {
       />
       {slashMenu}
     </>
-  )
-
-  // return (
-  //   <ContentEditable
-  //     className={`min-h-[1.2em] outline-none relative whitespace-pre-wrap w-full ${TextStyles[type]}`}
-  //     role="textbox"
-  //     tabIndex={0}
-  //     contentEditable={isAllowedToEdit}
-  //     suppressContentEditableWarning
-  //     ref={isAllowedToEdit ? editableRef as unknown as React.RefObject<typeof ContentEditable> : null}
-  //     id={`block-${blockID}`}
-  //     data-block-index={index}
-  //     onInput={(_) => {
-  //       if (!editableRef.current) return;
-
-  //       handlePotentialTypeChange(editableRef.current);
-  //       handlePotentialInlineBlocks(editableRef.current);
-
-  //       if (completionTimeout) {
-  //         clearTimeout(completionTimeout);
-  //       }
-        
-  //       setCompletion(null);
-
-  //       if (
-  //         getCursorOffset(editableRef.current) < (editableRef.current.innerText.length - 2)
-  //         || editableRef.current.innerText.length <= 1
-  //       ) return;
-
-  //       setCompletionTimeout(
-  //         setTimeout(
-  //           createCompletion,
-  //           500
-  //         )
-  //       );
-  //     }}
-  //     onBlur={
-  //       (e) => {
-  //         if (completionTimeout) {
-  //           clearTimeout(completionTimeout);
-  //         }
-          
-  //         setCompletion(null);
-  //         setCompletionTimeout(null);
-  //         saveBlock(e.currentTarget);
-  //       }
-  //     }
-  //     onKeyDown={
-  //       (e) => {
-  //         if (!editableRef.current) return;
-
-  //         if (e.code === 'Enter' && !e.shiftKey) {
-  //           e.preventDefault();
-  //           e.currentTarget.blur();
-  //           addBlockAtIndex(index + 1, page, pageData, setPageData);
-  //         } else if (e.code === 'Backspace' && type !== 'text' && getCursorOffset(editableRef.current) === 0) {
-  //           setCurrentBlockType('text');
-  //           editBlock([blockID], 'text', undefined, page);
-  //         } else if (e.code === 'Backspace' && type === 'text' && (editableRef.current.innerText === '' || editableRef.current.innerText === '\n')) {
-  //           removeBlock(index, [blockID], page, pageData, setPageData, true);
-  //         }
-  //       }
-  //     }
-  //   >
-  //     {
-  //       renderInlineBlocks(
-  //         properties.value,
-  //         properties.style
-  //       )
-  //     }
-  //     {completion}
-  //     {slashMenu}
-  //   </ContentEditable>
-  // );
+  );
 };
 
 export default TextBlock;

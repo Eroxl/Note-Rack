@@ -5,11 +5,6 @@ import OpenAIClient from '../../helpers/clients/OpenAIClient';
 
 const router = express.Router();
 
-const AUTOCOMPLETE_PROMPT = `You are a helpful AI assistant. Use the following pieces of context to complete the text at the end.
-DO NOT repeat the context. Only complete it.
-
-Context: {{context}}`;
-
 router.get(
   '/complete',
   verifySession(),
@@ -34,23 +29,17 @@ router.get(
       return;
     }
 
-    const prompt = AUTOCOMPLETE_PROMPT.replace('{{context}}', context);
-
-    const response = await OpenAIClient!.createChatCompletion({
-      model: 'gpt-3.5-turbo',
-      messages: [
-        {
-          role: 'user',
-          content: prompt,
-        }
-      ],
+    const response = await OpenAIClient!.createCompletion({
+      model: 'text-davinci-003',
+      prompt: context,
       max_tokens: 10,
+      n: 1,
     });
 
     res.statusCode = 200;
     res.json({
       status: 'success',
-      message: response.data.choices[0].message?.content,
+      message: response.data.choices[0].text || '',
     });
   },
 );

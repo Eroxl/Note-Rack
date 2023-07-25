@@ -43,7 +43,7 @@ const Editor = () => {
       .map((node) => node.textContent)
       .join('\n');
 
-    const completionEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/page/complete?context=${textBefore}`;
+    const completionEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/page/complete?context="${textBefore}"`;
 
     const completionRequest = await fetch(completionEndpoint);
 
