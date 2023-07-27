@@ -72,8 +72,7 @@ const TextBlock = (props: EditableText) => {
   const handlePotentialInlineBlocks = async (element: HTMLSpanElement) => {
     if (!editableRef.current) return;
 
-    const cursorOffset = getCursorOffset(element);
-    let updatedCursorOffset = 0;
+    let cursorOffset = getCursorOffset(element);
 
     for (let i = 0; i < inlineTextKeybinds.length; i++) {
       const bind = inlineTextKeybinds[i];
@@ -114,46 +113,15 @@ const TextBlock = (props: EditableText) => {
       //   subtract the length of the keybind times 2.
       const isAfterFullMatch = regexSearch?.index + regexSearch?.[0]?.length >= cursorOffset;
 
-      updatedCursorOffset = (regexSearch?.[1]?.length || 0) * (isAfterFullMatch ? 2 : 1);
+      cursorOffset -= (regexSearch?.[1]?.length || 0) * (isAfterFullMatch ? 2 : 1);
       break;
     }
 
-    // ~ Update the cursor position
-    if (updatedCursorOffset !== 0 && editableRef.current) {
-      const range = document.createRange();
-      const sel = window.getSelection()!;
+    setTimeout(() => {
+      if (!editableRef.current) return;
 
-      let nodeToSelect: Node | null = editableRef.current;
-
-      const walker = document.createTreeWalker(nodeToSelect, NodeFilter.SHOW_TEXT, null);
-
-      const offset = cursorOffset - updatedCursorOffset;
-      let currentOffset = 0;
-
-      while (walker.nextNode()) {
-        const node = walker.currentNode;
-
-        if (currentOffset + node.textContent?.length! >= offset) {
-          if (node.textContent?.length! === offset - currentOffset) {
-            nodeToSelect = walker.nextNode();
-            currentOffset = offset;
-            break;
-          }
-
-          nodeToSelect = node;
-          break;
-        }
-
-        currentOffset += node.textContent?.length!;
-      }
-
-      if (!nodeToSelect) return;
-
-      range.setStart(nodeToSelect, offset - currentOffset);
-      range.collapse(true);
-      sel.removeAllRanges();
-      sel.addRange(range);
-    }
+      focusElement(editableRef.current, cursorOffset);
+    }, 0);
   };
 
   const handlePotentialTypeChange = async (element: HTMLSpanElement) => {
@@ -227,7 +195,7 @@ const TextBlock = (props: EditableText) => {
    * Ensure the cursor is never past the completion
    */
   useEffect(() => {
-    if (!editableRef.current || !state.value) return;
+    if (!editableRef.current || !state.value || !completion) return;
 
     if (!isElementFocused(editableRef.current)) {
       setCompletion(null);
