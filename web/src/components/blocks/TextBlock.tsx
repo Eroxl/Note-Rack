@@ -107,7 +107,12 @@ const TextBlock = (props: EditableText) => {
   useEffect(() => {
     if (!editableRef.current || !state.value || !completion) return;
 
-    if (!isElementFocused(editableRef.current)) {
+    const shouldCompletionBeRendered = (
+      getCursorOffset(editableRef.current) < (editableRef.current.innerText.length - 2)
+      || editableRef.current.innerText.length <= 1
+    );
+
+    if (!isElementFocused(editableRef.current) || !shouldCompletionBeRendered) {
       setCompletion(null);
       setCompletionTimeout(null);
       return;
