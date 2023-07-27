@@ -33,7 +33,7 @@ router.get(
       model: 'text-davinci-003',
       prompt: context.slice(1, -1),
       stop: ['\n', '\\n'],
-      max_tokens: 20,
+      max_tokens: 10,
       n: 1,
     });
 
