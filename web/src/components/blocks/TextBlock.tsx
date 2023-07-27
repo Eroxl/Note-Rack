@@ -1,21 +1,22 @@
-import React, { useContext, useEffect, useState } from 'react';
 import crypto from 'crypto';
+import React, { useContext, useEffect, useState } from 'react';
+import ContentEditable from 'react-contenteditable';
 
-import { editBlock, addBlockAtIndex, removeBlock } from '../../lib/pages/updatePage';
-import InlineTextStyles from '../../lib/constants/InlineTextStyles';
-import TextStyles from '../../lib/constants/TextStyles';
-import inlineTextKeybinds from '../../lib/inlineTextKeybinds';
-import textKeybinds from '../../lib/textKeybinds';
-import type { EditableText } from '../../lib/types/blockTypes';
 import PageContext from '../../contexts/PageContext';
 import useSlashMenu, { createDefaultSlashMenuCategories } from '../../hooks/useSlashMenu';
-import findNodesInRange from '../../lib/helpers/inlineBlocks/findNodesInRange';
-import renderNewInlineBlocks from '../../lib/helpers/inlineBlocks/renderNewInlineBlocks';
+import InlineTextStyles from '../../lib/constants/InlineTextStyles';
+import TextStyles from '../../lib/constants/TextStyles';
 import getCursorOffset from '../../lib/helpers/caret/getCursorOffset';
-import ContentEditable from 'react-contenteditable';
-import { sanitize } from 'dompurify';
 import focusElement from '../../lib/helpers/focusElement';
+import findNodesInRange from '../../lib/helpers/inlineBlocks/findNodesInRange';
+import renderInlineBlocks from '../../lib/helpers/inlineBlocks/renderInlineBlocks';
+import renderNewInlineBlocks from '../../lib/helpers/inlineBlocks/renderNewInlineBlocks';
 import isElementFocused from '../../lib/helpers/isElementFocused';
+import saveBlock from '../../lib/helpers/saveBlock';
+import inlineTextKeybinds from '../../lib/inlineTextKeybinds';
+import { addBlockAtIndex, editBlock, removeBlock } from '../../lib/pages/updatePage';
+import textKeybinds from '../../lib/textKeybinds';
+import type { EditableText } from '../../lib/types/blockTypes';
 
 const TextBlock = (props: EditableText) => {
   const {
@@ -36,7 +37,7 @@ const TextBlock = (props: EditableText) => {
   });
 
   const isAllowedToEdit = pageData?.userPermissions.write || false;
-      
+
   const [editableRef, slashMenu] = useSlashMenu(
     createDefaultSlashMenuCategories(
       async (type) => {
@@ -76,7 +77,7 @@ const TextBlock = (props: EditableText) => {
 
     for (let i = 0; i < inlineTextKeybinds.length; i++) {
       const bind = inlineTextKeybinds[i];
-  
+
       const regexSearch = bind.keybind.exec(element.textContent || '');
 
       if (!regexSearch || !regexSearch[2].length) continue;
@@ -121,7 +122,7 @@ const TextBlock = (props: EditableText) => {
     if (updatedCursorOffset !== 0 && editableRef.current) {
       const range = document.createRange();
       const sel = window.getSelection()!;
-      
+
       let nodeToSelect: Node | null = editableRef.current;
 
       const walker = document.createTreeWalker(nodeToSelect, NodeFilter.SHOW_TEXT, null);
@@ -184,166 +185,32 @@ const TextBlock = (props: EditableText) => {
     });
   };
 
-  /**
-   * Saves the block to the database
-   * @param element The element to save
-   * @param completionText The completion text to remove
-   * @returns The value and style of the block
-   */
-  const saveBlock = (
-    element: HTMLDivElement,
-    completionText: string | null = null,
-  ) => {
-    if (!isAllowedToEdit || !editableRef.current) return;
-  
-    const style: typeof properties.style = [];
-
-    /**
-     * Walk up the tree to get the full text style of the node
-     * @param node The node to get the full text style of
-     * @returns The full text style of the node
-     */
-    const getFullTextStyle = (node: Node): (keyof typeof InlineTextStyles)[] => {
-      if (!editableRef.current) return [];
-
-      let currentNode = node;
-      let style: string[] = [];
-
-      while (currentNode.parentElement && currentNode.parentElement !== editableRef.current) {
-        currentNode = currentNode.parentElement;
-
-        const type = (currentNode as HTMLElement).getAttribute('data-inline-type');
-
-        if (!type) continue;
-
-        style.push(...JSON.parse(type));
-      }
-
-      return style as (keyof typeof InlineTextStyles)[];
-    };
-
-    const treeWalker = document.createTreeWalker(
-      editableRef.current,
-      NodeFilter.SHOW_TEXT,
-      null
-    );
-
-    let length = 0;
-
-    while (treeWalker.nextNode()) {
-      const node = treeWalker.currentNode;
-
-      if (!node.textContent) continue;
-
-      length += node.textContent.length || 0;
-
-      const type = getFullTextStyle(node);
-
-      if (!type.length) continue;
-
-      style.push({
-        type,
-        start: length - node.textContent.length,
-        end: length,
-      });
-    }
-
-    const offset = completionText?.length || 0;
-
-    return {
-      value: element.innerText.substring(0, element.innerText.length - offset),
-      style,
-    };
-  };
-
-  /**
-   * Renders the inline blocks
-   * @param value The text value
-   * @param style The style of the text
-   * @returns The rendered inline blocks
-   */
-  const renderInlineBlocks = (
-    value: string,
-    style: EditableText['properties']['style'],
-    completion?: string | null,
-  ): string => {
-    if (!style) return properties.value;
-
-    const blocks: (JSX.Element | string)[] = [];
-
-    let start = 0;
-
-    style.forEach((block) => {
-      const text = value.substring(start, block.start);
-      const inlineText = value.substring(block.start, block.end);
-
-      if (text) {
-        blocks.push(text);
-      }
-
-      blocks.push(
-        `<span
-          class="${block.type.map((type) => InlineTextStyles[type]).join(' ')}"
-          data-inline-type="${JSON.stringify(block.type).replace(/"/g, '&quot;')}"
-        >${inlineText}</span>`
-      );
-
-      start = block.end;
-    });
-
-    const text = value.substring(start);
-
-    if (text) {
-      if (text.endsWith('\n')) {
-        blocks.push(text.substring(0, text.length - 1));
-      } else {
-        blocks.push(text);
-      }
-    }
-
-    if (completion) {
-      blocks.push(
-        `<span
-          class="text-amber-50/50"
-          contenteditable="false"
-        >${completion}</span>`
-      );
-    }
-
-    blocks.push('<br />')
-
-    return sanitize(blocks.join(''), {
-      ALLOWED_TAGS: ['span'],
-      ALLOWED_ATTR: ['class', 'data-inline-type', 'contenteditable'],
-    });
-  };
-
   const createCompletion = async () => {
     if (!editableRef.current) return;
 
-      const eventID = crypto.randomBytes(12).toString('hex');
+    const eventID = crypto.randomBytes(12).toString('hex');
 
-      document.dispatchEvent(
-        new CustomEvent('completionRequest', {
-          detail: {
-            index,
-            eventID,
-          },
-        })
-      );
+    document.dispatchEvent(
+      new CustomEvent('completionRequest', {
+        detail: {
+          index,
+          eventID,
+        },
+      })
+    );
 
-      const handleCompletion = (event: CustomEvent<{ blockID: string; completion: string, eventID: string }>) => {
-        if (
-          event.detail.blockID !== blockID
-          || eventID !== event.detail.eventID
-        ) return;
+    const handleCompletion = (event: CustomEvent<{ blockID: string; completion: string, eventID: string }>) => {
+      if (
+        event.detail.blockID !== blockID
+        || eventID !== event.detail.eventID
+      ) return;
 
-        document.removeEventListener('completion', handleCompletion as EventListener);
+      document.removeEventListener('completion', handleCompletion as EventListener);
 
-        setCompletion(event.detail.completion);
-      };
+      setCompletion(event.detail.completion);
+    };
 
-      document.addEventListener('completion', handleCompletion as EventListener);
+    document.addEventListener('completion', handleCompletion as EventListener);
   };
 
   /**
@@ -394,7 +261,7 @@ const TextBlock = (props: EditableText) => {
           }
 
           setCompletion(null);
-          
+
           const value = saveBlock(editableRef.current, completion);
 
           if (!value) return;
@@ -405,7 +272,7 @@ const TextBlock = (props: EditableText) => {
             getCursorOffset(editableRef.current) < (editableRef.current.innerText.length - 2)
             || editableRef.current.innerText.length <= 1
           ) return;
-  
+
           setCompletionTimeout(
             setTimeout(
               createCompletion,
@@ -419,13 +286,11 @@ const TextBlock = (props: EditableText) => {
           if (completionTimeout) {
             clearTimeout(completionTimeout);
           }
-          
+
           setCompletion(null);
           setCompletionTimeout(null);
-          
-          const value = saveBlock(editableRef.current, completion);
 
-          if (!value) return;
+          const value = saveBlock(editableRef.current, completion) || { value: '\n', style: [] };
 
           editBlock([blockID], undefined, value, page);
           setState(value);
@@ -433,7 +298,7 @@ const TextBlock = (props: EditableText) => {
         onKeyDown={
           (event) => {
             if (!editableRef.current) return;
-  
+
             if (event.code === 'Enter' && !event.shiftKey) {
               event.preventDefault();
               event.currentTarget.blur();

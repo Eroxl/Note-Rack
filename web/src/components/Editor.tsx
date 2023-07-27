@@ -41,7 +41,7 @@ const Editor = () => {
     const textBefore = Array.from(editorRef.current.childNodes)
       .slice(Math.max(1, index - 10), index + 3)
       .map((node) => node.textContent)
-      .join('\n');
+      .join('\\n');
 
     const completionEndpoint = `${process.env.NEXT_PUBLIC_API_URL}/page/complete?context="${textBefore}"`;
 
