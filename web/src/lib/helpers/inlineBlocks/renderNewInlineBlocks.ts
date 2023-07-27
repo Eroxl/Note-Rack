@@ -8,7 +8,6 @@ const renderNewInlineBlocks = (
     end: number;
     bindLength: number;
   },
-  parentElement: HTMLElement,
 ) => {
   let currentOffset = startOffset;
 

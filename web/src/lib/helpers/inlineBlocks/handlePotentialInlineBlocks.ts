@@ -6,6 +6,46 @@ import findNodesInRange from "./findNodesInRange";
 import renderNewInlineBlocks from "./renderNewInlineBlocks";
 
 /**
+ * Style an inline block
+ * @param element The parent block of the inline block
+ * @param inlineBlock The inline block
+ * @param type The type of inline block
+ */
+export const styleInlineBlock = (
+  element: HTMLSpanElement,
+  inlineBlock: {
+    start: number,
+    end: number,
+    bindLength: number,
+  },
+  type: keyof typeof InlineTextStyles,
+) => {
+  const { start, end, bindLength } = inlineBlock;
+
+  const nodesInRange = findNodesInRange(
+    element,
+    {
+      start,
+      end,
+    }
+  )
+
+  // ~ Quietly render the inline blocks using the DOM instead of
+  //   React to avoid a full re-render of the block
+  renderNewInlineBlocks(
+    nodesInRange.nodes,
+    InlineTextStyles[type],
+    type,
+    nodesInRange.startOffset,
+    {
+      start,
+      end,
+      bindLength,
+    },
+  );
+};
+
+/**
  * Handle the user potentially typing a inline block keybind
  * @param element The element to check for keybinds
  */
@@ -21,28 +61,15 @@ const handlePotentialInlineBlocks = async (
 
     if (!regexSearch || !regexSearch[2].length) continue;
 
-    const nodesInRange = findNodesInRange(
+    styleInlineBlock(
       element,
       {
         start: regexSearch.index,
         end: regexSearch.index + regexSearch[0].length,
-      }
-    )
-
-    // ~ Quietly render the inline blocks using the DOM instead of
-    //   React to avoid a full re-render of the block
-    renderNewInlineBlocks(
-      nodesInRange.nodes,
-      InlineTextStyles[bind.type],
-      bind.type,
-      nodesInRange.startOffset,
-      {
-        start: regexSearch.index,
-        end: regexSearch.index + regexSearch[0].length,
-        bindLength: regexSearch[1].length,
+        bindLength: regexSearch[1].length
       },
-      element,
-    )
+      bind.type,
+    );
 
     // ~ Handle correctly moving the cursor to the same spot after
     //   the inline block is rendered
@@ -56,12 +83,19 @@ const handlePotentialInlineBlocks = async (
     const isAfterFullMatch = regexSearch?.index + regexSearch?.[0]?.length >= cursorOffset;
 
     cursorOffset -= (regexSearch?.[1]?.length || 0) * (isAfterFullMatch ? 2 : 1);
+    
+    // ~ If the cursor as at the end of the element, we need to
+    //   increment the cursor offset by 1
+    if (cursorOffset === (element.textContent?.length || 0)) {
+      cursorOffset += 1;
+    }
+
+    setTimeout(() => {
+      focusElement(element, cursorOffset);
+    }, 0);
+  
     break;
   }
-
-  setTimeout(() => {
-    focusElement(element, cursorOffset);
-  }, 0);
 };
 
 export default handlePotentialInlineBlocks;
