@@ -1,22 +1,19 @@
-import crypto from 'crypto';
 import React, { useContext, useEffect, useState } from 'react';
 import ContentEditable from 'react-contenteditable';
 
 import PageContext from '../../contexts/PageContext';
 import useSlashMenu, { createDefaultSlashMenuCategories } from '../../hooks/useSlashMenu';
-import InlineTextStyles from '../../lib/constants/InlineTextStyles';
 import TextStyles from '../../lib/constants/TextStyles';
 import getCursorOffset from '../../lib/helpers/caret/getCursorOffset';
 import focusElement from '../../lib/helpers/focusElement';
-import findNodesInRange from '../../lib/helpers/inlineBlocks/findNodesInRange';
 import renderInlineBlocks from '../../lib/helpers/inlineBlocks/renderInlineBlocks';
-import renderNewInlineBlocks from '../../lib/helpers/inlineBlocks/renderNewInlineBlocks';
 import isElementFocused from '../../lib/helpers/isElementFocused';
 import saveBlock from '../../lib/helpers/saveBlock';
-import inlineTextKeybinds from '../../lib/inlineTextKeybinds';
 import { addBlockAtIndex, editBlock, removeBlock } from '../../lib/pages/updatePage';
 import textKeybinds from '../../lib/textKeybinds';
 import type { EditableText } from '../../lib/types/blockTypes';
+import handlePotentialInlineBlocks from '../../lib/helpers/inlineBlocks/handlePotentialInlineBlocks';
+import getCompletion from '../../lib/helpers/getCompletion';
 
 const TextBlock = (props: EditableText) => {
   const {
@@ -38,28 +35,38 @@ const TextBlock = (props: EditableText) => {
 
   const isAllowedToEdit = pageData?.userPermissions.write || false;
 
+  /**
+   * Change this blocks type and update the page
+   * @param bind The keybind to change to
+   */
+  const changeBlockType = async (bind: typeof textKeybinds[number]) => {
+    let newBlockProperties;
+
+    if (bind?.customFunc) {
+      newBlockProperties = await bind.customFunc(
+        {
+          ...properties,
+          value: editableRef.current?.innerText,
+        },
+        blockID,
+        page,
+        editableRef.current,
+      );
+    }
+
+    await editBlock([blockID], type, newBlockProperties, page);
+    setCurrentBlockType(type);
+  };
+
   const [editableRef, slashMenu] = useSlashMenu(
     createDefaultSlashMenuCategories(
       async (type) => {
         const bind = textKeybinds.find((bind) => bind.type === type);
 
-        let newBlockProperties;
+        if (!bind) return;
 
-        if (bind?.customFunc) {
-          newBlockProperties = await bind.customFunc(
-            {
-              ...properties,
-              value: editableRef.current?.innerText,
-            },
-            blockID,
-            page,
-            editableRef.current,
-          );
-        }
-
-        await editBlock([blockID], type, newBlockProperties, page);
-        setCurrentBlockType(type);
-      },
+        await changeBlockType(bind);
+      }
     ),
     (text) => {
       setState((state) => ({
@@ -69,121 +76,27 @@ const TextBlock = (props: EditableText) => {
     }
   );
 
-  const handlePotentialInlineBlocks = async (element: HTMLSpanElement) => {
-    if (!editableRef.current) return;
-
-    let cursorOffset = getCursorOffset(element);
-
-    for (let i = 0; i < inlineTextKeybinds.length; i++) {
-      const bind = inlineTextKeybinds[i];
-
-      const regexSearch = bind.keybind.exec(element.textContent || '');
-
-      if (!regexSearch || !regexSearch[2].length) continue;
-
-      const nodesInRange = findNodesInRange(
-        element,
-        {
-          start: regexSearch.index,
-          end: regexSearch.index + regexSearch[0].length,
-        }
-      )
-
-      renderNewInlineBlocks(
-        nodesInRange.nodes,
-        InlineTextStyles[bind.type],
-        bind.type,
-        nodesInRange.startOffset,
-        {
-          start: regexSearch.index,
-          end: regexSearch.index + regexSearch[0].length,
-          bindLength: regexSearch[1].length,
-        },
-        editableRef.current,
-      )
-
-      // ~ Handle correctly moving the cursor to the same spot after
-      //   the inline block is rendered
-
-      // ~ If the cursor is before the match, do nothing
-      if (regexSearch?.index > cursorOffset) break;
-
-      // ~ If the cursor is in the middle of the match, subtract the
-      //   length of the keybind from the cursor offset, otherwise
-      //   subtract the length of the keybind times 2.
-      const isAfterFullMatch = regexSearch?.index + regexSearch?.[0]?.length >= cursorOffset;
-
-      cursorOffset -= (regexSearch?.[1]?.length || 0) * (isAfterFullMatch ? 2 : 1);
-      break;
-    }
-
-    setTimeout(() => {
-      if (!editableRef.current) return;
-
-      focusElement(editableRef.current, cursorOffset);
-    }, 0);
-  };
-
+  /**
+   * Handle the user typing a keybind
+   * @param element The element to check
+   */
   const handlePotentialTypeChange = async (element: HTMLSpanElement) => {
-    textKeybinds.forEach(async (bind) => {
+    for (let i = 0; i < textKeybinds.length; i++) {
+      const bind = textKeybinds[i];
+
       if (!editableRef.current) return;
 
       const regexSearch = bind.keybind.exec(element.textContent || '');
 
-      if (!regexSearch) return;
+      if (!regexSearch) continue;
 
       element.textContent = regexSearch[1] ?? '';
 
-      let newBlockProperties;
-
-      if (bind.customFunc) {
-        newBlockProperties = await bind.customFunc(
-          {
-            ...properties,
-            value: element.textContent,
-          },
-          blockID,
-          page,
-          element,
-        );
-      }
-
-      await editBlock([blockID], bind.type, newBlockProperties, page);
-      setCurrentBlockType(bind.type);
-    });
+      await changeBlockType(bind);
+      break;
+    }
   };
 
-  const createCompletion = async () => {
-    if (!editableRef.current) return;
-
-    const eventID = crypto.randomBytes(12).toString('hex');
-
-    document.dispatchEvent(
-      new CustomEvent('completionRequest', {
-        detail: {
-          index,
-          eventID,
-        },
-      })
-    );
-
-    const handleCompletion = (event: CustomEvent<{ blockID: string; completion: string, eventID: string }>) => {
-      if (
-        event.detail.blockID !== blockID
-        || eventID !== event.detail.eventID
-      ) return;
-
-      document.removeEventListener('completion', handleCompletion as EventListener);
-
-      setCompletion(event.detail.completion);
-    };
-
-    document.addEventListener('completion', handleCompletion as EventListener);
-  };
-
-  /**
-   * Ensure the state is always up to date
-   */
   useEffect(() => {
     setState({
       style: properties.style,
@@ -191,9 +104,6 @@ const TextBlock = (props: EditableText) => {
     });
   }, [properties.value, properties.style]);
 
-  /**
-   * Ensure the cursor is never past the completion
-   */
   useEffect(() => {
     if (!editableRef.current || !state.value || !completion) return;
 
@@ -203,6 +113,7 @@ const TextBlock = (props: EditableText) => {
       return;
     }
 
+    // ~ Ensure the cursor is never past the completion
     const caretOffset = getCursorOffset(editableRef.current);
 
     if (caretOffset > state.value.length) {
@@ -243,7 +154,7 @@ const TextBlock = (props: EditableText) => {
 
           setCompletionTimeout(
             setTimeout(
-              createCompletion,
+              () => getCompletion(index).then((completion) => setCompletion(completion)),
               500
             )
           );

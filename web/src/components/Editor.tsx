@@ -62,7 +62,6 @@ const Editor = () => {
         document.dispatchEvent(
           new CustomEvent('completion', { detail: {
             completion,
-            blockID: pageData?.data[event.detail.index]._id,
             eventID: event.detail.eventID,
           } }),
         );

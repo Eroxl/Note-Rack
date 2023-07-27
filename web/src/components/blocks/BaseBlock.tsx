@@ -43,7 +43,7 @@ const BaseBlock = (props: BaseBlockProps) => {
       blockID,
       index,
     }),
-  }), [index]);
+  }), [index, blockID]);
 
   // =- Setup Drop -=-
   const [{ hovered }, drop] = useDrop(() => ({
@@ -70,7 +70,7 @@ const BaseBlock = (props: BaseBlockProps) => {
         setPageData,
       );
     },
-  }), [index]);
+  }), [index, page, pageData, setPageData]);
 
   preview(drop(selectableRef as React.RefObject<HTMLDivElement>));
 
