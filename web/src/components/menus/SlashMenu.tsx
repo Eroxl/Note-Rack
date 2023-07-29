@@ -5,6 +5,7 @@ import getOffsetCoordinates from '../../lib/helpers/getOffsetCoordinates';
 import getStringDistance from '../../lib/helpers/getStringDistance';
 import getCursorOffset from '../../lib/helpers/caret/getCursorOffset';
 import focusElement from '../../lib/helpers/focusElement';
+import getStyleScale from '../../lib/helpers/getStyleScale';
 
 interface SlashMenuProps {
   slashMenuCategories: SlashMenuCategory[];
@@ -40,15 +41,15 @@ const SlashMenu = (props: SlashMenuProps) => {
    * @param optionIndex The index of the selected option
    */
   const selectOption = (categoryIndex: number, optionIndex: number) => {
-    if (!editableRef.current) return;
+    if (!editableRef.current || !editableRef.current.textContent) return;
 
-    const textBeforeSlash = editableRef.current.innerText.slice(0, slashLocation);
-    const textAfterSlash = editableRef.current.innerText.slice(slashLocation + slashMenuQuery.length);
+    const textBeforeSlash = editableRef.current.textContent.slice(0, slashLocation);
+    const textAfterSlash = editableRef.current.textContent.slice(slashLocation + slashMenuQuery.length);
 
     if (setText) {
       setText(textBeforeSlash + textAfterSlash);
     } else {
-      editableRef.current.innerText = textBeforeSlash + textAfterSlash;
+      editableRef.current.textContent = textBeforeSlash + textAfterSlash;
     }
 
     setIsSlashMenuOpen(false);
@@ -70,7 +71,7 @@ const SlashMenu = (props: SlashMenuProps) => {
     if (!editableRef.current) return;
 
     const handleSlashMenu = (e: KeyboardEvent) => {
-      if (isSlashMenuOpen) return;
+      if (isSlashMenuOpen || !editableRef.current?.textContent) return;
 
       if (e.key === '/') {
         setIsSlashMenuOpen(true);
@@ -80,7 +81,7 @@ const SlashMenu = (props: SlashMenuProps) => {
         const caretOffset = getCursorOffset(editableRef.current);
 
         setSlashLocation(caretOffset);
-        setEditableElementLength(editableRef.current.innerText.length);
+        setEditableElementLength(editableRef.current.textContent.length);
         setSlashMenuQuery('');
       }
     };
@@ -153,7 +154,7 @@ const SlashMenu = (props: SlashMenuProps) => {
    * Handle rendering the slash menu when it is open
    */
   useEffect(() => {
-    if (!editableRef.current) return;
+    if (!editableRef.current || !slashMenuRef.current) return;
 
     let { x, y } = getOffsetCoordinates(editableRef.current, slashLocation);
 
@@ -164,18 +165,25 @@ const SlashMenu = (props: SlashMenuProps) => {
 
       x = boundingRect.left;
       y = boundingRect.top;
+
+      return;
     }
 
     const boundingRect = editableRef.current.parentElement?.getBoundingClientRect();
+
+    // ~ Check if the slash menu is overflowing the bottom of the screen
+    if (y + window.innerHeight / 3 > window.innerHeight) {
+      y -= window.innerHeight / 3 + getStyleScale(editableRef.current, 'lineHeight');
+    }
 
     if (boundingRect) {
       x -= boundingRect.left;
       y -= boundingRect.top;
     }
-
+    
     setX(x);
     setY(y + +(window.getComputedStyle(editableRef.current!).lineHeight.replace('px', '') || 0));
-  }, [slashLocation, editableRef.current]);
+  }, [slashLocation, editableRef.current, window.innerHeight]);
 
   /**
    * Handle the slash menu query changing when the user types
@@ -184,11 +192,11 @@ const SlashMenu = (props: SlashMenuProps) => {
     if (!isSlashMenuOpen) return;
 
     const handleSlashMenuQuery = () => {
-      if (!editableRef.current || !isSlashMenuOpen) return;
+      if (!editableRef.current || !isSlashMenuOpen || !editableRef.current.textContent) return;
 
-      const slashLengthChange = editableRef.current.innerText.length - editableElementLength;
+      const slashLengthChange = editableRef.current.textContent.length - editableElementLength;
 
-      const newQuery = editableRef.current.innerText.slice(slashLocation, slashLocation + slashMenuQuery.length + slashLengthChange);
+      const newQuery = editableRef.current.textContent.slice(slashLocation, slashLocation + slashMenuQuery.length + slashLengthChange);
 
       if (newQuery.length === 0 || newQuery[0] !== '/') {
         setIsSlashMenuOpen(false);
@@ -196,7 +204,7 @@ const SlashMenu = (props: SlashMenuProps) => {
       }
 
       setSlashMenuQuery(newQuery);
-      setEditableElementLength(editableRef.current.innerText.length);
+      setEditableElementLength(editableRef.current.textContent.length);
     };
 
     editableRef.current?.addEventListener('input', handleSlashMenuQuery);
@@ -333,56 +341,55 @@ const SlashMenu = (props: SlashMenuProps) => {
   }, [relevantOptions, selectedOption, isSlashMenuOpen, editableRef.current]);
 
   return (
-    <>
-      {isSlashMenuOpen && (
+    <div
+      ref={slashMenuRef}
+      className={`
+        absolute z-50 bg-neutral-600 rounded-md shadow-md w-64 p-4 overflow-y-scroll max-h-[33vh] border-black border border-opacity-5 no-scrollbar
+        ${(relevantOptions.length === 0 || !isSlashMenuOpen) ? 'hidden' : ''}
+      `}
+      style={{
+        top: y,
+        left: x,
+      }}
+    >
+      {relevantOptions.map((category, categoryIndex) => (
         <div
-          ref={slashMenuRef}
-          className={`absolute z-50 bg-neutral-600 rounded-md shadow-md w-64 p-4 overflow-y-scroll max-h-[33vh] border-black border border-opacity-5 no-scrollbar ${relevantOptions.length === 0 ? 'hidden' : ''}`}
-          style={{
-            top: y,
-            left: x,
-          }}
+          className="flex flex-col pb-2"
+          key={category.name}
         >
-          {relevantOptions.map((category, categoryIndex) => (
+          <div className="text-amber-50 text-lg font-medium">
+            {category.name}
+          </div>
+          {category.options.map((option, optionIndex) => (
             <div
-              className="flex flex-col pb-2"
-              key={category.name}
+              className={`
+                p-2 gap-2 text-gray-200 cursor-pointer flex flex-row items-center
+                ${selectedOption.categoryIndex === categoryIndex && selectedOption.optionIndex === optionIndex ? 'bg-white bg-opacity-10 rounded' : ''}
+              `}
+              key={option.name}
+              onMouseEnter={() => setSelectedOption({ categoryIndex, optionIndex })}
+              onClick={() => {
+                selectOption(categoryIndex, optionIndex);
+              }}
             >
-              <div className="text-amber-50 text-lg font-medium">
-                {category.name}
-              </div>
-              {category.options.map((option, optionIndex) => (
-                <div
-                  className={`
-                    p-2 gap-2 text-gray-200 cursor-pointer flex flex-row items-center
-                    ${selectedOption.categoryIndex === categoryIndex && selectedOption.optionIndex === optionIndex ? 'bg-white bg-opacity-10 rounded' : ''}
-                  `}
-                  key={option.name}
-                  onMouseEnter={() => setSelectedOption({ categoryIndex, optionIndex })}
-                  onClick={() => {
-                    selectOption(categoryIndex, optionIndex);
-                  }}
-                >
-                  <img
-                    src={option.image}
-                    alt={option.name}
-                    className="w-14 h-14 rounded-sm inline-block"
-                  />
-                  <div className="flex-col flex">
-                    <div className="text-md font-medium h-1/2">
-                      {option.name}
-                    </div>
-                    <div className="text-sm text-gray-400 h-1/2 w-full">
-                      {option.description}
-                    </div>
-                  </div>
+              <img
+                src={option.image}
+                alt={option.name}
+                className="w-14 h-14 rounded-sm inline-block"
+              />
+              <div className="flex-col flex">
+                <div className="text-md font-medium h-1/2">
+                  {option.name}
                 </div>
-              ))}
+                <div className="text-sm text-gray-400 h-1/2 w-full">
+                  {option.description}
+                </div>
+              </div>
             </div>
           ))}
         </div>
-      )}
-    </>
+      ))}
+    </div>
   );
 };
 
