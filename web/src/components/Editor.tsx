@@ -47,11 +47,15 @@ const Editor = () => {
 
     const completionRequest = await fetch(completionEndpoint);
 
-    const completion = await completionRequest.json();
+    const completion = await completionRequest.json() as { message?: string };
 
-    if (completion.message) {
-      return completion.message;
+    if (!completion.message) return;
+
+    if (editorRef.current.childNodes[index + 2].textContent?.endsWith(' ')) {
+      return completion.message.trim();
     }
+    
+    return completion.message;
   };
 
   useEffect(() => {

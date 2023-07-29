@@ -103,16 +103,16 @@ const TextBlock = (props: EditableText) => {
       value: properties.value,
     });
   }, [properties.value, properties.style]);
-
+  
   useEffect(() => {
-    if (!editableRef.current || !state.value || !completion) return;
+    if (
+      !editableRef.current
+      || !editableRef.current.textContent
+      || !state.value
+      || !completion
+    ) return;
 
-    const shouldCompletionBeRendered = (
-      getCursorOffset(editableRef.current) < (editableRef.current.innerText.length - 2)
-      || editableRef.current.innerText.length <= 1
-    );
-
-    if (!isElementFocused(editableRef.current) || !shouldCompletionBeRendered) {
+    if (!isElementFocused(editableRef.current)) {
       setCompletion(null);
       setCompletionTimeout(null);
       return;
@@ -121,10 +121,42 @@ const TextBlock = (props: EditableText) => {
     // ~ Ensure the cursor is never past the completion
     const caretOffset = getCursorOffset(editableRef.current);
 
-    if (caretOffset > state.value.length) {
+    if (caretOffset > (editableRef.current.textContent?.length - completion.length)) {
       focusElement(editableRef.current, state.value.length);
     }
-  }, [completion, editableRef.current, state.value]);
+  }, [completion, editableRef.current]);
+
+  useEffect(() => {
+    const handleSelectionChange = () => {
+      if (
+        !editableRef.current?.textContent
+        || !completion
+      ) return;
+
+      const caretOffset = getCursorOffset(editableRef.current);
+
+      if (caretOffset >= (editableRef.current.textContent?.length - completion.length)) return;
+        
+      setCompletion(null);
+      setCompletionTimeout(null);
+
+      if (completionTimeout) {
+        clearTimeout(completionTimeout);
+      }
+
+      setTimeout(() => {
+        if (!editableRef.current) return;
+
+        focusElement(editableRef.current, caretOffset);
+      }, 0);
+    };
+
+    document.addEventListener('selectionchange', handleSelectionChange);
+
+    return () => {
+      document.removeEventListener('selectionchange', handleSelectionChange);
+    }
+  }, [editableRef.current, completion, completionTimeout]);
 
   return (
     <>
@@ -143,7 +175,7 @@ const TextBlock = (props: EditableText) => {
           if (completionTimeout) {
             clearTimeout(completionTimeout);
           }
-
+          
           setCompletion(null);
 
           const value = saveBlock(editableRef.current, completion);
@@ -159,8 +191,8 @@ const TextBlock = (props: EditableText) => {
 
           setCompletionTimeout(
             setTimeout(
-              () => getCompletion(index).then((completion) => setCompletion(completion)),
-              500
+              () => getCompletion(index).then(setCompletion),
+              2500
             )
           );
         }}

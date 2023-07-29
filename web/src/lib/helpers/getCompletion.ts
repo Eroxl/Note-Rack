@@ -13,7 +13,7 @@ const getCompletion = async (
     document.dispatchEvent(
       new CustomEvent('completionRequest', {
         detail: {
-          blockIndex,
+          index: blockIndex,
           eventID,
         },
       })
