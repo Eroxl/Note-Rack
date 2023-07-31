@@ -27,6 +27,7 @@ const SlashMenu = (props: SlashMenuProps) => {
   const [slashMenuQuery, setSlashMenuQuery] = React.useState('');
   const [slashLocation, setSlashLocation] = React.useState(0);
   const [editableElementLength, setEditableElementLength] = React.useState(0);
+  const [isFirstLoad, setIsFirstLoad] = React.useState(true);
   const [selectedOption, setSelectedOption] = React.useState({
     categoryIndex: 0,
     optionIndex: 0,
@@ -340,6 +341,37 @@ const SlashMenu = (props: SlashMenuProps) => {
     };
   }, [relevantOptions, selectedOption, isSlashMenuOpen, editableRef.current]);
 
+  useEffect(() => {
+    if (!slashMenuRef.current) return;
+
+    const selectedElement = slashMenuRef.current.querySelector('.selected');
+
+    if (!selectedElement) return;
+
+    if (isFirstLoad) {
+      setIsFirstLoad(false);
+
+      slashMenuRef.current.scrollTop = 0;
+
+      return;
+    }
+
+    if (selectedOption.categoryIndex === 0 && selectedOption.optionIndex === 0) {
+      slashMenuRef.current?.scrollTo({
+        top: 0,   
+        behavior: 'smooth',     
+      });
+
+      return;
+    }
+
+    selectedElement.scrollIntoView({
+      behavior: 'smooth',
+      inline: 'nearest',
+      block: 'nearest',
+    });
+  }, [selectedOption, isFirstLoad, slashMenuRef.current]);
+
   return (
     <div
       ref={slashMenuRef}
@@ -364,7 +396,7 @@ const SlashMenu = (props: SlashMenuProps) => {
             <div
               className={`
                 p-2 gap-2 text-gray-200 cursor-pointer flex flex-row items-center
-                ${selectedOption.categoryIndex === categoryIndex && selectedOption.optionIndex === optionIndex ? 'bg-white bg-opacity-10 rounded' : ''}
+                ${selectedOption.categoryIndex === categoryIndex && selectedOption.optionIndex === optionIndex ? 'bg-white bg-opacity-10 rounded selected' : ''}
               `}
               key={option.name}
               onMouseEnter={() => setSelectedOption({ categoryIndex, optionIndex })}
