@@ -23,18 +23,30 @@ export class ReverseTextTreeWalker {
       if (
         !this.currentNode
         || !this.currentNode.parentNode
-        || this.currentNode === this.rootNode
-      ) return undefined;
-      
-      if (this.currentNode.nodeType === Node.TEXT_NODE) {
-        return this.currentNode;
-      } else if (this.currentNode.childNodes.length > 0) {
+      ) return null;
+
+      if (
+        this.currentNode === this.rootNode
+        || !this.rootNode.contains(this.currentNode)
+      ) return null;
+
+      if (this.currentNode.childNodes.length) {
         this.currentNode = this.currentNode.lastChild;
-      } else if (this.currentNode === this.currentNode.parentNode.firstChild) {
-        this.currentNode = this.currentNode.parentNode;
-      } else {
-        this.currentNode = this.currentNode.previousSibling;
+
+        continue;
       }
+
+      const returnedNode = this.currentNode;
+
+      if (this.currentNode === this.currentNode.parentNode.firstChild) {
+        this.currentNode = this.currentNode.parentNode.previousSibling;
+
+        return returnedNode;
+      }
+
+      this.currentNode = this.currentNode.previousSibling;
+
+      return returnedNode;
     }
   }
 }
@@ -45,12 +57,16 @@ export class ReverseTextTreeWalker {
  * @returns The length of the last line of the element
  */
 const getLastLineLength = (element: HTMLElement) => {
+  if (!element.textContent) return 0;
+
   const walker = new ReverseTextTreeWalker(element);
 
   let length = 0;
 
-  while (walker.nextNode()) {
-    const node = walker.currentNode;
+  let node;
+
+  while (true) {
+    node = walker.nextNode();
 
     if (!node) break;
 
@@ -61,17 +77,19 @@ const getLastLineLength = (element: HTMLElement) => {
     range.selectNodeContents(node);
 
     // ~ If the node only spans one line, add its length to the total length
-    if (range.getClientRects().length > 1) {
+    if (range.getClientRects().length <= 1) {
       length += node.textContent.length || 0;
 
       continue;
     }
 
+    range.setEnd(node, node.textContent.length - 1);
+
     // ~ If the node spans multiple lines, find the length of the last line
     for (let i = node.textContent.length; i >= 0; i -= 1) {
-      range.setEnd(node, i);
+      range.setStart(node, i);
 
-      if (range.getClientRects().length === 0) continue;
+      if (range.getClientRects().length <= 1) continue;
 
       length += i;
       break;
@@ -80,7 +98,9 @@ const getLastLineLength = (element: HTMLElement) => {
     break;
   }
 
-  return length;
+  if (element.textContent.length === length) return length;
+
+  return element.textContent.length - (length + 1);
 }
 
 export default getLastLineLength;

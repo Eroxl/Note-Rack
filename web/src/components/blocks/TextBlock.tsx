@@ -54,8 +54,8 @@ const TextBlock = (props: EditableText) => {
       );
     }
 
-    await editBlock([blockID], type, newBlockProperties, page);
-    setCurrentBlockType(type);
+    await editBlock([blockID], bind.type, newBlockProperties, page);
+    setCurrentBlockType(bind.type);
   };
 
   const [editableRef, slashMenu] = useSlashMenu(
@@ -91,6 +91,8 @@ const TextBlock = (props: EditableText) => {
       if (!regexSearch) continue;
 
       element.textContent = regexSearch[1] ?? '';
+
+      console.log(bind);
 
       await changeBlockType(bind);
       break;

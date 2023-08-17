@@ -31,24 +31,26 @@ const MathBlock = (props: EditableText) => {
     if (!isAllowedToEdit) return;
 
     setIsEditing(true);
-
-    setTimeout(() => {
-      const element = document.getElementById(blockID);
-
-      if (element) {
-        const range = document.createRange();
-        const sel = window.getSelection();
-
-        range.setStart(element.childNodes[0] || element, element.textContent?.length || 0);
-        range.collapse(true);
-
-        sel?.removeAllRanges();
-        sel?.addRange(range);
-
-        element.focus();
-      }
-    }, 10);
   };
+
+  useEffect(() => {
+    if (!isEditing) return;
+
+    const element = document.getElementById(`block-${blockID}`);
+
+    if (!element) return;
+
+    const range = document.createRange();
+    const sel = window.getSelection();
+
+    range.setStart(element.childNodes[0] || element, element.textContent?.length || 0);
+    range.collapse(true);
+
+    sel?.removeAllRanges();
+    sel?.addRange(range);
+
+    element.focus();
+  }, [isEditing]);
 
   return (
     <div
@@ -119,7 +121,7 @@ const MathBlock = (props: EditableText) => {
                 key={`preview-${blockID}`}
                 onClick={switchToEditing}
               >
-                Edit to enter KaTeX
+                Click to enter KaTeX
               </span>
             )
             : (

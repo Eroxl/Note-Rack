@@ -17,10 +17,12 @@ const isCaretAtBottom = (element: HTMLElement) => {
 
   const elementPosition = element.getBoundingClientRect().bottom - bottomPadding;
 
-  const lineHeight = getStyleScale(element, 'lineHeight');
+  let lineHeight = getStyleScale(element, 'lineHeight');
   const fontSize = getStyleScale(element, 'fontSize');
 
-  const caretPosition = (elementPosition - y) - (!Number.isNaN(lineHeight) ? lineHeight : 1.2) * fontSize;
+  if (Number.isNaN(lineHeight)) lineHeight = 1.2;
+
+  const caretPosition = (elementPosition - y) - lineHeight - fontSize;
   
   // ~ Check if the caret is at the bottom of the element (within 5px)
   return caretPosition < 5;

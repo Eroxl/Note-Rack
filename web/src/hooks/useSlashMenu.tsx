@@ -164,6 +164,19 @@ export const createDefaultSlashMenuCategories = (
         }
       },
     ],
+  },
+  {
+    name: 'Other',
+    options: [
+      {
+        name: 'Math',
+        description: 'Write an equation',
+        image: '/blockExamples/Math Icon.svg',
+        action: () => {
+          changeBlockType('math');
+        }
+      },
+    ],
   }
 ]);
 

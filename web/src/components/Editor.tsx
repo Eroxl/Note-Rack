@@ -128,8 +128,6 @@ const Editor = () => {
 
       if (event.key !== 'ArrowUp' && event.key !== 'ArrowDown') return;
 
-      event.preventDefault();
-
       const closestBlock = getClosestBlock(event.target as HTMLElement);
 
       if (!closestBlock) return;
@@ -137,6 +135,8 @@ const Editor = () => {
       const blockIndex = parseInt(closestBlock.dataset.blockIndex);
 
       if (event.key === 'ArrowUp' && isCaretAtTop(closestBlock)) {
+        event.preventDefault();
+
         if (blockIndex < 0) return;
 
         let previousBlock;
@@ -154,11 +154,15 @@ const Editor = () => {
           + getCursorOffset(closestBlock)
         );
 
+        console.log(getLastLineLength(previousBlock));
+
         focusElement(
           previousBlock,
           previousBlockOffset,
         );
       } else if (event.key === 'ArrowDown' && isCaretAtBottom(closestBlock)) {
+        event.preventDefault();
+
         // ~ If the block is the last block, do nothing.
         if (blockIndex === pageData.data.length - 1) return;
 

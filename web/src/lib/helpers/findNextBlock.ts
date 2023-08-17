@@ -29,9 +29,9 @@ const findNextBlock = (
   element: HTMLElement | null,
   iterator: (start: number) => number,
   pageData: PageDataInterface['message'],
-  editor: HTMLElement = document.querySelector('.editor') as HTMLElement
+  editor: HTMLElement | null = document.querySelector('.editor')
 ): HTMLElement | undefined => {
-  if (!element || !pageData) return;
+  if (!element || !pageData || !editor) return;
 
   const block = getClosestBlock(element);
 

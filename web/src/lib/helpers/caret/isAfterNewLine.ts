@@ -21,7 +21,7 @@ const isAfterNewLine = (range: Range) => {
 
   if (lengthExcludingLastLine === 0) return false;
 
-  return lengthExcludingLastLine + 1 === range.startOffset;
+  return lengthExcludingLastLine === range.startOffset;
 };
 
 export default isAfterNewLine;
