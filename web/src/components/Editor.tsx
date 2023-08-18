@@ -154,8 +154,6 @@ const Editor = () => {
           + getCursorOffset(closestBlock)
         );
 
-        console.log(getLastLineLength(previousBlock));
-
         focusElement(
           previousBlock,
           previousBlockOffset,
