@@ -194,7 +194,7 @@ const TextBlock = (props: EditableText) => {
           setCompletionTimeout(
             setTimeout(
               () => getCompletion(index).then(setCompletion),
-              2500
+              500
             )
           );
         }}
