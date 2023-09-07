@@ -34,6 +34,7 @@ const BaseBlock = (props: BaseBlockProps) => {
       index,
       isBlockPage: currentBlockType === 'page',
     }),
+    [blockID, index, currentBlockType]
   );
 
   // -=- Setup Drag and Drop -=-
