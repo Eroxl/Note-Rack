@@ -11,6 +11,35 @@ const PagePath = () => {
   const [pagePath, setPagePath] = useState<PagePath[]>([]);
 
   useEffect(() => {
+    // -=- Handle the page title change event -=-
+    const changeTitle = (event: CustomEvent) => {
+      const { detail } = event;
+      const { newTitle, newIcon } = detail;
+
+      // ~ Set the page title
+      setPagePath((oldPagePath) => {
+        const newPagePath = [...oldPagePath];
+
+        const currentPage = newPagePath[newPagePath.length - 1];
+
+        newPagePath[newPagePath.length - 1].name = newTitle || currentPage.name;
+        newPagePath[newPagePath.length - 1].icon = newIcon || currentPage.icon;
+
+        return newPagePath;
+      });
+    };
+
+    // ~ Add the event listener
+    document.addEventListener('changePageTitle', changeTitle as EventListener);
+
+    // -=- Cleanup -=-
+    // ~ Remove the event listeners, on unmount
+    return () => {
+      document.removeEventListener('changePageTitle', changeTitle as EventListener);
+    };
+  }, []);
+
+  useEffect(() => {
     // ~ Handle the page path event
     const handlePagePath = (event: CustomEvent<PagePath[]>) => {
       const { detail } = event;
@@ -26,7 +55,7 @@ const PagePath = () => {
     return () => {
       document.removeEventListener('pagePath', handlePagePath as EventListener);
     };
-  });
+  }, []);
 
   return (
     <div className="flex items-center w-full gap-2 p-2 h-min dark:text-amber-50 text-zinc-800 print:hidden">

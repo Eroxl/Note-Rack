@@ -104,6 +104,46 @@ const NoteRackPage = () => {
     };
   }, [isChatOpen]);
 
+  useEffect(() => {
+    // -=- Handle the page title change event -=-
+    const changeTitle = (event: CustomEvent) => {
+      const { detail } = event;
+      const { newTitle, newIcon } = detail;
+
+      if (newTitle) {
+        document.title = newTitle;
+      }
+
+      if (newIcon) {
+        const iconLink = document.querySelector('link[rel="icon"]') as HTMLLinkElement;
+        iconLink.href = renderIconToSVG(newIcon);
+      }
+    };
+
+    // ~ Add the event listener
+    document.addEventListener('changePageTitle', changeTitle as EventListener);
+
+    // -=- Cleanup -=-
+    // ~ Remove the event listeners, on unmount
+    return () => {
+      document.removeEventListener('changePageTitle', changeTitle as EventListener);
+    };
+  }, []);
+
+  /**
+   * Render an emoji to an SVG
+   * @param icon The emoji to render
+   * @returns The rendered SVG
+   */
+  const renderIconToSVG = (icon: string) => (`
+    data:image/svg+xml,
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+      <text y="0.9em" font-size="90">
+        ${icon}
+      </text>
+    </svg>
+  `)
+
   return (
     <>
       <Head>
@@ -117,14 +157,7 @@ const NoteRackPage = () => {
                 <title>{pageData.style.name}</title>
                 <link
                   rel="icon"
-                  href={`
-                    data:image/svg+xml,
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-                      <text y="0.9em" font-size="90">
-                        ${pageData.style.icon}
-                      </text>
-                    </svg>
-                  `}
+                  href={renderIconToSVG(pageData.style.icon)}
                   type="image/svg+xml"
                 />
               </>
