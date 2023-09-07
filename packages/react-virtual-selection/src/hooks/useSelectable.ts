@@ -2,14 +2,16 @@ import { useState, useRef, useEffect } from 'react';
 
 import SelectionManger from '../classes/SelectionManager';
 
-const useSelectable = (type: string, item: () => unknown) => {
+const useSelectable = (type: string, item: () => unknown, deps: unknown[] = []): [boolean, React.MutableRefObject<unknown>] => {
   const [selected, setSelected] = useState(false);
   const selectableRef = useRef<unknown>(null);
 
   useEffect(() => {
-    SelectionManger.Instance.addToSelectable(selectableRef, type, item, setSelected);
+    const items = item();
+
+    SelectionManger.Instance.addToSelectable(selectableRef, type, () => items, setSelected);
     return () => SelectionManger.Instance.removeFromSelectable(selectableRef, type);
-  });
+  }, deps);
 
   return [selected, selectableRef];
 };

@@ -52,8 +52,8 @@ const Selectable: React.FC<SelectableProps> = (props) => {
         if (clientX < 0 || clientY < 0) return;
 
         if (
-          clientX > (selectableRef.current?.clientWidth || 0)
-          || clientY > (selectableRef.current?.clientHeight || 0)
+          clientX > (window.innerWidth || 0)
+          || clientY > (window.innerHeight || 0)
         ) return;
 
         setSelectionArea({
