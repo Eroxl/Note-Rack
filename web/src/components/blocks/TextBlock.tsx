@@ -92,8 +92,6 @@ const TextBlock = (props: EditableText) => {
 
       element.textContent = regexSearch[1] ?? '';
 
-      console.log(bind);
-
       await changeBlockType(bind);
       break;
     }

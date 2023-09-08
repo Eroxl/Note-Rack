@@ -85,7 +85,7 @@ const Editor = () => {
       if (event.key !== 'Backspace') return;
 
       // ~ Check if there is an element selected
-      if (document.activeElement?.tagName === 'INPUT') return;
+      if (document.activeElement?.tagName === 'INPUT' || (document.activeElement as HTMLElement)?.isContentEditable) return;
 
       // ~ Iterate over all the selected blocks
       for (let i = 0; i < selectionData.length; i += 1) {
