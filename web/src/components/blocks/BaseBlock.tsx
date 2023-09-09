@@ -17,8 +17,6 @@ const BaseBlock = (props: BaseBlockProps) => {
     children,
     blockType,
     properties,
-    isMenuOpen,
-    setIsMenuOpen,
   } = props;
 
   const [currentBlockType, setCurrentBlockType] = useState(blockType);
@@ -88,13 +86,7 @@ const BaseBlock = (props: BaseBlockProps) => {
       }}
     >
       {
-        isAllowedToEdit && (
-          <BlockHandle
-            draggableRef={drag}
-            isGlobalMenuOpen={isMenuOpen}
-            setIsGlobalMenuOpen={setIsMenuOpen}
-          />
-        )
+        isAllowedToEdit && <BlockHandle draggableRef={drag} />
       }
       {
         React.createElement(

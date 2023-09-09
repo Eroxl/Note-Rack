@@ -1,5 +1,4 @@
 import React, {
-  useState,
   useEffect,
   useContext,
   useRef,
@@ -23,7 +22,6 @@ import findNextBlock, { getClosestBlock } from '../lib/helpers/findNextBlock';
 
 const Editor = () => {
   const { pageData, setPageData } = useContext(PageContext);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const editorRef = useRef<HTMLDivElement>(null);
 
   const isAllowedToEdit = pageData?.userPermissions.write;
@@ -231,8 +229,6 @@ const Editor = () => {
                 page={page as string}
                 properties={block.properties}
                 children={block.children}
-                isMenuOpen={isMenuOpen}
-                setIsMenuOpen={setIsMenuOpen}
               />
             ))}
           </div>

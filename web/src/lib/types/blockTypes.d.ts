@@ -12,8 +12,6 @@ interface BaseBlockProps {
   children: unknown[]
   page: string,
   index: number,
-  isMenuOpen: boolean,
-  setIsMenuOpen: Dispatch<SetStateAction<boolean>>,
 }
 
 // -=- Used for blocks that can't be deleted and are only controlled by the server -=-
