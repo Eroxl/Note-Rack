@@ -1,12 +1,37 @@
 import React, { useEffect } from 'react';
+import { DownloadRounded, InsertDriveFileRounded, LogoutRounded } from '@mui/icons-material';
 
-interface ShareMenuProps {
+type OptionsMenuProps = {
   page: string,
   buttonRef: React.RefObject<HTMLDivElement>,
   setIsMenuOpen: React.Dispatch<React.SetStateAction<boolean>>,
 }
 
-const ShareMenu = (props: ShareMenuProps) => {
+type OptionsMenuItemProps = {
+  icon: React.ReactNode,
+  name: string,
+  onClick: () => void,
+};
+
+const OptionsMenuItem = (props: OptionsMenuItemProps) => {
+  const {
+    icon,
+    name,
+    onClick,
+  } = props;
+  
+  return (
+    <div
+      className="flex flex-row items-center text-center gap-2 p-2 rounded cursor-pointer hover:bg-stone-200 dark:hover:bg-neutral-500"
+      onClick={onClick}
+    >
+      {icon}
+      <span>{name}</span>
+    </div>
+  );
+}
+
+const OptionsMenu = (props: OptionsMenuProps) => {
   const {
     page,
     buttonRef,
@@ -34,16 +59,32 @@ const ShareMenu = (props: ShareMenuProps) => {
     <div
       className={`
         absolute -bottom-2 right-1 z-20
-        flex flex-col w-72 gap-3 p-3
+        flex flex-col w-72 p-3
         translate-y-full
         border border-black rounded-md opacity-100 h-max
         text-zinc-700 dark:text-amber-50 bg-stone-100 dark:bg-neutral-600 border-opacity-5
         print:hidden
       `}
     >
-      Hello World
+      <p className="text-lg font-bold">Options</p>
+
+      <OptionsMenuItem
+        icon={<DownloadRounded />}
+        name="Import"
+        onClick={() => {}}
+      />
+      <OptionsMenuItem
+        icon={<InsertDriveFileRounded />}
+        name="Export"
+        onClick={() => {}}
+      />
+      <OptionsMenuItem
+        icon={<LogoutRounded />}
+        name="Logout"
+        onClick={() => {}}
+      />
     </div>
   );
 };
 
-export default ShareMenu;
+export default OptionsMenu;
