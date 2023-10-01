@@ -164,7 +164,7 @@ const SearchModal = () => {
         name: newPageStyle.name,
         icon: newPageStyle.icon,
       };
-
+        
       setPageStylingMap(pageStylingMap);
     };
 
@@ -211,7 +211,7 @@ const SearchModal = () => {
       document.removeEventListener('addPage', addPage as EventListener);
       document.removeEventListener('deletePage', deletePage as EventListener);
     };
-  }, []);
+  }, [pageStylingMap]);
 
   useEffect(() => {
     const changePage = (event: ChangePageEvent) => {
@@ -232,7 +232,7 @@ const SearchModal = () => {
     return () => {
       document.removeEventListener('changePageTitle', changePage as EventListener);
     };
-  }, [page]);
+  }, [page, pageStylingMap]);
 
   return (
     <BaseModal

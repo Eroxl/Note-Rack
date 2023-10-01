@@ -18,6 +18,11 @@ const NoteRack = () => {
         return;
       }
 
+      if (localStorage.getItem('latestPageID') !== null) {
+        Router.push(`./note-rack/${localStorage.getItem('latestPageID')}`);
+        return;
+      };
+
       // -=- Fetching -=-
       // ~ Get the user's home page
       const pageID = await fetch(

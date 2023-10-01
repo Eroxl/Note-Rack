@@ -14,7 +14,6 @@ const BaseBlock = (props: BaseBlockProps) => {
     page,
     index,
     blockID,
-    children,
     blockType,
     properties,
   } = props;
@@ -99,7 +98,6 @@ const BaseBlock = (props: BaseBlockProps) => {
             setPageData,
             setCurrentBlockType,
             type: currentBlockType,
-            children: children ?? [],
             properties: properties ?? {},
           },
         )

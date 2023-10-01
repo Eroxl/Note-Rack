@@ -9,7 +9,6 @@ interface BaseBlockProps {
   blockType: keyof typeof BlockTypes,
   blockID: string,
   properties: Record<string, unknown>,
-  children: unknown[]
   page: string,
   index: number,
 }
@@ -39,19 +38,6 @@ interface EditableText extends PermanentEditableText {
   setCurrentBlockType: (_type: string) => void,
 }
 
-// -=- Used for ol and ul elements -=-
-interface EditableList {
-  properties: {
-    value: string,
-    relationship: 'sibling' | 'child',
-  },
-  page: string,
-  type: string,
-  blockID: [string],
-  children: EditableList[]
-  setCurrentBlockType: (_type: string) => void,
-}
-
 // -=- Used for check list elements -=-
 interface EditableCheckList extends EditableList {
   properties: {
@@ -66,6 +52,5 @@ export type {
   PermanentBlock,
   PermanentEditableText,
   EditableText,
-  EditableList,
   EditableCheckList,
 };

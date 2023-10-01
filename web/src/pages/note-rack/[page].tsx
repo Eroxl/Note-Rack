@@ -63,6 +63,12 @@ const NoteRackPage = () => {
         return;
       }
 
+      if (newPageData.status === 'success') {
+        setError(undefined);
+
+        localStorage.setItem('latestPageID', page);
+      }
+
       setPageData(newPageData.message);
       setStatus('loaded');
     };
