@@ -17,6 +17,7 @@ const Icon = (props: IconProps) => {
 
   const [currentIcon, setCurrentIcon] = useState(icon || '📝');
   const [isEmojiSelectorActive, setIsEmojiSelectorActive] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
   const { pageData } = useContext(PageContext);
 
   const isAllowedToEdit = pageData?.userPermissions.admin;
@@ -30,6 +31,18 @@ const Icon = (props: IconProps) => {
     editStyle({ icon: emoji.native }, page);
     document.dispatchEvent(new CustomEvent('changePageTitle', { detail: { newIcon: emoji.native } }));
   };
+
+  useEffect(() => {
+    const handleChatToggle = () => {
+      setIsChatOpen(!isChatOpen);
+    };
+
+    document.addEventListener('openChatPanel', handleChatToggle);
+
+    return () => {
+      document.removeEventListener('openChatPanel', handleChatToggle);
+    };
+  }, [isChatOpen]);
 
   useEffect(() => {
     setCurrentIcon(icon);
@@ -63,7 +76,7 @@ const Icon = (props: IconProps) => {
             </span>
           )}
       </span>
-      <div className={`absolute sm:right-[-133px] right-[0%] top-[87px] z-10 ${isEmojiSelectorActive || 'hidden'} print:hidden`}>
+      <div className={`absolute top-[87px] z-10 ${isChatOpen ? '-left-10' : 'right-[-133px]'} ${isEmojiSelectorActive || 'hidden'} print:hidden`}>
         <Picker onSelect={onEmojiChange} recent={['']} native />
       </div>
     </div>

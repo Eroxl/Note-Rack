@@ -16,15 +16,20 @@ const getCursorOffset = (element: HTMLElement): number => {
 
   if (!range) return 0;
 
-  // ~ Clone the range and select the contents of the element
-  const preCaretRange = range.cloneRange();
-  preCaretRange.selectNodeContents(element);
+  try {
+    // ~ Clone the range and select the contents of the element
+    const preCaretRange = range.cloneRange();
+    preCaretRange.selectNodeContents(element);
 
-  // ~ Set the end of the range to the start of the selection
-  preCaretRange.setEnd(range.endContainer, range.endOffset);
+    // ~ Set the end of the range to the start of the selection
+    preCaretRange.setEnd(range.endContainer, range.endOffset);
 
-  // ~ Return the length between the start of the element and the cursor
-  return preCaretRange.toString().length;
+    // ~ Return the length between the start of the element and the cursor
+    return preCaretRange.toString().length;
+  } catch (error) {
+    // ~ If there is an error, return 0
+    return 0;
+  }
 };
 
 export default getCursorOffset;
