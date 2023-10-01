@@ -62,11 +62,6 @@ const Title = (props: TitleProps) => {
         role="textbox"
         tabIndex={0}
         ref={titleRef}
-        onBlur={
-          (e) => {
-            onTitleChanged(e.currentTarget.innerText);
-          }
-        }
         suppressContentEditableWarning
         onKeyDown={
           (e) => {
@@ -75,6 +70,12 @@ const Title = (props: TitleProps) => {
               e.currentTarget.blur();
               addBlockAtIndex(index, page, pageData, setPageData);
             }
+
+            setTimeout(() => {
+              if (!titleRef.current) return;
+
+              onTitleChanged(titleRef.current.innerText);
+            }, 0);
           }
         }
         onInput={

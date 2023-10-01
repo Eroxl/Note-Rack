@@ -195,6 +195,15 @@ const TextBlock = (props: EditableText) => {
               500
             )
           );
+
+          setTimeout(() => {
+            if (!editableRef.current) return;
+
+            const value = saveBlock(editableRef.current, completion) || { value: '\n', style: [] };
+
+            editBlock([blockID], undefined, value, page);
+            setState(value);
+          }, 0);
         }}
         onBlur={() => {
           if (!editableRef.current) return;

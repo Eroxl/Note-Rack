@@ -1,5 +1,4 @@
 import React, {
-  useState,
   useEffect,
   useContext,
   useRef,
@@ -23,7 +22,6 @@ import findNextBlock, { getClosestBlock } from '../lib/helpers/findNextBlock';
 
 const Editor = () => {
   const { pageData, setPageData } = useContext(PageContext);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const editorRef = useRef<HTMLDivElement>(null);
 
   const isAllowedToEdit = pageData?.userPermissions.write;
@@ -98,7 +96,7 @@ const Editor = () => {
         // ~ If the block is a page, delete the page differently
         if (isBlockPage) {
           document.dispatchEvent(
-            new CustomEvent('deletePage', { detail: { pageID: blockID } }),
+            new CustomEvent('deletePage', { detail: { deletedPageID: blockID } }),
           );
           deletePage(blockID);
         }
@@ -190,7 +188,10 @@ const Editor = () => {
     }
   }, [pageData]);
 
-  if (!pageData) return null;
+  if (
+    !pageData 
+    || typeof page !== 'string'
+  ) return null;
 
   // -=- Render -=-
   return (
@@ -211,12 +212,12 @@ const Editor = () => {
           >
             {/* ~ Render the page icon */}
             <Icon
-              page={page as string}
+              page={page}
               icon={pageData.style.icon}
             />
             {/* ~ Render the title */}
             <Title
-              page={page as string}
+              page={page}
               index={0}
               title={pageData.style.name}
             />
@@ -228,11 +229,8 @@ const Editor = () => {
                 blockID={block._id}
                 index={index}
                 key={`${block._id}-${page}`}
-                page={page as string}
+                page={page}
                 properties={block.properties}
-                children={block.children}
-                isMenuOpen={isMenuOpen}
-                setIsMenuOpen={setIsMenuOpen}
               />
             ))}
           </div>
