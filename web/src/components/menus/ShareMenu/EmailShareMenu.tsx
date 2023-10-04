@@ -1,10 +1,10 @@
 import React, {
-  useState, useRef, useEffect, useContext,
+  useState, useRef, useContext,
 } from 'react';
 
 import { dropdownInfo } from '../../../lib/constants/ShareOptions';
-import ShareOptionsDropdown from './ShareOptionsDropdown';
 import PagePermissionContext from '../../../contexts/PagePermissionsContext';
+import Button from '../Button';
 import DropDown from '../DropDown';
 
 interface ShareMenuProps {
@@ -20,7 +20,6 @@ const EmailShareMenu = (props: ShareMenuProps) => {
     setCurrentPermissions,
   } = useContext(PagePermissionContext);
 
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedDropdownOption, setSelectedDropdownOption] = useState(0);
   const emailInputRef = useRef<HTMLInputElement>(null);
 
@@ -65,16 +64,16 @@ const EmailShareMenu = (props: ShareMenuProps) => {
         />
       </div>
       <div>
-        <button
-          className="px-2 mr-2 text-amber-50/70"
+        <Button
+          label='Cancel'
+          style='secondary'
           onClick={() => {
             setIsEditingEmails(false);
           }}
-        >
-          Cancel
-        </button>
-        <button
-          className="px-2 bg-blue-500 border border-blue-600 rounded text-amber-50"
+        />
+        <Button
+          label='Invite'
+          style='primary'
           onClick={() => {
             setIsEditingEmails(false);
             const email = emailInputRef.current?.value;
@@ -100,9 +99,7 @@ const EmailShareMenu = (props: ShareMenuProps) => {
               }
             })();
           }}
-        >
-          Invite
-        </button>
+        />
       </div>
     </>
   );

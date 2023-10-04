@@ -92,19 +92,6 @@ const OptionsMenu = (props: OptionsMenuProps) => {
               setIsOpen={setIsModalOpen}
             />,
           );
-          // const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/page/export/${page}?format=md`)
-
-          // const fileName = res.headers.get('Content-Disposition')?.split('filename=')[1];
-
-          // const blob = await res.blob();
-
-          // const url = window.URL.createObjectURL(blob);
-          // const a = document.createElement('a');
-          // a.href= url;
-          // a.download = fileName || 'page.md';
-          // document.body.appendChild(a);
-          // a.click();
-          // a.remove();
         }}
       />
       <OptionsMenuItem

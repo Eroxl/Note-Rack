@@ -1,11 +1,11 @@
 const dropdownInfo: {
-    title: string,
-    description: string,
-    permissions: {
-      admin: boolean,
-      write: boolean,
-      read: boolean,
-    }
+  title: string,
+  description: string,
+  permissions: {
+    admin: boolean,
+    write: boolean,
+    read: boolean,
+  }
 }[] = [
   {
     title: 'Full access',
