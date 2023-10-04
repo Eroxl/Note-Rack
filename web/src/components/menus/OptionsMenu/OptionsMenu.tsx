@@ -1,5 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { DownloadRounded, InsertDriveFileRounded, LogoutRounded } from '@mui/icons-material';
+import BaseModal from '../../modals/BaseModal';
+import ExportModal from '../../modals/ExportModal';
 
 type OptionsMenuProps = {
   page: string,
@@ -38,6 +40,9 @@ const OptionsMenu = (props: OptionsMenuProps) => {
     setIsMenuOpen,
   } = props;
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modal, setModal] = useState<React.ReactNode>(null);
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -54,6 +59,10 @@ const OptionsMenu = (props: OptionsMenuProps) => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   });
+
+  if (isModalOpen) {
+    return modal;
+  }
 
   return (
     <div
@@ -77,21 +86,25 @@ const OptionsMenu = (props: OptionsMenuProps) => {
         icon={<InsertDriveFileRounded />}
         name="Export"
         onClick={async () => {
-          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/page/export/${page}?format=md`)
+          setIsModalOpen(true);
+          setModal(
+            <ExportModal
+              setIsOpen={setIsModalOpen}
+            />,
+          );
+          // const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/page/export/${page}?format=md`)
 
-          const fileName = res.headers.get('Content-Disposition')?.split('filename=')[1];
+          // const fileName = res.headers.get('Content-Disposition')?.split('filename=')[1];
 
-          const blob = await res.blob();
+          // const blob = await res.blob();
 
-          console.log(fileName);
-
-          const url = window.URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href= url;
-          a.download = fileName || 'page.md';
-          document.body.appendChild(a);
-          a.click();
-          a.remove();
+          // const url = window.URL.createObjectURL(blob);
+          // const a = document.createElement('a');
+          // a.href= url;
+          // a.download = fileName || 'page.md';
+          // document.body.appendChild(a);
+          // a.click();
+          // a.remove();
         }}
       />
       <OptionsMenuItem

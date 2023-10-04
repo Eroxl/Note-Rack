@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { useRouter } from 'next/router';
 import MoreHoriz from '@mui/icons-material/MoreHoriz';
 
-import OptionsMenu from '../menus/OptionsMenu';
+import OptionsMenu from '../menus/OptionsMenu/OptionsMenu';
 
 const ShareButton = () => {
   const { page } = useRouter().query;

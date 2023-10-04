@@ -7,7 +7,7 @@ interface BaseModalProps {
   className?: string,
 }
 
-const defaultClassName = 'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50';
+const defaultClassName = 'fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50';
 
 const BaseModal = (props: BaseModalProps) => {
   const {

@@ -2,9 +2,10 @@ import React, {
   useState, useRef, useEffect, useContext,
 } from 'react';
 
-import { DropdownOptions, dropdownInfo } from '../../../lib/constants/ShareOptions';
+import { dropdownInfo } from '../../../lib/constants/ShareOptions';
 import ShareOptionsDropdown from './ShareOptionsDropdown';
 import PagePermissionContext from '../../../contexts/PagePermissionsContext';
+import DropDown from '../DropDown';
 
 interface ShareMenuProps {
   page: string,
@@ -20,26 +21,8 @@ const EmailShareMenu = (props: ShareMenuProps) => {
   } = useContext(PagePermissionContext);
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [selectedDropdownOption, setSelectedDropdownOption] = useState(DropdownOptions.FullAccess);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [selectedDropdownOption, setSelectedDropdownOption] = useState(0);
   const emailInputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current
-        && !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsDropdownOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  });
 
   const addPermissions = (email: string, newPermissions: any) => {
     if (!currentPermissions) {
@@ -75,37 +58,11 @@ const EmailShareMenu = (props: ShareMenuProps) => {
           ref={emailInputRef}
         />
         {/* Dropdown */}
-        <div
-          className="relative flex flex-row items-center justify-center px-2 py-1 my-1 rounded cursor-pointer select-none text-amber-50/70 w-max whitespace-nowrap hover:bg-black/5 hover:dark:bg-white/5"
-          onClick={() => {
-            setIsDropdownOpen(!isDropdownOpen);
-          }}
-          ref={dropdownRef}
-        >
-          {
-            dropdownInfo[selectedDropdownOption].title
-          }
-          <svg
-            className="w-4 h-4"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fillRule="evenodd"
-              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-              clipRule="evenodd"
-            />
-          </svg>
-          {
-            isDropdownOpen && (
-              <ShareOptionsDropdown
-                selectedDropdownOption={selectedDropdownOption}
-                setSelectedDropdownOption={setSelectedDropdownOption}
-                setIsDropdownOpen={setIsDropdownOpen}
-              />
-            )
-          }
-        </div>
+        <DropDown
+          options={dropdownInfo}
+          selectedDropdownOption={selectedDropdownOption}
+          setSelectedDropdownOption={setSelectedDropdownOption}
+        />
       </div>
       <div>
         <button
