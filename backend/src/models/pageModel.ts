@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
-interface Block {
+export interface Block {
   blockType: string;
   properties: Record<string, unknown>;
   children: Block[];

@@ -8,6 +8,7 @@ import getPageInfo from './getPageInfo';
 import updatePermissions from './updatePermissions';
 import chat from './chat';
 import complete from './complete';
+import exportFile from './export';
 
 const router = express.Router();
 
@@ -57,6 +58,12 @@ router.use(
 router.use(
   '/modify-page/',
   modifyPage,
+);
+
+// -=- Create Export API -=-
+router.use(
+  '/',
+  exportFile,
 );
 
 export default router;
