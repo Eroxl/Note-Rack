@@ -4,7 +4,6 @@ import verifyPermissions from '../../middleware/verifyPermissions';
 import type { PageRequest } from '../../middleware/verifyPermissions';
 
 import mdExporter from '../../helpers/exporters/mdExporter';
-import pdfExporter from '../../helpers/exporters/pdfExporter';
 
 const router = express.Router();
 
@@ -27,7 +26,7 @@ router.get(
       return;
     }
 
-    if (format !== 'pdf' && format !== 'md') {
+    if (format !== 'md') {
       res.statusCode = 400;
       res.json({
         status: 'error',
@@ -41,13 +40,7 @@ router.get(
     res.setHeader('Access-Control-Expose-Headers','Content-Disposition');
 
     // ~ NOTE:EROXL: Could re-write this way better but I'm lazy
-    if (format === 'pdf') {
-      res.statusCode = 200;
-      res.setHeader('Content-Type', 'application/pdf');
-      res.attachment(`${(pageData.style as {name: string})?.name}.pdf`);
-
-      res.send(await pdfExporter(pageData));
-    } else if (format === 'md') {
+    if (format === 'md') {
       res.statusCode = 200;
       res.setHeader('Content-Type', 'text/plain');
       res.attachment(`${(pageData.style as {name: string})?.name}.md`);

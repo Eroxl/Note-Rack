@@ -45,6 +45,12 @@ const ExportModal: React.FC<ExportModalProps> = (props) => {
             label="Export"
             style="primary"
             onClick={async () => {
+              if (FORMAT_OPTIONS[currentSelectedFormat].shorthand === 'pdf') {
+                window.print();
+
+                return;
+              };
+
               const format = FORMAT_OPTIONS[currentSelectedFormat].shorthand;
 
               const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/page/export/${page}?format=${format}`);
