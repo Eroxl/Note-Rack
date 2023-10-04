@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { DownloadRounded, InsertDriveFileRounded, LogoutRounded } from '@mui/icons-material';
-import BaseModal from '../../modals/BaseModal';
 import ExportModal from '../../modals/ExportModal';
+import { signOut } from "supertokens-auth-react/recipe/thirdparty";
 
 type OptionsMenuProps = {
   page: string,
@@ -97,7 +97,12 @@ const OptionsMenu = (props: OptionsMenuProps) => {
       <OptionsMenuItem
         icon={<LogoutRounded />}
         name="Logout"
-        onClick={() => {}}
+        onClick={async () => {
+          await signOut();
+
+          localStorage.removeItem('latestPageID');
+          window.location.href = '/';
+        }}
       />
     </div>
   );
