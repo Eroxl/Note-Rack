@@ -48,6 +48,8 @@ const ExportModal: React.FC<ExportModalProps> = (props) => {
               if (FORMAT_OPTIONS[currentSelectedFormat].shorthand === 'pdf') {
                 window.print();
 
+                setIsOpen(false);
+
                 return;
               };
 
@@ -66,6 +68,8 @@ const ExportModal: React.FC<ExportModalProps> = (props) => {
               document.body.appendChild(a);
               a.click();
               a.remove();
+
+              setIsOpen(false);
             }}
           />
           <Button
