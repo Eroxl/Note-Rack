@@ -4,7 +4,7 @@ import React, {
 import { useRouter } from 'next/router';
 
 import { UserPermissions, Permissions } from '../../../lib/types/pageTypes';
-import { DropdownOptions, dropdownInfo } from '../../../lib/constants/ShareOptions';
+import { dropdownInfo } from '../../../lib/constants/ShareOptions';
 import ShareOptionsDropdown from './ShareOptionsDropdown';
 import PagePermissionsContext from '../../../contexts/PagePermissionsContext';
 
@@ -16,7 +16,7 @@ const UserPermission = (props: UserPermissionProps) => {
   const { email } = props;
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [selectedDropdownOption, setSelectedDropdownOption] = useState<DropdownOptions>(DropdownOptions.ViewOnly);
+  const [selectedDropdownOption, setSelectedDropdownOption] = useState(0);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const page = useRouter().query.page as string;
@@ -37,7 +37,7 @@ const UserPermission = (props: UserPermissionProps) => {
 
         return permissions[key as keyof UserPermissions] === value;
       });
-    }) as (DropdownOptions | undefined) || DropdownOptions.ViewOnly;
+    }) as (number | undefined) || 0;
 
     setSelectedDropdownOption(defaultDropdownOption);
   }, [currentPermissions]);
@@ -59,7 +59,7 @@ const UserPermission = (props: UserPermissionProps) => {
     };
   });
 
-  const setSelectDropdownOption = (option: DropdownOptions) => {
+  const setSelectDropdownOption = (option: number) => {
     const key = Object.keys(currentPermissions).find((key) => currentPermissions[key].email === email) || email;
 
     setCurrentPermissions({

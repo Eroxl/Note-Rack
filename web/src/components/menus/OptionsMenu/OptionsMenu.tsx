@@ -15,7 +15,7 @@ type OptionsMenuItemProps = {
   onClick: () => void,
 };
 
-const OptionsMenuItem = (props: OptionsMenuItemProps) => {
+const OptionsMenuItem: React.FC<OptionsMenuItemProps> = (props) => {
   const {
     icon,
     name,
@@ -33,7 +33,7 @@ const OptionsMenuItem = (props: OptionsMenuItemProps) => {
   );
 }
 
-const OptionsMenu = (props: OptionsMenuProps) => {
+const OptionsMenu: React.FC<OptionsMenuProps> = (props) => {
   const {
     page,
     buttonRef,
@@ -61,7 +61,11 @@ const OptionsMenu = (props: OptionsMenuProps) => {
   });
 
   if (isModalOpen) {
-    return modal;
+    return (
+      <>
+        {modal}
+      </>
+    );
   }
 
   return (

@@ -1,11 +1,11 @@
 import React from 'react';
 
-import { DropdownOptions, dropdownInfo } from '../../../lib/constants/ShareOptions';
+import { dropdownInfo } from '../../../lib/constants/ShareOptions';
 
 interface ShareOptionsDropdownProps {
   setIsDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>,
-  selectedDropdownOption: DropdownOptions,
-  setSelectedDropdownOption: (option: DropdownOptions) => void,
+  selectedDropdownOption: number,
+  setSelectedDropdownOption: (option: number) => void,
   children?: React.ReactNode,
 }
 
@@ -53,7 +53,7 @@ const ShareOptionsDropdown = (props: ShareOptionsDropdownProps) => {
                 </div>
               </div>
               {
-                +selectedDropdownOption.toString() === option && (
+                selectedDropdownOption === option && (
                   <svg
                     className="w-4 h-4"
                     viewBox="0 0 20 20"
