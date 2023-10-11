@@ -17,7 +17,6 @@ const superTokensConfig = () => ({
     ThirdParty.init({
       signInAndUpFeature: {
         providers: [
-          Github.init(),
           Google.init(),
         ],
       },

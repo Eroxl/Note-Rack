@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-import ThirdParty, { Github, Google } from 'supertokens-node/recipe/thirdparty';
+import ThirdParty, { Google } from 'supertokens-node/recipe/thirdparty';
 import Session from 'supertokens-node/recipe/session';
 import SuperTokens from 'supertokens-node';
 
@@ -15,14 +15,8 @@ const setupAuth = () => {
     GOOGLE_CLIENT_SECRET,
   } = process.env;
 
-  const {
-    GITHUB_CLIENT_ID,
-    GITHUB_CLIENT_SECRET,
-  } = process.env;
-
   // -=- Check OAuth Keys Exist -=-
   if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) throw Error('Missing Google OAuth Keys');
-  if (!GITHUB_CLIENT_ID || !GITHUB_CLIENT_SECRET) throw Error('Missing Github OAuth Keys');
 
   // -=- URL Info -=-
   const {
@@ -58,10 +52,6 @@ const setupAuth = () => {
             Google({
               clientId: GOOGLE_CLIENT_ID,
               clientSecret: GOOGLE_CLIENT_SECRET,
-            }),
-            Github({
-              clientId: GITHUB_CLIENT_ID,
-              clientSecret: GITHUB_CLIENT_SECRET,
             }),
           ],
         },

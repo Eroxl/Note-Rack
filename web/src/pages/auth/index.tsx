@@ -53,7 +53,6 @@ const Auth = () => {
 
             <div className="w-full h-1 rounded-full bg-zinc-700" />
 
-            <AuthButton company="Github" />
             <AuthButton company="Google" />
           </div>
         </div>
