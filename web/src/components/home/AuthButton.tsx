@@ -4,13 +4,9 @@ import {
   getAuthorisationURLWithQueryParamsAndSetState,
 } from 'supertokens-auth-react/recipe/thirdparty';
 
-const authButtonClicked = async (company: string) => {
-  // -=- Verification -=-
-  // ~ If the company is not Github, Google or Apple, then return.
-  if (!(company === 'Github' || company === 'Google' || company === 'Apple')) {
-    return;
-  }
+type ValidProviders = 'Google';
 
+const authButtonClicked = async (company: ValidProviders) => {
   const authURL = await getAuthorisationURLWithQueryParamsAndSetState({
     providerId: company.toLowerCase(),
     authorisationURL: `${process.env.NEXT_PUBLIC_BASE_URL}/auth/callback/${company.toLowerCase()}`,
@@ -20,7 +16,7 @@ const authButtonClicked = async (company: string) => {
     .assign(authURL);
 };
 
-const AuthButton = (props: { company: string }) => {
+const AuthButton = (props: { company: ValidProviders }) => {
   const { company } = props;
 
   return (
