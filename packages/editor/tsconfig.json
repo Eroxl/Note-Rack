@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "target": "es2020",
+    "verbatimModuleSyntax": true,
+    "resolveJsonModule": true,
+    "moduleDetection": "force",
+    "jsx": "react",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "moduleResolution": "Node",
+    "module": "ESNext",
+    "outDir": "dist",
+    "sourceMap": true,
+    "lib": ["es2020", "dom", "dom.iterable"],
+    "composite": true,
+    "declarationMap": true,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "rootDir": "./src/",
+  },
+  "include": [
+    "**/*.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+  ],
+  "exclude": [
+    "**/node_modules",
+    "**/dist"
+  ]
+}

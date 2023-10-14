@@ -1,0 +1,53 @@
+import babel from '@rollup/plugin-babel'
+import commonjs from '@rollup/plugin-commonjs'
+import resolve from '@rollup/plugin-node-resolve'
+import autoExternal from 'rollup-plugin-auto-external'
+import sourcemaps from 'rollup-plugin-sourcemaps'
+import typescript from 'rollup-plugin-typescript2'
+
+import pkg from './package.json' assert { type: "json" };
+
+const plugins = [
+  autoExternal({
+    packagePath: './package.json',
+  }),
+  sourcemaps(),
+  resolve(),
+  commonjs(),
+  babel({
+    babelHelpers: 'bundled',
+    exclude: './node_modules/**',
+  }),
+  typescript({
+    tsconfig: './tsconfig.json',
+  }),
+];
+
+
+const rollupConfig = {
+  input: 'src/index.ts',
+  output: [
+    {
+      name: pkg.name,
+      file: pkg.umd,
+      format: 'umd',
+      sourcemap: true,
+    },
+    {
+      name: pkg.name,
+      file: pkg.main,
+      format: 'cjs',
+      sourcemap: true,
+      exports: 'auto',
+    },
+    {
+      name: pkg.name,
+      file: pkg.module,
+      format: 'es',
+      sourcemap: true,
+    },
+  ],
+  plugins,
+}
+
+export default rollupConfig;
