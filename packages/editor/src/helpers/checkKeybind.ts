@@ -1,5 +1,6 @@
 import type { KeyboardEvent } from 'react';
-import type { Keybind, ValidKeys, SpecialKey, NumberKey, UppercaseKey, LowercaseKey } from '../types/Keybind';
+
+import type { Keybind, ValidKeys, NumberKey, UppercaseKey, LowercaseKey } from '../types/Keybind';
 import type { Split } from '../types/helpers/Split';
 import type { ReverseArr } from '../types/helpers/ReverseArr';
 
@@ -30,21 +31,21 @@ type ValidKeyCodes = (
 )
 
 const isAlpha = (key: string): key is UppercaseKey | LowercaseKey => {
+  if (key.length !== 1) return false;
+
   return /[a-zA-Z]/.test(key);
 }
 
 const isNumber = (key: string): key is NumberKey => {
+  if (key.length !== 1) return false;
+
   return /[0-9]/.test(key);
 }
 
 const keyToKeyCode = (key: ValidKeys): ValidKeyCodes => {
-  if (key.length === 1) {
-    if (isAlpha(key)) return `Key${key.toUpperCase() as UppercaseKey}`;
+  if (isAlpha(key)) return `Key${key.toUpperCase() as UppercaseKey}`;
 
-    if (isNumber(key)) return `Digit${key}`;
-  }
-
-  key = key as SpecialKey;
+  if (isNumber(key)) return `Digit${key}`;
 
   return SPECIAL_KEY_MAP[key];
 };
