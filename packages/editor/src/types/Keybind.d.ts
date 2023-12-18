@@ -50,5 +50,6 @@ export type {
   NumberKey,
   SpecialKey,
   ValidKeys,
-  Keybind
 };
+
+export default Keybind;
