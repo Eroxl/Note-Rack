@@ -2,7 +2,7 @@ import { describe, expect, test } from '@jest/globals';
 import type { KeyboardEvent } from 'react';
 
 import checkKeybind from "../../helpers/checkKeybind";
-import type { Keybind } from '../../types/Keybind';
+import type Keybind from '../../types/Keybind';
 
 describe('checkKeybind', () => {
   test(
