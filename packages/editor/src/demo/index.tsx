@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from 'react-dom';
 
-import Text from "../components/Text";
+import createStyledText from "../components/extendable/createStyledText";
 import Editor from "../components/Editor";
 
 const Demo: React.FC = () => {
@@ -17,7 +17,11 @@ const Demo: React.FC = () => {
         },
       ]}
       renderers={{
-        text: Text
+        text: createStyledText({
+          color: 'red',
+          fontSize: '2em',
+          fontWeight: 'bold'
+        })
       }}
       postMutations={{
         editBlock: [

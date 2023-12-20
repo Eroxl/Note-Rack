@@ -1,5 +1,5 @@
 import Editor from "./components/Editor";
-import Text from "./components/Text";
+import Text from "./components/extendable/createStyledText";
 import mutations from "./mutations";
 
 import checkKeybind from "./helpers/checkKeybind";
