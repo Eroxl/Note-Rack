@@ -32,7 +32,7 @@ const ContentEditable: React.FC<ContentEditableProps> = (props) => {
 
     focusElement(innerRef.current, caretPosition.current);
     caretPosition.current = null;
-  }, [caretPosition.current, innerRef.current]);
+  }, [html]);
 
   useEffect(() => {
     const caretFixer = () => {

@@ -4,6 +4,7 @@ import ContentEditable from '../ContentEditable';
 import type BlockRenderer from '../../types/BlockRenderer';
 import generateUUID from '../../helpers/generateUUID';
 import getCursorOffset from '../../helpers/caret/getCursorOffset';
+import focusElement from 'src/helpers/focusElement';
 
 export type TextProperties = {
   text: string;
@@ -19,10 +20,8 @@ const createStyledText = (style?: React.CSSProperties, className?: string) => {
     return (
       <ContentEditable
         style={{
-          minHeight: '1.2em',
           outline: 'none',
           whiteSpace: 'pre-wrap',
-          width: '100%',
           ...style
         }}
 
@@ -49,6 +48,16 @@ const createStyledText = (style?: React.CSSProperties, className?: string) => {
               },
               id
             );
+
+            setTimeout(() => {
+              if (!editableElement.current) return;
+
+              const nextBlock = editableElement.current.nextSibling as HTMLElement | null;
+
+              if (!nextBlock) return;
+
+              focusElement(nextBlock);
+            }, 0);
           } else if (event.code === 'Backspace' && type !== 'text' && isCursorAtStart) {
             event.preventDefault();
             mutations.editBlock(id, {}, 'text');
