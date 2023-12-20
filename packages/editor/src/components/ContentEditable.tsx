@@ -8,9 +8,10 @@ type ContentEditableProps = {
   html: string;
   innerRef: React.RefObject<HTMLElement>;
   className?: string;
+  onChange: (event: React.FormEvent<HTMLSpanElement>) => void;
   style?: React.CSSProperties;
   disabled?: boolean;
-  onChange: (event: React.FormEvent<HTMLSpanElement>) => void;
+  onKeyDown?: (event: React.KeyboardEvent<HTMLSpanElement>) => void;
 };
 
 const ContentEditable: React.FC<ContentEditableProps> = (props) => {
@@ -21,6 +22,7 @@ const ContentEditable: React.FC<ContentEditableProps> = (props) => {
     style,
     innerRef,
     onChange,
+    onKeyDown
   } = props;
 
   const caretPosition = useRef<number | null>(null);
@@ -65,6 +67,7 @@ const ContentEditable: React.FC<ContentEditableProps> = (props) => {
       contentEditable={!disabled}
       suppressContentEditableWarning
 
+      onKeyDown={onKeyDown}
       onInput={(event) => {
         if (!innerRef.current) return;
 

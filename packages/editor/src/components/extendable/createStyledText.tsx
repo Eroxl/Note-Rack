@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 
 import ContentEditable from '../ContentEditable';
 import type BlockRenderer from '../../types/BlockRenderer';
+import generateUUID from 'src/helpers/generateUUID';
 
 export type TextProperties = {
   text: string;
@@ -27,6 +28,22 @@ const createStyledText = (style?: React.CSSProperties, className?: string) => {
         className={className}
         html={text}
         innerRef={editableElement}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault();
+  
+            mutations.addBlock(
+              {
+                id: generateUUID(),
+                type: 'text',
+                properties: {
+                  text: ''
+                }
+              },
+              id
+            );
+          }
+        }}
         onChange={() => {
           if (!editableElement.current) return;
   
