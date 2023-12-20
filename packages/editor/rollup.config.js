@@ -4,14 +4,26 @@ import resolve from '@rollup/plugin-node-resolve'
 import autoExternal from 'rollup-plugin-auto-external'
 import sourcemaps from 'rollup-plugin-sourcemaps'
 import typescript from 'rollup-plugin-typescript2'
+import replace from '@rollup/plugin-replace'
 
 import pkg from './package.json' assert { type: "json" };
 
+const isDev = process.env.NODE_ENV === 'dev';
+
 const plugins = [
-  autoExternal({
+  ... isDev
+  ? [
+    replace({
+      preventAssignment: false,
+      'process.env.NODE_ENV': JSON.stringify('development'),
+    })
+  ]
+  : [
+    autoExternal({
     packagePath: './package.json',
-  }),
-  sourcemaps(),
+    }),
+    sourcemaps(),
+  ],
   resolve(),
   commonjs(),
   babel({
@@ -25,28 +37,35 @@ const plugins = [
 
 
 const rollupConfig = {
-  input: 'src/index.ts',
-  output: [
-    {
-      name: pkg.name,
-      file: pkg.umd,
-      format: 'umd',
-      sourcemap: true,
-    },
-    {
-      name: pkg.name,
-      file: pkg.main,
-      format: 'cjs',
-      sourcemap: true,
-      exports: 'auto',
-    },
-    {
-      name: pkg.name,
-      file: pkg.module,
-      format: 'es',
-      sourcemap: true,
-    },
-  ],
+  input: isDev
+    ? 'src/demo/index.tsx'
+    : 'src/index.ts',
+  output: isDev
+    ? {
+      file: 'dist/bundle.js',
+      format: 'iife'
+    }
+    : [
+      {
+        name: pkg.name,
+        file: pkg.umd,
+        format: 'umd',
+        sourcemap: true,
+      },
+      {
+        name: pkg.name,
+        file: pkg.main,
+        format: 'cjs',
+        sourcemap: true,
+        exports: 'auto',
+      },
+      {
+        name: pkg.name,
+        file: pkg.module,
+        format: 'es',
+        sourcemap: true,
+      },
+    ],
   plugins,
 }
 
