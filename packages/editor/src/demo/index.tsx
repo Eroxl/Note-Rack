@@ -19,6 +19,13 @@ const Demo: React.FC = () => {
       renderers={{
         text: Text
       }}
+      postMutations={{
+        editBlock: [
+          (_, id, properties) => {
+            console.log(`Editing block ${id} with properties:`, properties);
+          }
+        ]
+      }}
     />
   );
 }

@@ -12,7 +12,7 @@ type EditorProps = {
   }
 
   postMutations?: {
-    [T in keyof typeof mutations]: (...args: Parameters<typeof mutations[T]>) => void
+    [T in keyof typeof mutations]?: ((...args: Parameters<typeof mutations[T]>) => void)[]
   }
 };
 
@@ -22,6 +22,28 @@ const Editor: React.FC<EditorProps> = (props) => {
   const [blocks, setBlocks] = useState(startingBlocks);
 
   const { renderers, postMutations } = props;
+
+  const editorMutations = Object.fromEntries(
+    Object
+      .entries(mutations)
+      .map(([name, fn]) => {
+        const mutation = (...args: any[]) => {
+
+          setBlocks((blocks) => {
+            // @ts-ignore
+            return fn(blocks, ...args);
+          })
+
+          const mutationsToPerform = postMutations?.[name as keyof typeof mutations];
+
+          mutationsToPerform?.forEach((mutation) => {
+            mutation(blocks, ...args);
+          });
+        }
+
+        return [name, mutation];
+      })
+  );
 
   const renderBlock = (block: BlockState) => {
     const {
@@ -39,12 +61,20 @@ const Editor: React.FC<EditorProps> = (props) => {
         key={id}
         id={id}
         properties={properties}
+
+        // @ts-ignore
+        mutations={editorMutations}
       />
     );
   }
 
   return (
-    <div>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
       { blocks.map(renderBlock) }
     </div>
   );
