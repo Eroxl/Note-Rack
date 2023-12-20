@@ -60,6 +60,7 @@ const Editor: React.FC<EditorProps> = (props) => {
       <BlockRenderer
         key={id}
         id={id}
+        type={type}
         properties={properties}
 
         // @ts-ignore

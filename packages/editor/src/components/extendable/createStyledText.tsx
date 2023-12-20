@@ -2,7 +2,8 @@ import React, { useRef } from 'react';
 
 import ContentEditable from '../ContentEditable';
 import type BlockRenderer from '../../types/BlockRenderer';
-import generateUUID from 'src/helpers/generateUUID';
+import generateUUID from '../../helpers/generateUUID';
+import getCursorOffset from '../../helpers/caret/getCursorOffset';
 
 export type TextProperties = {
   text: string;
@@ -10,11 +11,11 @@ export type TextProperties = {
 
 const createStyledText = (style?: React.CSSProperties, className?: string) => {
   const Text: BlockRenderer<TextProperties> = (props) => {
-    const { id, properties, mutations } = props;
+    const { id, properties, mutations, type } = props;
     const { text } = properties;
   
     const editableElement = useRef<HTMLSpanElement>(null);
-  
+
     return (
       <ContentEditable
         style={{
@@ -29,9 +30,15 @@ const createStyledText = (style?: React.CSSProperties, className?: string) => {
         html={text}
         innerRef={editableElement}
         onKeyDown={(event) => {
+          if (!editableElement.current) return;
+
+          const isCursorAtStart = getCursorOffset(editableElement.current) === 0;
+
+          const isBlockEmpty = (editableElement.current.innerText === '' || editableElement.current.innerText === '\n');
+
           if (event.key === 'Enter' && !event.shiftKey) {
             event.preventDefault();
-  
+
             mutations.addBlock(
               {
                 id: generateUUID(),
@@ -42,6 +49,12 @@ const createStyledText = (style?: React.CSSProperties, className?: string) => {
               },
               id
             );
+          } else if (event.code === 'Backspace' && type !== 'text' && isCursorAtStart) {
+            event.preventDefault();
+            mutations.editBlock(id, {}, 'text');
+          } else if (event.code === 'Backspace' && type === 'text' && isBlockEmpty) {
+            event.preventDefault();
+            mutations.removeBlock(id);
           }
         }}
         onChange={() => {
@@ -57,7 +70,6 @@ const createStyledText = (style?: React.CSSProperties, className?: string) => {
     )
   };
 
-  
   return Text;
 }
 

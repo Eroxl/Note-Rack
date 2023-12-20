@@ -13,7 +13,7 @@ export type InBlockMutations = {
 
 
 type BlockRenderer<T = Record<string, unknown>> = React.FC<
-  Omit<BlockState<T>, 'type'> & {
+  BlockState<T> & {
     mutations: InBlockMutations;
   }
 >;
