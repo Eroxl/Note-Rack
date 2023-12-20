@@ -17,11 +17,7 @@ const Demo: React.FC = () => {
         },
       ]}
       renderers={{
-        text: createStyledText({
-          color: 'red',
-          fontSize: '2em',
-          fontWeight: 'bold'
-        })
+        text: createStyledText()
       }}
       postMutations={{
         editBlock: [
