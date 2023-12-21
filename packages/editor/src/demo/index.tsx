@@ -14,7 +14,7 @@ const Demo: React.FC = () => {
           id: generateUUID(),
           type: 'h1',
           properties: {
-            text: 'Heading 1',
+            text: 'Heading 1anjdwipejogenfkrlfeoarij;gnklroepjiorjklmefwkraeotihjrkneladwadwdwadawdsadsdsadawfm',
           }
         },
         {
@@ -77,11 +77,6 @@ const Demo: React.FC = () => {
         }),
       }}
       postMutations={{
-        editBlock: [
-          (_, id, properties) => {
-            console.log(`Editing block ${id} with properties:`, properties);
-          }
-        ],
         addBlock: [
           (_, block) => {
             // ~ Focus the new block

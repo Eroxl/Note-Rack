@@ -22,6 +22,8 @@ const createStyledText = (style?: React.CSSProperties, className?: string) => {
         style={{
           outline: 'none',
           whiteSpace: 'pre-wrap',
+          maxWidth: '100vw',
+          wordBreak: 'break-word',
           ...style
         }}
 
@@ -77,7 +79,7 @@ const createStyledText = (style?: React.CSSProperties, className?: string) => {
         onChange={() => {
           if (!editableElement.current) return;
   
-          const updatedText = editableElement.current.innerText;
+          const updatedText = editableElement.current.textContent;
   
           mutations.editBlock(id, {
             text: updatedText

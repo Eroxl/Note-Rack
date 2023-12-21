@@ -61,7 +61,7 @@ const ContentEditable: React.FC<ContentEditableProps> = (props) => {
   return (
     <span
       dangerouslySetInnerHTML={{ __html: (
-        html.endsWith('\n') ? html : `${html}\n`
+        html
       )}}
 
       ref={innerRef}
@@ -69,7 +69,7 @@ const ContentEditable: React.FC<ContentEditableProps> = (props) => {
       contentEditable={!disabled}
       suppressContentEditableWarning
 
-      onBeforeInput={() => {
+      onBeforeInput={() => {        
         if (caretPosition.current === null) return;
 
         caretUpdater()
