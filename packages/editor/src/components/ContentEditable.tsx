@@ -61,7 +61,7 @@ const ContentEditable: React.FC<ContentEditableProps> = (props) => {
   return (
     <span
       dangerouslySetInnerHTML={{ __html: (
-        html
+        html.endsWith('\n') ? html : `${html}\n`
       )}}
 
       ref={innerRef}

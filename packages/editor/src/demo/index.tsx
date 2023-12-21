@@ -14,7 +14,7 @@ const Demo: React.FC = () => {
           id: generateUUID(),
           type: 'h1',
           properties: {
-            text: 'Heading 1anjdwipejogenfkrlfeoarij;gnklroepjiorjklmefwkraeotihjrkneladwadwdwadawdsadsdsadawfm',
+            text: 'Heading 1',
           }
         },
         {
