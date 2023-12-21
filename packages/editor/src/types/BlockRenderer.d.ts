@@ -12,10 +12,10 @@ export type InBlockMutations = {
 };
 
 
-type BlockRenderer<T = Record<string, unknown>> = React.FC<
-  BlockState<T> & {
-    mutations: InBlockMutations;
-  }
->;
+export type BlockRendererProps<T = Record<string, unknown>> = BlockState<T> & {
+  mutations: InBlockMutations;
+};
+
+type BlockRenderer<T = Record<string, unknown>> = React.FC<BlockRendererProps<T>>;
 
 export default BlockRenderer;

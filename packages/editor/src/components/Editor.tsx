@@ -3,6 +3,13 @@ import React, { useState } from 'react';
 import mutations from '../mutations';
 import type BlockState from '../types/BlockState';
 import type BlockRenderer from '../types/BlockRenderer';
+import type Keybind from '../types/Keybind';
+import type { InBlockMutations } from '../types/BlockRenderer';
+import BlockWrapper from './BlockWrapper';
+
+type BindHandler = (
+  mutations: InBlockMutations,
+) => void;
 
 type EditorProps = {
   startingBlocks: BlockState[];
@@ -14,6 +21,18 @@ type EditorProps = {
   postMutations?: {
     [T in keyof typeof mutations]?: ((...args: Parameters<typeof mutations[T]>) => void)[]
   }
+
+  keybinds?: {
+    keybind: Keybind,
+    activeBlock: BlockState,
+    handler: BindHandler
+  }[]
+
+  richTextKeybinds?: {
+    regex: RegExp,
+    activeBlock: BlockState,
+    handler: BindHandler
+  }[]
 };
 
 const Editor: React.FC<EditorProps> = (props) => {
@@ -43,7 +62,7 @@ const Editor: React.FC<EditorProps> = (props) => {
 
         return [name, mutation];
       })
-  );
+  ) as InBlockMutations;
 
   const renderBlock = (block: BlockState) => {
     const {
@@ -57,15 +76,22 @@ const Editor: React.FC<EditorProps> = (props) => {
     if (!BlockRenderer) return;
 
     return (
-      <BlockRenderer
+      <BlockWrapper
         key={id}
         id={id}
         type={type}
         properties={properties}
 
-        // @ts-ignore
         mutations={editorMutations}
-      />
+      >
+        <BlockRenderer
+          id={id}
+          type={type}
+          properties={properties}
+  
+          mutations={editorMutations}
+        />
+      </BlockWrapper>
     );
   }
 
@@ -74,6 +100,7 @@ const Editor: React.FC<EditorProps> = (props) => {
       style={{
         display: "flex",
         flexDirection: "column",
+        gap: "1em"
       }}
     >
       { blocks.map(renderBlock) }

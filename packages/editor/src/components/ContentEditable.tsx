@@ -82,8 +82,4 @@ const ContentEditable: React.FC<ContentEditableProps> = (props) => {
   )
 };
 
-ContentEditable.defaultProps = {
-  disabled: false
-};
-
 export default ContentEditable;
