@@ -61,6 +61,14 @@ const createStyledText = (style?: React.CSSProperties, className?: string) => {
           } else if (event.code === 'Backspace' && type !== 'text' && isCursorAtStart) {
             event.preventDefault();
             mutations.editBlock(id, {}, 'text');
+
+            setTimeout(() => {
+              const newBlock = document.getElementById(`block-${id}`)?.firstChild as (HTMLElement | undefined);
+
+              if (!newBlock) return;
+
+              focusElement(newBlock, 0);
+            }, 0);
           } else if (event.code === 'Backspace' && type === 'text' && isBlockEmpty) {
             event.preventDefault();
             mutations.removeBlock(id);
