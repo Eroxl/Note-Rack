@@ -99,6 +99,26 @@ const Demo: React.FC = () => {
               focusElement(newBlock);
             }, 0);
           }
+        ],
+        removeBlock: [
+          (state, id) => {
+            const blockIndex = Math.max(state.findIndex(block => block.id === id) - 1, 0);
+
+            // ~ Focus the next block
+            setTimeout(() => {
+              const nextBlock = document.getElementById(`block-${state[blockIndex]?.id}`)?.firstChild as (HTMLElement | undefined);
+
+              if (!nextBlock) return;
+
+              nextBlock.scrollIntoView({
+                behavior: 'smooth',
+                block: 'nearest',
+                inline: 'start'
+              });
+
+              focusElement(nextBlock, nextBlock.textContent?.length || 0);
+            }, 0);
+          }
         ]
       }}
     />
