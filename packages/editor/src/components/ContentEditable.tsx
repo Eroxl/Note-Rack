@@ -27,12 +27,12 @@ const ContentEditable: React.FC<ContentEditableProps> = (props) => {
 
   const caretPosition = useRef<number | null>(null);
 
-  useEffect(() => {
+  const caretUpdater = () => {
     if (!caretPosition.current || !innerRef.current) return;
 
     focusElement(innerRef.current, caretPosition.current);
     caretPosition.current = null;
-  }, [html]);
+  }
 
   useEffect(() => {
     const caretFixer = () => {
@@ -50,9 +50,11 @@ const ContentEditable: React.FC<ContentEditableProps> = (props) => {
     }
 
     document.addEventListener('selectionchange', caretFixer);
+    document.addEventListener('selectionchange', caretUpdater);
 
     return () => {
       document.removeEventListener('selectionchange', caretFixer);
+      document.removeEventListener('selectionchange', caretUpdater);
     }
   }, [innerRef.current]);
   
@@ -67,11 +69,17 @@ const ContentEditable: React.FC<ContentEditableProps> = (props) => {
       contentEditable={!disabled}
       suppressContentEditableWarning
 
+      onBeforeInput={() => {
+        if (caretPosition.current === null) return;
+
+        caretUpdater()
+      }}
+
       onKeyDown={onKeyDown}
       onInput={(event) => {
         if (!innerRef.current) return;
 
-        caretPosition.current = getCursorOffset(innerRef.current);
+        caretPosition.current = getCursorOffset(innerRef.current);;
 
         onChange(event);
       }}
