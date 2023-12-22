@@ -12,7 +12,7 @@ import type BlockState from "../types/BlockState";
 const editBlock = (
   state: BlockState[],
   blockId: string,
-  updatedProperties: Record<string, unknown>,
+  updatedProperties?: Record<string, unknown>,
   updatedType?: string,
 ): BlockState[] => {
   const newState: BlockState[] = [...state];

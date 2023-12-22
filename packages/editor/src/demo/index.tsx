@@ -17,41 +17,6 @@ const Demo: React.FC = () => {
             text: 'Heading 1',
           }
         },
-        {
-          id: generateUUID(),
-          type: 'h2',
-          properties: {
-            text: 'Heading 2',
-          }
-        },
-        {
-          id: generateUUID(),
-          type: 'h3',
-          properties: {
-            text: 'Heading 3',
-          }
-        },
-        {
-          id: generateUUID(),
-          type: 'h4',
-          properties: {
-            text: 'Heading 4',
-          }
-        },
-        {
-          id: generateUUID(),
-          type: 'h5',
-          properties: {
-            text: 'Heading 5',
-          }
-        },
-        {
-          id: generateUUID(),
-          type: 'text',
-          properties: {
-            text: 'This is a paragraph.'
-          }
-        }
       ]}
       renderers={{
         text: createStyledText(),
@@ -76,46 +41,20 @@ const Demo: React.FC = () => {
           fontWeight: 'bold'
         }),
       }}
-      postMutations={{
-        addBlock: [
-          (_, block) => {
-            // ~ Focus the new block
-            setTimeout(() => {
-              const newBlock = document.getElementById(`block-${block.id}`)?.firstChild as (HTMLElement | undefined);
-
-              if (!newBlock) return;
-
-              newBlock.scrollIntoView({
-                behavior: 'smooth',
-                block: 'nearest',
-                inline: 'start'
-              });
-
-              focusElement(newBlock);
-            }, 0);
+      richTextKeybinds={[
+        {
+          regex:  /^# (.*)/g,
+          handler: (mutations, block, searchResult) => {
+            mutations.editBlock(
+              block.id,
+              {
+                text: searchResult[1],
+              },
+              'h1'
+            )
           }
-        ],
-        removeBlock: [
-          (state, id) => {
-            const blockIndex = Math.max(state.findIndex(block => block.id === id) - 1, 0);
-
-            // ~ Focus the next block
-            setTimeout(() => {
-              const nextBlock = document.getElementById(`block-${state[blockIndex]?.id}`)?.firstChild as (HTMLElement | undefined);
-
-              if (!nextBlock) return;
-
-              nextBlock.scrollIntoView({
-                behavior: 'smooth',
-                block: 'nearest',
-                inline: 'start'
-              });
-
-              focusElement(nextBlock, nextBlock.textContent?.length || 0);
-            }, 0);
-          }
-        ]
-      }}
+        }
+      ]}
     />
   );
 }

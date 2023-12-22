@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 
+import focusAddedBlock from '../lib/postEditorMutations/focusAddedBlock';
+import focusRemovedBlock from '../lib/postEditorMutations/focusRemovedBlock';
 import mutations from '../mutations';
-import type BlockState from '../types/BlockState';
 import type BlockRenderer from '../types/BlockRenderer';
-import type Keybind from '../types/Keybind';
 import type { InBlockMutations } from '../types/BlockRenderer';
+import type BlockState from '../types/BlockState';
+import type KeybindHandler from '../types/KeybindHandler';
+import type RichTextKeybindHandler from '../types/RichTextKeybindHandler';
 import BlockWrapper from './BlockWrapper';
-
-type BindHandler = (
-  mutations: InBlockMutations,
-) => void;
+import type RemoveFirstFromTuple from 'src/types/helpers/RemoveFirstFromTuple';
 
 type EditorProps = {
   startingBlocks: BlockState[];
@@ -22,17 +22,8 @@ type EditorProps = {
     [T in keyof typeof mutations]?: ((...args: Parameters<typeof mutations[T]>) => void)[]
   }
 
-  keybinds?: {
-    keybind: Keybind,
-    activeBlock: BlockState,
-    handler: BindHandler
-  }[]
-
-  richTextKeybinds?: {
-    regex: RegExp,
-    activeBlock: BlockState,
-    handler: BindHandler
-  }[]
+  keybinds?: KeybindHandler[]
+  richTextKeybinds?: RichTextKeybindHandler[]
 };
 
 const Editor: React.FC<EditorProps> = (props) => {
@@ -40,22 +31,70 @@ const Editor: React.FC<EditorProps> = (props) => {
 
   const [blocks, setBlocks] = useState(startingBlocks);
 
-  const { renderers, postMutations } = props;
+  const {
+    renderers,
+    postMutations,
+    richTextKeybinds,
+  } = props;
+
+  const editorPostMutations: typeof postMutations = {
+    addBlock: [focusAddedBlock],
+    removeBlock: [focusRemovedBlock]
+  }
 
   const editorMutations = Object.fromEntries(
     Object
       .entries(mutations)
       .map(([name, fn]) => {
         const mutation = (...args: any[]) => {
+          // ~ Handle post mutations
+          if (name === 'editBlock') {
+            const [
+              blockId,
+              updatedProperties,
+            ] = args as RemoveFirstFromTuple<Parameters<typeof mutations.editBlock>>;
+
+            if(updatedProperties && typeof updatedProperties.text === 'string') {
+
+              const block = blocks.find((block) => block.id === blockId);
+
+              let found = false;
+
+              richTextKeybinds?.forEach((keybind) => {
+                const {
+                  regex,
+                  handler
+                } = keybind;
+
+                const {
+                  text
+                } = updatedProperties as { text: string };
+
+                const regexSearch = regex.exec(text);
+
+                if (!regexSearch || !block) return;
+
+                found = true;
+
+                handler(editorMutations, block, regexSearch);
+              });
+
+              if (found) return;
+            }
+          }
 
           setBlocks((blocks) => {
             // @ts-ignore
             return fn(blocks, ...args);
           })
 
-          const mutationsToPerform = postMutations?.[name as keyof typeof mutations];
+          const mutationsToPerform = [
+            ...postMutations?.[name as keyof typeof mutations] ?? [],
+            ...editorPostMutations[name as keyof typeof mutations] ?? []
+          ]
 
           mutationsToPerform?.forEach((mutation) => {
+            // @ts-ignore
             mutation(blocks, ...args);
           });
         }
@@ -88,7 +127,7 @@ const Editor: React.FC<EditorProps> = (props) => {
           id={id}
           type={type}
           properties={properties}
-  
+
           mutations={editorMutations}
         />
       </BlockWrapper>
@@ -103,7 +142,7 @@ const Editor: React.FC<EditorProps> = (props) => {
         gap: "1em"
       }}
     >
-      { blocks.map(renderBlock) }
+      {blocks.map(renderBlock)}
     </div>
   );
 };

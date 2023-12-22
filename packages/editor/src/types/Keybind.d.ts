@@ -1,4 +1,4 @@
-import type { StringToUnion } from "./helpers/StringToUnion"
+import type StringToUnion from "./helpers/StringToUnion"
 
 type LowercaseKey = StringToUnion<'abcdefghijklmnopqrstuvwxyz'>
 type UppercaseKey = StringToUnion<'ABCDEFGHIJKLMNOPQRSTUVWXYZ'>
@@ -9,6 +9,8 @@ type SpecialKey = (
   'Space' |
   'Tab'
 )
+
+type test = StringToUnion<'test'>
 
 type ModifierKey = (
   'Alt' |

@@ -2,8 +2,8 @@ import React from 'react';
 
 import mutations from '../mutations';
 import type BlockState from './BlockState';
+import type RemoveFirstFromTuple from './helpers/RemoveFirstFromTuple';
 
-type RemoveFirstFromTuple<T extends any[]> = (((...b: T) => void) extends (a, ...b: infer I) => void ? I : [])
 
 export type InBlockMutations = {
   [key in keyof typeof mutations]: (
