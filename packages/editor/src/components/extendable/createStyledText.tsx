@@ -28,7 +28,6 @@ const createStyledText = (style?: React.CSSProperties, className?: string) => {
         }}
 
         className={className}
-        html={text}
         innerRef={editableElement}
         onKeyDown={(event) => {
           if (!editableElement.current) return;
@@ -85,7 +84,9 @@ const createStyledText = (style?: React.CSSProperties, className?: string) => {
             text: updatedText
           })
         }}
-      />
+      >
+        {text.endsWith('\n') ? text : text + '\n'}
+      </ContentEditable>
     )
   };
 

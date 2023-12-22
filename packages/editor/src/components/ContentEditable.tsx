@@ -5,7 +5,7 @@ import getCursorOffset from '../helpers/caret/getCursorOffset';
 import isElementFocused from '../helpers/isElementFocused';
 
 type ContentEditableProps = {
-  html: string;
+  children?: React.ReactNode;
   innerRef: React.RefObject<HTMLElement>;
   className?: string;
   onChange: (event: React.FormEvent<HTMLSpanElement>) => void;
@@ -16,7 +16,7 @@ type ContentEditableProps = {
 
 const ContentEditable: React.FC<ContentEditableProps> = (props) => {
   const {
-    html,
+    children,
     disabled,
     className,
     style,
@@ -27,9 +27,10 @@ const ContentEditable: React.FC<ContentEditableProps> = (props) => {
 
   const caretPosition = useRef<number | null>(null);
 
-  const caretUpdater = () => {
+  const caretUpdater = (event?: Event) => {
     if (!caretPosition.current || !innerRef.current) return;
 
+    innerRef.current.style.caretColor = 'auto';
     focusElement(innerRef.current, caretPosition.current);
     caretPosition.current = null;
   }
@@ -57,13 +58,9 @@ const ContentEditable: React.FC<ContentEditableProps> = (props) => {
       document.removeEventListener('selectionchange', caretUpdater);
     }
   }, [innerRef.current]);
-  
+
   return (
     <span
-      dangerouslySetInnerHTML={{ __html: (
-        html.endsWith('\n') ? html : `${html}\n`
-      )}}
-
       ref={innerRef}
 
       contentEditable={!disabled}
@@ -80,13 +77,16 @@ const ContentEditable: React.FC<ContentEditableProps> = (props) => {
         if (!innerRef.current) return;
 
         caretPosition.current = getCursorOffset(innerRef.current);;
+        innerRef.current.style.caretColor = 'transparent';
 
         onChange(event);
       }}
 
       className={className}
       style={style}
-    />
+    >
+      {children}
+    </span>
   )
 };
 
