@@ -10,6 +10,9 @@ import type KeybindHandler from '../types/KeybindHandler';
 import type RichTextKeybindHandler from '../types/RichTextKeybindHandler';
 import BlockWrapper from './BlockWrapper';
 import type RemoveFirstFromTuple from 'src/types/helpers/RemoveFirstFromTuple';
+import getBlockById from 'src/lib/helpers/getBlockByID';
+import focusElement from 'src/lib/helpers/focusElement';
+import handlePotentialBlockChange from 'src/lib/handlePotentialBlockChange';
 
 type EditorProps = {
   startingBlocks: BlockState[];
@@ -48,39 +51,15 @@ const Editor: React.FC<EditorProps> = (props) => {
       .map(([name, fn]) => {
         const mutation = (...args: any[]) => {
           // ~ Handle post mutations
-          if (name === 'editBlock') {
-            const [
-              blockId,
-              updatedProperties,
-            ] = args as RemoveFirstFromTuple<Parameters<typeof mutations.editBlock>>;
+          if (name === 'editBlock' && richTextKeybinds) {
+            const didTypeChange = handlePotentialBlockChange(
+              args,
+              blocks,
+              editorMutations,
+              richTextKeybinds
+            )
 
-            if(updatedProperties && typeof updatedProperties.text === 'string') {
-
-              const block = blocks.find((block) => block.id === blockId);
-
-              let found = false;
-
-              richTextKeybinds?.forEach((keybind) => {
-                const {
-                  regex,
-                  handler
-                } = keybind;
-
-                const {
-                  text
-                } = updatedProperties as { text: string };
-
-                const regexSearch = regex.exec(text);
-
-                if (!regexSearch || !block) return;
-
-                found = true;
-
-                handler(editorMutations, block, regexSearch);
-              });
-
-              if (found) return;
-            }
+            if (didTypeChange) return;
           }
 
           setBlocks((blocks) => {
@@ -103,37 +82,6 @@ const Editor: React.FC<EditorProps> = (props) => {
       })
   ) as InBlockMutations;
 
-  const renderBlock = (block: BlockState) => {
-    const {
-      id,
-      properties,
-      type
-    } = block;
-
-    const BlockRenderer = renderers[type];
-
-    if (!BlockRenderer) return;
-
-    return (
-      <BlockWrapper
-        key={id}
-        id={id}
-        type={type}
-        properties={properties}
-
-        mutations={editorMutations}
-      >
-        <BlockRenderer
-          id={id}
-          type={type}
-          properties={properties}
-
-          mutations={editorMutations}
-        />
-      </BlockWrapper>
-    );
-  }
-
   return (
     <div
       style={{
@@ -142,7 +90,23 @@ const Editor: React.FC<EditorProps> = (props) => {
         gap: "1em"
       }}
     >
-      {blocks.map(renderBlock)}
+      {blocks.map((block) => {
+        const { type, id } = block;
+
+        const renderer = renderers[type];
+
+        // ~ TODO: Throw an error here
+        if (!renderer) return;
+
+        return (
+          <BlockWrapper
+            block={block}
+            mutations={editorMutations}
+            key={id}
+            blockRenderer={renderer}
+          />
+        )
+      })}
     </div>
   );
 };

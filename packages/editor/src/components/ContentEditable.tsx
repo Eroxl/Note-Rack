@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 
-import focusElement from '../helpers/focusElement';
-import getCursorOffset from '../helpers/caret/getCursorOffset';
-import isElementFocused from '../helpers/isElementFocused';
+import focusElement from '../lib/helpers/focusElement';
+import getCursorOffset from '../lib/helpers/caret/getCursorOffset';
+import isElementFocused from '../lib/helpers/isElementFocused';
 
 type ContentEditableProps = {
   children?: React.ReactNode;

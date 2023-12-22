@@ -1,12 +1,16 @@
 import type BlockState from '../../types/BlockState';
-import focusElement from '../../helpers/focusElement';
+import focusElement from '../helpers/focusElement';
+import getBlockById from '../helpers/getBlockByID';
 
 const focusRemovedBlock = (state: BlockState[], id: string) => {
-  const blockIndex = Math.max(state.findIndex(block => block.id === id) - 1, 0);
+  const previousBlockIndex = Math.max(state.findIndex(block => block.id === id) - 1, 0);
+  const previousBlockId = state[previousBlockIndex]?.id
 
   // ~ Focus the next block
   setTimeout(() => {
-    const nextBlock = document.getElementById(`block-${state[blockIndex]?.id}`)?.firstChild as (HTMLElement | undefined);
+    if (!previousBlockId) return;
+
+    const nextBlock = getBlockById(previousBlockId);
 
     if (!nextBlock) return;
 

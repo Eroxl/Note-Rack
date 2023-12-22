@@ -2,9 +2,9 @@ import React, { useRef } from 'react';
 
 import ContentEditable from '../ContentEditable';
 import type BlockRenderer from '../../types/BlockRenderer';
-import generateUUID from '../../helpers/generateUUID';
-import getCursorOffset from '../../helpers/caret/getCursorOffset';
-import focusElement from 'src/helpers/focusElement';
+import generateUUID from '../../lib/helpers/generateUUID';
+import getCursorOffset from '../../lib/helpers/caret/getCursorOffset';
+import focusElement from 'src/lib/helpers/focusElement';
 
 export type TextProperties = {
   text: string;

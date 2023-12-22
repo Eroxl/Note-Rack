@@ -3,8 +3,7 @@ import ReactDOM from 'react-dom';
 
 import createStyledText from "../components/extendable/createStyledText";
 import Editor from "../components/Editor";
-import generateUUID from "../helpers/generateUUID";
-import focusElement from "../helpers/focusElement";
+import generateUUID from "../lib/helpers/generateUUID";
 
 const Demo: React.FC = () => {
   return (

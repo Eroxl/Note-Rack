@@ -1,18 +1,31 @@
 import React from 'react';
-import type { BlockRendererProps } from 'src/types/BlockRenderer';
+import type { InBlockMutations } from '../types/BlockRenderer';
+import type BlockState from 'src/types/BlockState';
+import type BlockRenderer from '../types/BlockRenderer';
 
 type BlockWrapperProps = {
-  children: React.ReactNode;
-} & BlockRendererProps;
+  mutations: InBlockMutations;
+  block: BlockState;
+  blockRenderer: BlockRenderer,
+};
 
 const BlockWrapper: React.FC<BlockWrapperProps> = (props) => {
-  const { children, id } = props;
+  const {
+    block,
+    mutations,
+    blockRenderer: BlockRenderer,
+  } = props;
   
+  const { id } = block;
+
   return (
     <div
       id={`block-${id}`}
     >
-      {children}
+      <BlockRenderer
+        {...block}
+        mutations={mutations}
+      />
     </div>
   );
 }

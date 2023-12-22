@@ -1,10 +1,11 @@
 import type BlockState from '../../types/BlockState';
-import focusElement from '../../helpers/focusElement';
+import focusElement from '../helpers/focusElement';
+import getBlockById from '../helpers/getBlockByID';
 
 const focusAddedBlock = (_: BlockState[], block: BlockState) => {
   // ~ Focus the new block
   setTimeout(() => {
-    const newBlock = document.getElementById(`block-${block.id}`)?.firstChild as (HTMLElement | undefined);
+    const newBlock = getBlockById(block.id);
 
     if (!newBlock) return;
 

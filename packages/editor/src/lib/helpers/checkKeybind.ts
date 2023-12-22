@@ -1,9 +1,9 @@
 import type { KeyboardEvent } from 'react';
 
-import type { ValidKeys, NumberKey, UppercaseKey, LowercaseKey } from '../types/Keybind';
-import type Keybind from '../types/Keybind';
-import type Split from '../types/helpers/Split';
-import type ReverseArr from '../types/helpers/ReverseArr';
+import type { ValidKeys, NumberKey, UppercaseKey, LowercaseKey } from '../../types/Keybind';
+import type Keybind from '../../types/Keybind';
+import type Split from '../../types/helpers/Split';
+import type ReverseArr from '../../types/helpers/ReverseArr';
 
 /**
  * Map of special keys to their key codes.
