@@ -49,6 +49,8 @@ const handlePotentialBlockChange = (
       focusElement(blockElement, 0);
     })
   });
+
+  return found;
 };
 
 export default handlePotentialBlockChange;

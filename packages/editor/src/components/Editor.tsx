@@ -9,9 +9,6 @@ import type BlockState from '../types/BlockState';
 import type KeybindHandler from '../types/KeybindHandler';
 import type RichTextKeybindHandler from '../types/RichTextKeybindHandler';
 import BlockWrapper from './BlockWrapper';
-import type RemoveFirstFromTuple from 'src/types/helpers/RemoveFirstFromTuple';
-import getBlockById from 'src/lib/helpers/getBlockByID';
-import focusElement from 'src/lib/helpers/focusElement';
 import handlePotentialBlockChange from 'src/lib/handlePotentialBlockChange';
 
 type EditorProps = {
