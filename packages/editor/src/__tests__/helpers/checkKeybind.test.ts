@@ -1,7 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
-import type { KeyboardEvent } from 'react';
 
-import checkKeybind from "../../helpers/checkKeybind";
+import checkKeybind from "../../lib/helpers/checkKeybind";
 import type Keybind from '../../types/Keybind';
 
 describe('checkKeybind', () => {
@@ -86,7 +85,6 @@ describe('checkKeybind', () => {
     }
   );
 
-  // Test with a keybind combination that includes a number key
   test(
     'Returns true when the keybind combination includes a number key and matchess',
     () => {
@@ -102,4 +100,52 @@ describe('checkKeybind', () => {
       expect(checkKeybind(keybind, event)).toBe(true);
     }
   );
+
+  test(
+    'Returns false when the keybind combination doesn\'t include shift but includes a modifier and shift is pressed',
+    () => {
+      const keybind: Keybind = 'Control+A';
+
+      const event = {
+        ctrlKey: true,
+        shiftKey: true,
+        altKey: false,
+        code: 'KeyA'
+      } as KeyboardEvent;
+
+      expect(checkKeybind(keybind, event)).toBe(false);
+    }
+  )
+
+  test(
+    'Returns false when the keybind combination doesn\'t include shift and shift is pressed',
+    () => {
+      const keybind: Keybind = 'A';
+
+      const event = {
+        ctrlKey: true,
+        shiftKey: true,
+        altKey: false,
+        code: 'KeyA'
+      } as KeyboardEvent;
+
+      expect(checkKeybind(keybind, event)).toBe(false);
+    }
+  )
+
+  test(
+    'Returns false when the keybind combination doesn\'t include a modifier and a modifier is pressed',
+    () => {
+      const keybind: Keybind = 'A';
+
+      const event = {
+        ctrlKey: true,
+        shiftKey: false,
+        altKey: false,
+        code: 'KeyA',
+      } as KeyboardEvent;
+
+      expect(checkKeybind(keybind, event)).toBe(false);
+    }
+  )
 });

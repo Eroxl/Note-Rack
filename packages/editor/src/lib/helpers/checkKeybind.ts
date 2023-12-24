@@ -1,9 +1,8 @@
-import type { KeyboardEvent } from 'react';
-
 import type { ValidKeys, NumberKey, UppercaseKey, LowercaseKey } from '../../types/Keybind';
 import type Keybind from '../../types/Keybind';
 import type Split from '../../types/helpers/Split';
 import type ReverseArr from '../../types/helpers/ReverseArr';
+import checkModifers from './checkModifers';
 
 /**
  * Map of special keys to their key codes.
@@ -60,20 +59,11 @@ const checkKeybind = (keybind: Keybind, event: KeyboardEvent): boolean => {
   const keybindParts = keybind
     .split('+') as Split<Keybind, '+'>;
 
-
   const [key, ...modifiers] = keybindParts.reverse() as ReverseArr<typeof keybindParts>;
 
   if (keyToKeyCode(key) !== event.code) return false;
 
-  if (modifiers.length === 0) return true;
-
-  if (modifiers.length === 2 && !event.shiftKey) return false;
-
-  const modifier = modifiers[0];
-
-  if (modifier === 'Control' && !event.ctrlKey) return false;
-  if (modifier === 'Alt' && !event.altKey) return false;
-  if (modifier === 'Meta' && !event.metaKey) return false;
+  if (!checkModifers(modifiers, event)) return false;
 
   return true;
 };

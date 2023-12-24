@@ -27,7 +27,7 @@ const ContentEditable: React.FC<ContentEditableProps> = (props) => {
 
   const caretPosition = useRef<number | null>(null);
 
-  const caretUpdater = (event?: Event) => {
+  const caretUpdater = () => {
     if (!caretPosition.current || !innerRef.current) return;
 
     innerRef.current.style.caretColor = 'auto';

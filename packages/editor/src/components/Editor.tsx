@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import focusAddedBlock from '../lib/postEditorMutations/focusAddedBlock';
 import focusRemovedBlock from '../lib/postEditorMutations/focusRemovedBlock';
@@ -10,6 +10,7 @@ import type KeybindHandler from '../types/KeybindHandler';
 import type RichTextKeybindHandler from '../types/RichTextKeybindHandler';
 import BlockWrapper from './BlockWrapper';
 import handlePotentialBlockChange from 'src/lib/handlePotentialBlockChange';
+import checkKeybind from 'src/lib/helpers/checkKeybind';
 
 type EditorProps = {
   startingBlocks: BlockState[];
@@ -34,6 +35,7 @@ const Editor: React.FC<EditorProps> = (props) => {
   const {
     renderers,
     postMutations,
+    keybinds,
     richTextKeybinds,
   } = props;
 
@@ -78,6 +80,33 @@ const Editor: React.FC<EditorProps> = (props) => {
         return [name, mutation];
       })
   ) as InBlockMutations;
+
+  useEffect(() => {
+    if (!keybinds) return;
+
+    const keydownListners: ((event: KeyboardEvent) => void)[] = (
+      keybinds.map(({ keybind, handler }) => {
+        const listener = (event: KeyboardEvent) => {
+          if (!checkKeybind(keybind, event)) return;
+
+          
+        }
+
+        return listener;
+      })
+    )
+
+    keydownListners.forEach((listener) => {
+      document.addEventListener('keydown', listener)
+    });
+
+
+    return () => {
+      keydownListners.forEach((listener) => {
+        document.removeEventListener('keydown', listener)
+      });
+    }
+  }, [])
 
   return (
     <div

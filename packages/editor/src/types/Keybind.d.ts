@@ -52,6 +52,8 @@ export type {
   NumberKey,
   SpecialKey,
   ValidKeys,
+  ModifierKey,
+  ShiftKey
 };
 
 export default Keybind;
