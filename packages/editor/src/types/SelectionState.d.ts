@@ -1,8 +1,7 @@
 type SelectionState = {
-  startBlockId: string,
-  startOffset: number,
-  endBlockId: string,
-  endOffset: number,
+  blockId: string,
+  offset: number,
+  length: number
 }
 
 export default SelectionState;

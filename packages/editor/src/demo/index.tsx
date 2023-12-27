@@ -13,33 +13,13 @@ const Demo: React.FC = () => {
       startingBlocks={[
         {
           id: generateUUID(),
-          type: 'h1',
+          type: 'text',
           properties: {
             text: 'Heading 1',
           }
         },
       ]}
       renderers={blockRenderers}
-      // inlineBlockRenderers={{
-      //   bold: {
-      //     deserializer: (element) => `**${element.innerText}**`,
-      //     serializer: (props) => {
-      //       const { content } = props;
-
-      //       const boldRegex = /\*\*(.*?)\*\*/g;
-
-      //       return (
-      //         <span
-      //           style={{
-      //             fontWeight: 'bold'
-      //           }}
-      //         >
-      //           {content.replace(boldRegex, '$1')}
-      //         </span>
-      //       )
-      //     }
-      //   }
-      // }}
       keybinds={keybinds}
       richTextKeybinds={richTextKeybinds}
     />

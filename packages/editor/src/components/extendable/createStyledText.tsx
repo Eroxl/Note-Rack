@@ -8,14 +8,21 @@ import focusElement from 'src/lib/helpers/focusElement';
 
 export type TextProperties = {
   text: string;
+  style?: {
+    type: string[],
+    start: number,
+    end: number,
+  }[],
 };
 
 const createStyledText = (style?: React.CSSProperties, className?: string) => {
   const Text: BlockRenderer<TextProperties> = (props) => {
     const { id, properties, mutations, type } = props;
-    const { text } = properties;
+    const { text, style: inlineBlockStyles } = properties;
   
     const editableElement = useRef<HTMLSpanElement>(null);
+
+    console.log(inlineBlockStyles);
 
     return (
       <ContentEditable

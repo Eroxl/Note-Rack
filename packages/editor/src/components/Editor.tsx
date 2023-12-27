@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import focusAddedBlock from '../lib/postEditorMutations/focusAddedBlock';
 import focusRemovedBlock from '../lib/postEditorMutations/focusRemovedBlock';
@@ -11,6 +11,7 @@ import type RichTextKeybindHandler from '../types/RichTextKeybindHandler';
 import BlockWrapper from './BlockWrapper';
 import handlePotentialBlockChange from 'src/lib/handlePotentialBlockChange';
 import checkKeybind from 'src/lib/helpers/checkKeybind';
+import getEditorSelection from 'src/lib/getEditorSelection';
 
 type EditorProps = {
   startingBlocks: BlockState[];
@@ -31,6 +32,8 @@ const Editor: React.FC<EditorProps> = (props) => {
   const { startingBlocks } = props;
 
   const [blocks, setBlocks] = useState(startingBlocks);
+
+  const editorRef = useRef<HTMLDivElement>(null);
 
   const {
     renderers,
@@ -87,9 +90,14 @@ const Editor: React.FC<EditorProps> = (props) => {
     const keydownListners: ((event: KeyboardEvent) => void)[] = (
       keybinds.map(({ keybind, handler }) => {
         const listener = (event: KeyboardEvent) => {
-          if (!checkKeybind(keybind, event)) return;
+          if (!checkKeybind(keybind, event) || !editorRef.current) return;
 
-          
+          event.preventDefault();
+          event.stopPropagation();
+
+          const currentSelection = getEditorSelection(editorRef.current);
+
+          handler(editorMutations, blocks, currentSelection);
         }
 
         return listener;
@@ -106,7 +114,7 @@ const Editor: React.FC<EditorProps> = (props) => {
         document.removeEventListener('keydown', listener)
       });
     }
-  }, [])
+  }, [editorMutations, blocks]);
 
   return (
     <div
@@ -115,6 +123,7 @@ const Editor: React.FC<EditorProps> = (props) => {
         flexDirection: "column",
         gap: "1em"
       }}
+      ref={editorRef}
     >
       {blocks.map((block) => {
         const { type, id } = block;
