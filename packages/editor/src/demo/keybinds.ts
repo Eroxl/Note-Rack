@@ -1,5 +1,7 @@
 import mergeIntervals, { type Interval } from "src/lib/helpers/mergeIntervals";
 import type KeybindHandler from "src/types/KeybindHandler";
+import restoreSelection from "src/lib/helpers/restoreSelection";
+import getBlockById from "src/lib/helpers/getBlockByID";
 
 const keybinds: KeybindHandler[] = [
   {
@@ -23,11 +25,19 @@ const keybinds: KeybindHandler[] = [
         }
       ])
 
-      console.log(updatedStyle);
-
       mutations.editBlock(selection.blockId, {
         style: updatedStyle,
       })
+
+      const selectionBlock = getBlockById(selection.blockId);
+
+      if (!selectionBlock) return;
+
+      selectionBlock.style.caretColor = 'transparent';
+
+      setTimeout(() => {
+        restoreSelection(selection);
+      }, 0);
     },
     keybind: 'Meta+b',
   }
