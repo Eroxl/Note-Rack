@@ -3,6 +3,8 @@ export type Interval = {
   end: number
 }
 
+export type ValueMerger = <T extends Interval & Record<string, unknown>>(intervalA: T, intervalB: T) => Record<string, unknown>;
+
 const cloneInterval = (interval: Interval) => {
   return JSON.parse(JSON.stringify(interval));
 }
@@ -40,7 +42,11 @@ const mergeIntervalValues = <T extends Interval & Record<string, unknown>>(
   return newInterval;
 }
 
-const mergeFullyOverlappingIntervals = <T extends Interval & Record<string, unknown>>(intervalA: T, intervalB: T): T[] => {
+const mergeFullyOverlappingIntervals = <T extends Interval & Record<string, unknown>>(
+  intervalA: T,
+  intervalB: T,
+  valueMerger: ValueMerger,
+): T[] => {
   const before = cloneInterval(intervalA);
   const after = cloneInterval(intervalA);
 
@@ -50,7 +56,7 @@ const mergeFullyOverlappingIntervals = <T extends Interval & Record<string, unkn
   const middle = {
     start: intervalB.start,
     end: intervalB.end,
-    ...mergeIntervalValues(intervalA, intervalB),
+    ...valueMerger(intervalA, intervalB),
   } as T
 
   return [
@@ -60,7 +66,11 @@ const mergeFullyOverlappingIntervals = <T extends Interval & Record<string, unkn
   ];
 }
 
-const mergePartiallyOverlappingIntervals = <T extends Interval & Record<string, unknown>>(intervalA: T, intervalB: T): T[] => {
+const mergePartiallyOverlappingIntervals = <T extends Interval & Record<string, unknown>>(
+  intervalA: T,
+  intervalB: T,
+  valueMerger: ValueMerger,
+): T[] => {
   const before = cloneInterval(intervalA);
   const after = cloneInterval(intervalB);
 
@@ -70,7 +80,7 @@ const mergePartiallyOverlappingIntervals = <T extends Interval & Record<string, 
   const middle = {
     start: intervalB.start,
     end: intervalA.end,
-    ...mergeIntervalValues(intervalA, intervalB),
+    ...valueMerger(intervalA, intervalB),
   } as T
 
   return [
@@ -80,7 +90,10 @@ const mergePartiallyOverlappingIntervals = <T extends Interval & Record<string, 
   ]
 };
 
-const mergeIntervals = <T extends Interval & { [key: string]: unknown }>(intervals: T[]): T[] => {
+const mergeIntervals = <T extends Interval & { [key: string]: unknown }>(
+  intervals: T[],
+  valueMerger: ValueMerger = mergeIntervalValues,
+): T[] => {
   const sortedIntervals = intervals.sort((a, b) => a.start - b.start);
 
   let currentIndex = 0;
@@ -101,16 +114,13 @@ const mergeIntervals = <T extends Interval & { [key: string]: unknown }>(interva
     if (isIntervalIdentical(currentInterval, intervalToMerge)) {
       newIntervals = [{
         ...cloneInterval(currentInterval),
-        ...mergeIntervalValues(currentInterval, intervalToMerge),
+        ...valueMerger(currentInterval, intervalToMerge),
       }];
     } else if (isIntervalContained(currentInterval, intervalToMerge)) {
-      newIntervals = mergeFullyOverlappingIntervals(currentInterval, intervalToMerge);
+      newIntervals = mergeFullyOverlappingIntervals(currentInterval, intervalToMerge, valueMerger);
     } else {
-      newIntervals = mergePartiallyOverlappingIntervals(currentInterval, intervalToMerge);
+      newIntervals = mergePartiallyOverlappingIntervals(currentInterval, intervalToMerge, valueMerger);
     }
-
-    // console.log(newIntervals);
-    // break;
 
     // ~ Remove the interval that was merged
     sortedIntervals.splice(currentIndex, 2, ...newIntervals);

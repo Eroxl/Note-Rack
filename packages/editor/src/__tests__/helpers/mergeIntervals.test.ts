@@ -1,6 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 
 import mergeIntervals from '../../lib/helpers/mergeIntervals';
+import xOrMergeIntervalValues from '../../lib/helpers/xOrMergeIntervalValues';
 
 describe(
   'mergeIntervals',
@@ -108,6 +109,22 @@ describe(
         expect(mergeIntervals(intervals)).toEqual([
           { start: 1, end: 2 },
           { start: 3, end: 4 },
+        ]);
+      }
+    )
+
+    test(
+      'Correctly uses a custom value merger',
+      () => {
+        const intervals = [
+          { start: 0, end: 3, values: ['b'] },
+          { start: 1, end: 4, values: ['b'] },
+        ];
+
+        expect(mergeIntervals(intervals, xOrMergeIntervalValues)).toEqual([
+          { start: 0, end: 1, values: ['b'] },
+          { start: 1, end: 3, values: [] },
+          { start: 3, end: 4, values: ['b'] },
         ]);
       }
     )
