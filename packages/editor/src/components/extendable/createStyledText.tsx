@@ -5,6 +5,8 @@ import type BlockRenderer from '../../types/BlockRenderer';
 import generateUUID from '../../lib/helpers/generateUUID';
 import getCursorOffset from '../../lib/helpers/caret/getCursorOffset';
 import focusElement from 'src/lib/helpers/focusElement';
+import type InlineBlockRenderer from 'src/types/InlineBlockRenderer';
+import renderInlineBlocks from 'src/lib/renderInlineBlocks';
 
 export type TextProperties = {
   text: string;
@@ -15,14 +17,18 @@ export type TextProperties = {
   }[],
 };
 
-const createStyledText = (style?: React.CSSProperties, className?: string) => {
+const createStyledText = (
+  style?: React.CSSProperties,
+  className?: string,
+  inlineBlocks?: {
+    [type: string]: InlineBlockRenderer,
+  }
+) => {
   const Text: BlockRenderer<TextProperties> = (props) => {
     const { id, properties, mutations, type } = props;
     const { text, style: inlineBlockStyles } = properties;
   
     const editableElement = useRef<HTMLSpanElement>(null);
-
-    console.log(inlineBlockStyles);
 
     return (
       <ContentEditable
@@ -92,7 +98,9 @@ const createStyledText = (style?: React.CSSProperties, className?: string) => {
           })
         }}
       >
-        {text.endsWith('\n') ? text : text + '\n'}
+        {
+          renderInlineBlocks(text, inlineBlockStyles, inlineBlocks)
+        }
       </ContentEditable>
     )
   };

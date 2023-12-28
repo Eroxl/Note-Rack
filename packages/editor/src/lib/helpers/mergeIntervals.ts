@@ -7,24 +7,11 @@ const cloneInterval = (interval: Interval) => {
   return JSON.parse(JSON.stringify(interval));
 }
 
-/**
- * Checks if the intervals are completely merged (assumes the intervals are sorted)
- * 
- * @param intervals The sorted intervals to check
- * @returns Whether or not the intervals are completely merged
- */
-const isCompletelyMerged = (intervals: Interval[]) => {
-  let isCompletelyMerged = true;
-
-  intervals.forEach((interval) => {
-    if (interval.start !== interval.end) isCompletelyMerged = false;
-  });
-
-  return isCompletelyMerged;
-}
-
 const isIntervalContained = (interval1: Interval, interval2: Interval) => {
-  return interval2.start >= interval1.start && interval2.end <= interval1.end;
+  return (
+    interval2.start >= interval1.start && interval2.end < interval1.end ||
+    interval2.start > interval1.start && interval2.end <= interval1.end
+  );
 }
 
 const isIntervalIdentical = (interval1: Interval, interval2: Interval) => {
@@ -46,7 +33,7 @@ const mergeIntervalValues = <T extends Interval & Record<string, unknown>>(
 
     if (!Array.isArray(currentIntervalValue) || !Array.isArray(intervalToMergeValue)) return;
 
-    newInterval[key] = [...currentIntervalValue, ...intervalToMergeValue];
+    newInterval[key] = Array.from(new Set([...currentIntervalValue, ...intervalToMergeValue]))
     return;
   });
 
@@ -57,8 +44,8 @@ const mergeFullyOverlappingIntervals = <T extends Interval & Record<string, unkn
   const before = cloneInterval(intervalA);
   const after = cloneInterval(intervalA);
 
-  before.end = intervalB.start - 1;
-  after.start = intervalB.end + 1;
+  before.end = intervalB.start;
+  after.start = intervalB.end;
 
   const middle = {
     start: intervalB.start,
@@ -77,8 +64,8 @@ const mergePartiallyOverlappingIntervals = <T extends Interval & Record<string, 
   const before = cloneInterval(intervalA);
   const after = cloneInterval(intervalB);
 
-  before.end = intervalB.start - 1
-  after.start = intervalA.end + 1;
+  before.end = intervalB.start;
+  after.start = intervalA.end;
 
   const middle = {
     start: intervalB.start,
@@ -96,9 +83,6 @@ const mergePartiallyOverlappingIntervals = <T extends Interval & Record<string, 
 const mergeIntervals = <T extends Interval & { [key: string]: unknown }>(intervals: T[]): T[] => {
   const sortedIntervals = intervals.sort((a, b) => a.start - b.start);
 
-  // ~ If the intervals are completely merged, return them
-  if (isCompletelyMerged(sortedIntervals)) return sortedIntervals;
-
   let currentIndex = 0;
 
   while (true) {
@@ -107,7 +91,7 @@ const mergeIntervals = <T extends Interval & { [key: string]: unknown }>(interva
 
     if (!currentInterval || !intervalToMerge) break;
 
-    if (currentInterval.end < intervalToMerge.start) {
+    if (currentInterval.end <= intervalToMerge.start) {
       currentIndex += 1;
       continue;
     }
@@ -124,6 +108,9 @@ const mergeIntervals = <T extends Interval & { [key: string]: unknown }>(interva
     } else {
       newIntervals = mergePartiallyOverlappingIntervals(currentInterval, intervalToMerge);
     }
+
+    // console.log(newIntervals);
+    // break;
 
     // ~ Remove the interval that was merged
     sortedIntervals.splice(currentIndex, 2, ...newIntervals);

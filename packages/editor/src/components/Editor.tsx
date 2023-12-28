@@ -1,5 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 
+import getEditorSelection from 'src/lib/getEditorSelection';
+import handlePotentialBlockChange from 'src/lib/handlePotentialBlockChange';
+import checkKeybind from 'src/lib/helpers/checkKeybind';
 import focusAddedBlock from '../lib/postEditorMutations/focusAddedBlock';
 import focusRemovedBlock from '../lib/postEditorMutations/focusRemovedBlock';
 import mutations from '../mutations';
@@ -9,9 +12,6 @@ import type BlockState from '../types/BlockState';
 import type KeybindHandler from '../types/KeybindHandler';
 import type RichTextKeybindHandler from '../types/RichTextKeybindHandler';
 import BlockWrapper from './BlockWrapper';
-import handlePotentialBlockChange from 'src/lib/handlePotentialBlockChange';
-import checkKeybind from 'src/lib/helpers/checkKeybind';
-import getEditorSelection from 'src/lib/getEditorSelection';
 
 type EditorProps = {
   startingBlocks: BlockState[];

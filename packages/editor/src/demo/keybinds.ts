@@ -19,8 +19,11 @@ const keybinds: KeybindHandler[] = [
         {
           start: selection.offset,
           end: selection.offset + selection.length,
+          type: ['bold'],
         }
       ])
+
+      console.log(updatedStyle);
 
       mutations.editBlock(selection.blockId, {
         style: updatedStyle,

@@ -1,7 +1,13 @@
+import React from "react";
+
 import createStyledText from "src/components/extendable/createStyledText";
 
 const blockRenderers = {
-  text: createStyledText(),
+  text: createStyledText({}, '', {
+    bold: ({children}) => (
+      <strong>{children}</strong>
+    )
+  }),
   h1: createStyledText({
     fontSize: '2em',
     fontWeight: 'bold'

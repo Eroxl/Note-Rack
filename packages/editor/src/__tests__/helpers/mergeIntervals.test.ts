@@ -14,9 +14,9 @@ describe(
         ];
 
         expect(mergeIntervals(intervals)).toEqual([
-          { start: 1, end: 1 },
+          { start: 1, end: 2 },
           { start: 2, end: 3 },
-          { start: 4, end: 4 },
+          { start: 3, end: 4 },
         ]);
       }
     );
@@ -30,9 +30,9 @@ describe(
         ];
 
         expect(mergeIntervals(intervals)).toEqual([
-          { start: 1, end: 1, values: ['a'] },
+          { start: 1, end: 2, values: ['a'] },
           { start: 2, end: 3, values: ['a', 'b'] },
-          { start: 4, end: 4, values: ['a'] },
+          { start: 3, end: 4, values: ['a'] },
         ]);
       }
     );
@@ -41,14 +41,14 @@ describe(
       'Merges partially overlapping intervals',
       () => {
         const intervals = [
-          { start: 1, end: 2 },
-          { start: 2, end: 3 },
+          { start: 0, end: 3 },
+          { start: 1, end: 4 },
         ];
 
         expect(mergeIntervals(intervals)).toEqual([
-          { start: 1, end: 1 },
-          { start: 2, end: 2 },
-          { start: 3, end: 3 },
+          { start: 0, end: 1 },
+          { start: 1, end: 3 },
+          { start: 3, end: 4 },
         ]);
       }
     );
@@ -57,14 +57,14 @@ describe(
       'Merges partially overlapping intervals values',
       () => {
         const intervals = [
-          { start: 1, end: 2, values: ['a'] },
-          { start: 2, end: 3, values: ['b'] },
+          { start: 0, end: 3, values: ['a'] },
+          { start: 1, end: 4, values: ['b'] },
         ];
 
         expect(mergeIntervals(intervals)).toEqual([
-          { start: 1, end: 1, values: ['a'] },
-          { start: 2, end: 2, values: ['a', 'b'] },
-          { start: 3, end: 3, values: ['b'] },
+          { start: 0, end: 1, values: ['a'] },
+          { start: 1, end: 3, values: ['a', 'b'] },
+          { start: 3, end: 4, values: ['b'] },
         ]);
       }
     );
