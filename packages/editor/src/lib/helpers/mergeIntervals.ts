@@ -71,11 +71,14 @@ const mergePartiallyOverlappingIntervals = <T extends Interval & Record<string, 
   intervalB: T,
   valueMerger: ValueMerger,
 ): T[] => {
-  const before = cloneInterval(intervalA);
-  const after = cloneInterval(intervalB);
+  let before = cloneInterval(intervalA);
+  let after = cloneInterval(intervalB);
 
   before.end = intervalB.start;
   after.start = intervalA.end;
+
+  if (before.end === before.start) before = undefined;
+  if (after.end === after.start) after = undefined;
 
   const middle = {
     start: intervalB.start,
@@ -123,7 +126,7 @@ const mergeIntervals = <T extends Interval & { [key: string]: unknown }>(
     }
 
     // ~ Remove the interval that was merged
-    sortedIntervals.splice(currentIndex, 2, ...newIntervals);
+    sortedIntervals.splice(currentIndex, 2, ...newIntervals.filter(interval => interval));
     currentIndex += 1;
   }
 

@@ -2,6 +2,7 @@ import mergeIntervals, { type Interval } from "src/lib/helpers/mergeIntervals";
 import type KeybindHandler from "src/types/KeybindHandler";
 import restoreSelection from "src/lib/helpers/restoreSelection";
 import getBlockById from "src/lib/helpers/getBlockByID";
+import xOrMergeIntervalValues from "src/lib/helpers/xOrMergeIntervalValues";
 
 const keybinds: KeybindHandler[] = [
   {
@@ -16,14 +17,17 @@ const keybinds: KeybindHandler[] = [
 
       if (!Array.isArray(style)) return;
 
-      const updatedStyle = mergeIntervals([
-        ...(style as Interval[]),
-        {
-          start: selection.offset,
-          end: selection.offset + selection.length,
-          type: ['bold'],
-        }
-      ])
+      const updatedStyle = mergeIntervals(
+        [
+          ...(style as Interval[]),
+          {
+            start: selection.offset,
+            end: selection.offset + selection.length,
+            type: ['bold'],
+          }
+        ],
+        xOrMergeIntervalValues
+      );
 
       mutations.editBlock(selection.blockId, {
         style: updatedStyle,

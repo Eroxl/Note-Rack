@@ -30,6 +30,8 @@ const createStyledText = (
   
     const editableElement = useRef<HTMLSpanElement>(null);
 
+    console.log(inlineBlockStyles);
+
     return (
       <ContentEditable
         style={{
