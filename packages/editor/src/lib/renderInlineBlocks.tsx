@@ -46,7 +46,6 @@ const renderInlineBlocks = (
   let result: React.ReactNode[] = [];
   let start = 0;
 
-
   sortInlineBlocks(inlineBlocks || []).forEach((block) => {
     const { type, start: blockStart, end: blockEnd } = block;
 
@@ -65,12 +64,22 @@ const renderInlineBlocks = (
     start = blockEnd;
   });
 
-  if (start >= text.length) return result;
+  if (start >= text.length) {
+    if (text.length === 0) {
+      return ['\n'];
+    }
+
+    return result;
+  }
 
   const trailingText = text
     .substring(start)
 
-  result.push(trailingText);
+  result.push(
+    trailingText.endsWith('\n')
+      ? trailingText
+      : trailingText + '\n'
+  );
 
   return result;
 };
