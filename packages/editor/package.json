@@ -25,14 +25,17 @@
     "@rollup/plugin-commonjs": "^25.0.5",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-replace": "^5.0.5",
+    "@types/dompurify": "^3.0.5",
     "@types/react": "^18.2.28",
     "@types/react-dom": "^18.2.13",
     "jest": "^29.7.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "rollup-plugin-auto-external": "^2.0.0",
+    "rollup-plugin-polyfill-node": "^0.13.0",
     "rollup-plugin-sourcemaps": "^0.6.3",
     "rollup-plugin-typescript2": "^0.36.0",
+    "text-encoding": "^0.7.0",
     "ts-jest": "^29.1.1"
   },
   "peerDependencies": {
@@ -40,6 +43,7 @@
     "react-dom": "^18.2.0"
   },
   "dependencies": {
+    "dompurify": "^3.0.6",
     "react-sane-contenteditable": "^1.6.1"
   }
 }

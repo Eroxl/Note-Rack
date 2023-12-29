@@ -7,6 +7,7 @@ import getCursorOffset from '../../lib/helpers/caret/getCursorOffset';
 import focusElement from 'src/lib/helpers/focusElement';
 import type InlineBlockRenderer from 'src/types/InlineBlockRenderer';
 import renderInlineBlocks from 'src/lib/renderInlineBlocks';
+import saveInlineBlocks from 'src/lib/saveInlineBlocks';
 
 export type TextProperties = {
   text: string;
@@ -29,8 +30,6 @@ const createStyledText = (
     const { text, style: inlineBlockStyles } = properties;
   
     const editableElement = useRef<HTMLSpanElement>(null);
-
-    console.log(inlineBlockStyles);
 
     return (
       <ContentEditable
@@ -93,10 +92,11 @@ const createStyledText = (
         onChange={() => {
           if (!editableElement.current) return;
   
-          const updatedText = editableElement.current.textContent;
-  
+          const updatedText = editableElement.current.textContent || '';
+
           mutations.editBlock(id, {
-            text: updatedText
+            text: updatedText,
+            style: saveInlineBlocks(editableElement.current)
           })
         }}
       >

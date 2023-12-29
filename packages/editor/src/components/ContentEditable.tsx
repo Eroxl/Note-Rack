@@ -1,14 +1,17 @@
 import React, { useEffect, useRef } from 'react';
+import dom from "dompurify";
 
 import focusElement from '../lib/helpers/focusElement';
 import getCursorOffset from '../lib/helpers/caret/getCursorOffset';
 import isElementFocused from '../lib/helpers/isElementFocused';
+import { renderToString } from 'react-dom/server';
 
 type ContentEditableProps = {
   children?: React.ReactNode;
   innerRef: React.RefObject<HTMLElement>;
   className?: string;
   onChange: (event: React.FormEvent<HTMLSpanElement>) => void;
+  onBeforeChange?: (event: InputEvent) => void;
   style?: React.CSSProperties;
   disabled?: boolean;
   onKeyDown?: (event: React.KeyboardEvent<HTMLSpanElement>) => void;
@@ -22,6 +25,7 @@ const ContentEditable: React.FC<ContentEditableProps> = (props) => {
     style,
     innerRef,
     onChange,
+    onBeforeChange,
     onKeyDown
   } = props;
 
@@ -59,12 +63,29 @@ const ContentEditable: React.FC<ContentEditableProps> = (props) => {
     }
   }, [innerRef.current]);
 
+  useEffect(() => {
+    if (!innerRef.current || !onBeforeChange) return;
+
+    innerRef.current.addEventListener('beforeinput', onBeforeChange)
+
+    return () => {
+      if (!innerRef.current) return;
+
+      innerRef.current.removeEventListener('beforeinput', onBeforeChange)
+    }
+  }, [innerRef.current])
+
   return (
     <span
       ref={innerRef}
 
       contentEditable={!disabled}
       suppressContentEditableWarning
+      dangerouslySetInnerHTML={{
+        __html: dom.sanitize(
+          renderToString(children as React.ReactElement)
+        ),
+      }}
 
       onBeforeInput={() => {        
         if (caretPosition.current === null) return;
@@ -84,9 +105,7 @@ const ContentEditable: React.FC<ContentEditableProps> = (props) => {
 
       className={className}
       style={style}
-    >
-      {children}
-    </span>
+    />
   )
 };
 

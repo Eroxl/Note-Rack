@@ -26,9 +26,13 @@ const renderInlineBlock = (
   if (!CurrentRenderer) return text;
 
   return (
-    <CurrentRenderer>
-      {renderInlineBlock(text, type.slice(1), renderers)}
-    </CurrentRenderer>
+    <span
+      data-type={type[0]}
+    >
+      <CurrentRenderer>
+        {renderInlineBlock(text, type.slice(1), renderers)}
+      </CurrentRenderer>
+    </span>
   )
 }
 

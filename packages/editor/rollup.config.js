@@ -5,6 +5,7 @@ import autoExternal from 'rollup-plugin-auto-external'
 import sourcemaps from 'rollup-plugin-sourcemaps'
 import typescript from 'rollup-plugin-typescript2'
 import replace from '@rollup/plugin-replace'
+import nodePolyfills from 'rollup-plugin-polyfill-node';
 
 import pkg from './package.json' assert { type: "json" };
 
@@ -16,6 +17,7 @@ const plugins = [
     replace({
       preventAssignment: false,
       'process.env.NODE_ENV': JSON.stringify('development'),
+      'util.TextEncoder': 'TextEncoder'
     })
   ]
   : [
@@ -23,6 +25,9 @@ const plugins = [
     packagePath: './package.json',
     }),
     sourcemaps(),
+    replace({
+      'util.TextEncoder': 'TextEncoder'
+    })
   ],
   resolve(),
   commonjs(),
@@ -33,6 +38,7 @@ const plugins = [
   typescript({
     tsconfig: './tsconfig.json',
   }),
+  nodePolyfills(),
 ];
 
 

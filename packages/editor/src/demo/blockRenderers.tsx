@@ -6,7 +6,13 @@ const blockRenderers = {
   text: createStyledText({}, '', {
     bold: ({children}) => (
       <strong>{children}</strong>
-    )
+    ),
+    italic: ({children}) => (
+      <em>{children}</em>
+    ),
+    underline: ({children}) => (
+      <u>{children}</u>
+    ),
   }),
   h1: createStyledText({
     fontSize: '2em',

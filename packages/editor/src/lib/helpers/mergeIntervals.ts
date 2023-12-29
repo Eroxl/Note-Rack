@@ -9,6 +9,10 @@ const cloneInterval = (interval: Interval) => {
   return JSON.parse(JSON.stringify(interval));
 }
 
+const removeNullIntervals = <T extends Interval>(intervals: T[]) => {
+  return intervals.filter(interval => interval.start !== interval.end);
+}
+
 const isIntervalContained = (interval1: Interval, interval2: Interval) => {
   return (
     interval2.start >= interval1.start && interval2.end < interval1.end ||
@@ -130,7 +134,7 @@ const mergeIntervals = <T extends Interval & { [key: string]: unknown }>(
     currentIndex += 1;
   }
 
-  return sortedIntervals;
+  return removeNullIntervals(sortedIntervals);
 };
 
 export default mergeIntervals;

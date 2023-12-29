@@ -123,6 +123,7 @@ const Editor: React.FC<EditorProps> = (props) => {
         flexDirection: "column",
         gap: "1em"
       }}
+      id="editor"
       ref={editorRef}
     >
       {blocks.map((block) => {

@@ -15,7 +15,24 @@ const Demo: React.FC = () => {
           id: generateUUID(),
           type: 'text',
           properties: {
-            text: 'Heading 1',
+            text: 'Bold, italic, and underlined text',
+            style: [
+              {
+                type: ['bold'],
+                start: 0,
+                end: 4,
+              },
+              {
+                type: ['italic'],
+                start: 6,
+                end: 12,
+              },
+              {
+                type: ['underline'],
+                start: 18,
+                end: 28,
+              },
+            ]
           }
         },
       ]}
