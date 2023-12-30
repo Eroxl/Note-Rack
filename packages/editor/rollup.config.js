@@ -6,6 +6,7 @@ import sourcemaps from 'rollup-plugin-sourcemaps'
 import typescript from 'rollup-plugin-typescript2'
 import replace from '@rollup/plugin-replace'
 import nodePolyfills from 'rollup-plugin-polyfill-node';
+import dts from 'rollup-plugin-dts';
 
 import pkg from './package.json' assert { type: "json" };
 
@@ -47,37 +48,44 @@ const plugins = [
 ];
 
 
-const rollupConfig = {
-  input: isDev
-    ? 'src/demo/index.tsx'
-    : 'src/index.ts',
-  output: isDev
-    ? {
-      file: 'dist/bundle.js',
-      format: 'iife'
-    }
-    : [
-      {
-        name: pkg.name,
-        file: pkg.umd,
-        format: 'umd',
-        sourcemap: true,
-      },
-      {
-        name: pkg.name,
-        file: pkg.main,
-        format: 'cjs',
-        sourcemap: true,
-        exports: 'auto',
-      },
-      {
-        name: pkg.name,
-        file: pkg.module,
-        format: 'es',
-        sourcemap: true,
-      },
-    ],
-  plugins,
-}
+const rollupConfig = [
+  {
+    input: isDev
+      ? 'src/demo/index.tsx'
+      : 'src/index.ts',
+    output: isDev
+      ? {
+        file: 'dist/bundle.js',
+        format: 'iife'
+      }
+      : [
+        {
+          name: pkg.name,
+          file: pkg.umd,
+          format: 'umd',
+          sourcemap: true,
+        },
+        {
+          name: pkg.name,
+          file: pkg.main,
+          format: 'cjs',
+          sourcemap: true,
+          exports: 'auto',
+        },
+        {
+          name: pkg.name,
+          file: pkg.module,
+          format: 'es',
+          sourcemap: true,
+        },
+      ],
+    plugins,
+  },
+  {
+    input: 'dist/index.d.ts',
+    output: [{ file: 'dist/index.d.ts', format: "esm" }],
+    plugins: [dts()],
+  },
+];
 
 export default rollupConfig;

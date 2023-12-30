@@ -1,4 +1,5 @@
-import mergeIntervals, { type Interval } from "src/lib/helpers/mergeIntervals";
+import mergeIntervals from "src/lib/helpers/mergeIntervals";
+import type { Interval } from "src/lib/helpers/mergeIntervals";
 import restoreSelection from "src/lib/helpers/restoreSelection";
 import type RichTextKeybindHandler from "src/types/RichTextKeybindHandler";
 
@@ -51,7 +52,7 @@ const inlineBlockRegexFactory = (
     // ~ If the cursor is in the middle of the match, subtract the
       //   length of the keybind from the cursor offset, otherwise
     //   subtract the length of the keybind times 2.
-    const isAfterFullMatch = searchResult.index + searchResult[0].length >= selection.offset;
+    const isAfterFullMatch = searchResult.index + fullMatch.length >= selection.offset;
 
     selection.offset -= (bind.length || 0) * (isAfterFullMatch ? 2 : 1);
 

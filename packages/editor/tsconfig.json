@@ -3,7 +3,6 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "target": "es2020",
-    "verbatimModuleSyntax": true,
     "resolveJsonModule": true,
     "moduleDetection": "force",
     "jsx": "react",
@@ -19,6 +18,8 @@
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
     "rootDir": "./src/",
+    "declaration": true,
+    "declarationDir": "types",
   },
   "include": [
     "**/*.d.ts",

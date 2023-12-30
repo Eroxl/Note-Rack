@@ -1,7 +1,7 @@
 {
   "name": "@note-rack/editor",
   "description": "A rich text editor for Note Rack",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "license": "APGL-3.0",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
@@ -32,6 +32,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "rollup-plugin-auto-external": "^2.0.0",
+    "rollup-plugin-dts": "^6.1.0",
     "rollup-plugin-polyfill-node": "^0.13.0",
     "rollup-plugin-sourcemaps": "^0.6.3",
     "rollup-plugin-typescript2": "^0.36.0",
@@ -39,8 +40,8 @@
     "ts-jest": "^29.1.1"
   },
   "peerDependencies": {
+    "dompurify": "^3.0.6",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "dompurify": "^3.0.6"
+    "react-dom": "^18.2.0"
   }
 }
