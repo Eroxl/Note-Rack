@@ -18,16 +18,22 @@ const plugins = [
       preventAssignment: false,
       'process.env.NODE_ENV': JSON.stringify('development'),
       'util.TextEncoder': 'TextEncoder'
+    }),
+    nodePolyfills({
+      include: ['util', 'stream']
     })
   ]
   : [
+    nodePolyfills({
+      include: ['util', 'stream']
+    }),
     autoExternal({
-    packagePath: './package.json',
+      packagePath: './package.json',
     }),
     sourcemaps(),
     replace({
       'util.TextEncoder': 'TextEncoder'
-    })
+    }),
   ],
   resolve(),
   commonjs(),
@@ -38,7 +44,6 @@ const plugins = [
   typescript({
     tsconfig: './tsconfig.json',
   }),
-  nodePolyfills(),
 ];
 
 
