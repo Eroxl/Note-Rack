@@ -35,6 +35,13 @@ const Demo: React.FC = () => {
             ]
           }
         },
+        {
+          id: generateUUID(),
+          type: 'text',
+          properties: {
+            text: 'Normal plaintext'
+          }
+        }
       ]}
       renderers={blockRenderers}
       keybinds={keybinds}

@@ -1,5 +1,6 @@
 import type BlockState from "./BlockState";
 import type { InBlockMutations } from "./BlockRenderer";
+import type SelectionState from "./SelectionState";
 
 type RichTextKeybindHandler = {
   regex: RegExp,
@@ -7,6 +8,7 @@ type RichTextKeybindHandler = {
     mutations: InBlockMutations,
     activeBlock: BlockState,
     searchResult: RegExpExecArray,
+    selection?: SelectionState,
   ) => void
 }
 

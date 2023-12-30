@@ -53,8 +53,6 @@ const saveInlineBlocks = (
     });
   }
 
-  console.log(style);
-
   return style;
 };
 

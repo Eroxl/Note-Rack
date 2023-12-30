@@ -53,12 +53,13 @@ const Editor: React.FC<EditorProps> = (props) => {
       .map(([name, fn]) => {
         const mutation = (...args: any[]) => {
           // ~ Handle post mutations
-          if (name === 'editBlock' && richTextKeybinds) {
+          if (name === 'editBlock' && richTextKeybinds && editorRef.current) {
             const didTypeChange = handlePotentialBlockChange(
               args,
               blocks,
               editorMutations,
-              richTextKeybinds
+              richTextKeybinds,
+              editorRef.current,
             )
 
             if (didTypeChange) return;

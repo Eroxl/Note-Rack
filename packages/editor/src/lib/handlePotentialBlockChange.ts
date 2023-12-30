@@ -3,6 +3,7 @@ import type { InBlockMutations } from "../types/BlockRenderer";
 import type BlockState from "../types/BlockState";
 import type RichTextKeybindHandler from "../types/RichTextKeybindHandler";
 import type RemoveFirstFromTuple from "../types/helpers/RemoveFirstFromTuple";
+import getEditorSelection from "./getEditorSelection";
 import focusElement from "./helpers/focusElement";
 import getBlockById from "./helpers/getBlockByID";
 
@@ -10,7 +11,8 @@ const handlePotentialBlockChange = (
   args: any[],
   state: BlockState[],
   editorMutations: InBlockMutations,
-  richTextKeybinds: RichTextKeybindHandler[]
+  richTextKeybinds: RichTextKeybindHandler[],
+  editorElement: HTMLElement,
 ) => {
   const [
     blockId,
@@ -39,15 +41,9 @@ const handlePotentialBlockChange = (
 
     found = true;
 
-    handler(editorMutations, block, regexSearch);
+    const selection = getEditorSelection(editorElement)
 
-    setTimeout(() => {
-      const blockElement = getBlockById(blockId);
-
-      if (!blockElement) return;
-
-      focusElement(blockElement, 0);
-    })
+    handler(editorMutations, block, regexSearch, selection);
   });
 
   return found;
