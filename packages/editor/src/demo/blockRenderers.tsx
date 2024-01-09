@@ -1,24 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 import createStyledText from "../components/extendable/createStyledText";
 
 const blockRenderers = {
   text: createStyledText({}, '', {
-    bold: ({children}) => {
-      const [state, setState] = useState(false);
-
-      useEffect(() => {
-        console.log(state);
-      }, [state]);
-
-      return (
-        <strong
-          onClick={() => setState(!state)}
-        >
-          {children}
-        </strong>
-      );
-    },
+    bold: ({children}) => (
+      <strong>{children}</strong>
+    ),
     italic: ({children}) => (
       <em>{children}</em>
     ),
