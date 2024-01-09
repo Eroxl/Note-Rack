@@ -1,13 +1,12 @@
 import React, { useEffect, useRef } from 'react';
-import dom from "dompurify";
+import { createPortal } from 'react-dom';
 
 import focusElement from '../lib/helpers/focusElement';
 import getCursorOffset from '../lib/helpers/caret/getCursorOffset';
 import isElementFocused from '../lib/helpers/isElementFocused';
-import { renderToString } from 'react-dom/server';
 
 type ContentEditableProps = {
-  children?: React.ReactNode;
+  children?: React.ReactNode | React.ReactNode[];
   innerRef: React.RefObject<HTMLElement>;
   className?: string;
   onChange: (event: React.FormEvent<HTMLSpanElement>) => void;
@@ -30,6 +29,8 @@ const ContentEditable: React.FC<ContentEditableProps> = (props) => {
   } = props;
 
   const caretPosition = useRef<number | null>(null);
+
+  const [childrenPortals, setChildrenPortals] = React.useState<React.ReactNode | React.ReactNode[]>([]);
 
   const caretUpdater = () => {
     if (!caretPosition.current || !innerRef.current) return;
@@ -75,18 +76,37 @@ const ContentEditable: React.FC<ContentEditableProps> = (props) => {
     }
   }, [innerRef.current])
 
+
+  useEffect(() => {
+    if (!innerRef.current) return;
+
+    caretPosition.current = getCursorOffset(innerRef.current);;
+
+    const arrayChildren = Array.isArray(children) ? children : [children];
+
+    const childrenPortals = arrayChildren
+      .map((child) => {
+        if (!innerRef.current) return;
+
+        const childWrapperElement = document.createElement('span');
+        innerRef.current.appendChild(childWrapperElement);
+
+        return createPortal(child, childWrapperElement);
+      })
+
+    setChildrenPortals(childrenPortals);
+
+    setTimeout(() => {
+      caretUpdater();
+    })
+  }, [children, innerRef.current]);
+
   return (
     <span
       ref={innerRef}
 
       contentEditable={!disabled}
       suppressContentEditableWarning
-      dangerouslySetInnerHTML={{
-        __html: dom.sanitize(
-          renderToString(children as React.ReactElement)
-        ),
-      }}
-
       onBeforeInput={() => {        
         if (caretPosition.current === null) return;
 
@@ -105,7 +125,9 @@ const ContentEditable: React.FC<ContentEditableProps> = (props) => {
 
       className={className}
       style={style}
-    />
+    >
+      {childrenPortals}
+    </span>
   )
 };
 
