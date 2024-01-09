@@ -1,0 +1,4 @@
+src/**
+dist/__tests__/
+demo.html
+jest.config.cjs
