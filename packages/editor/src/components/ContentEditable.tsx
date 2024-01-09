@@ -82,6 +82,8 @@ const ContentEditable: React.FC<ContentEditableProps> = (props) => {
 
     caretPosition.current = getCursorOffset(innerRef.current);;
 
+    innerRef.current.innerHTML = '';
+
     const arrayChildren = Array.isArray(children) ? children : [children];
 
     const childrenPortals = arrayChildren
@@ -91,7 +93,13 @@ const ContentEditable: React.FC<ContentEditableProps> = (props) => {
         const childWrapperElement = document.createElement('span');
         innerRef.current.appendChild(childWrapperElement);
 
-        return createPortal(child, childWrapperElement);
+        const parsedChild = typeof child === 'string' ? (
+          <span>
+            {child}
+          </span>
+        ) : child
+
+        return createPortal(parsedChild, childWrapperElement);
       })
 
     setChildrenPortals(childrenPortals);

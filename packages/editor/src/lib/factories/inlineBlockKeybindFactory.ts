@@ -33,6 +33,12 @@ const inlineBlockKeybindFactory = (type: string) => {
       style: updatedStyle,
     })
 
+    const selectionBlock = getBlockById(selection.blockId);
+
+    if (!selectionBlock) return;
+
+    selectionBlock.style.caretColor = 'transparent';
+
     setTimeout(() => {
       restoreSelection(selection);
     }, 5);

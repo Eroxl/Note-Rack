@@ -14,7 +14,9 @@ const blockRenderers = {
       return (
         <strong
           onClick={() => setState(!state)}
-        >{children}</strong>
+        >
+          {children}
+        </strong>
       );
     },
     italic: ({children}) => (
