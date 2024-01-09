@@ -1,5 +1,5 @@
-import type KeybindHandler from "src/types/KeybindHandler";
-import inlineBlockKeybindFactory from "src/lib/factories/inlineBlockKeybindFactory";
+import type KeybindHandler from "../types/KeybindHandler";
+import inlineBlockKeybindFactory from "../lib/factories/inlineBlockKeybindFactory";
 
 const keybinds: KeybindHandler[] = [
   {

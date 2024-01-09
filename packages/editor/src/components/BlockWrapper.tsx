@@ -1,6 +1,6 @@
 import React from 'react';
 import type { InBlockMutations } from '../types/BlockRenderer';
-import type BlockState from 'src/types/BlockState';
+import type BlockState from '../types/BlockState';
 import type BlockRenderer from '../types/BlockRenderer';
 
 type BlockWrapperProps = {

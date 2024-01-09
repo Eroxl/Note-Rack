@@ -1,9 +1,9 @@
-import mergeIntervals from "src/lib/helpers/mergeIntervals";
-import type { Interval } from "src/lib/helpers/mergeIntervals";
-import type KeybindHandler from "src/types/KeybindHandler";
-import restoreSelection from "src/lib/helpers/restoreSelection";
-import getBlockById from "src/lib/helpers/getBlockByID";
-import xOrMergeIntervalValues from "src/lib/helpers/xOrMergeIntervalValues";
+import mergeIntervals from "../../lib/helpers/mergeIntervals";
+import type { Interval } from "../../lib/helpers/mergeIntervals";
+import type KeybindHandler from "../../types/KeybindHandler";
+import restoreSelection from "../../lib/helpers/restoreSelection";
+import getBlockById from "../../lib/helpers/getBlockByID";
+import xOrMergeIntervalValues from "../../lib/helpers/xOrMergeIntervalValues";
 
 const inlineBlockKeybindFactory = (type: string) => {
   const handler: KeybindHandler['handler'] = (mutations, state, selection) => {

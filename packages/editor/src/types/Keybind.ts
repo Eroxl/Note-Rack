@@ -10,8 +10,6 @@ type SpecialKey = (
   'Tab'
 )
 
-type test = StringToUnion<'test'>
-
 type ModifierKey = (
   'Alt' |
   'Control' |

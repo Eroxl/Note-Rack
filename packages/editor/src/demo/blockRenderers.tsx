@@ -1,6 +1,6 @@
 import React from "react";
 
-import createStyledText from "src/components/extendable/createStyledText";
+import createStyledText from "../components/extendable/createStyledText";
 
 const blockRenderers = {
   text: createStyledText({}, '', {

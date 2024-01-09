@@ -1,4 +1,4 @@
-import type SelectionState from "src/types/SelectionState";
+import type SelectionState from "../types/SelectionState";
 import getCursorOffset from "./helpers/caret/getCursorOffset";
 
 const getBlockElementFromChild = (

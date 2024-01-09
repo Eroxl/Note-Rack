@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-import getEditorSelection from 'src/lib/getEditorSelection';
-import handlePotentialBlockChange from 'src/lib/handlePotentialBlockChange';
-import checkKeybind from 'src/lib/helpers/checkKeybind';
+import getEditorSelection from '../lib/getEditorSelection';
+import handlePotentialBlockChange from '../lib/handlePotentialBlockChange';
+import checkKeybind from '../lib/helpers/checkKeybind';
 import focusAddedBlock from '../lib/postEditorMutations/focusAddedBlock';
 import focusRemovedBlock from '../lib/postEditorMutations/focusRemovedBlock';
 import mutations from '../mutations';

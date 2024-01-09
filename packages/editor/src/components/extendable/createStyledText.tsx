@@ -4,10 +4,10 @@ import ContentEditable from '../ContentEditable';
 import type BlockRenderer from '../../types/BlockRenderer';
 import generateUUID from '../../lib/helpers/generateUUID';
 import getCursorOffset from '../../lib/helpers/caret/getCursorOffset';
-import focusElement from 'src/lib/helpers/focusElement';
-import type InlineBlockRenderer from 'src/types/InlineBlockRenderer';
-import renderInlineBlocks from 'src/lib/renderInlineBlocks';
-import saveInlineBlocks from 'src/lib/saveInlineBlocks';
+import focusElement from '../../lib/helpers/focusElement';
+import type InlineBlockRenderer from '../../types/InlineBlockRenderer';
+import renderInlineBlocks from '../../lib/renderInlineBlocks';
+import saveInlineBlocks from '../../lib/saveInlineBlocks';
 
 export type TextProperties = {
   text: string;

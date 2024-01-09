@@ -1,6 +1,6 @@
-import type RichTextKeybindHandler from "src/types/RichTextKeybindHandler";
-import blockRegexFactory from "src/lib/factories/blockRegexFactory";
-import inlineBlockRegexFactory from "src/lib/factories/inlineBlockRegexFactory";
+import type RichTextKeybindHandler from "../types/RichTextKeybindHandler";
+import blockRegexFactory from "../lib/factories/blockRegexFactory";
+import inlineBlockRegexFactory from "../lib/factories/inlineBlockRegexFactory";
 
 const richTextKeybinds: RichTextKeybindHandler[] = [
   {

@@ -1,6 +1,6 @@
 import React from "react";
 
-import type InlineBlockRenderer from "src/types/InlineBlockRenderer";
+import type InlineBlockRenderer from "../types/InlineBlockRenderer";
 
 type InlineBlock = {
   type: string[],

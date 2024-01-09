@@ -1,4 +1,4 @@
-import type RichTextKeybindHandler from "src/types/RichTextKeybindHandler";
+import type RichTextKeybindHandler from "../../types/RichTextKeybindHandler";
 import getBlockById from "../helpers/getBlockByID";
 import focusElement from "../helpers/focusElement";
 
