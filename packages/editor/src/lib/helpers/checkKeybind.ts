@@ -1,4 +1,4 @@
-import type { ValidKeys, NumberKey, UppercaseKey, LowercaseKey } from '../../types/Keybind';
+import type { ValidKeys, NumberKey, UppercaseKey, LowercaseKey, NavigationKey } from '../../types/Keybind';
 import type Keybind from '../../types/Keybind';
 import type Split from '../../types/helpers/Split';
 import type ReverseArr from '../../types/helpers/ReverseArr';
@@ -21,12 +21,13 @@ const SPECIAL_KEY_MAP = {
   "\\": 'Backslash',
   Enter: 'Enter',
   Space: 'Space',
-  Tab: 'Tab'
+  Tab: 'Tab',
 } as const;
 
 type ValidKeyCodes = (
   `Key${UppercaseKey}` |
   `Digit${NumberKey}` |
+  NavigationKey |
   typeof SPECIAL_KEY_MAP[keyof typeof SPECIAL_KEY_MAP]
 )
 
@@ -42,10 +43,16 @@ const isNumber = (key: string): key is NumberKey => {
   return /[0-9]/.test(key);
 }
 
+const isNavigation = (key: string): key is NavigationKey => {
+  return ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(key);
+}
+
 const keyToKeyCode = (key: ValidKeys): ValidKeyCodes => {
   if (isAlpha(key)) return `Key${key.toUpperCase() as UppercaseKey}`;
 
   if (isNumber(key)) return `Digit${key}`;
+
+  if (isNavigation(key)) return key;
 
   return SPECIAL_KEY_MAP[key];
 };

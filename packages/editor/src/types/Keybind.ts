@@ -9,6 +9,12 @@ type SpecialKey = (
   'Space' |
   'Tab'
 )
+type NavigationKey = (
+  'ArrowUp' | 
+  'ArrowDown' |
+  'ArrowLeft' |
+  'ArrowRight'
+)
 
 type ModifierKey = (
   'Alt' |
@@ -26,6 +32,7 @@ type ValidKeys = (
   | UppercaseKey
   | NumberKey
   | SpecialKey
+  | NavigationKey
 )
 
 /**
@@ -51,7 +58,8 @@ export type {
   SpecialKey,
   ValidKeys,
   ModifierKey,
-  ShiftKey
+  ShiftKey,
+  NavigationKey
 };
 
 export default Keybind;
