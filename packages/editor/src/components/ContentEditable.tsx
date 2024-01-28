@@ -33,9 +33,12 @@ const ContentEditable: React.FC<ContentEditableProps> = (props) => {
   const [childrenPortals, setChildrenPortals] = React.useState<React.ReactNode | React.ReactNode[]>([]);
 
   const caretUpdater = () => {
-    if (!caretPosition.current || !innerRef.current) return;
+    if (!innerRef.current) return;
 
     innerRef.current.style.caretColor = 'auto';
+
+    if (!caretPosition.current) return;
+
     focusElement(innerRef.current, caretPosition.current);
     caretPosition.current = null;
   }
@@ -81,6 +84,7 @@ const ContentEditable: React.FC<ContentEditableProps> = (props) => {
     if (!innerRef.current) return;
 
     caretPosition.current = getCursorOffset(innerRef.current);;
+    innerRef.current.style.caretColor = 'transparent';
 
     innerRef.current.innerHTML = '';
 

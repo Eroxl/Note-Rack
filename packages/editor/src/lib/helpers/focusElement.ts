@@ -47,6 +47,10 @@ const focusElement = (element: HTMLElement, offset: number = 0) => {
     range.setStart(iterator.referenceNode, iterator.referenceNode.textContent?.length || 0);
   }
 
+  if (offset === 0 && range.startContainer === document) {
+    range.setStart(iterator.referenceNode, 0);
+  }
+
   selection.removeAllRanges();
   selection.addRange(range);
 };

@@ -12,6 +12,7 @@ import type BlockState from '../types/BlockState';
 import type KeybindHandler from '../types/KeybindHandler';
 import type RichTextKeybindHandler from '../types/RichTextKeybindHandler';
 import BlockWrapper from './BlockWrapper';
+import mergeObjects from '../lib/helpers/mergeObjects';
 
 type EditorProps = {
   startingBlocks: BlockState[];
@@ -28,6 +29,15 @@ type EditorProps = {
   richTextKeybinds?: RichTextKeybindHandler[]
 };
 
+const defaultProps: Partial<EditorProps> = {
+  postMutations: {
+    addBlock: [focusAddedBlock],
+    removeBlock: [focusRemovedBlock]
+  },
+  keybinds: [],
+  richTextKeybinds: [],
+};
+
 const Editor: React.FC<EditorProps> = (props) => {
   const { startingBlocks } = props;
 
@@ -40,12 +50,7 @@ const Editor: React.FC<EditorProps> = (props) => {
     postMutations,
     keybinds,
     richTextKeybinds,
-  } = props;
-
-  const editorPostMutations: typeof postMutations = {
-    addBlock: [focusAddedBlock],
-    removeBlock: [focusRemovedBlock]
-  }
+  } = mergeObjects(defaultProps, props);
 
   const editorMutations = Object.fromEntries(
     Object
@@ -70,10 +75,7 @@ const Editor: React.FC<EditorProps> = (props) => {
             return fn(blocks, ...args);
           })
 
-          const mutationsToPerform = [
-            ...postMutations?.[name as keyof typeof mutations] ?? [],
-            ...editorPostMutations[name as keyof typeof mutations] ?? []
-          ]
+          const mutationsToPerform = postMutations?.[name as keyof typeof mutations] ?? []
 
           mutationsToPerform?.forEach((mutation) => {
             // @ts-ignore

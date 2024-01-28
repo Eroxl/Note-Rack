@@ -16,7 +16,7 @@ const focusAddedBlock = (_: BlockState[], block: BlockState) => {
     });
 
     focusElement(newBlock);
-  }, 0);
+  }, 10);
 }
 
 export default focusAddedBlock;

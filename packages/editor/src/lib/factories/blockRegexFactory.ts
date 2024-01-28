@@ -19,7 +19,7 @@ const blockRegexFactory = (type: string) => (
       if (!blockElement) return;
 
       focusElement(blockElement, 0);
-    })
+    }, 7)
   }) as RichTextKeybindHandler['handler']
 )
 
