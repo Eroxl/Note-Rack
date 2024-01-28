@@ -48,7 +48,7 @@ const restoreSelection = (selectionState: SelectionState) => {
       range.setStart(node, index);
     }
 
-    if (offset >= selectionState.offset + selectionState.length && range.endContainer === range.startContainer) {
+    if (offset >= selectionState.offset + selectionState.length - 1 && range.endContainer === range.startContainer) {
       const index = Math.max(
         Math.min(
           selectionState.offset + selectionState.length - (offset - length),

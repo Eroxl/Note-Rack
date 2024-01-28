@@ -30,7 +30,11 @@ const richTextKeybinds: RichTextKeybindHandler[] = [
   {
     regex: /(?<!\*)(\*)(?!\*)(.*?)\1/g,
     handler: inlineBlockRegexFactory('italic'),
-  }
+  },
+  {
+    regex: /(__)(.*?)\1/g,
+    handler: inlineBlockRegexFactory('underline'),
+  },
 ];
 
 export default richTextKeybinds;

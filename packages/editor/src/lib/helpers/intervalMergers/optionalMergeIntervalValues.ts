@@ -28,8 +28,6 @@ const optionalMergeIntervalValues: ValueMerger = (a, b) => {
     const intervalToMergeValue = b[key];
 
     if (!Array.isArray(currentIntervalValue) || !Array.isArray(intervalToMergeValue)) return;
-    
-    console.log(a[key], b[key])
 
     newInterval[key] = [
       ...currentIntervalValue.filter((value) => (

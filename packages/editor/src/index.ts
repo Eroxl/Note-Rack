@@ -1,9 +1,13 @@
 import Editor from "./components/Editor";
-import createStyledText from "./components/extendable/createStyledText";
+import createStyledText from "./components/blocks/createStyledText";
 import factories from "./lib/factories";
+
+const blocks = {
+  createStyledText
+};
 
 export {
   Editor,
-  createStyledText,
-  factories
+  factories,
+  blocks
 };
