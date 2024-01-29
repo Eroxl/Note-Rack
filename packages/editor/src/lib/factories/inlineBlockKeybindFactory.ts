@@ -6,7 +6,7 @@ import getBlockById from "../../lib/helpers/getBlockByID";
 import optionalMergeIntervalValues from "../helpers/intervalMergers/optionalMergeIntervalValues";
 
 const inlineBlockKeybindFactory = (type: string) => {
-  const handler: KeybindHandler['handler'] = (mutations, state, selection) => {
+  const handler: KeybindHandler['handler'] = (mutations, state, selection, event) => {
     if (!selection?.length || !selection.blockId) return;
 
     const block = state.find(block => block.id === selection.blockId);
@@ -65,6 +65,9 @@ const inlineBlockKeybindFactory = (type: string) => {
     const selectionBlock = getBlockById(selection.blockId);
 
     if (!selectionBlock) return;
+
+    event.preventDefault();
+    event.stopPropagation();
 
     selectionBlock.style.caretColor = 'transparent';
 

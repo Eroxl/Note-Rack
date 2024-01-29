@@ -13,6 +13,8 @@ import type KeybindHandler from '../types/KeybindHandler';
 import type RichTextKeybindHandler from '../types/RichTextKeybindHandler';
 import BlockWrapper from './BlockWrapper';
 import mergeObjects from '../lib/helpers/mergeObjects';
+import handleDownArrowNavigation from '../lib/keybinds/handleDownArrowNavigation';
+import handleUpArrowNavigation from '../lib/keybinds/handleUpArrowNavigation';
 
 type EditorProps = {
   startingBlocks: BlockState[];
@@ -29,14 +31,23 @@ type EditorProps = {
   richTextKeybinds?: RichTextKeybindHandler[]
 };
 
-const defaultProps: Partial<EditorProps> = {
+const getDefaultProps = (): Partial<EditorProps> => ({
   postMutations: {
     addBlock: [focusAddedBlock],
     removeBlock: [focusRemovedBlock]
   },
-  keybinds: [],
+  keybinds: [
+    {
+      keybind: 'ArrowDown',
+      handler: handleDownArrowNavigation,
+    },
+    {
+      keybind: 'ArrowUp',
+      handler: handleUpArrowNavigation,
+    }
+  ],
   richTextKeybinds: [],
-};
+});
 
 const Editor: React.FC<EditorProps> = (props) => {
   const { startingBlocks } = props;
@@ -44,6 +55,8 @@ const Editor: React.FC<EditorProps> = (props) => {
   const [blocks, setBlocks] = useState(startingBlocks);
 
   const editorRef = useRef<HTMLDivElement>(null);
+
+  const defaultProps = getDefaultProps();
 
   const {
     renderers,
@@ -95,12 +108,9 @@ const Editor: React.FC<EditorProps> = (props) => {
         const listener = (event: KeyboardEvent) => {
           if (!checkKeybind(keybind, event) || !editorRef.current) return;
 
-          event.preventDefault();
-          event.stopPropagation();
-
           const currentSelection = getEditorSelection(editorRef.current);
 
-          handler(editorMutations, blocks, currentSelection);
+          handler(editorMutations, blocks, currentSelection, event);
         }
 
         return listener;

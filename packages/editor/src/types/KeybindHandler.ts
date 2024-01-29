@@ -8,7 +8,8 @@ type KeybindHandler = {
   handler: (
     mutations: InBlockMutations,
     state: BlockState[],
-    selection?: SelectionState,
+    selection: SelectionState | undefined,
+    event: KeyboardEvent,
   ) => void,
 }
 
