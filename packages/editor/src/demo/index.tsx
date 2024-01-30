@@ -39,13 +39,35 @@ const Demo: React.FC = () => {
           id: generateUUID(),
           type: 'text',
           properties: {
-            text: 'Normal plaintext'
+            text: 'Normal plain-text'
+          }
+        },
+        {
+          id: generateUUID(),
+          type: 'text',
+          properties: {
+            text: 'Blue wrapped text',
           }
         }
       ]}
       renderers={blockRenderers}
       keybinds={keybinds}
       richTextKeybinds={richTextKeybinds}
+      blockWrappers={[
+        ({ block, children}) => {
+          return (
+            <div
+              style={{
+                color: (block.properties.text as string).toLowerCase().includes('blue') ? 'blue' : 'black',
+                padding: '5px',
+                margin: '5px',
+              }}
+            >
+              {children}
+            </div>
+          );
+        }
+      ]}
     />
   );
 }

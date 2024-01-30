@@ -29,6 +29,12 @@ type EditorProps = {
 
   keybinds?: KeybindHandler[]
   richTextKeybinds?: RichTextKeybindHandler[]
+
+  blockWrappers?: React.FC<{
+    mutations: InBlockMutations;
+    block: BlockState;
+    children: React.ReactNode;
+  }>[];
 };
 
 const getDefaultProps = (): Partial<EditorProps> => ({
@@ -47,6 +53,9 @@ const getDefaultProps = (): Partial<EditorProps> => ({
     }
   ],
   richTextKeybinds: [],
+  blockWrappers: [
+    BlockWrapper
+  ]
 });
 
 const Editor: React.FC<EditorProps> = (props) => {
@@ -63,7 +72,8 @@ const Editor: React.FC<EditorProps> = (props) => {
     postMutations,
     keybinds,
     richTextKeybinds,
-  } = mergeObjects(defaultProps, props);
+    blockWrappers,
+  } = mergeObjects(props, defaultProps);
 
   const editorMutations = Object.fromEntries(
     Object
@@ -142,19 +152,32 @@ const Editor: React.FC<EditorProps> = (props) => {
       {blocks.map((block) => {
         const { type, id } = block;
 
-        const renderer = renderers[type];
+        const Renderer = renderers[type];
 
-        // ~ TODO: Throw an error here
-        if (!renderer) return;
+        if (!Renderer) return;
 
-        return (
-          <BlockWrapper
-            block={block}
+        const initialChild = (
+          <Renderer
+            id={block.id}
             mutations={editorMutations}
+            properties={block.properties}
+            type={block.type}
             key={id}
-            blockRenderer={renderer}
           />
         )
+
+        return (blockWrappers || [])
+          .reduce(
+            (child, Wrapper) => (
+              <Wrapper
+                block={block}
+                mutations={editorMutations}
+              >
+                {child}
+              </Wrapper>
+            ),
+            initialChild
+          )
       })}
     </div>
   );
