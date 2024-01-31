@@ -35,7 +35,7 @@ const focusElement = (element: HTMLElement, offset: number = 0) => {
 
     offset -= length;
 
-    if (offset <= 0) {
+    if (offset < 0) {
       const index = Math.max(Math.min(offset + length, length), 0);
 
       range.setStart(node, index);
