@@ -1,3 +1,19 @@
+type MergedObject<T, U> = (
+  {
+    [K in keyof (T & U)]: (T & U)[K];
+  } & {
+    [K in keyof T as T[K] extends any[] ? never : K]: T[K];
+  } & {
+    [K in keyof U as U[K] extends any[] ? never : K]: U[K];
+  }
+)
+
+/**
+ * Merge the arrays of two objects, preserving the keys of non-array values
+ * @param obj1 
+ * @param obj2 
+ * @returns 
+ */
 const mergeObjects = <
   T extends Record<string, unknown>,
   U extends Record<string, unknown>,
@@ -19,9 +35,7 @@ const mergeObjects = <
     merged[key] = [...obj1Value, ...value];
   });
 
-  return merged as {
-    [K in keyof (T & U)]: (T & U)[K];
-  }
+  return merged as MergedObject<T, U>;
 }
 
 export default mergeObjects;

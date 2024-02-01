@@ -15,8 +15,9 @@ import BlockWrapper from './BlockWrapper';
 import mergeObjects from '../lib/helpers/mergeObjects';
 import handleDownArrowNavigation from '../lib/keybinds/handleDownArrowNavigation';
 import handleUpArrowNavigation from '../lib/keybinds/handleUpArrowNavigation';
+import type Plugin from '../types/Plugin';
 
-type EditorProps = {
+export type EditorProps = {
   startingBlocks: BlockState[];
 
   renderers: {
@@ -35,9 +36,11 @@ type EditorProps = {
     block: BlockState;
     children: React.ReactNode;
   }>[];
+
+  plugins?: Plugin[]
 };
 
-const getDefaultProps = (): Partial<EditorProps> => ({
+const getDefaultProps = (): Partial<Omit<EditorProps, 'startingBlocks' | 'plugins'>> => ({
   postMutations: {
     addBlock: [focusAddedBlock],
     removeBlock: [focusRemovedBlock]
@@ -59,7 +62,10 @@ const getDefaultProps = (): Partial<EditorProps> => ({
 });
 
 const Editor: React.FC<EditorProps> = (props) => {
-  const { startingBlocks } = props;
+  const {
+    startingBlocks,
+    plugins
+  } = props;
 
   const [blocks, setBlocks] = useState(startingBlocks);
 
@@ -67,13 +73,18 @@ const Editor: React.FC<EditorProps> = (props) => {
 
   const defaultProps = getDefaultProps();
 
+  const mergedProps = (plugins || []).reduce(
+    (acc, plugin) => mergeObjects(acc, plugin),
+    mergeObjects(props, defaultProps)
+  ) as EditorProps;
+
   const {
     renderers,
     postMutations,
     keybinds,
     richTextKeybinds,
     blockWrappers,
-  } = mergeObjects(props, defaultProps);
+  } = mergedProps;
 
   const editorMutations = Object.fromEntries(
     Object

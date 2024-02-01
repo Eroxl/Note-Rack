@@ -6,6 +6,25 @@ import generateUUID from "../lib/helpers/generateUUID";
 import blockRenderers from "./blockRenderers";
 import richTextKeybinds from "./richTextKeybinds";
 import keybinds from "./keybinds";
+import Plugin from '../types/Plugin';
+
+const bluePlugin: Plugin = {
+  blockWrappers: [
+    ({ block, children}) => {
+      return (
+        <div
+          style={{
+            color: (block.properties.text as string).toLowerCase().includes('blue') ? 'blue' : 'black',
+            padding: '5px',
+            margin: '5px',
+          }}
+        >
+          {children}
+        </div>
+      );
+    }
+  ]
+};
 
 const Demo: React.FC = () => {
   return (
@@ -53,20 +72,9 @@ const Demo: React.FC = () => {
       renderers={blockRenderers}
       keybinds={keybinds}
       richTextKeybinds={richTextKeybinds}
-      blockWrappers={[
-        ({ block, children}) => {
-          return (
-            <div
-              style={{
-                color: (block.properties.text as string).toLowerCase().includes('blue') ? 'blue' : 'black',
-                padding: '5px',
-                margin: '5px',
-              }}
-            >
-              {children}
-            </div>
-          );
-        }
+
+      plugins={[
+        bluePlugin
       ]}
     />
   );
