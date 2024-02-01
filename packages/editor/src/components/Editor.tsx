@@ -73,9 +73,12 @@ const Editor: React.FC<EditorProps> = (props) => {
 
   const defaultProps = getDefaultProps();
 
-  const mergedProps = (plugins || []).reduce(
-    (acc, plugin) => mergeObjects(acc, plugin),
-    mergeObjects(props, defaultProps)
+  const mergedProps = mergeObjects(
+    (plugins || []).reduce(
+      (acc, plugin) => mergeObjects(acc, plugin),
+      props
+    ),
+    defaultProps,
   ) as EditorProps;
 
   const {

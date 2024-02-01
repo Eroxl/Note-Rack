@@ -1,7 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 
 import mergeIntervals from '../../lib/helpers/mergeIntervals';
-import xOrMergeIntervalValues from '../../lib/helpers/xOrMergeIntervalValues';
+import xOrMergeIntervalValues from '../../lib/helpers/intervalMergers/xOrMergeIntervalValues';
 
 describe(
   'mergeIntervals',
