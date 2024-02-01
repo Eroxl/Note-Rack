@@ -1,5 +1,5 @@
-import type SelectionState from "../../types/SelectionState";
-import getCursorOffset from "./caret/getCursorOffset";
+import type SelectionState from "../types/SelectionState";
+import getCursorOffset from "./helpers/caret/getCursorOffset";
 
 const getBlockElementFromChild = (
   child: Node,

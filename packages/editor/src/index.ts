@@ -1,8 +1,13 @@
-export * from './components/Editor';
-export * from './components/ContentEditable';
+import Editor from "./components/Editor";
+import createStyledText from "./components/blocks/createStyledText";
+import factories from "./lib/factories";
 
-export * as types from './types';
+const blocks = {
+  createStyledText
+};
 
-export * as helpers from './lib/helpers';
-export * as factories from './lib/factories';
-
+export {
+  Editor,
+  factories,
+  blocks
+};
