@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-import getEditorSelection from '../lib/getEditorSelection';
+import getEditorSelection from '../lib/helpers/getEditorSelection';
 import handlePotentialBlockChange from '../lib/handlePotentialBlockChange';
 import checkKeybind from '../lib/helpers/checkKeybind';
 import focusAddedBlock from '../lib/postEditorMutations/focusAddedBlock';

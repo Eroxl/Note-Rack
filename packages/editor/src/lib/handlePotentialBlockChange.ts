@@ -3,7 +3,7 @@ import type { InBlockMutations } from "../types/BlockRenderer";
 import type BlockState from "../types/BlockState";
 import type RichTextKeybindHandler from "../types/RichTextKeybindHandler";
 import type RemoveFirstFromTuple from "../types/helpers/RemoveFirstFromTuple";
-import getEditorSelection from "./getEditorSelection";
+import getEditorSelection from "./helpers/getEditorSelection";
 import focusElement from "./helpers/focusElement";
 import getBlockById from "./helpers/getBlockByID";
 
