@@ -21,7 +21,7 @@ const focusRemovedBlock = (state: BlockState[], id: string) => {
     });
 
     focusElement(nextBlock, nextBlock.textContent?.length || 0);
-  }, 0);
+  }, 25);
 }
 
 export default focusRemovedBlock;

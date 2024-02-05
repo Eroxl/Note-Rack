@@ -181,6 +181,7 @@ const Editor: React.FC<EditorProps> = (props) => {
         )
 
         return (blockWrappers || [])
+          .slice(-(blockWrappers?.length || 0))
           .reduce(
             (child, Wrapper) => (
               <Wrapper

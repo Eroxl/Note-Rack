@@ -6,7 +6,7 @@ const focusAddedBlock = (_: BlockState[], block: BlockState) => {
   // ~ Focus the new block
   setTimeout(() => {
     const newBlock = getBlockById(block.id);
-
+    
     if (!newBlock) return;
 
     newBlock.scrollIntoView({
@@ -16,7 +16,7 @@ const focusAddedBlock = (_: BlockState[], block: BlockState) => {
     });
 
     focusElement(newBlock);
-  }, 10);
+  }, 25);
 }
 
 export default focusAddedBlock;

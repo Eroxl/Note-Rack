@@ -63,16 +63,6 @@ const createStyledText = (
               },
               id
             );
-
-            setTimeout(() => {
-              if (!editableElement.current) return;
-
-              const nextBlock = editableElement.current.nextSibling as HTMLElement | null;
-
-              if (!nextBlock) return;
-
-              focusElement(nextBlock);
-            }, 0);
           } else if (event.code === 'Backspace' && type !== 'text' && isCursorAtStart) {
             event.preventDefault();
             mutations.editBlock(id, {}, 'text');
