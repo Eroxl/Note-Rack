@@ -18,9 +18,9 @@ const handleDownArrowNavigation: KeybindHandler['handler'] = (_, state, currentS
 
   if (!isOnLastLine) return;
   
-  const currentBlockIndex = state.findIndex(({ id }) => id === currentSelection.blockId);
+  const currentBlockIndex = state.blocks.findIndex(({ id }) => id === currentSelection.blockId);
 
-  const nextBlock = state[currentBlockIndex + 1];
+  const nextBlock = state.blocks[currentBlockIndex + 1];
 
   if (!nextBlock) return;
   

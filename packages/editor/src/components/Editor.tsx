@@ -16,9 +16,10 @@ import mergeObjects from '../lib/helpers/mergeObjects';
 import handleDownArrowNavigation from '../lib/keybinds/handleDownArrowNavigation';
 import handleUpArrowNavigation from '../lib/keybinds/handleUpArrowNavigation';
 import type Plugin from '../types/Plugin';
+import EditorState from '../types/EditorState';
 
 export type EditorProps = {
-  startingBlocks: BlockState[];
+  startingState: EditorState;
 
   renderers: {
     [type: string]: BlockRenderer<any>;
@@ -63,11 +64,11 @@ const getDefaultProps = (): Partial<Omit<EditorProps, 'startingBlocks' | 'plugin
 
 const Editor: React.FC<EditorProps> = (props) => {
   const {
-    startingBlocks,
+    startingState,
     plugins
   } = props;
 
-  const [blocks, setBlocks] = useState(startingBlocks);
+  const [state, setState] = useState(startingState);
 
   const editorRef = useRef<HTMLDivElement>(null);
 
@@ -98,7 +99,7 @@ const Editor: React.FC<EditorProps> = (props) => {
           if (name === 'editBlock' && richTextKeybinds && editorRef.current) {
             const didTypeChange = handlePotentialBlockChange(
               args,
-              blocks,
+              state,
               editorMutations,
               richTextKeybinds,
               editorRef.current,
@@ -107,16 +108,16 @@ const Editor: React.FC<EditorProps> = (props) => {
             if (didTypeChange) return;
           }
 
-          setBlocks((blocks) => {
+          setState((state) => {
             // @ts-ignore
-            return fn(blocks, ...args);
+            return fn(state, ...args);
           })
 
           const mutationsToPerform = postMutations?.[name as keyof typeof mutations] ?? []
 
           mutationsToPerform?.forEach((mutation) => {
             // @ts-ignore
-            mutation(blocks, ...args);
+            mutation(state, ...args);
           });
         }
 
@@ -134,7 +135,7 @@ const Editor: React.FC<EditorProps> = (props) => {
 
           const currentSelection = getEditorSelection(editorRef.current);
 
-          handler(editorMutations, blocks, currentSelection, event);
+          handler(editorMutations, state, currentSelection, event);
         }
 
         return listener;
@@ -151,7 +152,7 @@ const Editor: React.FC<EditorProps> = (props) => {
         document.removeEventListener('keydown', listener)
       });
     }
-  }, [editorMutations, blocks]);
+  }, [editorMutations, state]);
 
   return (
     <div
@@ -163,7 +164,7 @@ const Editor: React.FC<EditorProps> = (props) => {
       id="editor"
       ref={editorRef}
     >
-      {blocks.map((block) => {
+      {state.blocks.map((block) => {
         const { type, id } = block;
 
         const Renderer = renderers[type];

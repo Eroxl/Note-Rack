@@ -1,13 +1,13 @@
 import type Keybind from "./Keybind";
 import SelectionState from "./SelectionState";
 import type { InBlockMutations } from "./BlockRenderer";
-import BlockState from "./BlockState";
+import EditorState from "./EditorState";
 
 type KeybindHandler = {
   keybind: Keybind,
   handler: (
     mutations: InBlockMutations,
-    state: BlockState[],
+    state: EditorState,
     selection: SelectionState | undefined,
     event: KeyboardEvent,
   ) => void,

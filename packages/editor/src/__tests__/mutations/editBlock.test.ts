@@ -1,21 +1,23 @@
 import { describe, expect, test } from '@jest/globals';
 
 import editBlock from "../../mutations/editBlock";
-import type BlockState from '../../types/BlockState';
+import EditorState from '../../types/EditorState';
 
 describe('editBlock', () => {
-  const state: BlockState[] = [
-    {
-      id: '1',
-      type: 'text',
-      properties: {}
-    },
-    {
-      id: '2',
-      type: 'text',
-      properties: {}
-    }
-  ]
+  const state: EditorState = {
+    blocks: [
+      {
+        id: '1',
+        type: 'text',
+        properties: {}
+      },
+      {
+        id: '2',
+        type: 'text',
+        properties: {}
+      }
+    ]
+  }
 
   const updatedProperties = {
     color: 'red'
@@ -26,14 +28,16 @@ describe('editBlock', () => {
     () => {
       const result = editBlock(state, '1', updatedProperties);
 
-      expect(result).toEqual([
-        {
-          id: '1',
-          type: 'text',
-          properties: updatedProperties
-        },
-        state[1]
-      ]);
+      expect(result).toEqual({
+        blocks: [
+          {
+            id: '1',
+            type: 'text',
+            properties: updatedProperties
+          },
+          state.blocks[1]
+        ]
+      });
     }
   );
 
@@ -42,14 +46,16 @@ describe('editBlock', () => {
     () => {
       const result = editBlock(state, '1', updatedProperties, 'image');
 
-      expect(result).toEqual([
-        {
-          id: '1',
-          type: 'image',
-          properties: updatedProperties
-        },
-        state[1]
-      ]);
+      expect(result).toEqual({
+        blocks: [
+          {
+            id: '1',
+            type: 'image',
+            properties: updatedProperties
+          },
+          state.blocks[1]
+        ]
+      });
     }
   )
 
@@ -58,21 +64,26 @@ describe('editBlock', () => {
     () => {
       const result = editBlock(state, '1', updatedProperties, 'image');
 
-      expect(result).toEqual([
-        {
-          id: '1',
-          type: 'image',
-          properties: updatedProperties
-        },
-        state[1]
-      ]);
+      expect(result).toEqual({
+        blocks: [
+          {
+            id: '1',
+            type: 'image',
+            properties: updatedProperties
+          },
+          state.blocks[1]
+        ]
+      });
     }
   )
 
   test(
     'Does not mutate the original state',
     () => {
-      const originalState = [...state];
+      const originalState = {
+        ...state,
+        blocks: [...state.blocks]
+      }
       editBlock(state, '1', updatedProperties);
       expect(state).toEqual(originalState);
     }
@@ -82,7 +93,7 @@ describe('editBlock', () => {
     'Returns a new array',
     () => {
       const result = editBlock(state, '1', updatedProperties);
-      expect(result).not.toBe(state);
+      expect(result.blocks).not.toBe(state.blocks);
     }
   );
 

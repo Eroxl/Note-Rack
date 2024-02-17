@@ -1,4 +1,5 @@
 import type BlockState from "../types/BlockState";
+import EditorState from "../types/EditorState";
 
 /**
  * Edit a block in the editor state.
@@ -10,22 +11,25 @@ import type BlockState from "../types/BlockState";
  * @returns The modified editor state.
  */
 const editBlock = (
-  state: BlockState[],
+  state: EditorState,
   blockId: string,
   updatedProperties?: Record<string, unknown>,
   updatedType?: string,
-): BlockState[] => {
-  const newState: BlockState[] = [...state];
+): EditorState => {
+  const newState = {
+    ...state,
+    blocks: [...state.blocks],
+  };
 
-  const blockIndex = newState.findIndex((b) => b.id === blockId);
+  const blockIndex = newState.blocks.findIndex((b) => b.id === blockId);
 
-  const block = newState[blockIndex];
+  const block = newState.blocks[blockIndex];
 
   if (!block) {
     throw new Error(`Attempted to edit non-existent block with ID "${blockId}".`);
   }
 
-  newState[blockIndex] = {
+  newState.blocks[blockIndex] = {
     ...block,
     properties: {
       ...block.properties,
