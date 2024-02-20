@@ -93,14 +93,16 @@ const ContentEditable: React.FC<ContentEditableProps> = (props) => {
     const arrayChildren = Array.isArray(children) ? children : [children];
 
     const childrenPortals = arrayChildren
-      .map((child) => {
+      .map((child, index) => {
         if (!innerRef.current) return;
 
         const childWrapperElement = document.createElement('span');
         innerRef.current.appendChild(childWrapperElement);
 
         const parsedChild = typeof child === 'string' ? (
-          <span>
+          <span
+            key={index}
+          >
             {child}
           </span>
         ) : child

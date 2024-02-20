@@ -73,7 +73,7 @@ const createStyledText = (
               if (!newBlock) return;
 
               focusElement(newBlock, 0);
-            }, 0);
+            }, 7);
           } else if (event.code === 'Backspace' && type === 'text' && isBlockEmpty) {
             event.preventDefault();
             mutations.removeBlock(id);

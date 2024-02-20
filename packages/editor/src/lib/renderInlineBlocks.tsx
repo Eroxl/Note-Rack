@@ -18,6 +18,7 @@ const renderInlineBlock = (
   renderers?: {
     [type: string]: InlineBlockRenderer
   },
+  index: number = 0,
 ) => {
   if (!type[0]) return text;
 
@@ -28,6 +29,7 @@ const renderInlineBlock = (
   return (
     <span
       data-type={type[0]}
+      key={index}
     >
       <CurrentRenderer>
         {renderInlineBlock(text, type.slice(1), renderers)}
@@ -46,7 +48,7 @@ const renderInlineBlocks = (
   let result: React.ReactNode[] = [];
   let start = 0;
 
-  sortInlineBlocks(inlineBlocks || []).forEach((block) => {
+  sortInlineBlocks(inlineBlocks || []).forEach((block, index) => {
     const { type, start: blockStart, end: blockEnd } = block;
 
     const preBlockText = text.slice(start, blockStart);
@@ -58,7 +60,7 @@ const renderInlineBlocks = (
     }
 
     result.push(
-      renderInlineBlock(blockText, type, renderers)
+      renderInlineBlock(blockText, type, renderers, index)
     )
 
     start = blockEnd;

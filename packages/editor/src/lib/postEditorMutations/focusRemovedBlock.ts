@@ -20,7 +20,7 @@ const focusRemovedBlock = (state: BlockState[], id: string) => {
       inline: 'start'
     });
 
-    focusElement(nextBlock, nextBlock.textContent?.length || 0);
+    focusElement(nextBlock, (nextBlock.textContent?.length || 1) - 1);
   }, 25);
 }
 
