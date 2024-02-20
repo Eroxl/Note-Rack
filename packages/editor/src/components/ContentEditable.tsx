@@ -38,7 +38,7 @@ const ContentEditable: React.FC<ContentEditableProps> = (props) => {
     innerRef.current.style.caretColor = 'auto';
 
     if (!caretPosition.current) return;
-
+    
     focusElement(innerRef.current, caretPosition.current);
     caretPosition.current = null;
   }
@@ -83,8 +83,10 @@ const ContentEditable: React.FC<ContentEditableProps> = (props) => {
   useEffect(() => {
     if (!innerRef.current) return;
 
-    caretPosition.current = getCursorOffset(innerRef.current);;
-    innerRef.current.style.caretColor = 'transparent';
+    if (isElementFocused(innerRef.current)) {
+      caretPosition.current = getCursorOffset(innerRef.current);
+      innerRef.current.style.caretColor = 'transparent';
+    }
 
     innerRef.current.innerHTML = '';
 
