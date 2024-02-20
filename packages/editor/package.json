@@ -1,7 +1,7 @@
 {
   "name": "@note-rack/editor",
   "description": "A rich text editor for Note Rack",
-  "version": "1.0.2",
+  "version": "1.0.6",
   "module": "dist/index.js",
   "umd": "dist/index.umd.js",
   "main": "dist/index.js",
@@ -17,9 +17,7 @@
   ],
   "scripts": {
     "dev": "webpack-dev-server --hot --config ./webpack.config.js",
-    "build:types": "tsc -b .",
-    "build:esm": "swc -C module.type=commonjs -d dist src/",
-    "build": "yarn run build:esm && yarn run build:types",
+    "build": "sh ./scripts/build.sh",
     "test": "jest"
   },
   "devDependencies": {
@@ -49,7 +47,7 @@
     "dompurify": "^3.0.6"
   },
   "peerDependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react:": "<18.0.0",
+    "react-dom": "<18.0.0"
   }
 }
