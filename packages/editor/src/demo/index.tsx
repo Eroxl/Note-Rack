@@ -29,48 +29,46 @@ const bluePlugin: Plugin = {
 const Demo: React.FC = () => {
   return (
     <Editor
-      startingState={{
-        blocks: [
-          {
-            id: generateUUID(),
-            type: 'text',
-            properties: {
-              text: 'Bold, italic, and underlined text',
-              style: [
-                {
-                  type: ['bold'],
-                  start: 0,
-                  end: 4,
-                },
-                {
-                  type: ['italic'],
-                  start: 6,
-                  end: 12,
-                },
-                {
-                  type: ['underline'],
-                  start: 18,
-                  end: 28,
-                },
-              ]
-            }
-          },
-          {
-            id: generateUUID(),
-            type: 'text',
-            properties: {
-              text: 'Normal plain-text'
-            }
-          },
-          {
-            id: generateUUID(),
-            type: 'text',
-            properties: {
-              text: 'Blue wrapped text',
-            }
+      startingBlocks={[
+        {
+          id: generateUUID(),
+          type: 'text',
+          properties: {
+            text: 'Bold, italic, and underlined text',
+            style: [
+              {
+                type: ['bold'],
+                start: 0,
+                end: 4,
+              },
+              {
+                type: ['italic'],
+                start: 6,
+                end: 12,
+              },
+              {
+                type: ['underline'],
+                start: 18,
+                end: 28,
+              },
+            ]
           }
-        ]
-      }}
+        },
+        {
+          id: generateUUID(),
+          type: 'text',
+          properties: {
+            text: 'Normal plain-text'
+          }
+        },
+        {
+          id: generateUUID(),
+          type: 'text',
+          properties: {
+            text: 'Blue wrapped text',
+          }
+        }
+      ]}
       renderers={blockRenderers}
       keybinds={keybinds}
       richTextKeybinds={richTextKeybinds}

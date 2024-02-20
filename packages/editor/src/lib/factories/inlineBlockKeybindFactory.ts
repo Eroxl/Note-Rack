@@ -9,7 +9,7 @@ const inlineBlockKeybindFactory = (type: string) => {
   const handler: KeybindHandler['handler'] = (mutations, state, selection, event) => {
     if (!selection?.length || !selection.blockId) return;
 
-    const block = state.blocks.find(block => block.id === selection.blockId);
+    const block = state.find(block => block.id === selection.blockId);
 
     if (!block) return;
 

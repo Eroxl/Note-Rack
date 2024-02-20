@@ -1,9 +1,8 @@
 import type BlockState from '../../types/BlockState';
-import EditorState from '../../types/EditorState';
 import focusElement from '../helpers/focusElement';
 import getBlockById from '../helpers/getBlockByID';
 
-const focusAddedBlock = (_: EditorState, block: BlockState) => {
+const focusAddedBlock = (_: BlockState[], block: BlockState) => {
   // ~ Focus the new block
   setTimeout(() => {
     const newBlock = getBlockById(block.id);

@@ -1,5 +1,4 @@
 import type BlockState from "../types/BlockState";
-import EditorState from "../types/EditorState";
 
 /**
  * Remove a block from the editor state.
@@ -9,21 +8,18 @@ import EditorState from "../types/EditorState";
  * @returns The modified editor state.
  */
 const removeBlock = (
-  state: EditorState,
+  state: BlockState[],
   blockId: string,
-): EditorState => {
-  const newState = {
-    ...state,
-    blocks: [...state.blocks],
-  };
+): BlockState[] => {
+  const newState = [...state];
 
-  const blockIndex = newState.blocks.findIndex((b) => b.id === blockId);
+  const blockIndex = newState.findIndex((b) => b.id === blockId);
 
   if (blockIndex === -1) {
     throw new Error(`Attempted to remove non-existent block with ID "${blockId}".`);
   }
 
-  newState.blocks.splice(blockIndex, 1);
+  newState.splice(blockIndex, 1);
 
   return newState;
 };

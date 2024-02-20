@@ -18,9 +18,9 @@ const handleUpArrowNavigation: KeybindHandler['handler'] = (_, state, currentSel
 
   if (!isOnFirstLine) return;
   
-  const currentBlockIndex = state.blocks.findIndex(({ id }) => id === currentSelection.blockId);
+  const currentBlockIndex = state.findIndex(({ id }) => id === currentSelection.blockId);
 
-  const nextBlock = state.blocks[currentBlockIndex - 1];
+  const nextBlock = state[currentBlockIndex - 1];
 
   if (!nextBlock) return;
 

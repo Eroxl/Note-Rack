@@ -1,23 +1,21 @@
 import { describe, expect, test } from '@jest/globals';
 
 import addBlock from "../../mutations/addBlock";
-import type EditorState from '../../types/EditorState';
+import type BlockState from '../../types/BlockState';
 
 describe('addBlock', () => {
-  const state: EditorState = {
-    blocks: [
-      {
-        id: '1',
-        type: 'text',
-        properties: {}
-      },
-      {
-        id: '2',
-        type: 'text',
-        properties: {}
-      }
-    ]
-  }
+  const state: BlockState[] = [
+    {
+      id: '1',
+      type: 'text',
+      properties: {}
+    },
+    {
+      id: '2',
+      type: 'text',
+      properties: {}
+    }
+  ]
 
   const newBlock = {
     id: '3',
@@ -30,12 +28,10 @@ describe('addBlock', () => {
     () => {
       const result = addBlock(state, newBlock);
 
-      expect(result).toEqual({
-        blocks: [
-          ...state.blocks,
-          newBlock
-        ]
-      });
+      expect(result).toEqual([
+        ...state,
+        newBlock
+      ]);
     }
   );
 
@@ -48,24 +44,18 @@ describe('addBlock', () => {
         '1'
       );
 
-      expect(result).toEqual({
-        blocks: [
-          state.blocks[0],
-          newBlock,
-          state.blocks[1]
-        ]
-      });
+      expect(result).toEqual([
+        state[0],
+        newBlock,
+        state[1]
+      ]);
     }
   );
 
   test(
     'Does not mutate the original state',
     () => {
-      const originalState = { 
-        ...state,
-        blocks: [...state.blocks]
-      };
-
+      const originalState = [...state];
       addBlock(state, newBlock);
       expect(state).toEqual(originalState);
     }
@@ -75,7 +65,7 @@ describe('addBlock', () => {
     'Returns a new array',
     () => {
       const result = addBlock(state, newBlock);
-      expect(result.blocks).not.toBe(state.blocks);
+      expect(result).not.toBe(state);
     }
   );
   
