@@ -16,79 +16,62 @@ const inlineBlocks: Record<string, InlineBlockRenderer> = {
   ),
 }
 
-const Demo: React.FC = () => {
-  console.log(
-    mergeObject(
+const Demo: React.FC = () => (
+  <Editor
+    renderers={{
+      text: createStyledText({}, '', inlineBlocks),
+    }}
+    startingBlocks={[
       {
-        renderers: {
-          "text": 2,
-        }
+        id: "1",
+        type: "red-text",
+        properties: {
+          text: "Hello, world!",
+        },
       },
       {
-        renderers: {
-          "red-text": 1,
+        id: "2",
+        type: "text",
+        properties: {
+          text: 'Bold text',
+          style: [
+            {
+              type: ['bold'],
+              start: 0,
+              end: 4,
+            }
+          ]
         }
-      }
-    )
-  )
-
-  return (
-    <Editor
-      renderers={{
-        text: createStyledText({}, '', inlineBlocks),
-      }}
-      startingBlocks={[
+      },
+    ]}
+    keybinds={[
+      {
+        handler: inlineBlockKeybindFactory('bold'),
+        keybind: 'Meta+b',
+      },
+    ]}
+    richTextKeybinds={[
+      {
+        regex: /^red (.*)/g,
+        handler: blockRegexFactory('red-text'),
+      },
+      {
+        regex: /(\*\*)(.*?)\1/g,
+        handler: inlineBlockRegexFactory('bold'),
+      },
+    ]}
+    plugins={[
+      createStyledTextPlugin(
+        "red-text",
         {
-          id: "1",
-          type: "red-text",
-          properties: {
-            text: "Hello, world!",
-          },
+          color: "red",
         },
-        {
-          id: "2",
-          type: "text",
-          properties: {
-            text: 'Bold text',
-            style: [
-              {
-                type: ['bold'],
-                start: 0,
-                end: 4,
-              }
-            ]
-          }
-        },
-      ]}
-      keybinds={[
-        {
-          handler: inlineBlockKeybindFactory('bold'),
-          keybind: 'Meta+b',
-        },
-      ]}
-      richTextKeybinds={[
-        {
-          regex: /^red (.*)/g,
-          handler: blockRegexFactory('red-text'),
-        },
-        {
-          regex: /(\*\*)(.*?)\1/g,
-          handler: inlineBlockRegexFactory('bold'),
-        },
-      ]}
-      plugins={[
-        createStyledTextPlugin(
-          "red-text",
-          {
-            color: "red",
-          },
-          "",
-          inlineBlocks,
-        ),
-      ]}
-    />
-  );
-};
+        "",
+        inlineBlocks,
+      ),
+    ]}
+  />
+);
 
 ReactDOM.render(
   <Demo />,
