@@ -16,7 +16,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "sh ./scripts/build.sh"
+    "build": "sh ./scripts/build.sh",
+    "dev": "webpack-dev-server --hot --config ./webpack.config.js"
   },
   "devDependencies": {
     "@babel/core": "^7.23.7",
