@@ -30,6 +30,13 @@ const mergeObjects = <
 
     const obj1Value = merged[key];
 
+    if (typeof obj1Value === 'object' && typeof value === 'object') {
+      merged[key] = {
+        ...obj1Value,
+        ...value,
+      }
+    }
+
     if (!Array.isArray(obj1Value) || !Array.isArray(value)) return;
     
     merged[key] = [...obj1Value, ...value];
