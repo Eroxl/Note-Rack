@@ -1,11 +1,14 @@
 import React from "react";
-import ReactDOM from 'react-dom';
+import ReactDOM from "react-dom";
 import { Editor } from "@note-rack/editor";
 import mergeObject from "@note-rack/editor/lib/helpers/mergeObjects";
+import blockRegexFactory from "@note-rack/editor/lib/factories/blockRegexFactory";
 
 import createStyledTextPlugin from "../createStyledTextPlugin";
 import createStyledText from "../createStyledText";
 import InlineBlockRenderer from "../types/InlineBlockRenderer";
+import inlineBlockKeybindFactory from "../factories/inlineBlockKeybindFactory";
+import inlineBlockRegexFactory from "../factories/inlineBlockRegexFactory";
 
 const inlineBlocks: Record<string, InlineBlockRenderer> = {
   bold: ({children}) => (
@@ -55,6 +58,22 @@ const Demo: React.FC = () => {
               }
             ]
           }
+        },
+      ]}
+      keybinds={[
+        {
+          handler: inlineBlockKeybindFactory('bold'),
+          keybind: 'Meta+b',
+        },
+      ]}
+      richTextKeybinds={[
+        {
+          regex: /^red (.*)/g,
+          handler: blockRegexFactory('red-text'),
+        },
+        {
+          regex: /(\*\*)(.*?)\1/g,
+          handler: inlineBlockRegexFactory('bold'),
         },
       ]}
       plugins={[

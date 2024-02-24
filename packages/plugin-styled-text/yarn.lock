@@ -1130,9 +1130,9 @@
     fastq "^1.6.0"
 
 "@note-rack/editor@^1.0.6":
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/@note-rack/editor/-/editor-1.0.6.tgz#1dd5d5a21e68e90162fcd7dfe268289322a82721"
-  integrity sha512-31NBxIeFufOpDVLHR85IZFYdtre9TDgDRHPZq3tNyFnEBQEntcF4DvzzCo10ZvdAl7NhAh89omv+iVF9pOSrGQ==
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/@note-rack/editor/-/editor-1.0.7.tgz#03b551a37a8af7a49d6106ea4b537ac50a39cd14"
+  integrity sha512-inMWXGplCGF42xpgDHRCGPo/wAfUfepcNKQr9vPy1+t4xKiXKb8b+O+NTU6Va4MaFNAfidApeCsEpGrJjoVNrQ==
   dependencies:
     dompurify "^3.0.6"
 

@@ -1,7 +1,8 @@
-import mergeIntervals from "../../lib/helpers/mergeIntervals";
-import type { Interval } from "../../lib/helpers/mergeIntervals";
-import restoreSelection from "../../lib/helpers/restoreSelection";
-import type RichTextKeybindHandler from "../../types/RichTextKeybindHandler";
+import restoreSelection from "@note-rack/editor/lib/helpers/restoreSelection";
+import type RichTextKeybindHandler from "@note-rack/editor/types/RichTextKeybindHandler";
+
+import mergeIntervals from "../helpers/mergeIntervals";
+import type { Interval } from "../helpers/mergeIntervals";
 
 const inlineBlockRegexFactory = (
   type: string,
