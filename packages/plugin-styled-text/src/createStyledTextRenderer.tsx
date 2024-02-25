@@ -65,7 +65,7 @@ export type TextProperties = {
  * );
  * ```
  */
-const createStyledText = (
+const createStyledTextRenderer = (
   style?: React.CSSProperties,
   className?: string,
   inlineBlocks?: {
@@ -147,4 +147,4 @@ const createStyledText = (
   return Text;
 }
 
-export default createStyledText;
+export default createStyledTextRenderer;

@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import type Plugin from '@note-rack/editor/types/Plugin';
 
 import type InlineBlockRenderer from './types/InlineBlockRenderer';
-import createStyledText from './createStyledText';
+import createStyledTextRenderer from './createStyledTextRenderer';
 
 export type TextProperties = {
   text: string;
@@ -66,7 +66,7 @@ const createStyledTextPlugin = (
 ): Plugin  => (
   {
     renderers: {
-      [type]: createStyledText(
+      [type]: createStyledTextRenderer(
         style,
         className,
         inlineBlocks

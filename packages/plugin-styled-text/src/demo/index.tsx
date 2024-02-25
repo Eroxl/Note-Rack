@@ -5,7 +5,7 @@ import mergeObject from "@note-rack/editor/lib/helpers/mergeObjects";
 import blockRegexFactory from "@note-rack/editor/lib/factories/blockRegexFactory";
 
 import createStyledTextPlugin from "../createStyledTextPlugin";
-import createStyledText from "../createStyledText";
+import createStyledText from "../createStyledTextRenderer";
 import InlineBlockRenderer from "../types/InlineBlockRenderer";
 import inlineBlockKeybindFactory from "../factories/inlineBlockKeybindFactory";
 import inlineBlockRegexFactory from "../factories/inlineBlockRegexFactory";

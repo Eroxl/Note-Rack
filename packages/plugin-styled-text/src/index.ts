@@ -1,7 +1,7 @@
 import createStyledTextPlugin from "./createStyledTextPlugin";
-import createStyledText from "./createStyledText";
+import createStyledTextRenderer from "./createStyledTextRenderer";
 
 export default {
   createStyledTextPlugin,
-  createStyledText
+  createStyledTextRenderer
 };
