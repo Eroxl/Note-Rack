@@ -20,10 +20,22 @@ const Demo: React.FC = () => (
     }}
     startingBlocks={[
       {
-        id: "2",
+        id: "1",
         type: "math",
         properties: {
           text: "x^2 + y^2 = z^2",
+        }
+      },
+      {
+        id: "2",
+        type: "math",
+        properties: {
+          text: `
+          \\begin{aligned}
+          x &= 2 \\\\
+          y &= 3
+          \\end{aligned}
+          `
         }
       },
     ]}
