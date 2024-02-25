@@ -1,10 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Editor } from "@note-rack/editor";
-import mergeObject from "@note-rack/editor/lib/helpers/mergeObjects";
 import blockRegexFactory from "@note-rack/editor/lib/factories/blockRegexFactory";
 
-import createStyledTextPlugin from "../createStyledTextPlugin";
 import createStyledText from "../createStyledTextRenderer";
 import InlineBlockRenderer from "../types/InlineBlockRenderer";
 import inlineBlockKeybindFactory from "../factories/inlineBlockKeybindFactory";
@@ -20,6 +18,7 @@ const Demo: React.FC = () => (
   <Editor
     renderers={{
       text: createStyledText({}, '', inlineBlocks),
+      'red-text': createStyledText({color: 'red'}, '', inlineBlocks),
     }}
     startingBlocks={[
       {
@@ -59,16 +58,6 @@ const Demo: React.FC = () => (
         regex: /(\*\*)(.*?)\1/g,
         handler: inlineBlockRegexFactory('bold'),
       },
-    ]}
-    plugins={[
-      createStyledTextPlugin(
-        "red-text",
-        {
-          color: "red",
-        },
-        "",
-        inlineBlocks,
-      ),
     ]}
   />
 );
