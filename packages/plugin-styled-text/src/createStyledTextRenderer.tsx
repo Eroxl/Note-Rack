@@ -21,7 +21,6 @@ export type TextProperties = {
 
 /**
  * Create a styled text block renderer
- * @param type: The type of the block
  * @param style The style to apply to the text
  * @param className The class name to apply to the text
  * @param inlineBlocks The inline blocks that the text can contain
@@ -36,9 +35,9 @@ export type TextProperties = {
  * 
  * import { Editor } from '@note-rack/editor';
  * 
- * import { createStyledText } from '@note-rack/styled-text';
+ * import { createStyledTextRenderer } from '@note-rack/plugin-styled-text';
  * 
- * const redTextRenderer = createStyledText({
+ * const redTextRenderer = createStyledTextRenderer({
  *   color: 'red',
  * });
  * 
