@@ -29,6 +29,7 @@ const ContentEditable: React.FC<ContentEditableProps> = (props) => {
   } = props;
 
   const caretPosition = useRef<number | null>(null);
+  const missedCharacters = useRef<string>('');
 
   const [childrenPortals, setChildrenPortals] = React.useState<React.ReactNode | React.ReactNode[]>([]);
 
@@ -117,6 +118,8 @@ const ContentEditable: React.FC<ContentEditableProps> = (props) => {
         
         console.error('Cursor fatally out of sync, preventing input event');
 
+        missedCharacters.current += (event as any).data || '';
+
         event.preventDefault();
         event.stopPropagation();
       }}
@@ -127,6 +130,19 @@ const ContentEditable: React.FC<ContentEditableProps> = (props) => {
 
         caretPosition.current = getCursorOffset(innerRef.current);;
         innerRef.current.style.caretColor = 'transparent';
+
+        if (missedCharacters.current) {
+          console.error('Characters out of sync, attempting to recover');
+
+          const before = innerRef.current.innerText.slice(0, caretPosition.current-1);
+          const after =  innerRef.current.innerText.slice(caretPosition.current-1);
+
+          innerRef.current.innerText = before + missedCharacters.current + after;
+
+          caretPosition.current += missedCharacters.current.length;
+
+          missedCharacters.current = '';
+        }
 
         onChange(event);
       }}
