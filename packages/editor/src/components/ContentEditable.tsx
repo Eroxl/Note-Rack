@@ -37,8 +37,8 @@ const ContentEditable: React.FC<ContentEditableProps> = (props) => {
 
     innerRef.current.style.caretColor = 'auto';
 
-    if (!caretPosition.current) return;
-    
+    if (caretPosition.current === null) return;
+
     focusElement(innerRef.current, caretPosition.current);
     caretPosition.current = null;
   }
@@ -66,19 +66,6 @@ const ContentEditable: React.FC<ContentEditableProps> = (props) => {
       document.removeEventListener('selectionchange', caretUpdater);
     }
   }, [innerRef.current]);
-
-  useEffect(() => {
-    if (!innerRef.current || !onBeforeChange) return;
-
-    innerRef.current.addEventListener('beforeinput', onBeforeChange)
-
-    return () => {
-      if (!innerRef.current) return;
-
-      innerRef.current.removeEventListener('beforeinput', onBeforeChange)
-    }
-  }, [innerRef.current])
-
 
   useEffect(() => {
     if (!innerRef.current) return;
@@ -123,10 +110,15 @@ const ContentEditable: React.FC<ContentEditableProps> = (props) => {
 
       contentEditable={!disabled}
       suppressContentEditableWarning
-      onBeforeInput={() => {        
-        if (caretPosition.current === null) return;
+      onBeforeInput={(event) => { 
+        if (onBeforeChange) onBeforeChange(event as unknown as InputEvent);
+        
+        if (!caretPosition.current) return;
+        
+        console.error('Cursor fatally out of sync, preventing input event');
 
-        caretUpdater()
+        event.preventDefault();
+        event.stopPropagation();
       }}
 
       onKeyDown={onKeyDown}
