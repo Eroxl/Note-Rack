@@ -14,6 +14,7 @@ export type InBlockMutations = {
 
 export type BlockRendererProps<T = Record<string, unknown>> = BlockState<T> & {
   mutations: InBlockMutations;
+  editorRef: React.RefObject<HTMLDivElement>;
 };
 
 type BlockRenderer<T = Record<string, unknown>> = React.FC<BlockRendererProps<T>>;

@@ -1130,11 +1130,18 @@
     fastq "^1.6.0"
 
 "@note-rack/editor@^1.0.6":
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/@note-rack/editor/-/editor-1.0.7.tgz#03b551a37a8af7a49d6106ea4b537ac50a39cd14"
-  integrity sha512-inMWXGplCGF42xpgDHRCGPo/wAfUfepcNKQr9vPy1+t4xKiXKb8b+O+NTU6Va4MaFNAfidApeCsEpGrJjoVNrQ==
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/@note-rack/editor/-/editor-1.0.8.tgz#0d583ea4ac32d8a00751b47fff701f3820ed1716"
+  integrity sha512-6ndytO/x2G5Buuv5Hn5RlAKYBAtfMXQ4rvGvOtC0W/kCaybEBa1bG51axXmp9PwM1kC4sRO92GV5jMdA7hyqBw==
   dependencies:
     dompurify "^3.0.6"
+
+"@note-rack/plugin-styled-text@^1.0.4":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@note-rack/plugin-styled-text/-/plugin-styled-text-1.0.5.tgz#00e95a0d0df9a5a423e614a123dd5b8a2dbbbd69"
+  integrity sha512-Hi5Q7Gpk+3lZ4JmMzka54lx4Tj924FYv5at7zg91nkjVy2MnrvNuqEDuX/5ZhdrrkqkZxRUbclNoqsu039O3CA==
+  dependencies:
+    "@note-rack/editor" "^1.0.6"
 
 "@npmcli/arborist@^4.0.4":
   version "4.3.1"

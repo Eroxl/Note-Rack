@@ -1,5 +1,4 @@
 import createMathRenderer from "./createMathRenderer";
 
-export default {
-  createMathRenderer
-};
+export default createMathRenderer;
+

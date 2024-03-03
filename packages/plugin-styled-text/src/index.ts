@@ -1,5 +1,3 @@
 import createStyledTextRenderer from "./createStyledTextRenderer";
 
-export default {
-  createStyledTextRenderer
-};
+export default createStyledTextRenderer;
