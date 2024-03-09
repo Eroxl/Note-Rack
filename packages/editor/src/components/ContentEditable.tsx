@@ -131,13 +131,13 @@ const ContentEditable: React.FC<ContentEditableProps> = (props) => {
         caretPosition.current = getCursorOffset(innerRef.current);;
         innerRef.current.style.caretColor = 'transparent';
 
-        if (missedCharacters.current) {
+        if (missedCharacters.current && innerRef.current.textContent) {
           console.error('Characters out of sync, attempting to recover');
 
-          const before = innerRef.current.innerText.slice(0, caretPosition.current-1);
-          const after =  innerRef.current.innerText.slice(caretPosition.current-1);
+          const before = innerRef.current.textContent.slice(0, caretPosition.current-1);
+          const after =  innerRef.current.textContent.slice(caretPosition.current-1);
 
-          innerRef.current.innerText = before + missedCharacters.current + after;
+          innerRef.current.textContent = before + missedCharacters.current + after;
 
           caretPosition.current += missedCharacters.current.length;
 
