@@ -44,6 +44,7 @@ const renderInlineBlocks = (
   renderers?: {
     [type: string]: InlineBlockRenderer
   },
+  endWithNewline: boolean = true,
 ) => {
   let result: React.ReactNode[] = [];
   let start = 0;
@@ -68,7 +69,7 @@ const renderInlineBlocks = (
 
   if (start >= text.length) {
     if (text.length === 0) {
-      return ['\n'];
+      return ['\uFEFF'];
     }
 
     return result;
@@ -78,9 +79,9 @@ const renderInlineBlocks = (
     .substring(start)
 
   result.push(
-    trailingText.endsWith('\n')
+    trailingText.endsWith('\uFEFF')
       ? trailingText
-      : trailingText + '\n'
+      : trailingText + '\uFEFF'
   );
 
   return result;
