@@ -134,6 +134,8 @@ const ContentEditable: React.FC<ContentEditableProps> = (props) => {
         if (missedCharacters.current && innerRef.current.textContent) {
           console.error('Characters out of sync, attempting to recover');
 
+          // FIXME: This code resets the formatting of the text, it should be fixed
+
           const before = innerRef.current.textContent.slice(0, caretPosition.current-1);
           const after =  innerRef.current.textContent.slice(caretPosition.current-1);
 
