@@ -1129,10 +1129,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@note-rack/editor@^1.0.6":
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/@note-rack/editor/-/editor-1.0.7.tgz#03b551a37a8af7a49d6106ea4b537ac50a39cd14"
-  integrity sha512-inMWXGplCGF42xpgDHRCGPo/wAfUfepcNKQr9vPy1+t4xKiXKb8b+O+NTU6Va4MaFNAfidApeCsEpGrJjoVNrQ==
+"@note-rack/editor@1.0.11":
+  version "1.0.11"
+  resolved "https://registry.yarnpkg.com/@note-rack/editor/-/editor-1.0.11.tgz#fe2cdd43a9d1dac37432597c1636254fd507dfd6"
+  integrity sha512-pMVP3saTbmqNpASl5V+VaZG3eRbS3b2EQr2ArF5wPRnvz4zTBYJUWEar+fSFi4rT9XgFerpnaywtW9oFFu0Wig==
   dependencies:
     dompurify "^3.0.6"
 

@@ -4,7 +4,6 @@ import type BlockState from "../types/BlockState";
  * Add a block to the editor state.
  * @param state The editor state to modify.
  * @param block The block to add.
- * 
  * @param afterId The ID of the block to insert the new block after.
  * 
  * @returns The modified editor state.
