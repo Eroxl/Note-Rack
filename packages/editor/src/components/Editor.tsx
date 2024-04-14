@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 
 import getEditorSelection from '../lib/getEditorSelection';
 import handlePotentialBlockChange from '../lib/handlePotentialBlockChange';
@@ -73,13 +73,18 @@ const Editor: React.FC<EditorProps> = (props) => {
 
   const defaultProps = getDefaultProps();
 
-  const mergedProps = mergeObjects(
-    (plugins || []).reduce(
-      (acc, plugin) => mergeObjects(acc, plugin),
-      props
+  const mergedProps = useMemo(
+    () => (
+      mergeObjects(
+        (plugins || []).reduce(
+          (acc, plugin) => mergeObjects(acc, plugin),
+          props
+        ),
+        defaultProps,
+      ) as EditorProps
     ),
-    defaultProps,
-  ) as EditorProps;
+    [props, plugins, defaultProps]
+  );
 
   const {
     renderers,
@@ -89,39 +94,48 @@ const Editor: React.FC<EditorProps> = (props) => {
     blockWrappers,
   } = mergedProps;
 
-  const editorMutations = Object.fromEntries(
-    Object
-      .entries(mutations)
-      .map(([name, fn]) => {
-        const mutation = (...args: any[]) => {
-          // ~ Handle post mutations
-          if (name === 'editBlock' && richTextKeybinds && editorRef.current) {
-            const didTypeChange = handlePotentialBlockChange(
-              args,
-              blocks,
-              editorMutations,
-              richTextKeybinds,
-              editorRef.current,
-            )
+  const editorMutations = useMemo(
+   () => (
+    Object.fromEntries(
+      Object
+        .entries(mutations)
+        .map(([name, fn]) => {
+          const mutation = (...args: any[]) => {
+            // ~ Handle post mutations
+            if (name === 'editBlock' && richTextKeybinds && editorRef.current) {
+              const didTypeChange = handlePotentialBlockChange(
+                args,
+                blocks,
+                editorMutations,
+                richTextKeybinds,
+                editorRef.current,
+              )
 
-            if (didTypeChange) return;
+              if (didTypeChange) return;
+            }
+
+            setBlocks((blocks) => {
+              // @ts-ignore
+              return fn(blocks, ...args);
+            })
+
+            const mutationsToPerform = postMutations?.[name as keyof typeof mutations] ?? []
+
+            mutationsToPerform?.forEach((mutation) => {
+              // @ts-ignore
+              mutation(blocks, ...args);
+            });
           }
 
-          setBlocks((blocks) => {
-            // @ts-ignore
-            return fn(blocks, ...args);
-          })
-
-          const mutationsToPerform = postMutations?.[name as keyof typeof mutations] ?? []
-
-          mutationsToPerform?.forEach((mutation) => {
-            // @ts-ignore
-            mutation(blocks, ...args);
-          });
-        }
-
-        return [name, mutation];
-      })
+          return [name, mutation];
+        })
+      )
+    ),
+    [
+      blocks,
+      postMutations,
+      richTextKeybinds
+    ],
   ) as InBlockMutations;
 
   useEffect(() => {
