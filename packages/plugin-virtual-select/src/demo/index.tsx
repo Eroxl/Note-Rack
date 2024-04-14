@@ -4,6 +4,15 @@ import { Editor } from "@note-rack/editor";
 import createStyledTextRenderer from "@note-rack/plugin-styled-text";
 import { Selectable } from "react-virtual-selection";
 import createWrapper from "../components/createWrapper";
+import createVirtualSelectPlugin from "../createVirtualSelectPlugin";
+
+const selectedStyle = {
+  backgroundColor: "rgb(125 211 252 / 0.2)",
+}
+
+const virtualSelectPlugin = createVirtualSelectPlugin(
+  selectedStyle,
+)
 
 const Demo: React.FC = () => (
   <Selectable
@@ -18,51 +27,55 @@ const Demo: React.FC = () => (
       overflow: 'hidden',
     }}
     selectionStyle={{
-      backgroundColor: "blue",
+      backgroundColor: "rgb(125 211 252 / 0.8)",
     }}
   >
-    <Editor
-      renderers={{
-        text: createStyledTextRenderer({
-          minHeight: "1.2em",
-          outline: "none",
-          position: "relative",
-          whiteSpace: "pre-wrap",
-          width: "100%",
-          display: "block",
-          padding: "6px",
-          backgroundColor: "rgba(0, 0, 0, 0.1)",
-        }),
+    <div
+      style={{
+        padding: "20px",
       }}
-      startingBlocks={[
-        {
-          id: "1",
-          type: "text",
-          properties: {
-            text: "First Block",
-          }
-        }, 
-        {
-          id: "2",
-          type: "text",
-          properties: {
-            text: "Second Block",
-          }
-        },
-        {
-          id: "3",
-          type: "text",
-          properties: {
-            text: "Third Block",
+    >
+      <Editor
+        renderers={{
+          text: createStyledTextRenderer({
+            minHeight: "1.2em",
+            outline: "none",
+            position: "relative",
+            whiteSpace: "pre-wrap",
+            maxWidth: "100%",
+            display: "block",
+            padding: "6px",
+            backgroundColor: "rgba(0, 0, 0, 0.1)",
+          }),
+        }}
+        startingBlocks={[
+          {
+            id: "1",
+            type: "text",
+            properties: {
+              text: "First Block",
+            }
+          }, 
+          {
+            id: "2",
+            type: "text",
+            properties: {
+              text: "Second Block",
+            }
           },
-        }
-      ]}
-      blockWrappers={[
-        createWrapper({
-          backgroundColor: 'blue'
-        })
-      ]}
-    />
+          {
+            id: "3",
+            type: "text",
+            properties: {
+              text: "Third Block",
+            },
+          }
+        ]}
+        plugins={[
+          virtualSelectPlugin
+        ]}
+      />
+    </div>
   </Selectable>
 );
 
