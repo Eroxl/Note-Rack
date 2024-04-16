@@ -5,7 +5,8 @@ type InlineBlockRenderer<
 > = React.FC<(
   {
     children: React.ReactNode | string,
-  } & Props
+    properties: Props,
+  }
 )>;
 
 export default InlineBlockRenderer;

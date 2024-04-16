@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
 import { Editor } from "@note-rack/editor";
 import blockRegexFactory from "@note-rack/editor/lib/factories/blockRegexFactory";
@@ -11,27 +11,33 @@ import InlineBlockSchema from "../types/InlineBlockSchema";
 const inlineBlocks = {
   bold: {
     acceptsChildren: true,
-    renderer: ({children}) => (
+    renderer: ({ children }) => (
       <strong>{children}</strong>
     ),
   },
   link: {
     acceptsChildren: false,
-    renderer: ({ href }) => {
-      const [a, setA] = useState('a');
+    renderer: ({ properties }) => {
+      const componentRef = useRef<HTMLAnchorElement>(null);
+      const [currentProps, setCurrentProps] = useState<Record<string, unknown> | undefined>(properties);
 
       useEffect(() => {
-        setInterval(() => {
-          setA(`${Math.ceil(Math.random() * 10)}`)
-        }, 500)
-      }, [])
+        setCurrentProps(properties);
+      });
+
+      useEffect(() => {
+        if (!componentRef.current?.parentElement?.dataset) return;
+
+        componentRef.current.parentElement.dataset.props = JSON.stringify(currentProps);
+      }, [currentProps]);
 
       return (
         <a
-          href={href as string}
+          href="https://test.com"
           contentEditable={false}
+          ref={componentRef}
         >
-          {a}
+          {currentProps?.href as string}
         </a>
       )
     }
@@ -65,6 +71,11 @@ const Demo: React.FC = () => (
             },
             {
               type: ['link'],
+              properties: [
+                {
+                  href: 'test.com'
+                }
+              ],
               start: 10,
               end: 10,
             }

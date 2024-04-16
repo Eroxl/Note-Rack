@@ -8,16 +8,12 @@ import type BlockRenderer from '@note-rack/editor/types/BlockRenderer';
 
 import renderInlineBlocks from './helpers/renderInlineBlocks';
 import saveInlineBlocks from './helpers/saveInlineBlocks';
-import InlineBlockRenderer from './types/InlineBlockRenderer';
+import { InlineBlock } from './helpers/renderInlineBlocks';
 import InlineBlockSchema from './types/InlineBlockSchema';
 
 export type TextProperties = {
   text: string;
-  style?: {
-    type: string[],
-    start: number,
-    end: number,
-  }[],
+  style?: InlineBlock[],
 };
 
 /**

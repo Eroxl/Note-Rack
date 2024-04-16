@@ -2,10 +2,11 @@ import React from "react";
 
 import InlineBlockSchema from "../types/InlineBlockSchema";
 
-type InlineBlock = {
+export type InlineBlock = {
   type: string[],
   start: number,
   end: number,
+  properties?: Record<string, unknown>[],
 };
 
 const sortInlineBlocks = (inlineBlocks: InlineBlock[]) => {
@@ -14,6 +15,7 @@ const sortInlineBlocks = (inlineBlocks: InlineBlock[]) => {
 
 const renderInlineBlock = (
   text: string,
+  properties: Record<string, unknown>[],
   type: string[],
   inlineBlockSchema?: {
     [type: string]: InlineBlockSchema
@@ -34,12 +36,20 @@ const renderInlineBlock = (
   return (
     <span
       data-type={type[0]}
+      data-properties={JSON.stringify(properties[0])}
       key={index}
     >
-      <CurrentRenderer>
+      <CurrentRenderer
+        properties={properties[0]}
+      >
         {
           acceptsChildren 
-            ? renderInlineBlock(text, type.slice(1), inlineBlockSchema)
+            ? renderInlineBlock(
+                text,
+                properties.slice(1),
+                type.slice(1),
+                inlineBlockSchema
+              )
             : text
         }
       </CurrentRenderer>
@@ -58,7 +68,12 @@ const renderInlineBlocks = (
   let start = 0;
 
   sortInlineBlocks(inlineBlocks || []).forEach((block, index) => {
-    const { type, start: blockStart, end: blockEnd } = block;
+    const { 
+      type,
+      properties,
+      start: blockStart,
+      end: blockEnd
+    } = block;
 
     const preBlockText = text.slice(start, blockStart);
 
@@ -69,7 +84,7 @@ const renderInlineBlocks = (
     }
 
     result.push(
-      renderInlineBlock(blockText, type, inlineBlocksSchema, index)
+      renderInlineBlock(blockText, properties || [], type, inlineBlocksSchema, index)
     )
 
     start = blockEnd;
