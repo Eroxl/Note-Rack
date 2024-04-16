@@ -1,6 +1,6 @@
 import React from "react";
 
-import type InlineBlockRenderer from "../types/InlineBlockRenderer";
+import InlineBlockSchema from "../types/InlineBlockSchema";
 
 type InlineBlock = {
   type: string[],
@@ -15,16 +15,21 @@ const sortInlineBlocks = (inlineBlocks: InlineBlock[]) => {
 const renderInlineBlock = (
   text: string,
   type: string[],
-  renderers?: {
-    [type: string]: InlineBlockRenderer
+  inlineBlockSchema?: {
+    [type: string]: InlineBlockSchema
   },
   index: number = 0,
 ) => {
   if (!type[0]) return text;
 
-  const CurrentRenderer = renderers?.[type[0]];
+  const schema = inlineBlockSchema?.[type[0]];
   
-  if (!CurrentRenderer) return text;
+  if (!schema) return text;
+
+  const {
+    renderer: CurrentRenderer,
+    acceptsChildren
+  } = schema;
 
   return (
     <span
@@ -32,7 +37,11 @@ const renderInlineBlock = (
       key={index}
     >
       <CurrentRenderer>
-        {renderInlineBlock(text, type.slice(1), renderers)}
+        {
+          acceptsChildren 
+            ? renderInlineBlock(text, type.slice(1), inlineBlockSchema)
+            : text
+        }
       </CurrentRenderer>
     </span>
   )
@@ -41,10 +50,9 @@ const renderInlineBlock = (
 const renderInlineBlocks = (
   text: string,
   inlineBlocks?: InlineBlock[],
-  renderers?: {
-    [type: string]: InlineBlockRenderer
+  inlineBlocksSchema?: {
+    [type: string]: InlineBlockSchema
   },
-  endWithNewline: boolean = true,
 ) => {
   let result: React.ReactNode[] = [];
   let start = 0;
@@ -61,7 +69,7 @@ const renderInlineBlocks = (
     }
 
     result.push(
-      renderInlineBlock(blockText, type, renderers, index)
+      renderInlineBlock(blockText, type, inlineBlocksSchema, index)
     )
 
     start = blockEnd;

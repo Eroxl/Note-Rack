@@ -20,7 +20,11 @@ const inlineBlockRegexFactory = (
       fullMatchWithoutBind,
     ] = searchResult;
 
-    if (!fullMatch || !bind || !fullMatchWithoutBind) return;
+    if (
+      fullMatch === undefined
+      || bind === undefined
+      || fullMatchWithoutBind === undefined
+    ) return;
 
     const before = block.properties.text.slice(0, searchResult.index);
     const after = block.properties.text.slice(searchResult.index + fullMatch.length - 1);

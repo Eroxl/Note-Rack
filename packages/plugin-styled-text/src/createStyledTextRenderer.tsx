@@ -9,6 +9,7 @@ import type BlockRenderer from '@note-rack/editor/types/BlockRenderer';
 import renderInlineBlocks from './helpers/renderInlineBlocks';
 import saveInlineBlocks from './helpers/saveInlineBlocks';
 import InlineBlockRenderer from './types/InlineBlockRenderer';
+import InlineBlockSchema from './types/InlineBlockSchema';
 
 export type TextProperties = {
   text: string;
@@ -68,7 +69,7 @@ const createStyledTextRenderer = (
   style?: React.CSSProperties,
   className?: string,
   inlineBlocks?: {
-    [type: string]: InlineBlockRenderer,
+    [type: string]: InlineBlockSchema,
   }
 ) => {
   const Text: BlockRenderer<TextProperties> = (props) => {
