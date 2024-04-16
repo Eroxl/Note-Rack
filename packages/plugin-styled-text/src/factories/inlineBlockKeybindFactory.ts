@@ -5,8 +5,12 @@ import type KeybindHandler from "@note-rack/editor/types/KeybindHandler";
 import type { Interval } from "../helpers/mergeIntervals";
 import mergeIntervals from '../helpers/mergeIntervals';
 import optionalMergeIntervalValues from "../helpers/intervalMergers/optionalMergeIntervalValues";
+import splitOnNonNestables from '../helpers/splitOnNonNestables';
 
-const inlineBlockKeybindFactory = (type: string) => {
+const inlineBlockKeybindFactory = (
+  type: string,
+  nestableTypes: string[] = [],
+) => {
   const handler: KeybindHandler['handler'] = (mutations, state, selection, event) => {
     if (!selection?.length || !selection.blockId) return;
 
@@ -29,8 +33,16 @@ const inlineBlockKeybindFactory = (type: string) => {
           interval.end <= selection.offset + selection.length
         )
       ))
-      .filter((interval) => interval.type?.includes(type))
+      .filter((interval) => (
+        interval.type?.includes(type)
+        || !interval.type?.every((intervalType) => (nestableTypes.includes(intervalType)))
+      ))
       .reduce((acc, interval) => {
+        // ~ if the interval is non-nestable ignore it
+        if (interval.type?.includes(type)) {
+          return acc + interval.end - interval.start;
+        }
+
         // ~ if the interval is completely within the selection
         if (interval.start >= selection.offset && interval.end <= selection.offset + selection.length) {
           return acc + interval.end - interval.start;
@@ -47,17 +59,23 @@ const inlineBlockKeybindFactory = (type: string) => {
 
     const isAlreadyStyled = lengthWithinSelection === selection.length;
 
-    const updatedStyle = mergeIntervals(
-      [
-        ...(style as Interval[]),
-        {
-          start: selection.offset,
-          end: selection.offset + selection.length,
-          type: isAlreadyStyled ? [`-${type}`] : [type],
-        }
-      ],
-      optionalMergeIntervalValues
-    );
+    const updatedStyle = splitOnNonNestables(
+      selection.offset,
+      selection.offset + selection.length,
+      style as (Interval & { type: string[] })[],
+      nestableTypes
+    ).reduce((acc, interval) => {
+      interval.type = isAlreadyStyled ? [`-${type}`] : [type];
+      
+      acc.push(
+        interval
+      )
+
+      return mergeIntervals(
+        acc,
+        optionalMergeIntervalValues
+      )
+    }, style as Interval[]);
 
     mutations.editBlock(selection.blockId, {
       style: updatedStyle,

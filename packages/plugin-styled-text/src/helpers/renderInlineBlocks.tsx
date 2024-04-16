@@ -1,6 +1,7 @@
 import React from "react";
 
 import InlineBlockSchema from "../types/InlineBlockSchema";
+import InlineBlockRenderer from "../types/InlineBlockRenderer";
 
 export type InlineBlock = {
   type: string[],
@@ -17,21 +18,16 @@ const renderInlineBlock = (
   text: string,
   properties: Record<string, unknown>[],
   type: string[],
-  inlineBlockSchema?: {
-    [type: string]: InlineBlockSchema
+  renderers?: {
+    [type: string]: InlineBlockRenderer<Record<string, unknown>>
   },
   index: number = 0,
 ) => {
   if (!type[0]) return text;
 
-  const schema = inlineBlockSchema?.[type[0]];
+  const Rendererer = renderers?.[type[0]];
   
-  if (!schema) return text;
-
-  const {
-    renderer: CurrentRenderer,
-    acceptsChildren
-  } = schema;
+  if (!Rendererer) return text;
 
   return (
     <span
@@ -39,20 +35,18 @@ const renderInlineBlock = (
       data-properties={JSON.stringify(properties[0])}
       key={index}
     >
-      <CurrentRenderer
+      <Rendererer
         properties={properties[0]}
       >
         {
-          acceptsChildren 
-            ? renderInlineBlock(
-                text,
-                properties.slice(1),
-                type.slice(1),
-                inlineBlockSchema
-              )
-            : text
+          renderInlineBlock(
+            text,
+            properties.slice(1),
+            type.slice(1),
+            renderers
+          )
         }
-      </CurrentRenderer>
+      </Rendererer>
     </span>
   )
 }
@@ -60,8 +54,8 @@ const renderInlineBlock = (
 const renderInlineBlocks = (
   text: string,
   inlineBlocks?: InlineBlock[],
-  inlineBlocksSchema?: {
-    [type: string]: InlineBlockSchema
+  rendererers?: {
+    [type: string]: InlineBlockRenderer<Record<string, unknown>>
   },
 ) => {
   let result: React.ReactNode[] = [];
@@ -84,7 +78,7 @@ const renderInlineBlocks = (
     }
 
     result.push(
-      renderInlineBlock(blockText, properties || [], type, inlineBlocksSchema, index)
+      renderInlineBlock(blockText, properties || [], type, rendererers, index)
     )
 
     start = blockEnd;

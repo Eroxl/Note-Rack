@@ -6,6 +6,7 @@ import type { Interval } from "../helpers/mergeIntervals";
 
 const inlineBlockRegexFactory = (
   type: string,
+  nonNestableTypes: string[] = [],
 ) => (
   ((mutations, block, searchResult, selection) => {
     if (

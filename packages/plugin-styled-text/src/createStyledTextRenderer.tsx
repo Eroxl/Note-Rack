@@ -10,6 +10,7 @@ import renderInlineBlocks from './helpers/renderInlineBlocks';
 import saveInlineBlocks from './helpers/saveInlineBlocks';
 import { InlineBlock } from './helpers/renderInlineBlocks';
 import InlineBlockSchema from './types/InlineBlockSchema';
+import InlineBlockRenderer from './types/InlineBlockRenderer';
 
 export type TextProperties = {
   text: string;
@@ -65,7 +66,7 @@ const createStyledTextRenderer = (
   style?: React.CSSProperties,
   className?: string,
   inlineBlocks?: {
-    [type: string]: InlineBlockSchema,
+    [type: string]: InlineBlockRenderer<Record<string, unknown>>,
   }
 ) => {
   const Text: BlockRenderer<TextProperties> = (props) => {
