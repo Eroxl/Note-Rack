@@ -10,6 +10,7 @@ import splitOnNonNestables from '../helpers/splitOnNonNestables';
 const inlineBlockKeybindFactory = (
   type: string,
   nestableTypes: string[] = [],
+  returnIfNonNestable = false,
 ) => {
   const handler: KeybindHandler['handler'] = (mutations, state, selection, event) => {
     if (!selection?.length || !selection.blockId) return;
@@ -21,6 +22,18 @@ const inlineBlockKeybindFactory = (
     const style = (block.properties.style || []) as (Interval & { type?: string[] })[]
 
     if (!Array.isArray(style)) return;
+
+    if (returnIfNonNestable) {
+      const newBlockContainsNonNestables = (block.properties.style as (Interval & { type: string[ ]})[]).some(
+        (interval) => (
+          interval.type.some((intervalType) => !nestableTypes.includes(intervalType))
+        )
+      )
+
+      event.preventDefault();
+
+      if (newBlockContainsNonNestables) return;
+    }
 
     const lengthWithinSelection = style
       .filter((interval) => (

@@ -3,10 +3,12 @@ import type RichTextKeybindHandler from "@note-rack/editor/types/RichTextKeybind
 
 import mergeIntervals from "../helpers/mergeIntervals";
 import type { Interval } from "../helpers/mergeIntervals";
+import splitOnNonNestables from "../helpers/splitOnNonNestables";
 
 const inlineBlockRegexFactory = (
   type: string,
-  nonNestableTypes: string[] = [],
+  nestableTypes: string[] = [],
+  returnIfNonNestable = false,
 ) => (
   ((mutations, block, searchResult, selection) => {
     if (
@@ -30,22 +32,38 @@ const inlineBlockRegexFactory = (
     const before = block.properties.text.slice(0, searchResult.index);
     const after = block.properties.text.slice(searchResult.index + fullMatch.length - 1);
 
+    if (returnIfNonNestable) {
+      const newBlockContainsNonNestables = (block.properties.style as (Interval & { type: string[ ]})[]).some(
+        (interval) => (
+          interval.type.some((intervalType) => !nestableTypes.includes(intervalType))
+        )
+      )
+
+      if (newBlockContainsNonNestables) return;
+    }
+
     const text = `${before}${fullMatchWithoutBind}${after}`;
 
-    const newStyle = {
-      start: searchResult.index,
-      end: searchResult.index + fullMatch.length - (bind.length * 2),
-      type: [type],
-    };
+    const updatedStyle = splitOnNonNestables(
+      searchResult.index,
+      searchResult.index + fullMatch.length - (bind.length * 2),
+      block.properties.style as (Interval & { type: string[] })[],
+      nestableTypes
+    ).reduce((acc, interval) => {
+      interval.type = [type];
+
+      acc.push(
+        interval
+      )
+
+      return mergeIntervals(acc)
+    }, block.properties.style as Interval[]);
 
     mutations.editBlock(
       block.id,
       {
         text,
-        style: mergeIntervals([
-          newStyle,
-          ...((block.properties.style as Interval[]) || []),
-        ])
+        style: updatedStyle,
       },
     );
 
