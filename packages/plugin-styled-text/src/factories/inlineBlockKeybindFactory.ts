@@ -75,10 +75,11 @@ const inlineBlockKeybindFactory = (
     const updatedStyle = splitOnNonNestables(
       selection.offset,
       selection.offset + selection.length,
-      style as (Interval & { type: string[] })[],
+      style as (Interval & { type: string[], properties: (Record<string, unknown> | undefined)[] })[],
       nestableTypes
     ).reduce((acc, interval) => {
       interval.type = isAlreadyStyled ? [`-${type}`] : [type];
+      interval.properties = [];
       
       acc.push(
         interval

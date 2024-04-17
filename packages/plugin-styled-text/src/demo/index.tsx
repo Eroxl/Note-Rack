@@ -82,11 +82,11 @@ const Demo: React.FC = () => (
     ]}
     keybinds={[
       {
-        handler: inlineBlockKeybindFactory('bold', ['italic', 'bold']),
+        handler: inlineBlockKeybindFactory('bold', ['italic', 'bold', 'link']),
         keybind: 'Meta+b',
       },
       {
-        handler: inlineBlockKeybindFactory('italic', ['italic', 'bold']),
+        handler: inlineBlockKeybindFactory('italic', ['italic', 'bold', 'link']),
         keybind: 'Meta+i',
       }
     ]}
@@ -99,19 +99,19 @@ const Demo: React.FC = () => (
         regex: /(\*\*)(.*?)\1/g,
         handler: inlineBlockRegexFactory(
           'bold',
-          ['italic', 'bold']
+          ['italic', 'bold', 'link']
         ),
       },
       {
         regex: /(\*)(.*?)\1/g,
         handler: inlineBlockRegexFactory(
           'italic',
-          ['italic', 'bold']
+          ['italic', 'bold', 'link']
         )
       },
       {
         regex: /()(https?:\/\/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b[-a-zA-Z0-9()@:%_\+.~#?&\/=]*) \1/g,
-        handler: inlineBlockRegexFactory('link', [], true),
+        handler: inlineBlockRegexFactory('link', ['bold', 'italic']),
       }
     ]}
   />

@@ -1,9 +1,9 @@
 import { Interval } from "./mergeIntervals";
 
-const splitOnNonNestables = (
+const splitOnNonNestables = <T extends (Interval & { type: string[] })>(
   start: number,
   end: number,
-  styles: (Interval & { type: string[] })[],
+  styles: T[],
   nestables: string[] = [],
 ) => {
   const sortedStyles = styles.sort((a, b) => a.start - b.start);
@@ -32,7 +32,7 @@ const splitOnNonNestables = (
 
   outputIntervals[outputIntervals.length - 1].end = end;
 
-  return outputIntervals as typeof styles;
+  return outputIntervals as T[]
 };
 
 export default splitOnNonNestables;

@@ -44,13 +44,24 @@ const inlineBlockRegexFactory = (
 
     const text = `${before}${fullMatchWithoutBind}${after}`;
 
+    (block.properties.style as Interval[])?.forEach((style) => {
+      if (
+        style.start < searchResult.index ||
+        style.end > searchResult.index + fullMatch.length - (bind.length * 2)
+      ) return;
+
+      style.start -= bind.length
+      style.end -= bind.length;
+    })
+
     const updatedStyle = splitOnNonNestables(
       searchResult.index,
       searchResult.index + fullMatch.length - (bind.length * 2),
-      block.properties.style as (Interval & { type: string[] })[],
+      block.properties.style as (Interval & { type: string[], properties: (Record<string, unknown> | undefined)[] })[],
       nestableTypes
     ).reduce((acc, interval) => {
       interval.type = [type];
+      interval.properties = [undefined];
 
       acc.push(
         interval
