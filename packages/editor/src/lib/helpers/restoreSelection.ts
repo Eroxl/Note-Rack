@@ -1,5 +1,6 @@
 import type SelectionState from "../../types/SelectionState";
 import getBlockById from "./getBlockByID";
+import { checkTreeForContentEditable, getFirstTextNode } from "./focusElement";
 
 const restoreSelection = (selectionState: SelectionState) => {
   const { blockId } = selectionState;
@@ -27,8 +28,14 @@ const restoreSelection = (selectionState: SelectionState) => {
 
   let offset = 0;
 
+  let lastSelectableElement: HTMLElement | undefined;
+
   while (iterator.nextNode()) {
     const node = iterator.referenceNode;
+
+    if ((node as HTMLElement).isContentEditable) {
+      lastSelectableElement = node as HTMLElement;
+    }
 
     const length = node.nodeName === '#text'
       ? node.textContent?.length || 0
@@ -45,7 +52,11 @@ const restoreSelection = (selectionState: SelectionState) => {
         0
       )
 
-      range.setStart(node, index);
+      if (checkTreeForContentEditable(getFirstTextNode(node as HTMLElement) as HTMLElement)) {
+        range.setStart(node, index);
+      } else if (lastSelectableElement) {
+        range.setStart(lastSelectableElement, lastSelectableElement.textContent?.length || 0);
+      }
     }
 
     if (offset >= selectionState.offset + selectionState.length - 1 && range.endContainer === range.startContainer) {
@@ -57,7 +68,12 @@ const restoreSelection = (selectionState: SelectionState) => {
         0
       )
 
-      range.setEnd(node, index);
+      if (checkTreeForContentEditable(getFirstTextNode(node as HTMLElement) as HTMLElement)) {
+        range.setEnd(node, index);
+      } else if(lastSelectableElement) {
+        range.setEnd(lastSelectableElement, lastSelectableElement.textContent?.length || 0);
+      }
+
       break;
     }
   }

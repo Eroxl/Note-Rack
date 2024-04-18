@@ -1129,19 +1129,19 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@note-rack/editor@1.0.11":
-  version "1.0.11"
-  resolved "https://registry.yarnpkg.com/@note-rack/editor/-/editor-1.0.11.tgz#fe2cdd43a9d1dac37432597c1636254fd507dfd6"
-  integrity sha512-pMVP3saTbmqNpASl5V+VaZG3eRbS3b2EQr2ArF5wPRnvz4zTBYJUWEar+fSFi4rT9XgFerpnaywtW9oFFu0Wig==
+"@note-rack/editor@^1.0.13":
+  version "1.0.13"
+  resolved "https://registry.yarnpkg.com/@note-rack/editor/-/editor-1.0.13.tgz#bb7b27bccbf5d03697eb42bab06d46f305170927"
+  integrity sha512-P00adpYR1boFyTwA6qa+mLYsFy4V2PFIAgPNwTKaLV2rtDfa2JpMKUc9Qt7oqDGq2f++17WDoHRn2QQAT80M+g==
   dependencies:
     dompurify "^3.0.6"
 
-"@note-rack/plugin-styled-text@^1.0.6":
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/@note-rack/plugin-styled-text/-/plugin-styled-text-1.0.6.tgz#bda9a9af6c1cefb7e0998da962c885cd67f1be4f"
-  integrity sha512-cxiTNc1c9RPqAZxeazX8qTASiMgQZlAAyGJEUUieElilqrpYzjlHvjEMb0rI2hlZt/5imym2KpEtThxpULo9Pw==
+"@note-rack/plugin-styled-text@^1.0.9":
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/@note-rack/plugin-styled-text/-/plugin-styled-text-1.0.9.tgz#d5ad7e0722158527093e3af7898e5a3104e5590c"
+  integrity sha512-GdlqaLyLH5lsnM/bqKN54AoQMDQLDMduW+hIdWq7DqqhPljnWDVO67oeAFVkFAmXy06F77X2Ke4HkVPgFCm0VA==
   dependencies:
-    "@note-rack/editor" "1.0.11"
+    "@note-rack/editor" "^1.0.13"
 
 "@npmcli/arborist@^4.0.4":
   version "4.3.1"

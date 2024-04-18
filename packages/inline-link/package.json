@@ -39,13 +39,13 @@
     "webpack-dev-server": "^4.15.1"
   },
   "dependencies": {
-    "@note-rack/editor": "1.0.11",
-    "@note-rack/plugin-styled-text": "^1.0.6"
+    "@note-rack/editor": "^1.0.13",
+    "@note-rack/plugin-styled-text": "^1.0.9"
   },
   "peerDependencies": {
     "@note-rack/editor": "^1.0.6",
+    "@note-rack/plugin-styled-text": "^1.0.6",
     "react": "<18.0.0",
-    "react-dom": "<18.0.0",
-    "@note-rack/plugin-styled-text": "^1.0.6"
+    "react-dom": "<18.0.0"
   }
 }

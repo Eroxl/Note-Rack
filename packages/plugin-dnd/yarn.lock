@@ -1143,6 +1143,13 @@
   dependencies:
     dompurify "^3.0.6"
 
+"@note-rack/editor@^1.0.13":
+  version "1.0.13"
+  resolved "https://registry.yarnpkg.com/@note-rack/editor/-/editor-1.0.13.tgz#bb7b27bccbf5d03697eb42bab06d46f305170927"
+  integrity sha512-P00adpYR1boFyTwA6qa+mLYsFy4V2PFIAgPNwTKaLV2rtDfa2JpMKUc9Qt7oqDGq2f++17WDoHRn2QQAT80M+g==
+  dependencies:
+    dompurify "^3.0.6"
+
 "@note-rack/plugin-styled-text@^1.0.6":
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/@note-rack/plugin-styled-text/-/plugin-styled-text-1.0.6.tgz#bda9a9af6c1cefb7e0998da962c885cd67f1be4f"

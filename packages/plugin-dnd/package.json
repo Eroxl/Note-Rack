@@ -1,7 +1,7 @@
 {
   "name": "@note-rack/plugin-dnd",
   "description": "A plugin for Note Rack that allows you to move blocks around by dragging and dropping them.",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "module": "dist/index.js",
   "umd": "dist/index.umd.js",
   "main": "dist/index.js",
@@ -42,7 +42,7 @@
     "webpack-dev-server": "^4.15.1"
   },
   "dependencies": {
-    "@note-rack/editor": "1.0.11"
+    "@note-rack/editor": "^1.0.13"
   },
   "peerDependencies": {
     "@note-rack/editor": "^1.0.6",

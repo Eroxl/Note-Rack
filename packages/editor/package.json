@@ -1,7 +1,7 @@
 {
   "name": "@note-rack/editor",
   "description": "A rich text editor for Note Rack",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "module": "dist/index.js",
   "umd": "dist/index.umd.js",
   "main": "dist/index.js",

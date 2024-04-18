@@ -1,7 +1,7 @@
 {
   "name": "@note-rack/plugin-math-latex",
   "description": "The math plugin for Note Rack that uses KaTeX to render LaTeX",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "module": "dist/index.js",
   "umd": "dist/index.umd.js",
   "main": "dist/index.js",
@@ -39,7 +39,7 @@
     "webpack-dev-server": "^4.15.1"
   },
   "dependencies": {
-    "@note-rack/editor": "1.0.11",
+    "@note-rack/editor": "1.0.12",
     "@types/katex": "^0.16.7",
     "katex": "^0.16.9"
   },

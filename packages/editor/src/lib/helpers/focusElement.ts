@@ -1,4 +1,4 @@
-const getFirstTextNode = (element: HTMLElement): Node | null => {
+export const getFirstTextNode = (element: HTMLElement): Node | null => {
   if (element.nodeType === Node.TEXT_NODE) return element;
 
   for (let i = 0; i < element.childNodes.length; i += 1) {
@@ -9,6 +9,17 @@ const getFirstTextNode = (element: HTMLElement): Node | null => {
   }
 
   return null;
+}
+
+export const checkTreeForContentEditable = (element: HTMLElement): boolean => {
+  if (element.isContentEditable) return true;
+  else if (
+    (element as Node) === document 
+    || !element.parentElement
+    || element.isContentEditable === false
+  ) return false;
+
+  return checkTreeForContentEditable(element.parentElement);
 }
 
 /**
@@ -52,9 +63,15 @@ const focusElement = (element: HTMLElement, offset: number = 0) => {
     },
   );
 
+  let lastSelectableElement: HTMLElement | undefined;
+
   while (iterator.nextNode()) {
     const node = iterator.referenceNode;
 
+    if (checkTreeForContentEditable(getFirstTextNode(node as HTMLElement) as HTMLElement)) {
+      lastSelectableElement = node as HTMLElement;
+    }
+    
     const length = node.nodeName === '#text'
       ? node.textContent?.length || 0
       : 1;
@@ -62,6 +79,11 @@ const focusElement = (element: HTMLElement, offset: number = 0) => {
     offset -= length;
 
     if (offset < 0) {
+      if (!checkTreeForContentEditable(node as HTMLElement) && lastSelectableElement) {
+        range.setStart(lastSelectableElement, lastSelectableElement.textContent?.length || 0);
+        break
+      }
+
       const index = Math.max(Math.min(offset + length, length), 0);
 
       range.setStart(node, index);
@@ -70,11 +92,18 @@ const focusElement = (element: HTMLElement, offset: number = 0) => {
   }
 
   if (offset > 0) {
-    range.setStart(iterator.referenceNode, iterator.referenceNode.textContent?.length || 0);
+    if (checkTreeForContentEditable(getFirstTextNode(iterator.referenceNode as HTMLElement) as HTMLElement)) {
+      range.setStart(iterator.referenceNode, iterator.referenceNode.textContent?.length || 0);
+    } else if (lastSelectableElement) {
+      range.setStart(lastSelectableElement, lastSelectableElement.textContent?.length || 0);
+    }
   }
-
-  if (offset === 0 && range.startContainer === document) {
-    range.setStart(iterator.referenceNode, 0);
+  else if (offset === 0 && range.startContainer === document) {
+    if (checkTreeForContentEditable(getFirstTextNode(iterator.referenceNode as HTMLElement) as HTMLElement)) {
+      range.setStart(iterator.referenceNode, 0);
+    } else if (lastSelectableElement) {
+      range.setStart(lastSelectableElement, lastSelectableElement.textContent?.length || 0)
+    }
   }
 
   selection.removeAllRanges();
