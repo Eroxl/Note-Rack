@@ -26,8 +26,13 @@ export const checkTreeForContentEditable = (element: HTMLElement): boolean => {
  * Focuses an element
  * @param element The element to focus
  * @param offset The offset to move the cursor to
+ * @param length The length between the start of the cursor and the end 
  */
-const focusElement = (element: HTMLElement, offset: number = 0) => {
+const focusElement = (
+  element: HTMLElement,
+  offset: number = 0,
+  length: number = 0,
+) => {
   element.focus();
 
   // ~ Move the cursor to the end of the block unless the only text is a newline
@@ -63,51 +68,81 @@ const focusElement = (element: HTMLElement, offset: number = 0) => {
     },
   );
 
+  let currentOffset = 0;
+
   let lastSelectableElement: HTMLElement | undefined;
 
   while (iterator.nextNode()) {
     const node = iterator.referenceNode;
 
-    if (checkTreeForContentEditable(getFirstTextNode(node as HTMLElement) as HTMLElement)) {
+    if ((node as HTMLElement).isContentEditable) {
       lastSelectableElement = node as HTMLElement;
     }
-    
-    const length = node.nodeName === '#text'
+
+    const nodeLength = node.nodeName === '#text'
       ? node.textContent?.length || 0
       : 1;
 
-    offset -= length;
+    currentOffset += nodeLength;
 
-    if (offset < 0) {
-      if (!checkTreeForContentEditable(node as HTMLElement) && lastSelectableElement) {
+    if (currentOffset >= offset && range.startContainer === document) {
+      const index = Math.max(
+        Math.min(
+          offset - (currentOffset - nodeLength),
+          nodeLength
+        ),
+        0
+      )
+
+      const isCollapsed = length === 0;
+      const isNodeEditable = checkTreeForContentEditable(node as HTMLElement);
+
+      if (
+        !isCollapsed
+        || isNodeEditable
+      ) {
+        range.setStart(node, index);
+      } else if (lastSelectableElement) {
         range.setStart(lastSelectableElement, lastSelectableElement.textContent?.length || 0);
-        break
       }
 
-      const index = Math.max(Math.min(offset + length, length), 0);
+      if (isCollapsed) {
+        break;
+      }
+    }
 
-      range.setStart(node, index);
+    if (
+      currentOffset >= offset + length - 1
+      && range.endContainer === range.startContainer
+    ) {
+      const index = Math.max(
+        Math.min(
+          offset + length - (currentOffset - nodeLength),
+          nodeLength
+        ),
+        0
+      )
+
+      const isCollapsed = length === 0;
+      const isNodeEditable = checkTreeForContentEditable(node as HTMLElement);
+
+      if (
+        !isCollapsed
+        || isNodeEditable
+      ) {
+        range.setEnd(node, index);
+      } else if(lastSelectableElement) {
+        range.setEnd(lastSelectableElement, lastSelectableElement.textContent?.length || 0);
+      }
+
       break;
-    }
-  }
-
-  if (offset > 0) {
-    if (checkTreeForContentEditable(getFirstTextNode(iterator.referenceNode as HTMLElement) as HTMLElement)) {
-      range.setStart(iterator.referenceNode, iterator.referenceNode.textContent?.length || 0);
-    } else if (lastSelectableElement) {
-      range.setStart(lastSelectableElement, lastSelectableElement.textContent?.length || 0);
-    }
-  }
-  else if (offset === 0 && range.startContainer === document) {
-    if (checkTreeForContentEditable(getFirstTextNode(iterator.referenceNode as HTMLElement) as HTMLElement)) {
-      range.setStart(iterator.referenceNode, 0);
-    } else if (lastSelectableElement) {
-      range.setStart(lastSelectableElement, lastSelectableElement.textContent?.length || 0)
     }
   }
 
   selection.removeAllRanges();
   selection.addRange(range);
+
+  element.style.caretColor = 'auto';
 };
 
 export default focusElement;

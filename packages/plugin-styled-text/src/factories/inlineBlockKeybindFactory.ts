@@ -35,7 +35,7 @@ const inlineBlockKeybindFactory = (
       if (newBlockContainsNonNestables) return;
     }
 
-    const lengthWithinSelection = style
+    const stylesWithinSelection = style
       .filter((interval) => (
         (
           interval.start >= selection.offset &&
@@ -46,31 +46,13 @@ const inlineBlockKeybindFactory = (
           interval.end <= selection.offset + selection.length
         )
       ))
-      .filter((interval) => (
+
+    const isAlreadyStyled = stylesWithinSelection.length > 0
+      ? stylesWithinSelection.every((interval) => (
         interval.type?.includes(type)
-        || !interval.type?.every((intervalType) => (nestableTypes.includes(intervalType)))
       ))
-      .reduce((acc, interval) => {
-        // ~ if the interval is non-nestable ignore it
-        if (interval.type?.includes(type)) {
-          return acc + interval.end - interval.start;
-        }
+      : false
 
-        // ~ if the interval is completely within the selection
-        if (interval.start >= selection.offset && interval.end <= selection.offset + selection.length) {
-          return acc + interval.end - interval.start;
-        }
-
-        // ~ if the interval starts before the selection
-        if (interval.start < selection.offset) {
-          return acc + interval.end - selection.offset;
-        }
-
-        // ~ if the interval ends after the selection
-        return acc + selection.offset + selection.length - interval.start;
-      }, 0)
-
-    const isAlreadyStyled = lengthWithinSelection === selection.length;
 
     const updatedStyle = splitOnNonNestables(
       selection.offset,
@@ -79,8 +61,8 @@ const inlineBlockKeybindFactory = (
       nestableTypes
     ).reduce((acc, interval) => {
       interval.type = isAlreadyStyled ? [`-${type}`] : [type];
-      interval.properties = [];
-      
+      interval.properties = isAlreadyStyled ? [`-${undefined}`] as any[] : [undefined];
+
       acc.push(
         interval
       )

@@ -31,18 +31,12 @@ const optionalMergeIntervalValues: ValueMerger = (a, b) => {
 
     newInterval[key] = [
       ...intervalToMergeValue.filter((value) => (
-        value.toString() !== value 
-        || (
-          !currentIntervalValue.includes(`-${value}`)
-          && !value.startsWith('-')
-        )
+        !currentIntervalValue.includes(`-${value}`)
+        && !`${value}`.startsWith('-')
       )),
       ...currentIntervalValue.filter((value) => (
-        value.toString() !== value
-        || (
-          !intervalToMergeValue.includes(`-${value}`)
-          && !value.startsWith('-')
-        )
+        !intervalToMergeValue.includes(`-${value}`)
+        && !`${value}`.startsWith('-')
       )),
     ]
     return;
