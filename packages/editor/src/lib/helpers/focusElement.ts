@@ -33,7 +33,11 @@ const focusElement = (
   offset: number = 0,
   length: number = 0,
 ) => {
+  const isCollapsed = length === 0;
+
   element.focus();
+
+  console.log(`Moved Caret: \n- Element:`,  element, `\n- Offset: ${offset}\n- Length: ${length}`);
 
   // ~ Move the cursor to the end of the block unless the only text is a newline
   if (element.textContent === '\n' || element.textContent === '') {
@@ -75,6 +79,8 @@ const focusElement = (
   while (iterator.nextNode()) {
     const node = iterator.referenceNode;
 
+    console.log(node);
+
     if ((node as HTMLElement).isContentEditable) {
       lastSelectableElement = node as HTMLElement;
     }
@@ -94,7 +100,6 @@ const focusElement = (
         0
       )
 
-      const isCollapsed = length === 0;
       const isNodeEditable = checkTreeForContentEditable(node as HTMLElement);
 
       if (
@@ -112,7 +117,7 @@ const focusElement = (
     }
 
     if (
-      currentOffset >= offset + length - 1
+      currentOffset >= offset + length
       && range.endContainer === range.startContainer
     ) {
       const index = Math.max(
@@ -123,7 +128,6 @@ const focusElement = (
         0
       )
 
-      const isCollapsed = length === 0;
       const isNodeEditable = checkTreeForContentEditable(node as HTMLElement);
 
       if (
@@ -141,7 +145,7 @@ const focusElement = (
 
   selection.removeAllRanges();
   selection.addRange(range);
-
+  
   element.style.caretColor = 'auto';
 };
 
