@@ -91,6 +91,8 @@ const focusElement = (
 
     currentOffset += nodeLength;
 
+    const isNodeEditable = checkTreeForContentEditable(node as HTMLElement);
+
     if (currentOffset >= offset && range.startContainer === document) {
       const index = Math.max(
         Math.min(
@@ -99,8 +101,6 @@ const focusElement = (
         ),
         0
       )
-
-      const isNodeEditable = checkTreeForContentEditable(node as HTMLElement);
 
       if (
         !isCollapsed
@@ -116,8 +116,10 @@ const focusElement = (
       }
     }
 
+    const finalOffset = isNodeEditable ? 1 : 0;
+
     if (
-      currentOffset >= offset + length
+      currentOffset >= offset + length - finalOffset
       && range.endContainer === range.startContainer
     ) {
       const index = Math.max(
@@ -127,8 +129,6 @@ const focusElement = (
         ),
         0
       )
-
-      const isNodeEditable = checkTreeForContentEditable(node as HTMLElement);
 
       if (
         !isCollapsed
