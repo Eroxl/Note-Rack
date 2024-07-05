@@ -15,30 +15,6 @@ const inlineBlocks: Record<string, InlineBlockRenderer<Record<string, unknown>>>
   italic: ({children}) => (
     <i>{children}</i>
   ),
-  link: ({ properties, children }) => {
-    const componentRef = useRef<HTMLAnchorElement>(null);
-    const [currentProps, setCurrentProps] = useState<Record<string, unknown> | undefined>(properties);
-
-    useEffect(() => {
-      setCurrentProps(properties);
-    });
-
-    useEffect(() => {
-      if (!componentRef.current?.parentElement?.dataset) return;
-
-      componentRef.current.parentElement.dataset.props = JSON.stringify(currentProps);
-    }, [currentProps]);
-
-    return (
-      <a
-        contentEditable={false}
-        ref={componentRef}
-        href={currentProps?.href as string}
-      >
-        {children}
-      </a>
-    )
-  }
 };
 
 const Demo: React.FC = () => (
@@ -59,34 +35,24 @@ const Demo: React.FC = () => (
         id: "2",
         type: "text",
         properties: {
-          text: 'Bold text test.com and more text',
+          text: 'Bold text and more text',
           style: [
             {
               type: ['bold'],
               start: 0,
               end: 4,
             },
-            {
-              type: ['link'],
-              properties: [
-                {
-                  href: 'https://test.com'
-                }
-              ],
-              start: 10,
-              end: 18,
-            }
           ]
         }
       },
     ]}
     keybinds={[
       {
-        handler: inlineBlockKeybindFactory('bold', ['italic', 'bold', 'link']),
+        handler: inlineBlockKeybindFactory('bold', ['italic', 'bold']),
         keybind: 'Meta+b',
       },
       {
-        handler: inlineBlockKeybindFactory('italic', ['italic', 'bold', 'link']),
+        handler: inlineBlockKeybindFactory('italic', ['italic', 'bold',]),
         keybind: 'Meta+i',
       }
     ]}
@@ -99,20 +65,16 @@ const Demo: React.FC = () => (
         regex: /(\*\*)(.*?)\1/g,
         handler: inlineBlockRegexFactory(
           'bold',
-          ['italic', 'bold', 'link']
+          ['italic', 'bold']
         ),
       },
       {
         regex: /(\*)(.*?)\1/g,
         handler: inlineBlockRegexFactory(
           'italic',
-          ['italic', 'bold', 'link']
+          ['italic', 'bold']
         )
       },
-      {
-        regex: /()(https?:\/\/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b[-a-zA-Z0-9()@:%_\+.~#?&\/=]*) \1/g,
-        handler: inlineBlockRegexFactory('link', ['bold', 'italic']),
-      }
     ]}
   />
 );
