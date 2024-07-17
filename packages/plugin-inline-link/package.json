@@ -1,12 +1,12 @@
 {
-  "name": "@note-rack/inline-link",
-  "description": "An inline block for the styled-text component to provide links",
+  "name": "@note-rack/plugin-inline-link",
+  "description": "An inline block for the note rack editor to provide links",
   "version": "1.0.0",
   "module": "dist/index.js",
   "umd": "dist/index.umd.js",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "repository": "https://github.com/Eroxl/Note-Rack/tree/main/packages/plugin-math-latex",
+  "repository": "https://github.com/Eroxl/Note-Rack/tree/main/packages/plugin-inline-link",
   "author": "Eroxl",
   "license": "AGPL-3.0-only",
   "private": false,
@@ -39,12 +39,9 @@
     "webpack-dev-server": "^4.15.1"
   },
   "dependencies": {
-    "@note-rack/editor": "^1.0.13",
-    "@note-rack/plugin-styled-text": "^1.0.9"
+    "@note-rack/editor": "^1.0.15"
   },
   "peerDependencies": {
-    "@note-rack/editor": "^1.0.6",
-    "@note-rack/plugin-styled-text": "^1.0.6",
     "react": "<18.0.0",
     "react-dom": "<18.0.0"
   }
