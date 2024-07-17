@@ -1,4 +1,4 @@
-import type { ValueMerger } from "../mergeIntervals";
+import type { ValueMerger } from "./mergeIntervals";
 
 /**
  * Merge interval values, and removes values that are prefixed with a dash.

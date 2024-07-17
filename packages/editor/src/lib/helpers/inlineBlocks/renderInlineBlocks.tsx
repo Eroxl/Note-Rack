@@ -1,7 +1,6 @@
 import React from "react";
 
-import InlineBlockSchema from "../types/InlineBlockSchema";
-import InlineBlockRenderer from "../types/InlineBlockRenderer";
+import type InlineBlockRenderer from "../../../types/InlineBlockRenderer";
 
 export type InlineBlock = {
   type: string[],
@@ -55,7 +54,7 @@ const renderInlineBlocks = (
   text: string,
   inlineBlocks?: InlineBlock[],
   rendererers?: {
-    [type: string]: InlineBlockRenderer<Record<string, unknown>>
+    [type: string]: InlineBlockRenderer<Record<string, any>>
   },
 ) => {
   let result: React.ReactNode[] = [];

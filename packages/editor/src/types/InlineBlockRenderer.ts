@@ -10,4 +10,3 @@ type InlineBlockRenderer<
 )>;
 
 export default InlineBlockRenderer;
- 

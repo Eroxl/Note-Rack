@@ -16,12 +16,18 @@ import mergeObjects from '../lib/helpers/mergeObjects';
 import handleDownArrowNavigation from '../lib/keybinds/handleDownArrowNavigation';
 import handleUpArrowNavigation from '../lib/keybinds/handleUpArrowNavigation';
 import type Plugin from '../types/Plugin';
+import InlineBlockRenderer from '../types/InlineBlockRenderer';
+import createStyledTextRenderer from './createStyledTextRenderer';
 
 export type EditorProps = {
   startingBlocks: BlockState[];
 
   renderers: {
     [type: string]: BlockRenderer<any>;
+  }
+
+  inlineBlocks: {
+    [type: string]: InlineBlockRenderer<any>,
   }
 
   postMutations?: {
@@ -44,6 +50,9 @@ const getDefaultProps = (): Partial<Omit<EditorProps, 'startingBlocks' | 'plugin
   postMutations: {
     addBlock: [focusAddedBlock],
     removeBlock: [focusRemovedBlock]
+  },
+  renderers: {
+    'text': createStyledTextRenderer({}, ''),
   },
   keybinds: [
     {
@@ -71,7 +80,7 @@ const Editor: React.FC<EditorProps> = (props) => {
 
   const editorRef = useRef<HTMLDivElement>(null);
 
-  const defaultProps = getDefaultProps();
+  const defaultProps = useMemo(() => getDefaultProps(), []);
 
   const mergedProps = useMemo(
     () => (
@@ -88,6 +97,7 @@ const Editor: React.FC<EditorProps> = (props) => {
 
   const {
     renderers,
+    inlineBlocks,
     postMutations,
     keybinds,
     richTextKeybinds,
@@ -188,6 +198,7 @@ const Editor: React.FC<EditorProps> = (props) => {
             id={block.id}
             mutations={editorMutations}
             properties={block.properties}
+            inlineBlocks={inlineBlocks}
             type={block.type}
             editorRef={editorRef}
             key={id}

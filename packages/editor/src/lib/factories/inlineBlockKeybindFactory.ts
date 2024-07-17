@@ -1,11 +1,11 @@
-import getBlockById from '@note-rack/editor/lib/helpers/getBlockByID';
-import restoreSelection from '@note-rack/editor/lib/helpers/restoreSelection';
-import type KeybindHandler from "@note-rack/editor/types/KeybindHandler";
+import getBlockById from '../helpers/getBlockByID';
+import restoreSelection from '../helpers/restoreSelection';
+import type KeybindHandler from '../../types/KeybindHandler';
 
-import type { Interval } from "../helpers/mergeIntervals";
-import mergeIntervals from '../helpers/mergeIntervals';
-import optionalMergeIntervalValues from "../helpers/intervalMergers/optionalMergeIntervalValues";
-import splitOnNonNestables from '../helpers/splitOnNonNestables';
+import type { Interval } from '../helpers/intervals/mergeIntervals';
+import mergeIntervals from '../helpers/intervals/mergeIntervals';
+import optionalMergeIntervalValues from '../helpers/intervals/optionalMergeIntervalValues';
+import splitOnNonNestables from '../helpers/intervals/splitOnNonNestables';
 
 const inlineBlockKeybindFactory = (
   type: string,

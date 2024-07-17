@@ -1,12 +1,12 @@
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import ReactDOM from "react-dom";
-import { Editor } from "@note-rack/editor";
-import blockRegexFactory from "@note-rack/editor/lib/factories/blockRegexFactory";
 
-import createStyledText from "../createStyledTextRenderer";
-import inlineBlockKeybindFactory from "../factories/inlineBlockKeybindFactory";
-import inlineBlockRegexFactory from "../factories/inlineBlockRegexFactory";
+import Editor from '../components/Editor';
+import createStyledTextRenderer from "../components/createStyledTextRenderer";
+import inlineBlockKeybindFactory from '../lib/factories/inlineBlockKeybindFactory';
+import blockRegexFactory from '../lib/factories/blockRegexFactory';
 import InlineBlockRenderer from "../types/InlineBlockRenderer";
+import inlineBlockRegexFactory from '../lib/factories/inlineBlockRegexFactory';
 
 const inlineBlocks: Record<string, InlineBlockRenderer<Record<string, unknown>>> = {
   bold: ({ children }) => (
@@ -20,9 +20,10 @@ const inlineBlocks: Record<string, InlineBlockRenderer<Record<string, unknown>>>
 const Demo: React.FC = () => (
   <Editor
     renderers={{
-      text: createStyledText({}, '', inlineBlocks),
-      'red-text': createStyledText({color: 'red'}, '', inlineBlocks),
+      text: createStyledTextRenderer({}, ''),
+      'red-text': createStyledTextRenderer({color: 'red'}, ''),
     }}
+    inlineBlocks={inlineBlocks}
     startingBlocks={[
       {
         id: "1",

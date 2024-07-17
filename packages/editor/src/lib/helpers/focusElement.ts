@@ -37,8 +37,6 @@ const focusElement = (
 
   element.focus();
 
-  console.log(`Moved Caret: \n- Element:`,  element, `\n- Offset: ${offset}\n- Length: ${length}`);
-
   // ~ Move the cursor to the end of the block unless the only text is a newline
   if (element.textContent === '\n' || element.textContent === '') {
     const firstTextNode = getFirstTextNode(element);

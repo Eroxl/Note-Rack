@@ -1,9 +1,9 @@
-import restoreSelection from "@note-rack/editor/lib/helpers/restoreSelection";
-import type RichTextKeybindHandler from "@note-rack/editor/types/RichTextKeybindHandler";
+import restoreSelection from "../helpers/restoreSelection";
+import type RichTextKeybindHandler from "../../types/RichTextKeybindHandler";
 
-import mergeIntervals from "../helpers/mergeIntervals";
-import type { Interval } from "../helpers/mergeIntervals";
-import splitOnNonNestables from "../helpers/splitOnNonNestables";
+import type { Interval } from "../helpers/intervals/mergeIntervals";
+import mergeIntervals from "../helpers/intervals/mergeIntervals";
+import splitOnNonNestables from "../helpers/intervals/splitOnNonNestables";
 
 const inlineBlockRegexFactory = (
   type: string,

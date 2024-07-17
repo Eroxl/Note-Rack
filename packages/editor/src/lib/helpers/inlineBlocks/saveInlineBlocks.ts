@@ -1,4 +1,4 @@
-import type { Interval } from '@note-rack/editor/lib/helpers/mergeIntervals';
+import type { Interval } from "../intervals/mergeIntervals";
 
 /**
  * Walk up the tree to get the full text style of the node

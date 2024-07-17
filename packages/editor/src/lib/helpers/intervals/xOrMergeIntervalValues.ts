@@ -1,4 +1,4 @@
-import type { ValueMerger } from "../mergeIntervals";
+import type { ValueMerger } from "./mergeIntervals";
 
 const xOrMergeIntervalValues: ValueMerger = (a, b) => {
   const newInterval: Record<string, unknown> = {};

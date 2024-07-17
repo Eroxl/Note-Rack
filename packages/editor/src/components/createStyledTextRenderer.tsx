@@ -1,16 +1,14 @@
 import React, { useRef } from 'react';
 
-import ContentEditable from '@note-rack/editor/components/ContentEditable';
-import getCursorOffset from '@note-rack/editor/lib/helpers/caret/getCursorOffset';
-import focusElement from '@note-rack/editor/lib/helpers/focusElement';
-import generateUUID from '@note-rack/editor/lib/helpers/generateUUID';
-import type BlockRenderer from '@note-rack/editor/types/BlockRenderer';
+import ContentEditable from './ContentEditable';
+import getCursorOffset from '../lib/helpers/caret/getCursorOffset';
+import focusElement from '../lib/helpers/focusElement';
+import generateUUID from '../lib/helpers/generateUUID';
+import type BlockRenderer from '../types/BlockRenderer';
 
-import renderInlineBlocks from './helpers/renderInlineBlocks';
-import saveInlineBlocks from './helpers/saveInlineBlocks';
-import { InlineBlock } from './helpers/renderInlineBlocks';
-import InlineBlockSchema from './types/InlineBlockSchema';
-import InlineBlockRenderer from './types/InlineBlockRenderer';
+import renderInlineBlocks from '../lib/helpers/inlineBlocks/renderInlineBlocks';
+import saveInlineBlocks from '../lib/helpers/inlineBlocks/saveInlineBlocks';
+import { InlineBlock } from '../lib/helpers/inlineBlocks/renderInlineBlocks';
 
 export type TextProperties = {
   text: string;
@@ -21,10 +19,7 @@ export type TextProperties = {
  * Create a styled text block renderer
  * @param style The style to apply to the text
  * @param className The class name to apply to the text
- * @param inlineBlocks The inline blocks that the text can contain
  * @returns The styled text block renderer
- * 
- * @see https://npmjs.com/package/@note-rack/editor/
  * 
  * @example
  * ```tsx
@@ -32,8 +27,7 @@ export type TextProperties = {
  * import ReactDOM from 'react-dom';
  * 
  * import { Editor } from '@note-rack/editor';
- * 
- * import { createStyledTextRenderer } from '@note-rack/plugin-styled-text';
+ * import { createStyledTextRenderer } from '@note-rack/editor';
  * 
  * const redTextRenderer = createStyledTextRenderer({
  *   color: 'red',
@@ -65,12 +59,9 @@ export type TextProperties = {
 const createStyledTextRenderer = (
   style?: React.CSSProperties,
   className?: string,
-  inlineBlocks?: {
-    [type: string]: InlineBlockRenderer<Record<string, unknown>>,
-  }
 ) => {
   const Text: BlockRenderer<TextProperties> = (props) => {
-    const { id, properties, mutations, type } = props;
+    const { id, properties, mutations, type, inlineBlocks } = props;
     const { text, style: inlineBlockStyles } = properties;
   
     const editableElement = useRef<HTMLSpanElement>(null);
@@ -135,7 +126,11 @@ const createStyledTextRenderer = (
         }}
       >
         {
-          renderInlineBlocks(text, inlineBlockStyles, inlineBlocks)
+          renderInlineBlocks(
+            text,
+            inlineBlockStyles,
+            inlineBlocks
+          )
         }
       </ContentEditable>
     )
