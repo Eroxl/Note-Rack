@@ -115,7 +115,11 @@ const ContentEditable: React.FC<ContentEditableProps> = (props) => {
         const isTargetedElementLast = secondLastElement?.contains(targetedElement);
         const isTargetedElementEditable = targetedElement.isContentEditable;
 
-        if (!isTargetedElementLast || isTargetedElementEditable || !innerRef.current) return;
+        if (
+          !isTargetedElementLast
+          || isTargetedElementEditable
+          || !innerRef.current
+        ) return;
 
         focusElement(innerRef.current, innerRef.current.textContent?.length || 0);
       }}
