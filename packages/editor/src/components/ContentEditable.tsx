@@ -109,6 +109,16 @@ const ContentEditable: React.FC<ContentEditableProps> = (props) => {
     <span
       ref={innerRef}
 
+      onClick={(e) => {
+        const targetedElement = e.target as HTMLElement;
+        const secondLastElement = innerRef.current?.childNodes[innerRef.current?.childNodes.length - 2];
+        const isTargetedElementLast = secondLastElement?.contains(targetedElement);
+        const isTargetedElementEditable = targetedElement.isContentEditable;
+
+        if (!isTargetedElementLast || isTargetedElementEditable || !innerRef.current) return;
+
+        focusElement(innerRef.current, innerRef.current.textContent?.length || 0);
+      }}
       contentEditable={!disabled}
       suppressContentEditableWarning
       onBeforeInput={(event) => { 

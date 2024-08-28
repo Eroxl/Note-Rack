@@ -88,6 +88,12 @@ const renderInlineBlocks = (
       return ['\uFEFF'];
     }
 
+    result.push(
+      <span>
+        {'\uFEFF'}
+      </span>
+    )
+
     return result;
   }
 
@@ -99,6 +105,7 @@ const renderInlineBlocks = (
       ? trailingText
       : trailingText + '\uFEFF'
   );
+
 
   return result;
 };
