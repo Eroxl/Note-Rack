@@ -120,6 +120,11 @@ const ContentEditable: React.FC<ContentEditableProps> = (props) => {
           || isTargetedElementEditable
           || !innerRef.current
         ) return;
+  
+        const targetedBoundingBox = targetedElement.getBoundingClientRect();
+        const isNearEndOfElement = (targetedBoundingBox.x + targetedBoundingBox.width) <= e.clientX + 3;
+
+        if (!isNearEndOfElement) return;
 
         focusElement(innerRef.current, innerRef.current.textContent?.length || 0);
       }}

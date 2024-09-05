@@ -77,8 +77,6 @@ const focusElement = (
   while (iterator.nextNode()) {
     const node = iterator.referenceNode;
 
-    console.log(node);
-
     if ((node as HTMLElement).isContentEditable) {
       lastSelectableElement = node as HTMLElement;
     }
