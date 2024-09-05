@@ -15,9 +15,6 @@ const inlineBlocks: Record<string, InlineBlockRenderer<Record<string, unknown>>>
   italic: ({children}) => (
     <i>{children}</i>
   ),
-  'non-editable': ({children}) => (
-    <span contentEditable="false">{children}</span>
-  )
 };
 
 const Demo: React.FC = () => (
@@ -39,32 +36,13 @@ const Demo: React.FC = () => (
         id: "2",
         type: "text",
         properties: {
-          text: 'Bold text and more text non-editable',
+          text: 'Bold text and more text',
           style: [
             {
               type: ['bold'],
               start: 0,
               end: 4,
-            },
-            {
-              type: ['non-editable'],
-              start: 24,
-              end: 36, 
             }
-          ]
-        }
-      },
-      {
-        id: "3",
-        type: "text",
-        properties: {
-          text: 'Bold',
-          style: [
-            {
-              type: ['bold'],
-              start: 0,
-              end: 4,
-            },
           ]
         }
       },
