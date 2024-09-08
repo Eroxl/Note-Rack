@@ -85,11 +85,11 @@ const Editor: React.FC<EditorProps> = (props) => {
   const mergedProps = useMemo(
     () => (
       mergeObjects(
+        defaultProps,
         (plugins || []).reduce(
           (acc, plugin) => mergeObjects(acc, plugin),
           props
         ),
-        defaultProps,
       ) as EditorProps
     ),
     [props, plugins, defaultProps]

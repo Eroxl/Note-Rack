@@ -8,8 +8,15 @@ type MergedObject<T, U> = (
   }
 )
 
+
 /**
- * Merge the arrays of two objects, preserving the keys of non-array values
+ * Merge the arrays of two objects, preserving the keys of non-array values, if there are
+ * two overlapping keys that are non-array values the value from `obj1` is overwritten with
+ * the one from `obj2`
+ * 
+ * TODO: This should be re-done in a more maintainable way I feel like this function has
+ *       weird outcomes and handles too many cases.
+ * 
  * @param obj1 
  * @param obj2 
  * @returns 

@@ -15,13 +15,16 @@ const inlineBlocks: Record<string, InlineBlockRenderer<Record<string, unknown>>>
   italic: ({children}) => (
     <i>{children}</i>
   ),
+  'non-editable': ({children}) => (
+    <span contentEditable="false">{children}</span>
+  )
 };
 
 const Demo: React.FC = () => (
   <Editor
     renderers={{
-      text: createStyledTextRenderer({}, ''),
-      'red-text': createStyledTextRenderer({color: 'red'}, ''),
+      text: createStyledTextRenderer({ paddingRight: '20px' }, ''),
+      'red-text': createStyledTextRenderer({ color: 'red' }, ''),
     }}
     inlineBlocks={inlineBlocks}
     startingBlocks={[
@@ -36,13 +39,32 @@ const Demo: React.FC = () => (
         id: "2",
         type: "text",
         properties: {
-          text: 'Bold text and more text',
+          text: 'Bold text and more text non-editable',
           style: [
             {
               type: ['bold'],
               start: 0,
               end: 4,
+            },
+            {
+              type: ['non-editable'],
+              start: 24,
+              end: 36, 
             }
+          ]
+        }
+      },
+      {
+        id: "3",
+        type: "text",
+        properties: {
+          text: 'Bold',
+          style: [
+            {
+              type: ['bold'],
+              start: 0,
+              end: 4,
+            },
           ]
         }
       },

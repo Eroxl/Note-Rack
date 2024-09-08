@@ -110,7 +110,14 @@ const ContentEditable: React.FC<ContentEditableProps> = (props) => {
       ref={innerRef}
 
       onClick={(e) => {
+        if (!document.getSelection()?.getRangeAt(0).collapsed) return;
+
         const targetedElement = e.target as HTMLElement;
+
+        if (targetedElement === innerRef.current) {
+          focusElement(innerRef.current, innerRef.current.textContent?.length || 0);
+        }
+
         const secondLastElement = innerRef.current?.childNodes[innerRef.current?.childNodes.length - 2];
         const isTargetedElementLast = secondLastElement?.contains(targetedElement);
         const isTargetedElementEditable = targetedElement.isContentEditable;
