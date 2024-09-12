@@ -4,6 +4,7 @@ import { createPortal } from 'react-dom';
 import focusElement from '../lib/helpers/focusElement';
 import getCursorOffset from '../lib/helpers/caret/getCursorOffset';
 import isElementFocused from '../lib/helpers/isElementFocused';
+import isElementEditable from '../lib/helpers/isElementEditable';
 
 type ContentEditableProps = {
   children?: React.ReactNode | React.ReactNode[];
@@ -113,14 +114,19 @@ const ContentEditable: React.FC<ContentEditableProps> = (props) => {
         if (!document.getSelection()?.getRangeAt(0).collapsed) return;
 
         const targetedElement = e.target as HTMLElement;
-
+        const secondLastElement = innerRef.current?.childNodes[innerRef.current?.childNodes.length - 2] as HTMLElement;
+        const isSecondLastElementEditable = isElementEditable(secondLastElement);
+        
         if (targetedElement === innerRef.current) {
-          focusElement(innerRef.current, innerRef.current.textContent?.length || 0);
-        }
+          const offset = isSecondLastElementEditable ? 1 : 0;
 
-        const secondLastElement = innerRef.current?.childNodes[innerRef.current?.childNodes.length - 2];
-        const isTargetedElementLast = secondLastElement?.contains(targetedElement);
+          console.log(offset);
+
+          focusElement(innerRef.current, (innerRef.current.textContent?.length || offset) - offset);
+        }
+        
         const isTargetedElementEditable = targetedElement.isContentEditable;
+        const isTargetedElementLast = secondLastElement?.contains(targetedElement);
 
         if (
           !isTargetedElementLast
