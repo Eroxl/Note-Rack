@@ -120,8 +120,6 @@ const ContentEditable: React.FC<ContentEditableProps> = (props) => {
         if (targetedElement === innerRef.current) {
           const offset = isSecondLastElementEditable ? 1 : 0;
 
-          console.log(offset);
-
           focusElement(innerRef.current, (innerRef.current.textContent?.length || offset) - offset);
         }
         
