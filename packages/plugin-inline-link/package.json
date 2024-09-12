@@ -39,7 +39,7 @@
     "webpack-dev-server": "^4.15.1"
   },
   "dependencies": {
-    "@note-rack/editor": "^1.0.15"
+    "@note-rack/editor": "^1.0.16"
   },
   "peerDependencies": {
     "react": "<18.0.0",

@@ -1,11 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Editor } from "@note-rack/editor";
-import inlineBlockRegexFactory from "@note-rack/plugin-styled-text/factories/inlineBlockRegexFactory";
-import createStyledTextRenderer from "@note-rack/plugin-styled-text";
+import createStyledTextRenderer from "@note-rack/editor/components/createStyledTextRenderer";
+import inlineBlockRegexFactory from "@note-rack/editor/lib/factories/inlineBlockRegexFactory";
 
 import createInlineLinkRenderer from "../createInlineLinkRenderer";
-import InlineBlockRenderer from "@note-rack/plugin-styled-text/types/InlineBlockRenderer";
+import InlineBlockRenderer from "@note-rack/editor/types/InlineBlockRenderer";
 
 const inlineBlocks = {
   link: createInlineLinkRenderer(),
@@ -14,8 +14,9 @@ const inlineBlocks = {
 const Demo: React.FC = () => (
   <Editor
     renderers={{
-      text: createStyledTextRenderer({}, '', inlineBlocks),
+      text: createStyledTextRenderer({}, ''),
     }}
+    inlineBlocks={inlineBlocks}
     startingBlocks={[
       {
         id: "1",

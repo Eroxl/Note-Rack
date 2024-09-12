@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import InlineBlockRenderer from '@note-rack/plugin-styled-text/types/InlineBlockRenderer';
+import InlineBlockRenderer from '@note-rack/editor/types/InlineBlockRenderer';
 
 type InlineLinkProps = {
   href: string,
