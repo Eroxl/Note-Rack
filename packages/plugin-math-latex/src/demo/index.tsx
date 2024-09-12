@@ -39,6 +39,7 @@ const Demo: React.FC = () => (
         }
       },
     ]}
+    inlineBlocks={{}}
     richTextKeybinds={[
       {
         handler: blockRegexFactory("math"),

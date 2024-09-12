@@ -3,7 +3,6 @@ import ReactDOM from "react-dom";
 import { Editor } from "@note-rack/editor";
 import createStyledTextRenderer from "@note-rack/plugin-styled-text";
 import { Selectable } from "react-virtual-selection";
-import createWrapper from "../components/createWrapper";
 import createVirtualSelectPlugin from "../createVirtualSelectPlugin";
 
 const selectedStyle = {
@@ -71,6 +70,7 @@ const Demo: React.FC = () => (
             },
           }
         ]}
+        inlineBlocks={{}}
         plugins={[
           virtualSelectPlugin
         ]}

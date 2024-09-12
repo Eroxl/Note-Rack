@@ -1,7 +1,7 @@
 {
   "name": "@note-rack/plugin-virtual-select",
   "description": "A plugin for Note Rack that allows you to move blocks around by dragging and dropping them.",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "module": "dist/index.js",
   "umd": "dist/index.umd.js",
   "main": "dist/index.js",
@@ -40,7 +40,7 @@
     "webpack-dev-server": "^4.15.1"
   },
   "dependencies": {
-    "@note-rack/editor": "^1.0.13",
+    "@note-rack/editor": "^1.0.16",
     "react-virtual-selection": "^1.1.0"
   },
   "peerDependencies": {

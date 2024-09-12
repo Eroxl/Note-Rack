@@ -1,4 +1,4 @@
-import React, { CSSProperties } from "react";
+import React from "react";
 import ReactDOM from "react-dom";
 import { Editor } from "@note-rack/editor";
 import createStyledTextRenderer from "@note-rack/plugin-styled-text";
@@ -64,6 +64,7 @@ const Demo: React.FC = () => (
             backgroundColor: "rgba(0, 0, 0, 0.1)",
           }),
         }}
+        inlineBlocks={{}}
         startingBlocks={[
           {
             id: "1",
