@@ -3,12 +3,13 @@ import ReactDOM from "react-dom";
 import { Editor } from "@note-rack/editor";
 import createStyledTextRenderer from "@note-rack/editor/components/createStyledTextRenderer";
 import inlineBlockRegexFactory from "@note-rack/editor/lib/factories/inlineBlockRegexFactory";
-
-import createInlineLinkRenderer from "../createInlineLinkRenderer";
 import InlineBlockRenderer from "@note-rack/editor/types/InlineBlockRenderer";
 
+import createInlineLinkRenderer from "../createInlineLinkRenderer";
+import createFloatingLinkEditor from "../components/createFloatingLinkEditor";
+
 const inlineBlocks = {
-  link: createInlineLinkRenderer(),
+  link: createInlineLinkRenderer(createFloatingLinkEditor()),
 } as Record<string, InlineBlockRenderer<any>>;
 
 const Demo: React.FC = () => (
@@ -29,7 +30,7 @@ const Demo: React.FC = () => (
         id: "2",
         type: "text",
         properties: {
-          text: 'this is a link to google.com',
+          text: 'this is a link to google and more text',
           style: [
             {
               type: ['link'],
@@ -39,7 +40,7 @@ const Demo: React.FC = () => (
                 }
               ],
               start: 18,
-              end: 28,
+              end: 24,
             }
           ]
         }
