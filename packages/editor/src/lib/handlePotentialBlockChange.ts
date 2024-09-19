@@ -4,8 +4,6 @@ import type BlockState from "../types/BlockState";
 import type RichTextKeybindHandler from "../types/RichTextKeybindHandler";
 import type RemoveFirstFromTuple from "../types/helpers/RemoveFirstFromTuple";
 import getEditorSelection from "./getEditorSelection";
-import focusElement from "./helpers/focusElement";
-import getBlockById from "./helpers/getBlockByID";
 
 const handlePotentialBlockChange = (
   args: any[],
@@ -19,9 +17,19 @@ const handlePotentialBlockChange = (
     updatedProperties,
   ] = args as RemoveFirstFromTuple<Parameters<typeof mutations.editBlock>>;
 
-  if(!updatedProperties || typeof updatedProperties.text !== 'string') return false;
-
   const block = state.find((block) => block.id === blockId);
+
+  if (!block) return;
+
+  let newText: string | undefined;
+
+  if (typeof updatedProperties === 'function') {
+    newText = updatedProperties(block?.properties).text as string | undefined;
+  } else if (updatedProperties) {
+    newText = updatedProperties.text as string | undefined;
+  }
+
+  if (!newText) return false;
 
   let found = false;
 
@@ -31,13 +39,9 @@ const handlePotentialBlockChange = (
       handler
     } = keybind;
 
-    const {
-      text
-    } = updatedProperties as { text: string };
+    const regexSearch = regex.exec(newText!);
 
-    const regexSearch = regex.exec(text);
-
-    if (!regexSearch || !block) return;
+    if (!regexSearch) return;
 
     found = true;
 
