@@ -15,8 +15,8 @@ const inlineBlocks: Record<string, InlineBlockRenderer<Record<string, unknown>>>
   italic: ({children}) => (
     <i>{children}</i>
   ),
-  'non-editable': ({children}) => (
-    <span contentEditable="false">{children}</span>
+  'non-editable': ({children, properties}) => (
+    <span contentEditable="false" onClick={() => {console.log(properties)}}>{children}</span>
   )
 };
 

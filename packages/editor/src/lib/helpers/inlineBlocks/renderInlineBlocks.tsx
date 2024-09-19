@@ -19,6 +19,11 @@ const renderInlineBlock = (
   properties: Record<string, unknown>[],
   type: string[],
   mutations: InBlockMutations,
+  inlineBlockInfo: {
+    blockID: string,
+    blockStart: number,
+    blockEnd: number,
+  },
   renderers?: {
     [type: string]: InlineBlockRenderer<Record<string, unknown>>
   },
@@ -37,7 +42,10 @@ const renderInlineBlock = (
       key={index}
     >
       <Rendererer
-        properties={properties[0]}
+        properties={{
+          ...properties[0],
+          ...inlineBlockInfo
+        }}
         mutations={mutations}
       >
         {
@@ -46,6 +54,7 @@ const renderInlineBlock = (
             properties.slice(1),
             type.slice(1),
             mutations,
+            inlineBlockInfo,
             renderers
           )
         }
@@ -57,6 +66,7 @@ const renderInlineBlock = (
 const renderInlineBlocks = (
   text: string,
   mutations: InBlockMutations,
+  blockID: string,
   inlineBlocks?: InlineBlock[],
   rendererers?: {
     [type: string]: InlineBlockRenderer<Record<string, any>>
@@ -82,7 +92,11 @@ const renderInlineBlocks = (
     }
 
     result.push(
-      renderInlineBlock(blockText, properties || [], type, mutations, rendererers, index)
+      renderInlineBlock(blockText, properties || [], type, mutations, {
+        blockID,
+        blockStart,
+        blockEnd,
+      }, rendererers, index)
     )
 
     start = blockEnd;

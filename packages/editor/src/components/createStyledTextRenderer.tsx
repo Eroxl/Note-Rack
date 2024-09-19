@@ -129,6 +129,7 @@ const createStyledTextRenderer = (
           renderInlineBlocks(
             text,
             mutations,
+            id,
             inlineBlockStyles,
             inlineBlocks,
           )

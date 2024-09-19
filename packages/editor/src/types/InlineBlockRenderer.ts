@@ -8,7 +8,11 @@ type InlineBlockRenderer<
   {
     children: React.ReactNode | string,
     mutations: InBlockMutations,
-    properties: Props,
+    properties: Props & {
+      blockID: string,
+      blockStart: number,
+      blockEnd: number,
+    },
   }
 )>;
 
