@@ -12,8 +12,8 @@ import type BlockState from "../types/BlockState";
 const editBlock = (
   state: BlockState[],
   blockId: string,
-  updatedProperties?: Record<string, unknown>,
-  updatedType?: string,
+  updatedProperties?: Record<string, unknown> | ((currentProperties: Record<string, unknown>) => Record<string, unknown>),
+  updatedType?: string | ((currentType: string) => string),
 ): BlockState[] => {
   const newState: BlockState[] = [...state];
 
@@ -29,9 +29,20 @@ const editBlock = (
     ...block,
     properties: {
       ...block.properties,
-      ...updatedProperties,
+      ...(
+        typeof updatedProperties === 'function'
+          ? updatedProperties(block.properties)
+          : updatedProperties
+      ),
     },
-    type: updatedType || block.type,
+    type: (
+      (
+        typeof updatedType === 'function'
+          ? updatedType(block.type)
+          : updatedType
+      )
+      || block.type
+    )
   };
 
   return newState;
