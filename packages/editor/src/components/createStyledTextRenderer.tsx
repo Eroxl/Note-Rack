@@ -128,8 +128,9 @@ const createStyledTextRenderer = (
         {
           renderInlineBlocks(
             text,
+            mutations,
             inlineBlockStyles,
-            inlineBlocks
+            inlineBlocks,
           )
         }
       </ContentEditable>

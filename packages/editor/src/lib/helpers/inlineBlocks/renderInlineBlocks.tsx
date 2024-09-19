@@ -1,6 +1,7 @@
 import React from "react";
 
 import type InlineBlockRenderer from "../../../types/InlineBlockRenderer";
+import { InBlockMutations } from "../../../types/BlockRenderer";
 
 export type InlineBlock = {
   type: string[],
@@ -17,6 +18,7 @@ const renderInlineBlock = (
   text: string,
   properties: Record<string, unknown>[],
   type: string[],
+  mutations: InBlockMutations,
   renderers?: {
     [type: string]: InlineBlockRenderer<Record<string, unknown>>
   },
@@ -36,12 +38,14 @@ const renderInlineBlock = (
     >
       <Rendererer
         properties={properties[0]}
+        mutations={mutations}
       >
         {
           renderInlineBlock(
             text,
             properties.slice(1),
             type.slice(1),
+            mutations,
             renderers
           )
         }
@@ -52,6 +56,7 @@ const renderInlineBlock = (
 
 const renderInlineBlocks = (
   text: string,
+  mutations: InBlockMutations,
   inlineBlocks?: InlineBlock[],
   rendererers?: {
     [type: string]: InlineBlockRenderer<Record<string, any>>
@@ -77,7 +82,7 @@ const renderInlineBlocks = (
     }
 
     result.push(
-      renderInlineBlock(blockText, properties || [], type, rendererers, index)
+      renderInlineBlock(blockText, properties || [], type, mutations, rendererers, index)
     )
 
     start = blockEnd;
